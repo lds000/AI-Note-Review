@@ -21,15 +21,21 @@ namespace AI_Note_Review
         public string ReasonForAppt { get; set; }
         public string Allergies { get; set; }
 
+        public string NoteHTML { get; set; }
         public string Vitals { get; set; }
         public string CC { get; set; }
         public string HPI { get; set; }
         public string CurrentMeds { get; set; }
         public string ProblemList { get; set; }
+        public string ROS { get; set; }
         public string PMHx { get; set; }
         public string SocHx { get; set; }
         public string GeneralHx { get; set; }
         public  string Exam { get; set; }
+        public string Treatment { get; set; }
+        public string MedsStarted { get; set; }
+        public string ImagesOrdered { get; set; }
+        public string LabsOrdered { get; set; }
         public string Assessments { get; set; }
         public string FollowUp { get; set; }
 

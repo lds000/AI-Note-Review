@@ -189,10 +189,16 @@ namespace AI_Note_Review
 
         public void processDocument(HtmlDocument HDoc)
         {
-            HtmlElementCollection AllItems = HDoc.Body.All;
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            HtmlElementCollection AllTRItems = HDoc.Body.GetElementsByTagName("TR"); //5 ms
+            HtmlElementCollection AllTHEADItems = HDoc.Body.GetElementsByTagName("THEAD"); //5 ms
+
+
+            CurrentDoc.NoteHTML = HDoc.Body.InnerHtml; //3 ms
+            
 
             string strCurrentHeading = "";
-            foreach (HtmlElement TempEl in AllItems)
+            foreach (HtmlElement TempEl in AllTHEADItems) //1 item, 1.9 seconds!
             {
                 if (TempEl.TagName == "THEAD")
                 {
@@ -204,12 +210,13 @@ namespace AI_Note_Review
                         continue;
                     }
                 }
+            }
+            List<string> AssessmentList = new List<string>();
 
+            foreach (HtmlElement TempEl in AllTRItems) //99 items, 1.9 seconds!
+            {
                 string strClass = TempEl.GetAttribute("className");
                 if (strClass == "") continue;
-
-
-
                 if (TempEl.TagName == "TR")
                 {
                     if (strClass != "")
@@ -225,9 +232,7 @@ namespace AI_Note_Review
                             }
                             continue;
                         }
-
                         if (strClass == "PtHeading") CurrentDoc.PtName = TempEl.InnerText; //set first name
-
                         if (strClass == "PtData") //field has note informaition
                         {
                             string strInnerText = TempEl.InnerText;
@@ -244,6 +249,7 @@ namespace AI_Note_Review
                         if (strClass == "rightPaneData" || strClass == "leftPaneData")
                         {
                             string strInnerText = TempEl.InnerText;
+
                             if (strCurrentHeading == "Reason for Appointment")
                                 {
                                     CurrentDoc.CC = strInnerText.Substring(3);
@@ -254,15 +260,72 @@ namespace AI_Note_Review
                             }
                             if (strCurrentHeading == "Current Medications")
                             {
-                                CurrentDoc.CurrentMeds = strInnerText;
+                                string strTextToParse = strInnerText;
+                                strTextToParse = strTextToParse.Replace("Taking", "Taking:\n");
+                                strTextToParse = strTextToParse.Replace("Discontinued", "Discontinued:\n");
+                                var result = strTextToParse.Split(new[] { '\r', '\n' });
+                                List<string> medsTaking = new List<string>();
+                                bool prn = false;
+                                foreach (string str in result)
+                                {
+                                    if (str == "Taking:") continue;
+                                    if (str.StartsWith("Medication List reviewed")) continue;
+                                    if (str.Trim() == "") continue;
+                                    if (str == "Not-Taking:")
+                                    {
+                                        prn = true;
+                                        continue;
+                                    }
+                                    if (str == "Discontinued:") break;
+
+                                    string strList = str;
+                                    if (prn) strList = strList + "(NOT TAKING/PRN STATUS)";
+                                    medsTaking.Add(strList);
+                                }
+
+                                string strOut = "";
+                                foreach (string strMed in medsTaking)
+                                {
+                                    strOut += strMed + "\n";
+                                }
+
+                                CurrentDoc.CurrentMeds = strOut;
                             }
                             if (strCurrentHeading == "Active Problem List")
                             {
-                                CurrentDoc.ProblemList = strInnerText;
+                                string strTextToParse = strInnerText;
+                                if (strInnerText == null) continue;
+                                var result = strTextToParse.Split(new[] { '\r', '\n' });
+                                List<string> ProblemList = new List<string>();
+                                foreach (string str in result)
+                                {
+                                    if (str.Trim() == "") continue;
+                                    if (str.StartsWith("Onset")) continue;
+                                    ProblemList.Add(str);
+                                }
+                                string strOut = "";
+                                foreach (string strProblem in ProblemList)
+                                {
+                                    strOut += strProblem + "\n";
+                                }
+                                CurrentDoc.ProblemList = strOut;
                             }
                             if (strCurrentHeading == "Past Medical History")
                             {
-                                CurrentDoc.PMHx = strInnerText;
+                                string strTextToParse = strInnerText;
+                                var result = strTextToParse.Split(new[] { '\r', '\n' });
+                                List<string> PMHxList = new List<string>();
+                                foreach (string str in result)
+                                {
+                                    if (str.Trim() == "") continue;
+                                    PMHxList.Add(str);
+                                }
+                                string strOut = "";
+                                foreach (string strMHx in PMHxList)
+                                {
+                                    strOut += strMHx + "\n";
+                                }
+                                CurrentDoc.PMHx = strOut;
                             }
                             if (strCurrentHeading == "Social History")
                             {
@@ -272,6 +335,11 @@ namespace AI_Note_Review
                             {
                                 CurrentDoc.Allergies = strInnerText;
                             }
+                            if (strCurrentHeading == "Review of Systems")
+                            {
+                                CurrentDoc.ROS = strInnerText;
+                            }
+                            
                             if (strCurrentHeading == "Vital Signs")
                             {
                                 CurrentDoc.Vitals = strInnerText;
@@ -284,6 +352,64 @@ namespace AI_Note_Review
                             {
                                 CurrentDoc.FollowUp = strInnerText;
                             }
+                            if (strCurrentHeading == "Assessments")
+                            {
+                                string strTextToParse = strInnerText;
+                                if (strInnerText == null) continue;
+                                var result = strTextToParse.Split(new[] { '\r', '\n' });
+                                foreach (string str in result)
+                                {
+                                    if (str.Trim() == "") continue;
+                                    AssessmentList.Add(str);
+                                }
+                                string strOut = "";
+                                foreach (string strProblem in AssessmentList)
+                                {
+                                    strOut += strProblem + "\n";
+                                }
+                                CurrentDoc.Assessments = strOut;
+                            }
+
+                            if (strCurrentHeading == "Treatment")
+                            {
+                                var result = strInnerText.Split(new[] { '\r', '\n' });
+                                List<string> medsStarted = new List<string>();
+                                List<string> LabsOrdered = new List<string>();
+                                string strMedsSarted = "";
+                                string strLabsOrdered = "";
+                                foreach (string str in result)
+                                {
+                                    if (str.Trim().StartsWith("LAB:"))
+                                    {
+                                        LabsOrdered.Add(str);
+                                        strLabsOrdered += str + "\n";
+                                    }
+                                    if (str.StartsWith("Start "))
+                                    {
+                                        medsStarted.Add(str);
+                                        strMedsSarted += str + "\n";
+                                    }
+                                }
+                                CurrentDoc.Treatment = strInnerText;
+                                CurrentDoc.MedsStarted = strMedsSarted;
+                                CurrentDoc.LabsOrdered = strLabsOrdered;
+                            }
+
+                            if (strCurrentHeading.StartsWith("Diagnostic Imaging") && strInnerText != null)
+                            {
+                                var result = strInnerText.Split(new[] { '\r', '\n' });
+                                List<string> ImagessOrdered = new List<string>();
+                                string strImagesOrdered = "";
+                                foreach (string str in result)
+                                {
+                                    if (str.Trim().StartsWith("Imaging:"))
+                                    {
+                                        ImagessOrdered.Add(str.Trim());
+                                        strImagesOrdered += str.Trim() + "\n";
+                                    }
+                                }
+                                CurrentDoc.ImagesOrdered = strImagesOrdered;
+                            }
                         }
 
 
@@ -295,6 +421,7 @@ namespace AI_Note_Review
 
             this.DataContext = null;
             this.DataContext = CurrentDoc;
+            Console.WriteLine($"Run time: {watch.ElapsedMilliseconds}");
 
         }
 

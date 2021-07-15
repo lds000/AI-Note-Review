@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
         Topmost="True"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="900">
     <Grid Background="Black">
         <DockPanel>
             <Label  MouseDown="Label_MouseDown" Content="{Binding PtID, FallbackValue=Patient Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="18"></Label>
@@ -21,7 +21,57 @@
                 </DockPanel>
             </Border>
             <Button DockPanel.Dock="Bottom" Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
-            <TextBlock x:Name="tbStatus"></TextBlock>
+            <TabControl>
+                <TabItem Header="HPI">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding HPI}"></TextBox>
+                </TabItem>
+                <TabItem Header="ROS">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding ROS}"></TextBox>
+                </TabItem>
+                <TabItem Header="Meds">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding CurrentMeds}"></TextBox>
+                </TabItem>
+                <TabItem Header="Problems">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding ProblemList}"></TextBox>
+                </TabItem>
+                <TabItem Header="PMHx">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding PMHx}"></TextBox>
+                </TabItem>
+                <TabItem Header="SocHx">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding SocHx}"></TextBox>
+                </TabItem>
+                <TabItem Header="Allergies">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Allergies}"></TextBox>
+                </TabItem>
+                <TabItem Header="Vital">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Vitals}"></TextBox>
+                </TabItem>
+                <TabItem Header="Exam">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Exam}"></TextBox>
+                </TabItem>
+                <TabItem Header="Meds">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding MedsStarted}"></TextBox>
+                </TabItem>
+                <TabItem Header="Labs">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding LabsOrdered}"></TextBox>
+                </TabItem>
+                <TabItem Header="Imaging">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding ImagesOrdered}"></TextBox>
+                </TabItem>
+                <TabItem Header="Treatment">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Treatment}"></TextBox>
+                </TabItem>
+                <TabItem Header="Assessments">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Assessments}"></TextBox>
+                </TabItem>
+                <TabItem Header="FollowUp">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding FollowUp}"></TextBox>
+                </TabItem>
+                <TabItem Header="HTML">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding NoteHTML}"></TextBox>
+                </TabItem>
+
+            </TabControl>
         </DockPanel>
     </Grid>
 </Window>
