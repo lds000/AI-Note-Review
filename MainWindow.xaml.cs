@@ -18,6 +18,8 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Threading;
+using System.Data.SQLite;
+using Dapper;
 
 namespace AI_Note_Review
 {
@@ -33,6 +35,20 @@ namespace AI_Note_Review
         {
             InitializeComponent();
             ProgramInit();
+            SqlLightDataAccess.SQLiteDBLocation = Properties.Settings.Default.DataFolder;
+
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLightDataAccess.SQLiteDBLocation))
+            {
+                string sql = "Select * from NoteSections;";
+                try
+                {
+                    SqlLightDataAccess.NoteSections =  cnn.Query<MySqlNoteSection>(sql).ToList();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error on saving variation data: {e.Message}");
+                }
+            }
         }
 
         #region Monitor active Window
