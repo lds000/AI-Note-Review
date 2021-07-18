@@ -42,7 +42,7 @@ namespace AI_Note_Review
                 string sql = "Select * from NoteSections;";
                 try
                 {
-                    SqlLightDataAccess.NoteSections =  cnn.Query<MySqlNoteSection>(sql).ToList();
+                    SqlLightDataAccess.NoteSections =  cnn.Query<SqlNoteSection>(sql).ToList();
                 }
                 catch (Exception e)
                 {
@@ -450,6 +450,12 @@ namespace AI_Note_Review
         {
             System.Windows.Controls.Label l = sender as System.Windows.Controls.Label;
             System.Windows.Clipboard.SetText(l.Content.ToString());
+        }
+
+        private void EditorClick(object sender, RoutedEventArgs e)
+        {
+            winDbRelICD10CheckpointsEditor wdb = new winDbRelICD10CheckpointsEditor();
+            wdb.ShowDialog();
         }
     }
 

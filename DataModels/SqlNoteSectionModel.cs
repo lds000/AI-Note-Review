@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AI_Note_Review
 {
-    public class MySqlNoteSection
+    public class SqlNoteSection
     {
         public int SectionID { get; set; }
 

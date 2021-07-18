@@ -13,6 +13,9 @@
             <Label  MouseDown="Label_MouseDown" Content="{Binding VisitDate, FallbackValue=Patient Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="18"></Label>
             <Label  MouseDown="Label_MouseDown" Content="{Binding PtAge, FallbackValue=Reason for appointment}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
             <Label  MouseDown="Label_MouseDown" Content="{Binding CC, FallbackValue=Reason for appointment}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
+            <StackPanel DockPanel.Dock="Left" Margin="5,0,10,0">
+                <Button Click="EditorClick" Style="{StaticResource LinkButton}">Editor</Button>
+            </StackPanel>
             <Border BorderBrush="White" DockPanel.Dock="Left">
                 <DockPanel>
                     <Label Content="{Binding Provider, FallbackValue=Provider Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>

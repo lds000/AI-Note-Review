@@ -1,0 +1,92 @@
+﻿<Window x:Class="AI_Note_Review.winDbRelICD10CheckpointsEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AI_Note_Review"
+        mc:Ignorable="d"
+        Topmost="True"
+        Title="winDbRelICD10CheckpointsEditor" Height="450" Width="1200">
+    <DockPanel Background="Black">
+        <Label DockPanel.Dock="Top" HorizontalAlignment="Center" Style="{StaticResource MyLblStyle}" FontSize="20">ICD-10 to Checkpoint Editor</Label>
+        <Button Click="closeclick" DockPanel.Dock="Bottom" Margin="0,10,0,0" HorizontalAlignment="Center" Style="{StaticResource LinkButton}">Close</Button>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition ></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <DockPanel>
+                <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">ICD-10</Label>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                    <Button Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
+                </StackPanel>
+                <ListBox x:Name="lbICD10" Style="{StaticResource MyListBox}" SelectionChanged="lbICD10_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                                <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="1" DockPanel.Dock="Top" Text="{Binding Path=SegmentTitle}" ToolTip="{Binding Path=SegmentComment}"/>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <TextBlock Grid.Column="1" Margin="0" Padding="0" Text="{Binding Path=icd10Chapter}" />
+                                    <TextBlock Margin="0" Padding="0" Text="{Binding Path=icd10CategoryStart}"/>
+                                    <TextBlock Margin="0" Padding="0" Text="-"/>
+                                    <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=icd10CategoryEnd}"/>
+                                </StackPanel>
+                                </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+            <DockPanel Grid.Column="1">
+                <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">Selected Checkpoints</Label>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                    <Button Style="{StaticResource LinkButton}" Margin="3">Add CheckPoint</Button>
+                </StackPanel>
+                <ListBox x:Name="lbCheckpoints" SelectionChanged="lbCheckpoints_SelectionChanged" Style="{StaticResource MyListBox}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
+                                <TextBlock Margin="0,0,0,0" Padding="0,0,0,0" Grid.Column="1" Text="{Binding Path=CheckPointTitle}" ToolTip="{Binding Path=Comment}"/>
+                                <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
+                                <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding Path=Title}" ToolTip="{Binding Path=Comment}"/>
+                                <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+            <DockPanel Grid.Column="2" Name="dpCheckpoint">
+                <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" Content="{Binding Path=CheckPointTitle}" HorizontalAlignment="Center"></Label>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                    <Button Style="{StaticResource LinkButton}" Margin="3">Add CheckPoint</Button>
+                </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource MyTbStyle}">Title:</TextBlock>
+                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=CheckPointTitle}" Style="{StaticResource MyTextBox}"></TextBox>
+                    
+                    <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource MyTbStyle}">Type:</TextBlock>
+                    <ComboBox Name="cbTypes" DisplayMemberPath="Title" SelectedValuePath="CheckPointTypeID" SelectedValue="{Binding CheckPointType}" Grid.Column="1" Grid.Row="1"></ComboBox>
+
+                    <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource MyTbStyle}">Section:</TextBlock>
+                    <ComboBox  Grid.Column="1" Grid.Row="2" Name="cbTargetSection" DisplayMemberPath="NoteSectionTitle" SelectedValuePath="SectionID" SelectedValue="{Binding TargetSection}"></ComboBox>
+
+                </Grid>
+                
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</Window>

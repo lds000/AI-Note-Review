@@ -9,7 +9,8 @@ namespace AI_Note_Review
     public static class SqlLightDataAccess
     {
         public static string SQLiteDBLocation { get; set; }
-        public static List<MySqlNoteSection> NoteSections { get; set; }
-
+        public static List<SqlNoteSection> NoteSections { get; set; }
+        public static List<SqlICD10Segment> ICD10Segments { get; set; }
+        public static List<SqlCheckpoint> Checkpoints { get; set; }
     }
 }
