@@ -28,7 +28,7 @@ namespace AI_Note_Review
             string sql = "";
             sql = $"INSERT INTO ICD10Segments (SegmentTitle) VALUES ('{strCheckPointTitle}');";
             sql += $"Select * from Phrases where PhraseTitle = '{strCheckPointTitle}';"; //this part is to get the ID of the newly created phrase
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLightDataAccess.SQLiteDBLocation))
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 SqlICD10Segment p = cnn.QueryFirstOrDefault<SqlICD10Segment>(sql);
                 ICD10SegmentID = p.ICD10SegmentID;
@@ -40,7 +40,7 @@ namespace AI_Note_Review
         {
             string sql = "";
             sql = $"INSERT OR IGNORE INTO relICD10SegmentsCheckPoints (ICD10SegmentID, CheckPointID) VALUES({ICD10SegmentID}, {cp.CheckPointID});";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLightDataAccess.SQLiteDBLocation))
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 cnn.Execute(sql);
             }
@@ -50,7 +50,7 @@ namespace AI_Note_Review
         {
             string sql = $"Select * from CheckPoints where TargetICD10Segment = {ICD10SegmentID};";
 
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLightDataAccess.SQLiteDBLocation))
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
               return  cnn.Query<SqlCheckpoint>(sql).ToList();
             }
@@ -66,7 +66,7 @@ namespace AI_Note_Review
                     "SegmentTitle=@SegmentTitle, " +
                     "SegmentComment=@SegmentComment " +
                     "WHERE ICD10SegmentID=@ICD10SegmentID;";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLightDataAccess.SQLiteDBLocation))
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 cnn.Execute(sql, this);
             }

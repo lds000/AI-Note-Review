@@ -1,0 +1,79 @@
+﻿<Window x:Class="AI_Note_Review.WinEnterText"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AI_Note_Review"
+        mc:Ignorable="d"
+       Title="WinEnterText"
+        Height="200"
+        Width="500"
+    Topmost="True"
+        WindowStyle="None"
+    WindowStartupLocation="CenterOwner"
+    Loaded="Window_Loaded_1">
+    <Border BorderBrush="White" BorderThickness="2">
+        <Grid
+        Background="Black">
+            <Grid.Resources>
+                <Style
+                TargetType="TextBox">
+                    <Setter
+                    Property="FontSize"
+                    Value="16" />
+                </Style>
+                <Style
+                TargetType="Label">
+                    <Setter
+                    Property="FontSize"
+                    Value="16" />
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="289*"/>
+                <ColumnDefinition Width="203*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition
+                Height="Auto" />
+                <RowDefinition />
+                <RowDefinition
+                Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border
+            Background="Black" Grid.ColumnSpan="2">
+                <Label
+                Name="lblTitle"
+                Foreground="White"
+                HorizontalAlignment="Center"
+                FontSize="20">Enter Text</Label>
+            </Border>
+            <TextBox
+            Grid.Row="1"
+            Margin="10"
+            Name="tbReply"
+            Background="Black"
+            Foreground="White"
+            SpellCheck.IsEnabled="True"
+            FontSize="16"
+            PreviewKeyDown="tbReply_PreviewKeyDown"
+            KeyDown="TextBox_KeyDown"
+            TextWrapping="WrapWithOverflow" Grid.ColumnSpan="2"></TextBox>
+            <StackPanel
+            Orientation="Horizontal"
+            Grid.Row="2"
+            HorizontalAlignment="Center" Margin="204,0,0.89,0">
+                <Button
+                Style="{StaticResource LinkButton}"
+                Margin="5"
+                HorizontalAlignment="Center"
+                Click="ButtonClose_Click">Done</Button>
+                <Button
+                Margin="5"
+                Style="{StaticResource LinkButton}"
+                HorizontalAlignment="Center"
+                Click="ButtonCancel_Click">Cancel</Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

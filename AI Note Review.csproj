@@ -82,13 +82,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CF.cs" />
     <Compile Include="DataModels\SqlCheckpointModel.cs" />
     <Compile Include="DataModels\SqlICD10SegmentModel.cs" />
     <Compile Include="DataModels\SqlLightDataAccess.cs" />
     <Compile Include="DataModels\SqlNoteSectionModel.cs" />
     <Compile Include="DataModels\SqlrelICD10SegmentsCheckPoints.cs" />
+    <Compile Include="DataModels\WindowPositionModel.cs" />
     <Compile Include="winDbRelICD10CheckpointsEditor.xaml.cs">
       <DependentUpon>winDbRelICD10CheckpointsEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WinEnterText.xaml.cs">
+      <DependentUpon>WinEnterText.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -105,6 +110,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="winDbRelICD10CheckpointsEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WinEnterText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -127,6 +136,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="MedTerms.lex">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="NoteReviewDB.db" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -35,20 +35,25 @@ namespace AI_Note_Review
         {
             InitializeComponent();
             ProgramInit();
-            SqlLightDataAccess.SQLiteDBLocation = Properties.Settings.Default.DataFolder;
+            SqlLiteDataAccess.SQLiteDBLocation = Properties.Settings.Default.DataFolder;
 
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLightDataAccess.SQLiteDBLocation))
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 string sql = "Select * from NoteSections;";
                 try
                 {
-                    SqlLightDataAccess.NoteSections =  cnn.Query<SqlNoteSection>(sql).ToList();
+                    SqlLiteDataAccess.NoteSections =  cnn.Query<SqlNoteSection>(sql).ToList();
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine($"Error on saving variation data: {e.Message}");
                 }
             }
+
+            winDbRelICD10CheckpointsEditor wdb = new winDbRelICD10CheckpointsEditor();
+            wdb.ShowDialog();
+            Close();
+
         }
 
         #region Monitor active Window
@@ -456,6 +461,16 @@ namespace AI_Note_Review
         {
             winDbRelICD10CheckpointsEditor wdb = new winDbRelICD10CheckpointsEditor();
             wdb.ShowDialog();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            CF.SetWindowPosition(this);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            CF.SaveWindowPosition(this);
         }
     }
 
