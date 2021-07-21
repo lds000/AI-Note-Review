@@ -27,7 +27,7 @@
                 <ListBox x:Name="lbICD10" Style="{StaticResource MyListBox}" SelectionChanged="lbICD10_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                                <Grid>
+                            <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="80"/>
                                     <ColumnDefinition/>
@@ -39,7 +39,7 @@
                                     <TextBlock Margin="0" Padding="0" Text="-"/>
                                     <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=icd10CategoryEnd}"/>
                                 </StackPanel>
-                                </Grid>
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -64,7 +64,7 @@
             </DockPanel>
             <DockPanel Grid.Column="2" Name="dpCheckpoint">
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Label Style="{StaticResource MyLblStyle}">Checkpoint: </Label>
+                    <Label Style="{StaticResource MyLblStyle}">Checkpoint:</Label>
                     <Label  Style="{StaticResource MyLblStyle}" Content="{Binding Path=CheckPointTitle, FallbackValue=CheckPointTitle}"></Label>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
@@ -90,7 +90,7 @@
                     <TextBox x:Name="tbTitle" Grid.Column="1" Grid.Row="0" Text="{Binding Path=CheckPointTitle}" Style="{StaticResource MyTextBox}" LostFocus="tbTitle_LostFocus"></TextBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="1" Style="{StaticResource MyTbStyle}">Type:</TextBlock>
-                    <ComboBox Name="cbTypes" DisplayMemberPath="Title" SelectedValuePath="CheckPointTypeID" SelectedValue="{Binding CheckPointType}" SelectionChanged="cbTypes_SelectionChanged" Grid.Column="1" Grid.Row="1"></ComboBox>
+                    <ComboBox Name="cbTypes" DisplayMemberPath="Title"  SelectedValuePath="CheckPointTypeID" SelectedValue="{Binding CheckPointType}" SelectionChanged="cbTypes_SelectionChanged" Grid.Row="1" Grid.ColumnSpan="2" Margin="50,0,2,0"/>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="2" Style="{StaticResource MyTbStyle}">Section:</TextBlock>
                     <ComboBox  Grid.Column="1" Grid.Row="2" Name="cbTargetSection" DisplayMemberPath="NoteSectionTitle" SelectedValuePath="SectionID" SelectedValue="{Binding TargetSection}" SelectionChanged="cbTargetSection_SelectionChanged"></ComboBox>
@@ -102,7 +102,7 @@
                     <TextBox Margin="5" x:Name="tbComment" Grid.Row="4" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Comment}" ToolTip="{Binding Path=Comment}" LostFocus="tbComment_LostFocus"></TextBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="5" Style="{StaticResource MyTbStyle}">Images:</TextBlock>
-                    <RichTextBox x:Name="myRTB" Grid.Column="1" Grid.Row="5" LostFocus="myRTB_LostFocus"></RichTextBox>
+                    <RichTextBox Margin="5" x:Name="myRTB" Grid.Column="1" Grid.Row="5" LostFocus="myRTB_LostFocus"></RichTextBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource MyTbStyle}">Action:</TextBlock>
                     <TextBox Margin="5" x:Name="tbAction" Grid.Row="6" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Action}" ToolTip="{Binding Path=Action}" LostFocus="tbAction_LostFocus"></TextBox>
@@ -112,7 +112,7 @@
                     <TextBox Margin="5" x:Name="tbLink" Grid.Row="7" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Link}" ToolTip="{Binding Path=Link}" LostFocus="tbLink_LostFocus"></TextBox>
 
                 </Grid>
-                
+
             </DockPanel>
         </Grid>
     </DockPanel>

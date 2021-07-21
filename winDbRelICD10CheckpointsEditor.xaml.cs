@@ -72,7 +72,7 @@ namespace AI_Note_Review
             {
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    string sql = $"Select * from CheckPointSummary where ICD10SegmentID == {seg.ICD10SegmentID};";
+                    string sql = $"Select * from CheckPointSummary where ICD10SegmentID == {seg.ICD10SegmentID}";
                     try
                     {
                         lbCheckpoints.ItemsSource = cnn.Query(sql).ToList();
@@ -100,6 +100,7 @@ namespace AI_Note_Review
 
         private void lbCheckpoints_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (lbCheckpoints.SelectedValue == null) return;
            int selectedCheckPointID = int.Parse(lbCheckpoints.SelectedValue.ToString());
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
