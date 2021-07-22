@@ -14,6 +14,8 @@ namespace AI_Note_Review
         }
         public string PtName { get; set; }
         public string PtAge { get; set; }
+
+        public string PtSex { get; set; }
         public string PtID { get; set; }
         public string Facility { get; set; }
         public string VisitDate { get; set; }
@@ -38,6 +40,15 @@ namespace AI_Note_Review
         public string LabsOrdered { get; set; }
         public string Assessments { get; set; }
         public string FollowUp { get; set; }
+
+        public List<string> ICD10s;
+
+        public List<string> DocumentTags = new List<string>();
+
+        /// <summary>
+        /// An array where the index matches the notesectionID
+        /// </summary>
+        public string[] NoteSectionText;
 
     }
 }

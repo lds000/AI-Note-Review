@@ -35,13 +35,11 @@ namespace AI_Note_Review
                 SqlLiteDataAccess.ICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
                 sql = "Select * from CheckPointTypes;";
                 cbTypes.ItemsSource = cnn.Query(sql).ToList();
-                sql = "Select * from NoteSections;";
-                cbTargetSection.ItemsSource = cnn.Query(sql).ToList();
                 sql = "Select * from ICD10Segments;";
                 cbTargetICD10.ItemsSource = cnn.Query(sql).ToList();
             }
             lbICD10.ItemsSource = SqlLiteDataAccess.ICD10Segments;
-
+            cbTargetSection.ItemsSource = CF.NoteSections;
             IList dictionaries = SpellCheck.GetCustomDictionaries(tbComment);
             dictionaries.Add(new Uri(@"pack://application:,,,/MedTerms.lex"));
             //I'm getting an error below
@@ -132,6 +130,97 @@ namespace AI_Note_Review
             StrToRTB(strRtext, myRTB);
             string str2 = RTBtoStr(myRTB);
             StrToRTB(str2, myRTB);
+
+            spTags.Children.Clear();
+            foreach (SqlTag st in CurrentCheckpoint.GetTags())
+            {
+                TextBlock tb = new TextBlock();
+                tb.Foreground = Brushes.White;
+                tb.Background = Brushes.Black;
+                tb.FontSize = 16;
+                tb.Text = st.TagText;
+                spTags.Children.Add(tb);
+                foreach (SqlTagRegEx strex in st.GetTagRegExs())
+                {
+                    //         <TextBox Style="{StaticResource MyTextBox}" Text="{Binding Path=RegExText}"></TextBox>
+                    //        < ComboBox  Grid.Column = "1" Grid.Row = "2" Name = "cbTagRegExType" DisplayMemberPath = "TagRegExTypeTitle" SelectedValuePath = "TagRegExTypeID" SelectedValue = "{Binding TagRegExType}" SelectionChanged = "cbTagType_SelectionChanged" ></ ComboBox >
+                    //        < ComboBox  Grid.Column = "2" Grid.Row = "2" Name = "cbTargetSection" DisplayMemberPath = "NoteSectionTitle" SelectedValuePath = "SectionID" SelectedValue = "{Binding TargetSection}" SelectionChanged = "cbTargetSection_SelectionChanged" ></ ComboBox >
+
+                                              StackPanel sp = new StackPanel();
+                    sp.Orientation = Orientation.Horizontal;
+                    sp.HorizontalAlignment = HorizontalAlignment.Center;
+                    sp.DataContext = strex;
+
+                    TextBox tbtitle = new TextBox();
+                    tbtitle.Foreground = Brushes.White;
+                    tbtitle.Background = Brushes.Black;
+                    tbtitle.Text = strex.RegExText;
+                    tbtitle.Width = 100;
+                    tbtitle.LostFocus += Tbtitle_LostFocus;
+                    tbtitle.Tag = strex;
+                    sp.Children.Add(tbtitle);
+
+                    ComboBox cbTagRegExType = new ComboBox();
+                    cbTagRegExType.Width = 60;
+                    cbTagRegExType.DisplayMemberPath = "TagRegExTypeTitle";
+                    cbTagRegExType.SelectedValuePath = "TagRegExTypeID";
+                    Binding myBinding = new Binding("TagRegExType");
+                    myBinding.Source = strex;
+                    cbTagRegExType.SetBinding(ComboBox.SelectedValueProperty, myBinding);
+                    cbTagRegExType.ItemsSource = CF.TagRegExTypes;
+                    cbTagRegExType.SelectionChanged += CbTagRegExType_SelectionChanged;
+                    cbTagRegExType.Tag = strex;
+                    sp.Children.Add(cbTagRegExType);
+
+                    ComboBox cbTargetSection = new ComboBox();
+                    cbTargetSection.Width = 150;
+                    cbTargetSection.DisplayMemberPath = "NoteSectionTitle";
+                    cbTargetSection.SelectedValuePath = "SectionID";
+                    Binding myBinding2 = new Binding("TargetSection");
+                    myBinding2.Source = strex;
+                    cbTargetSection.SetBinding(ComboBox.SelectedValueProperty, myBinding2);
+                    cbTargetSection.ItemsSource = CF.NoteSections;
+                    cbTargetSection.SelectionChanged += CbTargetSection_SelectionChanged;
+                    sp.Children.Add(cbTargetSection);
+
+
+                    //uct.ParentSqlTagRegEx = strex;
+                    //uct.ParentCheckPoint = CurrentCheckpoint;
+                    //uct.ParentSqlTag = st;
+                    //uct.DataContext = strex;
+                    spTags.Children.Add(sp);
+                }
+            }
+        }
+
+        private void Tbtitle_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            if (tb == null) return;
+            SqlTagRegEx strex = tb.Tag as SqlTagRegEx;
+            if (strex == null) return;
+            strex.RegExText = tb.Text.Trim();
+            strex.SaveToDB();
+        }
+
+        private void CbTargetSection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox cb = sender as ComboBox;
+            if (cb == null) return;
+            SqlTagRegEx strex = cb.Tag as SqlTagRegEx;
+            if (strex == null) return;
+            strex.TargetSection = int.Parse(cb.SelectedValue.ToString());
+            strex.SaveToDB();
+        }
+
+        private void CbTagRegExType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox cb = sender as ComboBox;
+            if (cb == null) return;
+            SqlTagRegEx strex = cb.Tag as SqlTagRegEx;
+            if (strex == null) return;
+            strex.TagRegExType = int.Parse(cb.SelectedValue.ToString());
+            strex.SaveToDB();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -264,6 +353,43 @@ namespace AI_Note_Review
             }
             return rtfText;
 
+        }
+
+        private void AddTag(object sender, RoutedEventArgs e)
+        {
+            if (CurrentCheckpoint == null) return;
+            string strSuggest = "#";
+            if (CurrentCheckpoint.CheckPointType == 1) strSuggest = "#Query";
+            if (CurrentCheckpoint.CheckPointType == 2) strSuggest = "#Exam";
+            if (CurrentCheckpoint.CheckPointType == 3) strSuggest = "#Lab";
+            if (CurrentCheckpoint.CheckPointType == 4) strSuggest = "#Imaging";
+            if (CurrentCheckpoint.CheckPointType == 5) strSuggest = "#Condition";
+            if (CurrentCheckpoint.CheckPointType == 6) strSuggest = "#CurrentMed";
+            if (CurrentCheckpoint.CheckPointType == 7) strSuggest = "#Edu";
+            if (CurrentCheckpoint.CheckPointType == 8) strSuggest = "#Exam";
+            if (CurrentCheckpoint.CheckPointType == 9) strSuggest = "#CurrentMed";
+            if (CurrentCheckpoint.CheckPointType == 10) strSuggest = "#Demographic";
+            if (CurrentCheckpoint.CheckPointType == 11) strSuggest = "#HPI";
+            if (CurrentCheckpoint.CheckPointType == 12) strSuggest = "#Vitals";
+            if (CurrentCheckpoint.CheckPointType == 13) strSuggest = "#Rx";
+            if (CurrentCheckpoint.CheckPointType == 14) strSuggest = "#Refer";
+            if (CurrentCheckpoint.CheckPointType == 15) strSuggest = "#BEERS";
+            WinEnterText wet = new WinEnterText("Please enter a unique (not previously used) name for the new tag.", strSuggest, 200);
+            wet.strExclusions = SqlLiteDataAccess.GetAllTags();
+            wet.Owner = this;
+            wet.ShowDialog();
+
+            if (wet.ReturnValue != "")
+            {
+                SqlTag tg = new SqlTag(wet.ReturnValue);
+                string sql = "";
+                sql = $"INSERT INTO RelTagCheckPoint (TagID, CheckPointID) VALUES ({tg.TagID},{CurrentCheckpoint.CheckPointID});";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    cnn.Execute(sql);
+                }
+                UpdateCurrentCheckPoint();
+            }
         }
     }
 }

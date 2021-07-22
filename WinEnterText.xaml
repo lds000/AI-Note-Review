@@ -58,6 +58,7 @@
             FontSize="16"
             PreviewKeyDown="tbReply_PreviewKeyDown"
             KeyDown="TextBox_KeyDown"
+                TextChanged="tbReply_TextChanged"
             TextWrapping="WrapWithOverflow" Grid.ColumnSpan="2"></TextBox>
             <StackPanel
             Orientation="Horizontal"

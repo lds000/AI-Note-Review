@@ -24,6 +24,17 @@ namespace AI_Note_Review
                 return output;
             }
         }
+
+        public static List<string> GetAllTags()
+        {
+            string sql = $"Select TagText from Tags;";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                var output = cnn.Query<string>(sql).ToList();
+                return output;
+            }
+
+        }
     }
 
 }

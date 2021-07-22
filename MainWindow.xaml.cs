@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Data.SQLite;
 using Dapper;
+using System.Text.RegularExpressions;
 
 namespace AI_Note_Review
 {
@@ -31,6 +32,8 @@ namespace AI_Note_Review
     {
         string strApikey = "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";
         DocInfo CurrentDoc = new DocInfo();
+        List<SqlCheckpoint> CheckPointList = new List<SqlCheckpoint>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -40,14 +43,15 @@ namespace AI_Note_Review
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 string sql = "Select * from NoteSections;";
-                try
-                {
-                    SqlLiteDataAccess.NoteSections =  cnn.Query<SqlNoteSection>(sql).ToList();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Error on saving variation data: {e.Message}");
-                }
+                SqlLiteDataAccess.NoteSections =  cnn.Query<SqlNoteSection>(sql).ToList();
+                sql = "Select * from CheckPoints;";
+                CheckPointList = cnn.Query<SqlCheckpoint>(sql).ToList();
+                sql = "Select * from NoteSections;";
+                CF.NoteSections = cnn.Query<SqlNoteSection>(sql).ToList();
+                sql = "Select * from TagRegExTypes;";
+                CF.TagRegExTypes = cnn.Query<SqlTagRegExType>(sql).ToList();
+                sql = "Select * from ICD10Segments;";
+                CF.NoteICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
             }
 
             winDbRelICD10CheckpointsEditor wdb = new winDbRelICD10CheckpointsEditor();
@@ -440,9 +444,121 @@ namespace AI_Note_Review
                 }
             }
 
+            CurrentDoc.NoteSectionText[0] = $"{CurrentDoc.PtAge} Sex{CurrentDoc.PtSex}"; //Demographics 
+            CurrentDoc.NoteSectionText[1] = CurrentDoc.HPI + CurrentDoc.ROS; //HPI
+            CurrentDoc.NoteSectionText[2] = CurrentDoc.CurrentMeds; //CurrentMeds
+            CurrentDoc.NoteSectionText[3] = CurrentDoc.ProblemList; //Active Problem List
+            CurrentDoc.NoteSectionText[4] = CurrentDoc.PMHx; //Past Medical History
+            CurrentDoc.NoteSectionText[5] = CurrentDoc.SocHx; //Social History
+            CurrentDoc.NoteSectionText[6] = CurrentDoc.Allergies; //Allergies
+            CurrentDoc.NoteSectionText[7] = CurrentDoc.Vitals; //Vital Signs
+            CurrentDoc.NoteSectionText[8] = CurrentDoc.Exam; //Examination
+            CurrentDoc.NoteSectionText[9] = CurrentDoc.Assessments; //Assessments
+            CurrentDoc.NoteSectionText[10] = CurrentDoc.Treatment; //Treatment
+            CurrentDoc.NoteSectionText[11] = CurrentDoc.LabsOrdered; //Labs
+            CurrentDoc.NoteSectionText[12] = CurrentDoc.ImagesOrdered; //Imaging
+            CurrentDoc.NoteSectionText[13] = CurrentDoc.ROS; //Review of Systems
+            CurrentDoc.NoteSectionText[14] = CurrentDoc.Assessments; //Assessments
+            CurrentDoc.NoteSectionText[15] = CurrentDoc.MedsStarted; //Prescribed Medications
+
+            GetHashTags();
+
             this.DataContext = null;
             this.DataContext = CurrentDoc;
             Console.WriteLine($"Run time: {watch.ElapsedMilliseconds}");
+
+        }
+
+
+        private void CheckTag(SqlTag tag)
+        {
+            if (CurrentDoc.DocumentTags.Contains(tag.TagText)) return; //do not double check tags
+
+            bool includeTag = false;
+            List<SqlTagRegEx> tmpTagRegExs = tag.GetTagRegExs();
+
+            foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
+            {
+                if (TagRegEx.TagRegExType == 1) //Any, if one match then include tag
+                {
+                    if (Regex.IsMatch(CurrentDoc.NoteSectionText[TagRegEx.TargetSection], TagRegEx.RegExText))
+                    {
+                        includeTag = true;
+                        break; //condition met, go to next.
+                    }
+                }
+            }
+
+            foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
+            {
+                if (TagRegEx.TagRegExType == 2) //ALL, if one not match then include tag
+                {
+                    if (!Regex.IsMatch(CurrentDoc.NoteSectionText[TagRegEx.TargetSection], TagRegEx.RegExText))
+                    {
+                        return; //done! all must be included.
+                    }
+                }
+            }
+
+            foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
+            {
+                if (TagRegEx.TagRegExType == 3) //None, if no matches the include tag
+                {
+                    if (Regex.IsMatch(CurrentDoc.NoteSectionText[TagRegEx.TargetSection], TagRegEx.RegExText))
+                    {
+                        return;
+                    }
+                }
+            }
+
+            if (includeTag) CurrentDoc.DocumentTags.Add(tag.TagText);
+        }
+
+        private void GetHashTags()
+        {
+            CurrentDoc.DocumentTags.Clear();
+            //get icd10 segments
+            List<SqlICD10Segment> icd10Segments = new List<SqlICD10Segment>();
+            foreach (string strICD10 in CurrentDoc.ICD10s)
+            {
+                string strAlphaCode = strICD10.Substring(0, 1);
+                string str = "";
+                foreach (char ch in strICD10)
+                {
+                    if (Char.IsDigit(ch)) str += ch;
+                    if (ch == '.') str += ch; //preserve decimal
+                    if (Char.ToLower(ch) == 'x') break; //if placeholder character, then stop.
+                }
+                double icd10numeric = double.Parse(str);
+
+                foreach (SqlICD10Segment ns in CF.NoteICD10Segments)
+                {
+                    if (strAlphaCode == ns.icd10Chapter)
+                    {
+                        if (icd10numeric >= ns.icd10CategoryStart && icd10numeric <= ns.icd10CategoryEnd) icd10Segments.Add(ns);
+                    }
+                }
+            }
+
+            if (icd10Segments.Count == 0)
+            {
+                System.Windows.MessageBox.Show("No icd10 segments found!");
+                return;
+            }
+
+            foreach (SqlICD10Segment ns in icd10Segments)
+            {
+                Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
+
+                foreach (SqlCheckpoint cp in ns.GetCheckPoints())
+                {
+                    Console.WriteLine($"Now analyzing '{cp.CheckPointTitle}' checkpoint.");
+                    foreach (SqlTag tag in cp.GetTags())
+                    {
+                        CheckTag(tag);
+                    }
+                }
+            }
 
         }
 
@@ -484,6 +600,12 @@ namespace AI_Note_Review
             }
 
             return input;
+        }
+
+        public static bool RegexContains(this string input, string strRegEx)
+        {
+            RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace;
+            return Regex.IsMatch(input, strRegEx, options);
         }
     }
 }

@@ -9,7 +9,9 @@ namespace AI_Note_Review
 {
     class CF
     {
-
+        public static List<SqlNoteSection> NoteSections = new List<SqlNoteSection>();
+        public static List<SqlTagRegExType> TagRegExTypes = new List<SqlTagRegExType>();
+        public static List<SqlICD10Segment> NoteICD10Segments = new List<SqlICD10Segment>();
         public static void SetWindowPosition(Window _Window)
         {
                 WindowPosition wp = SqlLiteDataAccess.GetWindowPosition(_Window.Title);

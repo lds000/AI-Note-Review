@@ -47,7 +47,7 @@
             <DockPanel Grid.Column="1">
                 <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">Selected Checkpoints</Label>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                    <Button Style="{StaticResource LinkButton}" Margin="3">Add CheckPoint</Button>
+                    <Button Style="{StaticResource LinkButton}" Margin="3" Click="AddCP">Add CheckPoint</Button>
                 </StackPanel>
                 <ListBox x:Name="lbCheckpoints" SelectionChanged="lbCheckpoints_SelectionChanged" Style="{StaticResource MyListBox}">
                     <ListBox.ItemTemplate>
@@ -68,7 +68,6 @@
                     <Label  Style="{StaticResource MyLblStyle}" Content="{Binding Path=CheckPointTitle, FallbackValue=CheckPointTitle}"></Label>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                    <Button Style="{StaticResource LinkButton}" Margin="3" Click="AddCP">Add CheckPoint</Button>
                     <Button Style="{StaticResource LinkButton}" Margin="3" Click="deleteCP">Delete CheckPoint</Button>
                 </StackPanel>
                 <Grid Margin="5">
@@ -87,19 +86,19 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="0" Style="{StaticResource MyTbStyle}">Title:</TextBlock>
-                    <TextBox x:Name="tbTitle" Grid.Column="1" Grid.Row="0" Text="{Binding Path=CheckPointTitle}" Style="{StaticResource MyTextBox}" LostFocus="tbTitle_LostFocus"></TextBox>
+                    <TextBox Margin="5" x:Name="tbTitle" Grid.Column="1" Grid.Row="0" Text="{Binding Path=CheckPointTitle}" Style="{StaticResource MyTextBox}" LostFocus="tbTitle_LostFocus"></TextBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="1" Style="{StaticResource MyTbStyle}">Type:</TextBlock>
-                    <ComboBox Name="cbTypes" DisplayMemberPath="Title"  SelectedValuePath="CheckPointTypeID" SelectedValue="{Binding CheckPointType}" SelectionChanged="cbTypes_SelectionChanged" Grid.Row="1" Grid.ColumnSpan="2" Margin="50,0,2,0"/>
+                    <ComboBox Margin="5,2,5,2" Name="cbTypes" DisplayMemberPath="Title"  SelectedValuePath="CheckPointTypeID" SelectedValue="{Binding CheckPointType}" SelectionChanged="cbTypes_SelectionChanged" Grid.Row="1" Grid.Column="1"/>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="2" Style="{StaticResource MyTbStyle}">Section:</TextBlock>
-                    <ComboBox  Grid.Column="1" Grid.Row="2" Name="cbTargetSection" DisplayMemberPath="NoteSectionTitle" SelectedValuePath="SectionID" SelectedValue="{Binding TargetSection}" SelectionChanged="cbTargetSection_SelectionChanged"></ComboBox>
+                    <ComboBox Margin="5,2,5,2"  Grid.Column="1" Grid.Row="2" Name="cbTargetSection" DisplayMemberPath="NoteSectionTitle" SelectedValuePath="SectionID" SelectedValue="{Binding TargetSection}" SelectionChanged="cbTargetSection_SelectionChanged"></ComboBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="3" Style="{StaticResource MyTbStyle}">ICD10:</TextBlock>
-                    <ComboBox  Grid.Column="1" Grid.Row="3" Name="cbTargetICD10" DisplayMemberPath="SegmentTitle" SelectedValuePath="ICD10SegmentID" SelectedValue="{Binding TargetICD10Segment}" SelectionChanged="cbTargetICD10_SelectionChanged"></ComboBox>
+                    <ComboBox Margin="5,2,5,2"  Grid.Column="1" Grid.Row="3" Name="cbTargetICD10" DisplayMemberPath="SegmentTitle" SelectedValuePath="ICD10SegmentID" SelectedValue="{Binding TargetICD10Segment}" SelectionChanged="cbTargetICD10_SelectionChanged"></ComboBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="4" Style="{StaticResource MyTbStyle}">Text:</TextBlock>
-                    <TextBox Margin="5" x:Name="tbComment" Grid.Row="4" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Comment}" ToolTip="{Binding Path=Comment}" LostFocus="tbComment_LostFocus"></TextBox>
+                    <TextBox Margin="5" x:Name="tbComment" Grid.Row="4" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Comment}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" LostFocus="tbComment_LostFocus"></TextBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="5" Style="{StaticResource MyTbStyle}">Images:</TextBlock>
                     <RichTextBox Margin="5" x:Name="myRTB" Grid.Column="1" Grid.Row="5" LostFocus="myRTB_LostFocus"></RichTextBox>
@@ -111,9 +110,23 @@
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="7" Style="{StaticResource MyTbStyle}">Link:</TextBlock>
                     <TextBox Margin="5" x:Name="tbLink" Grid.Row="7" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Link}" ToolTip="{Binding Path=Link}" LostFocus="tbLink_LostFocus"></TextBox>
 
+
                 </Grid>
 
             </DockPanel>
+
+            <DockPanel Grid.Column="3" Margin="3">
+                    <Label Style="{StaticResource MyLblStyle}" DockPanel.Dock="Top" HorizontalAlignment="Center">Tags</Label>
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                        <Button Style="{StaticResource LinkButton}" Margin="3" Click="AddTag">Add Tag</Button>
+                    </StackPanel>
+                <Border BorderBrush="White" BorderThickness="1">
+                    <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
+                        <StackPanel x:Name="spTags"></StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </DockPanel>
+
         </Grid>
     </DockPanel>
 </Window>

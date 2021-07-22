@@ -107,6 +107,16 @@ namespace AI_Note_Review
             }
         }
 
+        public List<SqlTag> GetTags()
+        {
+            string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID};";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                return  cnn.Query<SqlTag>(sql, this).ToList();
+            }
+
+        }
+
         public void SaveToDB()
         {
             string sql = "UPDATE CheckPoints SET " +

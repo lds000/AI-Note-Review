@@ -75,7 +75,13 @@
     <Compile Include="DataModels\SqlLightDataAccess.cs" />
     <Compile Include="DataModels\SqlNoteSectionModel.cs" />
     <Compile Include="DataModels\SqlrelICD10SegmentsCheckPoints.cs" />
+    <Compile Include="DataModels\SqlTagModel.cs" />
+    <Compile Include="DataModels\SqlTagRegExModel.cs" />
+    <Compile Include="DataModels\SqlTagRegExTypeModel.cs" />
     <Compile Include="DataModels\WindowPositionModel.cs" />
+    <Compile Include="UCTag.xaml.cs">
+      <DependentUpon>UCTag.xaml</DependentUpon>
+    </Compile>
     <Compile Include="winDbRelICD10CheckpointsEditor.xaml.cs">
       <DependentUpon>winDbRelICD10CheckpointsEditor.xaml</DependentUpon>
     </Compile>
@@ -96,6 +102,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UCTag.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="winDbRelICD10CheckpointsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -122,6 +122,23 @@ namespace AI_Note_Review
                 tbReply.SelectionLength = 0;
             }
         }
-    }
 
+        public List<string> strExclusions;
+        private void tbReply_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (tbReply.Text.Length>=3)
+            {
+                tbReply.Background = Brushes.Black;
+                tbReply.Foreground = Brushes.White;
+                if (strExclusions != null)
+                {
+                    if (strExclusions.Contains(tbReply.Text))
+                    {
+                        tbReply.Background = Brushes.Red;
+                        tbReply.Foreground = Brushes.Black;
+                    }
+                }
+            }
+        }
+    }
 }
