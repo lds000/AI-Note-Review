@@ -41,14 +41,14 @@ namespace AI_Note_Review
         public string Assessments { get; set; }
         public string FollowUp { get; set; }
 
-        public List<string> ICD10s;
+        public List<string> ICD10s = new List<string>();
 
         public List<string> DocumentTags = new List<string>();
 
         /// <summary>
         /// An array where the index matches the notesectionID
         /// </summary>
-        public string[] NoteSectionText;
+        public string[] NoteSectionText = new string[20];
 
     }
 }

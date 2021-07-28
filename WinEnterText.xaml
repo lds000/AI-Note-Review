@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
        Title="WinEnterText"
-        Height="200"
+        SizeToContent="Height"
+        MinHeight="200"
         Width="500"
     Topmost="True"
         WindowStyle="None"
@@ -59,7 +60,7 @@
             PreviewKeyDown="tbReply_PreviewKeyDown"
             KeyDown="TextBox_KeyDown"
                 TextChanged="tbReply_TextChanged"
-            TextWrapping="WrapWithOverflow" Grid.ColumnSpan="2"></TextBox>
+            TextWrapping="Wrap"  Grid.ColumnSpan="2"></TextBox>
             <StackPanel
             Orientation="Horizontal"
             Grid.Row="2"

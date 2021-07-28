@@ -31,7 +31,7 @@ namespace AI_Note_Review
         {
             strRegExText = strRegExText.Replace("'", "''"); //used to avoid errors in titles with ' character
             string sql = "";
-            sql = $"INSERT INTO TagRegEx (TargetTag, RegExText, TargetSection, TagRegExType) VALUES ({intTargetTag}, '{strRegExText}', {intTargetSection}. {TagRegExType});";
+            sql = $"INSERT INTO TagRegEx (TargetTag, RegExText, TargetSection, TagRegExType) VALUES ({intTargetTag}, '{strRegExText}', {intTargetSection}, {TagRegExType});";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 cnn.Execute(sql);
@@ -55,12 +55,6 @@ namespace AI_Note_Review
 
         public bool DeleteFromDB()
         {
-            MessageBoxResult mr = MessageBox.Show("Are you sure you want to remove this expression? This is permenant and will delete all content.", "Confirm Delete", MessageBoxButton.YesNo);
-            if (mr != MessageBoxResult.Yes)
-            {
-                return false;
-            }
-
             string sql = "Delete from TagRegEx WHERE TagRegExID=@TagRegExID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {

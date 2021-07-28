@@ -22,6 +22,9 @@ using System.Data.SQLite;
 using Dapper;
 using System.Text.RegularExpressions;
 
+
+//Ctrl-KX, or KS (surround) snippet
+
 namespace AI_Note_Review
 {
 
@@ -53,6 +56,44 @@ namespace AI_Note_Review
                 sql = "Select * from ICD10Segments;";
                 CF.NoteICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
             }
+
+            CurrentDoc.PtName = "Mark Smith";
+            CurrentDoc.Provider = "Lloyd Stolworthy, MD";
+            CurrentDoc.PtAge = "18";
+            CurrentDoc.PtSex = "M";
+            CurrentDoc.VisitDate = "7/12/2021";
+            CurrentDoc.ICD10s.Add("R10.10");
+            CurrentDoc.ICD10s.Add("I10");
+
+            CurrentDoc.HPI = "Mark is a 30yo male who presents today complaining of right lower quadrant abdominal pain that began two days ago and acutely worse today. " +
+                "He denies diarrhea or constipation.  He states he cannot tolerate a full meal due to the pain.  " +
+                "Mark has tried OTC medications.  He denies chest pain.  He denies blood in the vomit. Thus far he has tried ibuprofen and tylenol";
+
+            CurrentDoc.CurrentMeds = "ibuprofen, Tylenol, prednisone";
+
+            //******************************* Test document ************************
+            CurrentDoc.ICD10s.Add("R11");
+            CurrentDoc.NoteSectionText[0] = $"Age:57 Sex:F Elderly"; //Demographics 
+            CurrentDoc.NoteSectionText[1] = CurrentDoc.HPI + CurrentDoc.ROS; //HPI
+            CurrentDoc.NoteSectionText[2] = CurrentDoc.CurrentMeds; //CurrentMeds
+            CurrentDoc.NoteSectionText[3] = CurrentDoc.ProblemList; //Active Problem List
+            CurrentDoc.NoteSectionText[4] = CurrentDoc.PMHx; //Past Medical History
+            CurrentDoc.NoteSectionText[5] = CurrentDoc.SocHx; //Social History
+            CurrentDoc.NoteSectionText[6] = CurrentDoc.Allergies; //Allergies
+            CurrentDoc.NoteSectionText[7] = CurrentDoc.Vitals; //Vital Signs
+            CurrentDoc.NoteSectionText[8] = ""; //Examination
+            CurrentDoc.NoteSectionText[9] = CurrentDoc.Assessments; //Assessments
+            CurrentDoc.NoteSectionText[10] = CurrentDoc.Treatment; //Treatment
+            CurrentDoc.NoteSectionText[11] = CurrentDoc.LabsOrdered; //Labs
+            CurrentDoc.NoteSectionText[12] = CurrentDoc.ImagesOrdered; //Imaging
+            CurrentDoc.NoteSectionText[13] = CurrentDoc.ROS; //Review of Systems
+            CurrentDoc.NoteSectionText[14] = CurrentDoc.Assessments; //Assessments
+            CurrentDoc.NoteSectionText[15] = CurrentDoc.MedsStarted; //Prescribed Medications
+
+            this.DataContext = CurrentDoc;
+
+            //GetHashTags();
+
 
             winDbRelICD10CheckpointsEditor wdb = new winDbRelICD10CheckpointsEditor();
             wdb.ShowDialog();
@@ -481,10 +522,22 @@ namespace AI_Note_Review
             {
                 if (TagRegEx.TagRegExType == 1) //Any, if one match then include tag
                 {
-                    if (Regex.IsMatch(CurrentDoc.NoteSectionText[TagRegEx.TargetSection], TagRegEx.RegExText))
+                    foreach (string strRegEx in TagRegEx.RegExText.Split(','))
                     {
-                        includeTag = true;
-                        break; //condition met, go to next.
+                        
+                        Console.WriteLine($"\tChecking Tag {tag.TagText} {strRegEx.Trim()}");
+                        if (CurrentDoc.NoteSectionText[TagRegEx.TargetSection] != null)
+                            if (Regex.IsMatch(CurrentDoc.NoteSectionText[TagRegEx.TargetSection], strRegEx.Trim()))
+                            {
+                                Console.WriteLine($"\t\tCondition met for the 'Any' RegEx Type due to Tag with text '{tag.TagText}'.");
+                                includeTag = true;
+                                break; //condition met, go to next.
+                            }
+                            else
+                            {
+                                Console.WriteLine($"\t\tCondition not met for the 'Any' RegEx Type due to Tag with text '{tag.TagText}'.");
+
+                            }
                     }
                 }
             }
@@ -493,22 +546,27 @@ namespace AI_Note_Review
             {
                 if (TagRegEx.TagRegExType == 2) //ALL, if one not match then include tag
                 {
-                    if (!Regex.IsMatch(CurrentDoc.NoteSectionText[TagRegEx.TargetSection], TagRegEx.RegExText))
+                    if (CurrentDoc.NoteSectionText[TagRegEx.TargetSection] != null)
+                        if (!Regex.IsMatch(CurrentDoc.NoteSectionText[TagRegEx.TargetSection], TagRegEx.RegExText))
                     {
-                        return; //done! all must be included.
+                            Console.WriteLine($"Condition not met for the 'All' RegEx Type due to Tag with text '{tag.TagText}'.");
+                            return; //done! all must be included.
                     }
                 }
             }
 
             foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
             {
-                if (TagRegEx.TagRegExType == 3) //None, if no matches the include tag
-                {
-                    if (Regex.IsMatch(CurrentDoc.NoteSectionText[TagRegEx.TargetSection], TagRegEx.RegExText))
+                if (CurrentDoc.NoteSectionText[TagRegEx.TargetSection] != null)
+                    if (TagRegEx.TagRegExType == 3) //none
                     {
-                        return;
+                        if (CurrentDoc.NoteSectionText[TagRegEx.TargetSection] != null)
+                            if (Regex.IsMatch(CurrentDoc.NoteSectionText[TagRegEx.TargetSection], TagRegEx.RegExText))
+                            {
+                                Console.WriteLine($"Condition met for the 'None' RegEx Type Tag with text '{tag.TagText}'.");
+                                return;
+                            }
                     }
-                }
             }
 
             if (includeTag) CurrentDoc.DocumentTags.Add(tag.TagText);
@@ -518,7 +576,7 @@ namespace AI_Note_Review
         {
             CurrentDoc.DocumentTags.Clear();
             //get icd10 segments
-            List<SqlICD10Segment> icd10Segments = new List<SqlICD10Segment>();
+            CF.RelevantICD10Segments.Clear();
             foreach (string strICD10 in CurrentDoc.ICD10s)
             {
                 string strAlphaCode = strICD10.Substring(0, 1);
@@ -535,18 +593,18 @@ namespace AI_Note_Review
                 {
                     if (strAlphaCode == ns.icd10Chapter)
                     {
-                        if (icd10numeric >= ns.icd10CategoryStart && icd10numeric <= ns.icd10CategoryEnd) icd10Segments.Add(ns);
+                        if (icd10numeric >= ns.icd10CategoryStart && icd10numeric <= ns.icd10CategoryEnd) CF.RelevantICD10Segments.Add(ns);
                     }
                 }
             }
 
-            if (icd10Segments.Count == 0)
+            if (CF.RelevantICD10Segments.Count == 0)
             {
                 System.Windows.MessageBox.Show("No icd10 segments found!");
                 return;
             }
 
-            foreach (SqlICD10Segment ns in icd10Segments)
+            foreach (SqlICD10Segment ns in CF.RelevantICD10Segments)
             {
                 Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
 
@@ -558,6 +616,14 @@ namespace AI_Note_Review
                         CheckTag(tag);
                     }
                 }
+            }
+
+            //Generate Report
+
+            Console.WriteLine($"Document report:");
+            foreach (string strTag in CurrentDoc.DocumentTags)
+            {
+                Console.WriteLine($"\tTag: {strTag}");
             }
 
         }
@@ -587,6 +653,18 @@ namespace AI_Note_Review
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             CF.SaveWindowPosition(this);
+        }
+
+        private void CheckNote(object sender, RoutedEventArgs e)
+        {
+            GetHashTags();
+            foreach (SqlICD10Segment icd10Segment in CF.RelevantICD10Segments)
+            {
+                Console.WriteLine($"Report for {icd10Segment.SegmentTitle}");
+                foreach (SqlCheckpoint cp in icd10Segment.GetCheckPoints())
+                {
+                }
+            }
         }
     }
 

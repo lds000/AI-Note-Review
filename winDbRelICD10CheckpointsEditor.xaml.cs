@@ -117,6 +117,7 @@ namespace AI_Note_Review
 
         private void UpdateCurrentCheckPoint()
         {
+            if (CurrentCheckpoint == null) return;
             dpCheckpoint.DataContext = CurrentCheckpoint;
             string strRtext = @"{\rtf1\ansi\ansicpg1252\uc1\htmautsp\deff2{\fonttbl{\f0\fcharset0 Times New Roman;}{\f2\fcharset0 Segoe UI;}}{\colortbl\red0\green0\blue0;\red255\green255\blue255;}\loch\hich\dbch\pard\plain\ltrpar\itap0{\lang1033\fs18\f2\cf0 \cf0\ql}}";
             if (CurrentCheckpoint != null)
@@ -131,66 +132,137 @@ namespace AI_Note_Review
             string str2 = RTBtoStr(myRTB);
             StrToRTB(str2, myRTB);
 
-            spTags.Children.Clear();
-            foreach (SqlTag st in CurrentCheckpoint.GetTags())
+            using (var d = Dispatcher.DisableProcessing())
             {
-                TextBlock tb = new TextBlock();
-                tb.Foreground = Brushes.White;
-                tb.Background = Brushes.Black;
-                tb.FontSize = 16;
-                tb.Text = st.TagText;
-                spTags.Children.Add(tb);
-                foreach (SqlTagRegEx strex in st.GetTagRegExs())
+                /* your work... Use dispacher.begininvoke... */
+
+                spTags.Children.Clear();
+                foreach (SqlTag st in CurrentCheckpoint.GetTags())
                 {
-                    //         <TextBox Style="{StaticResource MyTextBox}" Text="{Binding Path=RegExText}"></TextBox>
-                    //        < ComboBox  Grid.Column = "1" Grid.Row = "2" Name = "cbTagRegExType" DisplayMemberPath = "TagRegExTypeTitle" SelectedValuePath = "TagRegExTypeID" SelectedValue = "{Binding TagRegExType}" SelectionChanged = "cbTagType_SelectionChanged" ></ ComboBox >
-                    //        < ComboBox  Grid.Column = "2" Grid.Row = "2" Name = "cbTargetSection" DisplayMemberPath = "NoteSectionTitle" SelectedValuePath = "SectionID" SelectedValue = "{Binding TargetSection}" SelectionChanged = "cbTargetSection_SelectionChanged" ></ ComboBox >
+                    TextBlock tb = new TextBlock();
+                    tb.Foreground = Brushes.White;
+                    tb.Background = Brushes.Black;
+                    tb.FontSize = 16;
+                    tb.Text = st.TagText;
+                    spTags.Children.Add(tb);
+                    foreach (SqlTagRegEx strex in st.GetTagRegExs())
+                    {                        
+                        spTags.Children.Add(MakeUC(strex));
+                    }
 
-                                              StackPanel sp = new StackPanel();
-                    sp.Orientation = Orientation.Horizontal;
-                    sp.HorizontalAlignment = HorizontalAlignment.Center;
-                    sp.DataContext = strex;
-
-                    TextBox tbtitle = new TextBox();
-                    tbtitle.Foreground = Brushes.White;
-                    tbtitle.Background = Brushes.Black;
-                    tbtitle.Text = strex.RegExText;
-                    tbtitle.Width = 100;
-                    tbtitle.LostFocus += Tbtitle_LostFocus;
-                    tbtitle.Tag = strex;
-                    sp.Children.Add(tbtitle);
-
-                    ComboBox cbTagRegExType = new ComboBox();
-                    cbTagRegExType.Width = 60;
-                    cbTagRegExType.DisplayMemberPath = "TagRegExTypeTitle";
-                    cbTagRegExType.SelectedValuePath = "TagRegExTypeID";
-                    Binding myBinding = new Binding("TagRegExType");
-                    myBinding.Source = strex;
-                    cbTagRegExType.SetBinding(ComboBox.SelectedValueProperty, myBinding);
-                    cbTagRegExType.ItemsSource = CF.TagRegExTypes;
-                    cbTagRegExType.SelectionChanged += CbTagRegExType_SelectionChanged;
-                    cbTagRegExType.Tag = strex;
-                    sp.Children.Add(cbTagRegExType);
-
-                    ComboBox cbTargetSection = new ComboBox();
-                    cbTargetSection.Width = 150;
-                    cbTargetSection.DisplayMemberPath = "NoteSectionTitle";
-                    cbTargetSection.SelectedValuePath = "SectionID";
-                    Binding myBinding2 = new Binding("TargetSection");
-                    myBinding2.Source = strex;
-                    cbTargetSection.SetBinding(ComboBox.SelectedValueProperty, myBinding2);
-                    cbTargetSection.ItemsSource = CF.NoteSections;
-                    cbTargetSection.SelectionChanged += CbTargetSection_SelectionChanged;
-                    sp.Children.Add(cbTargetSection);
-
-
-                    //uct.ParentSqlTagRegEx = strex;
-                    //uct.ParentCheckPoint = CurrentCheckpoint;
-                    //uct.ParentSqlTag = st;
-                    //uct.DataContext = strex;
-                    spTags.Children.Add(sp);
+                    Button b = new Button();
+                    b.Style = (Style)Application.Current.Resources["LinkButton"];
+                    b.Content = "Add Search Pattern";
+                    b.Margin = new Thickness(10, 0, 0, 0);
+                    b.Tag = st;
+                    b.Click += B_Click;
+                    spTags.Children.Add(b);
                 }
             }
+        }
+
+        private void B_Click(object sender, RoutedEventArgs e)
+        {
+            WinEnterText wet = new WinEnterText();
+
+            Button b = sender as Button;
+            SqlTag st = b.Tag as SqlTag;
+
+            SqlTagRegEx srex = new SqlTagRegEx(st.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
+            UpdateCurrentCheckPoint();
+        }
+
+        private StackPanel MakeUC(SqlTagRegEx strex)
+        {
+            StackPanel sp = new StackPanel();
+            sp.Orientation = Orientation.Horizontal;
+            sp.HorizontalAlignment = HorizontalAlignment.Center;
+            sp.DataContext = strex;
+
+            TextBox tbtitle = new TextBox();
+            tbtitle.Foreground = Brushes.White;
+            tbtitle.Background = Brushes.Black;
+            tbtitle.Text = strex.RegExText;
+            tbtitle.Width = 100;
+            tbtitle.GotFocus += Tbtitle_GotFocus;
+            tbtitle.LostFocus += Tbtitle_LostFocus;
+            if (strex.RegExText == "Search Text") tbtitle.Foreground = Brushes.Gray;
+            tbtitle.Tag = strex;
+            sp.Children.Add(tbtitle);
+
+            Image Img = new Image();
+            Img.Source = new BitmapImage(
+             new Uri(@"pack://application:,,,/Icons/edit_notes.png"));
+            Img.Width = 15;
+            Img.Tag = strex;
+            Img.MouseDown += Img_MouseDown;
+            sp.Children.Add(Img);
+
+            ComboBox cbTagRegExType = new ComboBox();
+            cbTagRegExType.Width = 60;
+            cbTagRegExType.DisplayMemberPath = "TagRegExTypeTitle";
+            cbTagRegExType.SelectedValuePath = "TagRegExTypeID";
+            Binding myBinding = new Binding("TagRegExType");
+            myBinding.Source = strex;
+            cbTagRegExType.SetBinding(ComboBox.SelectedValueProperty, myBinding);
+            cbTagRegExType.ItemsSource = CF.TagRegExTypes;
+            cbTagRegExType.SelectionChanged += CbTagRegExType_SelectionChanged;
+            cbTagRegExType.Tag = strex;
+            sp.Children.Add(cbTagRegExType);
+
+            ComboBox cbTargetSection = new ComboBox();
+            cbTargetSection.Width = 150;
+            cbTargetSection.DisplayMemberPath = "NoteSectionTitle";
+            cbTargetSection.SelectedValuePath = "SectionID";
+            Binding myBinding2 = new Binding("TargetSection");
+            myBinding2.Source = strex;
+            cbTargetSection.SetBinding(ComboBox.SelectedValueProperty, myBinding2);
+            cbTargetSection.ItemsSource = CF.NoteSections;
+            cbTargetSection.Tag = strex;
+            cbTargetSection.SelectionChanged += CbTargetSection_SelectionChanged;
+            sp.Children.Add(cbTargetSection);
+
+            Button b = new Button();
+            b.Style = (Style)Application.Current.Resources["LinkButton"];
+            b.Content = "Remove";
+            b.Margin = new Thickness(10, 0, 0, 0);
+            b.Tag = strex;
+            b.Click += bRemoveClick; ;
+            sp.Children.Add(b);
+
+
+            return sp;
+        }
+
+        private void Img_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Image tmpImg = sender as Image;
+            SqlTagRegEx strex = tmpImg.Tag as SqlTagRegEx;
+            WinEnterText wet = new WinEnterText("Edit Regular Expression value", strex.RegExText);
+            wet.ShowDialog();
+            if (wet.ReturnValue != null)
+            {
+                strex.RegExText = wet.ReturnValue;
+                strex.SaveToDB();
+                UpdateCurrentCheckPoint();
+            }
+        }
+
+        private void Tbtitle_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            if (tb.Text == "Search Text") tb.Text = "";
+
+            tb.Foreground = Brushes.White;
+        }
+
+        private void bRemoveClick(object sender, RoutedEventArgs e)
+        {
+
+            Button b = sender as Button;
+            SqlTagRegEx strex = b.Tag as SqlTagRegEx;
+            strex.DeleteFromDB();
+            UpdateCurrentCheckPoint();
         }
 
         private void Tbtitle_LostFocus(object sender, RoutedEventArgs e)
@@ -379,7 +451,7 @@ namespace AI_Note_Review
             wet.Owner = this;
             wet.ShowDialog();
 
-            if (wet.ReturnValue != "")
+            if (wet.ReturnValue != null)
             {
                 SqlTag tg = new SqlTag(wet.ReturnValue);
                 string sql = "";

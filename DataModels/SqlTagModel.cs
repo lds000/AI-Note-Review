@@ -24,7 +24,7 @@ namespace AI_Note_Review
 
         public SqlTag(string strTagText)
         {
-            TagText = TagText.Replace("'", "''"); //used to avoid errors in titles with ' character
+            strTagText = strTagText.Replace("'", "''"); //used to avoid errors in titles with ' character
             string sql = "";
             sql = $"INSERT INTO Tags (TagText) VALUES ('{strTagText}');";
             sql += $"Select * from Tags where TagText = '{strTagText}';"; //this part is to get the ID of the newly created phrase

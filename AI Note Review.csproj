@@ -133,6 +133,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Icons\edit_notes.png" />
     <Content Include="MedTerms.lex">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
