@@ -446,14 +446,20 @@ namespace AI_Note_Review
             if (CurrentCheckpoint.CheckPointType == 13) strSuggest = "#Rx";
             if (CurrentCheckpoint.CheckPointType == 14) strSuggest = "#Refer";
             if (CurrentCheckpoint.CheckPointType == 15) strSuggest = "#BEERS";
-            WinEnterText wet = new WinEnterText("Please enter a unique (not previously used) name for the new tag.", strSuggest, 200);
-            wet.strExclusions = SqlLiteDataAccess.GetAllTags();
-            wet.Owner = this;
-            wet.ShowDialog();
+            //WinEnterText wet = new WinEnterText("Please enter a unique (not previously used) name for the new tag.", strSuggest, 200);
+            //wet.strExclusions = SqlLiteDataAccess.GetAllTags();
+            //wet.Owner = this;
+            //wet.ShowDialog();
 
-            if (wet.ReturnValue != null)
+            WinAddTag wat = new WinAddTag();
+            wat.tbSearch.Text = strSuggest;
+            wat.Owner = this;
+            wat.ShowDialog();
+
+            if (wat.ReturnValue != null)
             {
-                SqlTag tg = new SqlTag(wet.ReturnValue);
+                SqlTag tg = SqlLiteDataAccess.GetTags(wat.ReturnValue).FirstOrDefault();
+                if (tg == null) tg = new SqlTag(wat.ReturnValue);
                 string sql = "";
                 sql = $"INSERT INTO RelTagCheckPoint (TagID, CheckPointID) VALUES ({tg.TagID},{CurrentCheckpoint.CheckPointID});";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))

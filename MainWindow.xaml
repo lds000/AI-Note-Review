@@ -9,9 +9,9 @@
         Title="MainWindow" Height="450" Width="900">
     <Grid Background="Black">
         <DockPanel>
-            <Label  MouseDown="Label_MouseDown" Content="{Binding PtID, FallbackValue=Patient Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="18"></Label>
+            <Label  MouseDown="Label_MouseDown" Content="{Binding PtName, FallbackValue=Patient Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="18"></Label>
             <Label  MouseDown="Label_MouseDown" Content="{Binding VisitDate, FallbackValue=Patient Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="18"></Label>
-            <Label  MouseDown="Label_MouseDown" Content="{Binding PtAge, FallbackValue=Reason for appointment}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
+            <Label  MouseDown="Label_MouseDown" Content="{Binding AgeStr, FallbackValue=Reason for appointment}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
             <StackPanel DockPanel.Dock="Left" Margin="5,0,10,0">
                 <Button Click="EditorClick" Style="{StaticResource LinkButton}">Editor</Button>
             </StackPanel>
@@ -21,10 +21,26 @@
                     <Label Content="{Binding Facility, FallbackValue=Clinic Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
                     <Label MouseDown="Label_MouseDown" Content="{Binding VisitDate, FallbackValue=6/23/2021}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
                     <Border Padding="5" HorizontalAlignment="Center" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" >
-                        <StackPanel>
-                            <Label Padding="0" MouseDown="Label_MouseDown" Content="{Binding ICD10s, FallbackValue=R10.10}" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
-                            <Label Padding="0" MouseDown="Label_MouseDown" Content="{Binding ICD10s, FallbackValue=I10}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
-                        </StackPanel>
+                        <ListBox ItemsSource="{Binding ICD10s}" Style="{StaticResource MyListBox}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+                    <Border Padding="5" HorizontalAlignment="Center" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" >
+                        <ListBox ItemsSource="{Binding ICD10Segments}" Style="{StaticResource MyListBox}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Path=SegmentTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </Border>
                 </DockPanel>
             </Border>
@@ -41,6 +57,9 @@
                 </TabItem>
                 <TabItem Header="Meds">
                     <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding CurrentMeds}"></TextBox>
+                </TabItem>
+                <TabItem Header="Prn Meds">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding CurrentPrnMeds}"></TextBox>
                 </TabItem>
                 <TabItem Header="Problems">
                     <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding ProblemList}"></TextBox>

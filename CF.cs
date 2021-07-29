@@ -13,6 +13,11 @@ namespace AI_Note_Review
         public static List<SqlTagRegExType> TagRegExTypes = new List<SqlTagRegExType>();
         public static List<SqlICD10Segment> NoteICD10Segments = new List<SqlICD10Segment>();
         public static List<SqlICD10Segment> RelevantICD10Segments = new List<SqlICD10Segment>();
+        public static List<SqlCheckpoint> PassedCP = new List<SqlCheckpoint>();
+        public static List<SqlCheckpoint> FailedCP = new List<SqlCheckpoint>();
+        public static List<SqlCheckpoint> RelevantCP = new List<SqlCheckpoint>();
+        public static List<SqlCheckpoint> IrrelaventCP = new List<SqlCheckpoint>();
+
         public static void SetWindowPosition(Window _Window)
         {
                 WindowPosition wp = SqlLiteDataAccess.GetWindowPosition(_Window.Title);

@@ -1,705 +1,496 @@
-﻿<HR>
-
-  <TABLE cellSpacing="0" cellPadding="0" width="99%" border="0">
-    <THEAD id="mainThead">
-      <TR>
-        <TD>
-          <SPAN>
-            HANSEN, Walt A <B>DOB:</B> 03/10/1962 (59 yo M) <B>Acc No.</B> 697928 <B>DOS:</B> 06/07/2021
-          </SPAN>
-        </TD>
-      </TR>
-    </THEAD>
-    <TBODY>
-      <TR>
-        <TD>
-          <TABLE cellSpacing="0" cellPadding="0" width="100%">
-            <TBODY>
-              <TR class="PtHeading">
-                <TH rowSpan="6">
-                  <IMG id="logo" alt="" src="/mobiledoc/jsp/catalog/xml/logo.JPG" width="300" height="100">
-                </TH>
-                <TD align="right">
-                  <B>Hansen, Walt A</B>
-                </TD>
-              </TR>
-              <TR class="PtData">
-                <TD align="right">59 Y&nbsp; old &nbsp;Male,&nbsp;DOB: 03/10/1962</TD>
-              </TR>
-              <TR class="PtData">
-                <TD align="right">Account Number:&nbsp;697928</TD>
-              </TR>
-              <TR class="PtData">
-                <TD align="right">6340 W OVERLAND RD, MERIDIAN, ID-83642-6416</TD>
-              </TR>
-              <TR class="PtData">
-                <TD align="right">Home: 208-284-7625&nbsp;&nbsp;&nbsp; </TD>
-              </TR>
-              <TR class="PtData">
-                <TD align="right">Guarantor:&nbsp;Hansen, Walt A&nbsp;&nbsp;&nbsp; Insurance:&nbsp;SELECTHEALTH COMMERCIAL (LUKES)</TD>
-              </TR>
-              <TR class="PtData">
-                <TD colSpan="2" align="right">PCP:&nbsp;Jeremy D Frix</TD>
-              </TR>
-              <TR class="PtData">
-                <TD colSpan="2" align="right">Appointment Facility:&nbsp;MERIDIAN UC</TD>
-              </TR>
-            </TBODY>
-          </TABLE>
-          <HR>
-
-            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-              <TBODY>
-                <TR>
-                  <TD class="PageHeader" align="left">06/07/2021</TD>
-                  <TD class="PageHeader" align="right">Progress Note:&nbsp; Patrick C Denning, PA</TD>
-                </TR>
-              </TBODY>
-            </TABLE>
-            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-              <TBODY>
-                <TR height="20">
-                  <TD></TD>
-                </TR>
-              </TBODY>
-            </TABLE>
-            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-              <TBODY>
-                <TR>
-                  <TD width="100%">
-                    <TABLE height="100%" cellSpacing="8" cellPadding="0" width="100%" align="left" border="0">
-                      <TBODY>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="rightPaneHeading">
-                                  <TD>
-                                    <B>Reason for Appointment</B>
-                                  </TD>
-                                </TR>
-                                <TR class="rightPaneData">
-                                  <TD>
-                                    <TABLE class="rightPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>1.&nbsp;L knee pain for the past two months, NKI.</TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                  </TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="rightPaneHeading">
-                                  <TD>
-                                    <B>History of Present Illness</B>
-                                  </TD>
-                                </TR>
-                                <TR class="rightPaneData">
-                                  <TD>
-                                    <U>LBP/Lower Extremity</U>:&nbsp; <BR>
-                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 59 year old male presents with c/o Knee Pain.&nbsp;<BR>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Denies : Low Back Pain.&nbsp;<BR>
-                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Denies : Hip Pain.&nbsp;<BR>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Denies : Leg Pain.&nbsp;<BR>
-                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Denies : Ankle/foot pain.&nbsp;<BR>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Denies : Toe pain.&nbsp;<BR>
-                                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Denies : Acute Injury.&nbsp;<BR>
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Denies : past symptoms.&nbsp;<BR>
-                                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Denies : Sprain/Twist.&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This is a 59-year-old male presents to clinic for left knee pain times 2-3 months. No known injury. Symptoms came on gradually. Patient states he has knee pain most days of the week. He has intermittent swelling and stiffness. Bending down past 90 degrees worsen his pain. Patient is a barber, he spends most the day on his feet but this does not tend to bother him too much. He notes at 1 point, he jumped into his truck and this certainly exacerbated his pain. Otherwise he describes the pain is constant, achy, mostly internally pain. As noted above, symptoms has intermittent stiffness and swelling. He has tried ice on several occasions. Otherwise treatments include none. He denies any past history of knee issues or knee injuries. Denies any acute knee pain today.
-                                  </TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%" border="0">
-                              <TBODY>
-                                <TR class="leftPaneHeading">
-                                  <TD>
-                                    <B>Current Medications</B>
-                                  </TD>
-                                </TR>
-                                <TR class="leftPaneData">
-                                  <TD>
-                                    <SPAN style="FONT-WEIGHT: bold; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px">Taking</SPAN>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <LI>aspirin 81 mg delayed release tablet 1 tab(s) orally once a day </LI>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <LI>multivitamin Multiple Vitamins tablet 1 tab(s) orally once a day </LI>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <LI>glucosamine 500 mg capsule 1 cap(s) orally once a day </LI>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <LI>Fish oil 1000 mg po 2 bid </LI>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <LI>Vitamin C 500 mg tablet 1 tab(s) orally once a day </LI>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <LI>Levothyroxine Sodium 100 mcg (0.1 mg) tablet TAKE 1 TABLET BY MOUTH ONCE DAILY </LI>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <SPAN style="FONT-WEIGHT: bold; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px">Not-Taking/PRN</SPAN>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <LI>Vitamin D3 2000 intl units capsule 1 cap(s) orally once a day </LI>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <LI>propranolol 60MG capsule, extended release 1 cap(s) by mouth 2 times a day if needed, Notes: prn </LI>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <SPAN style="FONT-WEIGHT: bold; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px">Discontinued</SPAN>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <LI>Azelastine Hydrochloride Nasal 137 mcg/inh spray 2 spray(s) intranasally 2 times a day </LI>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <LI>Olopatadine Hydrochloride 665 mcg/inh spray 2 spray(s) intranasally 2 times a day, Notes: prn </LI>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <LI>Medication List reviewed and reconciled with the patient </LI>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                  </TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0">
-                              <TBODY>
-                                <TR class="leftPaneHeading">
-                                  <TD>
-                                    <B>
-                                      <PROBLEMLIST xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" xmlns:xsd="http://www.w3.org/1999/XMLSchema" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">Active Problem List</PROBLEMLIST>
-                                    </B>
-                                  </TD>
-                                </TR>
-                                <TR class="leftPaneData">
-                                  <TD>
-                                    <TABLE id="problemList" class="leftPaneData w850" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD vAlign="top" width="25%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;F41.0</TD>
-                                          <TD>
-                                            Panic disorder<BR>
-                                              <DIV>
-                                                <DIV class="w180">
-                                                  <DIV class="w85">
-                                                    <B>Onset Date:</B>
-                                                  </DIV>
-                                                </DIV>
-                                                <DIV class="w180">
-                                                  <DIV class="w90">
-                                                    <B>Modified On:</B>
-                                                  </DIV>
-                                                  <DIV class="w80">12/14/2020</DIV>
-                                                </DIV>
-                                              </DIV>
-                                          </TD>
-                                        </TR>
-                                        <TR>
-                                          <TD vAlign="top" width="25%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E03.9</TD>
-                                          <TD>
-                                            Hypothyroidism, unspecified type<BR>
-                                              <DIV>
-                                                <DIV class="w180">
-                                                  <DIV class="w85">
-                                                    <B>Onset Date:</B>
-                                                  </DIV>
-                                                </DIV>
-                                                <DIV class="w180">
-                                                  <DIV class="w90">
-                                                    <B>Modified On:</B>
-                                                  </DIV>
-                                                  <DIV class="w80">12/14/2020</DIV>
-                                                </DIV>
-                                              </DIV>
-                                          </TD>
-                                        </TR>
-                                        <TR>
-                                          <TD vAlign="top" width="25%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E78.2</TD>
-                                          <TD>
-                                            Mixed hyperlipidemia<BR>
-                                              <DIV>
-                                                <DIV class="w180">
-                                                  <DIV class="w85">
-                                                    <B>Onset Date:</B>
-                                                  </DIV>
-                                                </DIV>
-                                                <DIV class="w180">
-                                                  <DIV class="w90">
-                                                    <B>Modified On:</B>
-                                                  </DIV>
-                                                  <DIV class="w80">12/14/2020</DIV>
-                                                </DIV>
-                                              </DIV>
-                                          </TD>
-                                        </TR>
-                                        <TR>
-                                          <TD vAlign="top" width="25%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;J31.0</TD>
-                                          <TD>
-                                            Rhinitis, unspecified type<BR>
-                                              <DIV>
-                                                <DIV class="w180">
-                                                  <DIV class="w85">
-                                                    <B>Onset Date:</B>
-                                                  </DIV>
-                                                </DIV>
-                                                <DIV class="w180">
-                                                  <DIV class="w90">
-                                                    <B>Modified On:</B>
-                                                  </DIV>
-                                                  <DIV class="w80">05/26/2020</DIV>
-                                                </DIV>
-                                              </DIV>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                  </TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="leftPaneHeading">
-                                  <TD>
-                                    <B>Past Medical History</B>
-                                  </TD>
-                                </TR>
-                                <TR class="leftPaneData">
-                                  <TD>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hyperlipidemia.<BR>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hypothyroid 6/11.<BR>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hx panic disorder.<BR>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;History of adenomatous polyp of colon.<BR>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Insulin resistance syndrome.<BR>
-                                          </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                  </TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="leftPaneHeading">
-                                  <TD>
-                                    <B>Allergies</B>
-                                  </TD>
-                                </TR>
-                                <TR class="leftPaneData">
-                                  <TD>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>penicillin: hives - Allergy</TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                    <TABLE class="leftPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>Norco: violently ill - Side Effects</TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                  </TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="rightPaneHeading">
-                                  <TD>
-                                    <B>Vital Signs</B>
-                                  </TD>
-                                </TR>
-                                <TR class="rightPaneData">
-                                  <TD>
-                                    Ht <B>72</B>, Wt <B>215.3</B>, BMI <FONT color=#"ff0000" size="2">
-                                      <B>29.20</B>
-                                    </FONT>, BP <FONT color=#"ff0000" size="2">
-                                      <B>143/94</B>
-                                    </FONT>, HR <B>96</B>, RR <B>16</B>, Temp <B>98.4</B>, O2 sat % <B>97</B><BR>T Adkins, RTR.
-                                  </TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="rightPaneHeading">
-                                  <TD>
-                                    <B>Examination</B>
-                                  </TD>
-                                </TR>
-                                <TR class="rightPaneData">
-                                  <TD>
-                                    <U>Brief Exam:</U>
-                                    <BR>
-                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GENERAL APPEARANCE:&nbsp;<FONT size="2">well nourished</FONT><FONT size="2">, </FONT><FONT size="2">healthy and well appearing</FONT>.&nbsp;<BR>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **HEENT:&nbsp;<FONT size="2">atraumatic, normocephalic</FONT><FONT size="2">, </FONT>.&nbsp;<BR>
-                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HEART:&nbsp;<FONT size="2">no murmur</FONT><FONT size="2">, </FONT><FONT size="2">RRR</FONT>.&nbsp;<BR>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *CHEST:&nbsp;<FONT size="2">normal shape and expansion</FONT>.&nbsp;<BR>
-                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LUNGS:&nbsp;<FONT size="2">clear to auscultation bilaterally</FONT><FONT size="2">, </FONT><FONT size="2">no abnormal lung sounds</FONT>.&nbsp;<BR>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SKIN:&nbsp;<FONT size="2">warm, dry</FONT>.&nbsp;<BR>
-                                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXTREMITIES:&nbsp;<FONT size="2">normal ROM</FONT><FONT size="2">, </FONT><FONT size="2">no clubbing, no edema</FONT>.&nbsp;<BR>
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **NEUROLOGIC EXAM:&nbsp;<FONT size="2">alert and oriented x 3</FONT>.&nbsp;<BR>
-                                                      <U>Knee / Shin:</U>
-                                                      <BR>
-                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INSPECTION:&nbsp;<FONT size="2">no swelling or redness</FONT><FONT size="2">, </FONT><FONT size="2">no erythema on the joint</FONT><FONT size="2">, </FONT><FONT size="2">no ecchymosis</FONT>.&nbsp;<BR>
-                                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RANGE OF MOTION:&nbsp;<FONT size="2">FROM without pain</FONT>.&nbsp;<BR>
-                                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CREPITUS:&nbsp;<FONT size="2">none</FONT>.&nbsp;<BR>
-                                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PALPATION:&nbsp;<FONT size="2">no tenderness on jointlines or collateral ligaments</FONT><FONT size="2">, </FONT><FONT size="2">Negative Lachman's</FONT><FONT size="2">, </FONT><FONT size="2">Negative Anterior Drawer</FONT><FONT size="2">, </FONT><FONT size="2">no warmth</FONT>.&nbsp;<BR>
-                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; COLLATERAL LIGAMENTS:&nbsp;<FONT size="2">stable to varus and valgus stress</FONT><FONT size="2">, </FONT><FONT size="2">no pain with valgus and varus stress</FONT><FONT size="2">, </FONT><FONT size="2">no laxity with valgus or varus stress</FONT>.&nbsp;<BR>
-                                                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MCMURRAY:&nbsp;<FONT size="2">negative</FONT>.&nbsp;<BR>
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LACHMAN'S&nbsp;<FONT size="2">negative</FONT>.&nbsp;<BR>
-                                                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DRAWER TEST:&nbsp;<FONT size="2">anterior drawer</FONT><FONT size="2">, </FONT><FONT size="2">posterior drawer</FONT><FONT size="2">, </FONT><FONT size="2">negative</FONT>.&nbsp;<BR>
-                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PATELLOFEMORAL JOINT:&nbsp;<FONT size="2">no crepitations</FONT><FONT size="2">, </FONT><FONT size="2">negative apprehension sign</FONT>.&nbsp;<BR>
-                                  </TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="leftPaneHeading">
-                                  <TD>
-                                    <B>Assessments</B>
-                                  </TD>
-                                </TR>
-                                <TR>
-                                  <TD></TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="rightPaneData">
-                                  <TD>1. Left knee pain, unspecified chronicity - M25.562 (Primary)</TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="rightPaneData">
-                                  <TD>2. Elevated blood pressure (not hypertension) - R03.0</TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="rightPaneHeading">
-                                  <TD>
-                                    <B>Treatment</B>
-                                  </TD>
-                                </TR>
-                                <TR class="rightPaneData">
-                                  <TD>
-                                    <TABLE class="rightPaneData" cellSpacing="0" cellPadding="0" width="100%">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>
-                                            <B>1.&nbsp;Left knee pain, unspecified chronicity</B>&nbsp; <BR>
-                                              Notes: 59-year-old male with left knee pain for the past 2-3 months. Differential diagnosis includes arthritis, tendinitis, bursitis, ligament tear such as meniscus among others. Exam is unremarkable. X-rays are unremarkable other than mild tricompartmental degenerative changes. Recommend activity as tolerated, rice therapy for acute symptoms, rest, ice, elevation, compression as well as short course of anti-inflammatories such as ibuprofen or Aleve. Side effects discussed. This is been going on 1st 2-3 months, as noted above, exam and x-rays unremarkable. I will refer to sports medicine to further evaluate, consider further imaging or PT. all questions answered. Patient understood and agreed with plan and left the UC in stable condition.&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>
-                                                Referral To:Sports Medicine PHMG &nbsp;&nbsp; Sports Medicine<BR>
-                                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reason:Left knee pain x 2 -3 months|2nd attempt completed 06/13<BR>
-                                          </TD>
-                                        </TR>
-                                        <TR>
-                                          <TD>
-                                            <BR>
-                                              <B>2.&nbsp;Elevated blood pressure (not hypertension)</B>&nbsp; <BR>
-                                                Notes: <FONT style="FONT-SIZE: 9pt; FONT-FAMILY: Tahoma">Your blood pressure is elevated today. This may be related to your illness. However it is important to have this rechecked. You can come to our clinics and have this repeated in the next few weeks to see if this has improved. If it remains elevated it is important that you follow up with your pcp for treatment.</FONT>.&nbsp;&nbsp;
-                                              </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                  </TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top"></TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top"></TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="rightPaneHeading">
-                                  <TD width="10"></TD>
-                                  <TD>
-                                    <B>Diagnostic Imaging &nbsp;</B>
-                                  </TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="rightPaneData">
-                                  <TD>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <U>Imaging: XR KNEE LEFT 4 OR MORE VIEWS</U>
-                                  </TD>
-                                </TR>
-                                <TR class="rightPaneData">
-                                  <TD></TD>
-                                </TR>
-                                <TR class="rightPaneData">
-                                  <TD></TD>
-                                </TR>
-                                <TR class="rightPaneData">
-                                  <TD></TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="rightPaneHeading">
-                                  <TD>
-                                    <B>Procedure Codes</B>
-                                  </TD>
-                                </TR>
-                                <TR class="rightPaneData">
-                                  <TD>
-                                    <TABLE class="rightPaneData" cellSpacing="0" cellPadding="0">
-                                      <TBODY>
-                                        <TR>
-                                          <TD>73564 XRAY KNEE 4 OR MORE VIEWS LEFT, Modifiers: LT </TD>
-                                        </TR>
-                                      </TBODY>
-                                    </TABLE>
-                                  </TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <TABLE cellSpacing="0" cellPadding="0" width="100%">
-                              <TBODY>
-                                <TR class="rightPaneHeading">
-                                  <TD>
-                                    <B>Follow Up</B>
-                                  </TD>
-                                </TR>
-                                <TR class="rightPaneData">
-                                  <TD>see tx plan</TD>
-                                </TR>
-                              </TBODY>
-                            </TABLE>
-                          </TD>
-                        </TR>
-                        <TR height="10">
-                          <TD></TD>
-                        </TR>
-                        <TR>
-                          <TD vAlign="top">
-                            <IMG id="signature" src="/mobiledoc/jsp/catalog/xml/patdenc.jpg?providerSignaturePostFix=18" width="175" height="100">
-                          </TD>
-                        </TR>
-                        <TR height="10">
-                          <TD></TD>
-                        </TR>
-                        <TR height="20">
-                          <TD></TD>
-                        </TR>
-                        <TR class="PNSig">
-                          <TD vAlign="top">Electronically signed by Patrick Denning , PA on 06/18/2021 at 09:55 AM MDT</TD>
-                        </TR>
-                        <TR class="PNSig">
-                          <TD vAlign="top">Sign off status: Completed</TD>
-                        </TR>
-                        <TR height="40">
-                          <TD></TD>
-                        </TR>
-                        <TR class="Facility">
-                          <TD width="100%" align="center">
-                            <HR>
-                              <BR>
-                                MERIDIAN UC<BR>
-                                  1648 NW 1ST STREET<BR>
-                                    MERIDIAN, ID 83642-1813<BR>
-                                      Tel:&nbsp;208-888-9393<BR>
-                                        Fax:&nbsp;208-888-9525<BR>
-                          </TD>
-                        </TR>
-                      </TBODY>
-                    </TABLE>
+﻿<DIV class="soapTitle">
+  <B>Subjective:</B>
+</DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Chief Complaint(s):');">
+  <FONT class="pnLink" color="blue" size="2">
+    <B onclick="pnSectionClicked('Chief Complaint(s):')">Chief Complaint(s):</B>
+  </FONT>
+</A> &nbsp; <IMG onclick="showPopUp(this,'/mobiledoc/jsp/picks/selComplaint.jsp', 11670581, 135589, '07/28/2021', 'ChiefComplaints')" style="CURSOR: pointer" src="/mobiledoc/jsp/catalog/Images/arrow_open.gif" encdate="07/28/2021" encid="11670581" pid="135589" size="15">
+  <BR>
+    <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0" sizcache007344180001517059="0" sizset="14">
+      <TBODY sizcache007344180001517059="0" sizset="14">
+        <TR sizcache007344180001517059="0" sizset="14">
+          <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+          <TD sizcache007344180001517059="0" sizset="14">
+            <LI>
+              <FONT size="2">fever, weakness,throwing up x 2 days</FONT>
+            </LI>
+          </TD>
+        </TR>
+      </TBODY>
+    </TABLE>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('HPI:');">
+      <FONT class="pnLink" color="blue" size="2">
+        <B onclick="pnSectionClicked('HPI:')">HPI:</B>
+      </FONT>
+    </A> &nbsp; <IMG onclick="showPopUp(this,'/mobiledoc/jsp/picks/selHPI.jsp', 11670581, 135589, '07/28/2021', 'HPI')" style="CURSOR: pointer" src="/mobiledoc/jsp/catalog/Images/arrow_open.gif" encdate="07/28/2021" encid="11670581" pid="135589" size="15">
+      <BR>
+        <DIV id="category521230">
+          <DIV id="editCategoryTpl521230" class="inline-edit"></DIV>
+          <DIV id="readOnlyCategory_521230">
+            <SPAN class="cattablink" ng-click="loadProgressNotePopup('HPI:','521230');" cattabindex="1" cattabid="521230" cattabitemname="HPI:">
+              &nbsp;&nbsp;&nbsp;&nbsp; Respiratory Clinic<BR>
+            </SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT size="2">Coralina is a 19 year old adult female presenting this morning feeling mildly ill, of average health, and pleasant demeanor. Coralina comes in this morning complaining of nausea, nonbilious nonbloody vomiting, diarrhea, and fatigue that began 2 days ago. The symptoms came on rapidly and after eating some possibly bad food. The vomiting episodes are non-bilious and non-bloody. Over the counter interventions for symptom management include increasing fluid intake. The symptoms are not improving as expected. She states the symptoms are of moderate severity. Coralina denies fever, chills, confusion, inability to eat, inability to urinate, severe intractable pain, significant weakness, or orthostasis.</FONT><BR>
+          </DIV>
+        </DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Current Medication:');">
+          <FONT class="pnLink" color="blue" size="2">
+            <B onclick="pnSectionClicked('Current Medication:')">Current Medication:</B>
+          </FONT>
+        </A><BR>
+          <DIV id="category" sizcache007344180001517059="0" sizset="15">
+            <DIV id="editCategoryTpl" class="inline-edit"></DIV>
+            <DIV id="readOnlyCategory_" sizcache007344180001517059="0" sizset="15">
+              <FONT color="purple" size="2">
+                &nbsp;&nbsp;&nbsp;&nbsp;<U>Not-Taking/PRN</U>
+              </FONT>
+              <BR>
+                <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0" sizcache007344180001517059="0" sizset="15">
+                  <TBODY sizcache007344180001517059="0" sizset="15">
+                    <TR sizcache007344180001517059="0" sizset="15">
+                      <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+                      <TD sizcache007344180001517059="0" sizset="15">
+                        <LI>
+                          <FONT size="2">multivitamin Vitamin A, D and C liquid 1 mL orally once a day.</FONT>
+                        </LI>
+                      </TD>
+                    </TR>
+                  </TBODY>
+                </TABLE>
+                <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0">
+                  <TBODY>
+                    <TR>
+                      <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+                      <TD>
+                        <FONT size="2">Medication List reviewed and reconciled with the patient.</FONT>
+                      </TD>
+                    </TR>
+                  </TBODY>
+                </TABLE>
+            </DIV>
+          </DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Medical History:');">
+            <FONT class="pnLink" color="blue" size="2">
+              <B onclick="pnSectionClicked('Medical History:')">Medical History:</B>
+            </FONT>
+          </A><BR>
+            <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0" sizcache007344180001517059="0" sizset="16">
+              <TBODY sizcache007344180001517059="0" sizset="16">
+                <TR sizcache007344180001517059="0" sizset="16">
+                  <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+                  <TD sizcache007344180001517059="0" sizset="16">
+                    <LI>
+                      <FONT size="2">Nothing signifact on review of paper chart</FONT>
+                    </LI>
                   </TD>
                 </TR>
               </TBODY>
             </TABLE>
-        </TD>
-      </TR>
-    </TBODY>
-    <TFOOT style="DISPLAY: table-footer-group">
-      <TR>
-        <TD>
-          <BR>
-            <HR>
-
-              <TABLE cellSpacing="0" cellPadding="0" width="100%" border="0">
-                <TBODY>
-                  <TR class="TableFooter">
-                    <BR>
-                      <TD align="center">Progress Note:&nbsp;Patrick C Denning, PA&nbsp;&nbsp;&nbsp;&nbsp;06/07/2021</TD>
-                  </TR>
-                  <TR height="10">
-                    <TD></TD>
-                  </TR>
-                  <TR class="eclinicalworks">
-                    <TD align="center">Note generated by eClinicalWorks EMR/PM Software (www.eClinicalWorks.com)</TD>
-                  </TR>
-                </TBODY>
-              </TABLE>
-        </TD>
-      </TR>
-    </TFOOT>
-  </TABLE>
-  <SPAN id="chartLockedId" style="COLOR: white; DISPLAY: none" name="chartLockedId">true</SPAN>
+            <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0" sizcache007344180001517059="0" sizset="17">
+              <TBODY sizcache007344180001517059="0" sizset="17">
+                <TR sizcache007344180001517059="0" sizset="17">
+                  <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+                  <TD sizcache007344180001517059="0" sizset="17">
+                    <LI>
+                      <FONT size="2">constipation</FONT>
+                    </LI>
+                  </TD>
+                </TR>
+              </TBODY>
+            </TABLE>
+            <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0" sizcache007344180001517059="0" sizset="18">
+              <TBODY sizcache007344180001517059="0" sizset="18">
+                <TR sizcache007344180001517059="0" sizset="18">
+                  <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+                  <TD sizcache007344180001517059="0" sizset="18">
+                    <LI>
+                      <FONT size="2">Workup for reported cyanosis 12/07 - nml EKG, Echocardiogram, and CXR</FONT>
+                    </LI>
+                  </TD>
+                </TR>
+              </TBODY>
+            </TABLE>
+            <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0" sizcache007344180001517059="0" sizset="19">
+              <TBODY sizcache007344180001517059="0" sizset="19">
+                <TR sizcache007344180001517059="0" sizset="19">
+                  <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+                  <TD sizcache007344180001517059="0" sizset="19">
+                    <LI>
+                      <FONT size="2">UTI #1 - 2/08</FONT>
+                    </LI>
+                  </TD>
+                </TR>
+              </TBODY>
+            </TABLE>
+            <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0" border="0">
+              <TBODY></TBODY>
+            </TABLE>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Allergies/Intolerance:');">
+              <FONT class="pnLink" color="blue" size="2">
+                <B onclick="pnSectionClicked('Allergies/Intolerance:')">Allergies/Intolerance:</B>
+              </FONT>
+            </A><BR>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT size="2" face="Verdana">amoxicillin - swelling, rash</FONT><BR>
+                &nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Surgical History:');">
+                  <FONT class="pnLink" color="blue" size="2">
+                    <B onclick="pnSectionClicked('Surgical History:')">Surgical History:</B>
+                  </FONT>
+                </A><BR>
+                  &nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Hospitalization:');">
+                    <FONT class="pnLink" color="blue" size="2">
+                      <B onclick="pnSectionClicked('Hospitalization:')">Hospitalization:</B>
+                    </FONT>
+                  </A><BR>
+                    &nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Family History:');">
+                      <FONT class="pnLink" color="blue" size="2">
+                        <B onclick="pnSectionClicked('Family History:')">Family History:</B>
+                      </FONT>
+                    </A><BR>
+                      &nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Social History:');">
+                        <FONT class="pnLink" color="blue" size="2">
+                          <B onclick="pnSectionClicked('Social History:')">Social History:</B>
+                        </FONT>
+                      </A><BR>
+                        <DIV id="category329103">
+                          <DIV id="editCategoryTpl329103" class="inline-edit"></DIV>
+                          <DIV id="readOnlyCategory_329103">
+                            <SPAN class="cattablink" ng-click="loadProgressNotePopup('Social History:','329103');" cattabindex="1" cattabid="329103" cattabitemname="Social History:">
+                              &nbsp;&nbsp;&nbsp;&nbsp; General<BR>
+                            </SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;<SPAN class="normaltext">Tobacco Use</SPAN><SPAN class="normaltext">&nbsp;</SPAN><SPAN onclick="showTip(this, 'Social','11670581','329103','221066', '1007')" class="normaltext" style="CURSOR: pointer" encid="11670581" structType="0" structId="353" itemId="221066" categoryId="329103">
+                              <BR>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Are you a: &nbsp;<I>never smoker</I>
+                            </SPAN><BR>
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;<SPAN onclick="showTip(this,'Social','11670581','329103','206846')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="206846" categoryId="329103">Minor lives with: Mom, Dad, Sibling(s). </SPAN><BR>
+                          </DIV>
+                        </DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('ROS:');">
+                          <FONT class="pnLink" color="blue" size="2">
+                            <B onclick="pnSectionClicked('ROS:')">ROS:</B>
+                          </FONT>
+                        </A><IMG onclick="showPopUp(this,'/mobiledoc/jsp/picks/selROS.jsp',  11670581, 135589, '07/28/2021', 'ROS')" style="CURSOR: pointer" src="/mobiledoc/jsp/catalog/Images/arrow_open.gif" encdate="07/28/2021" encid="11670581" pid="135589" size="15">
+                          <BR>
+                            <DIV id="category521109">
+                              <DIV id="editCategoryTpl521109" class="inline-edit"></DIV>
+                              <DIV id="readOnlyCategory_521109">
+                                <SPAN class="cattablink" ng-click="loadProgressNotePopup('ROS:','521109');" cattabindex="1" cattabid="521109" cattabitemname="ROS:">
+                                  &nbsp;&nbsp;&nbsp;&nbsp; COVID Screening<BR>
+                                </SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','527982');" value="" label="*Duration of symptoms/symptoms onset:" notes=""
+                                  <FONT size="2"></FONT><FONT size="2">2 days</FONT>" options="" propid="91" itemid="527982" categoryid="521109" encounterid="11670581">*Duration of symptoms/symptoms onset:
+                                </SPAN><FONT color="black" size="2"></FONT>&nbsp; <SPAN onclick="showTip(this,'ROS', '11670581','521109','527982')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="527982" categoryId="521109">
+                                  <FONT size="2"></FONT>
+                                  <FONT size="2">2 days</FONT>
+                                </SPAN>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521261');" value="" label=" ." notes=""
+                                  <FONT size="2"></FONT><FONT size="2">.</FONT>" options="" propid="91" itemid="521261" categoryid="521109" encounterid="11670581">.
+                                </SPAN><FONT color="black" size="2"></FONT>&nbsp; <SPAN onclick="showTip(this,'ROS', '11670581','521109','521261')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="521261" categoryId="521109">
+                                  <FONT size="2"></FONT>
+                                  <FONT size="2">.</FONT>
+                                </SPAN>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521422');" value="no" label="*Is the patient a health care worker?" notes="" options="no, YES" propid="91" itemid="521422" categoryid="521109" encounterid="11670581">*Is the patient a health care worker?</SPAN><FONT color="black" size="2">&nbsp;no</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521263');" value=" YES" label="*Exposure to patient with suspected or known positive COVID within 14 days of Sx" notes="" options="no, YES" propid="91" itemid="521263" categoryid="521109" encounterid="11670581">*Exposure to patient with suspected or known positive COVID within 14 days of Sx</SPAN><FONT color="black" size="2">&nbsp; YES</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521264');" value="none" label="*Other ill contacts with similar sx" notes="" options="none, YES" propid="91" itemid="521264" categoryid="521109" encounterid="11670581">*Other ill contacts with similar sx</SPAN><FONT color="black" size="2">&nbsp;none</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521604');" value="no" label="*Previously been tested for COVID19" notes="" options="no,YES" propid="91" itemid="521604" categoryid="521109" encounterid="11670581">*Previously been tested for COVID19</SPAN><FONT color="black" size="2">&nbsp;no</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521265');" value="no" label="*Tobacco use" notes="" options="no,YES" propid="91" itemid="521265" categoryid="521109" encounterid="11670581">*Tobacco use</SPAN><FONT color="black" size="2">&nbsp;no</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521266');" value="no" label="*PMH of Diabetes" notes="" options="no, YES" propid="91" itemid="521266" categoryid="521109" encounterid="11670581">*PMH of Diabetes</SPAN><FONT color="black" size="2">&nbsp;no</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521267');" value="no" label="*PMH Chronic Lung Disease" notes="" options="no,YES" propid="91" itemid="521267" categoryid="521109" encounterid="11670581">*PMH Chronic Lung Disease</SPAN><FONT color="black" size="2">&nbsp;no</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521268');" value="no" label="*PMH Chronic Kidney Disease" notes="" options="no,YES" propid="91" itemid="521268" categoryid="521109" encounterid="11670581">*PMH Chronic Kidney Disease</SPAN><FONT color="black" size="2">&nbsp;no</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521269');" value="no" label="*PMH Heart Disease" notes="" options="no, YES" propid="91" itemid="521269" categoryid="521109" encounterid="11670581">*PMH Heart Disease</SPAN><FONT color="black" size="2">&nbsp;no</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521270');" value="no" label="*PMH Immunocompromised/Immunosuppressants" notes="" options="no, YES" propid="91" itemid="521270" categoryid="521109" encounterid="11670581">*PMH Immunocompromised/Immunosuppressants</SPAN><FONT color="black" size="2">&nbsp;no</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','521271');" value="no" label="*Pregnant" notes="" options="no,YES" propid="91" itemid="521271" categoryid="521109" encounterid="11670581">*Pregnant</SPAN><FONT color="black" size="2">&nbsp;no</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','527503');" value="No" label="*Are you a student athlete?" notes="" options="No, Yes" propid="91" itemid="527503" categoryid="521109" encounterid="11670581">*Are you a student athlete?</SPAN><FONT color="black" size="2">&nbsp;No</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','525143');" value=" no" label="*Vaccinations UTD" notes="" options="YES, no" propid="91" itemid="525143" categoryid="521109" encounterid="11670581">*Vaccinations UTD</SPAN><FONT color="black" size="2">&nbsp; no</FONT>.&nbsp; <SPAN class="roslink" ng-click="loadProgressNotePopup('ROS:','521109','','533670');" value="" label="     1 - Covid-19 vaccination?" notes=""
+                                  <FONT size="2"></FONT><FONT id="7689" color=#"000000" size="2">None</FONT>" options="None, partial, complete" propid="91" itemid="533670" categoryid="521109" encounterid="11670581">1 - Covid-19 vaccination?
+                                </SPAN><FONT color="black" size="2"></FONT>&nbsp; <SPAN onclick="showTip(this,'ROS', '11670581','521109','533670')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="533670" categoryId="521109">
+                                  <FONT size="2"></FONT>
+                                  <FONT id="7689" color=#"000000" size="2">None</FONT>
+                                </SPAN>.&nbsp; <BR>
+                              </DIV>
+                            </DIV>
+                            <FONT size="2" face="Verdana">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ..</FONT>
+                            <BR>
+                              <BR>
+                                <DIV class="soapTitle">
+                                  <B>Objective:</B>
+                                </DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Vitals:');">
+                                  <FONT class="pnLink" color="blue" size="2">
+                                    <B onclick="pnSectionClicked('Vitals:')">Vitals:</B>
+                                  </FONT>
+                                </A><BR>
+                                  <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0">
+                                    <TBODY>
+                                      <TR>
+                                        <TD>
+                                          <FONT size="2">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT size="2" face="Verdana">
+                                              BP <B>104/68</B>, HR <B>93</B>, Temp <B>97.9</B>, O2 sat % <B>98</B>.
+                                            </FONT>
+                                          </FONT>
+                                        </TD>
+                                      </TR>
+                                    </TBODY>
+                                  </TABLE>
+                                  <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0">
+                                    <TBODY>
+                                      <TR>
+                                        <TD>
+                                          <FONT size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EGMA.</FONT>
+                                        </TD>
+                                      </TR>
+                                    </TBODY>
+                                  </TABLE>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Past Results:');">
+                                    <FONT class="pnLink" color="blue" size="2">
+                                      <B onclick="pnSectionClicked('Past Results:')">Past Results:</B>
+                                    </FONT>
+                                  </A><BR>
+                                    &nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Examination:');">
+                                      <FONT class="pnLink" color="blue" size="2">
+                                        <B onclick="pnSectionClicked('Examination:')">Examination:</B>
+                                      </FONT>
+                                    </A> &nbsp; <IMG onclick="showPopUp(this,'/mobiledoc/jsp/picks/selExam.jsp', 11670581, 135589, '07/28/2021', 'Exam')" style="CURSOR: pointer" src="/mobiledoc/jsp/catalog/Images/arrow_open.gif" encdate="07/28/2021" encid="11670581" pid="135589" size="15">
+                                      <BR>
+                                        <DIV id="category204313">
+                                          <DIV id="editCategoryTpl204313" class="inline-edit"></DIV>
+                                          <DIV id="readOnlyCategory_204313">
+                                            <SPAN class="cattablink" ng-click="loadProgressNotePopup('Examination:','204313');" cattabindex="1" cattabid="204313" cattabitemname="Examination:">
+                                              &nbsp;&nbsp;&nbsp;&nbsp; Brief Exam<BR>
+                                            </SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN class="examlink" ng-click="loadProgressNotePopup('Examination:','204313','','10089');" encid="11670581" label="GENERAL APPEARANCE:" notes=""
+                                              <DIV>Generally, she appears of average health, friendly, and non-toxic. Alert, oriented, no apparent distress, mood appropriate for situation.</DIV><DIV>
+                                                <BR>
+                                              </DIV>" categoryPropId="10089" examid="204313">GENERAL APPEARANCE:&nbsp;
+                                            </SPAN><SPAN onclick="showTip(this,'Examination','11670581','204313','10089')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="10089" categoryId="204313">
+                                              <DIV>Generally, she appears of average health, friendly, and non-toxic. Alert, oriented, no apparent distress, mood appropriate for situation.</DIV>
+                                              <DIV>
+                                                <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                              </DIV>.&nbsp;
+                                            </SPAN><BR>
+                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN class="examlink" ng-click="loadProgressNotePopup('Examination:','204313','','87');" encid="11670581" label="LUNGS:" notes=""
+                                                <FONT size="2"> </FONT><FONT size="2">She demonstrated easy breathing (speaking in full sentences, no distress or effort to breath), no cyanosis, no stridor, and not distracted by breathing.</FONT>" categoryPropId="87" examid="204313">LUNGS:&nbsp;
+                                              </SPAN><SPAN onclick="showTip(this,'Examination','11670581','204313','87')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="87" categoryId="204313">
+                                                <FONT size="2"> </FONT><FONT size="2">She demonstrated easy breathing (speaking in full sentences, no distress or effort to breath), no cyanosis, no stridor, and not distracted by breathing.</FONT>.&nbsp;
+                                              </SPAN><BR>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN class="examlink" ng-click="loadProgressNotePopup('Examination:','204313','','88');" encid="11670581" label="ABDOMEN:" notes=""
+                                                  <FONT size="2"> </FONT><FONT size="2">Abdominal exam reveals a soft, nontender, nondistended abdomen. Normal, active bowel sounds. No palpable masses. No rebound. No guarding.</FONT>" categoryPropId="88" examid="204313">ABDOMEN:&nbsp;
+                                                </SPAN><SPAN onclick="showTip(this,'Examination','11670581','204313','88')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="88" categoryId="204313">
+                                                  <FONT size="2"> </FONT><FONT size="2">Abdominal exam reveals a soft, nontender, nondistended abdomen. Normal, active bowel sounds. No palpable masses. No rebound. No guarding.</FONT>.&nbsp;
+                                                </SPAN><BR>
+                                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN class="examlink" ng-click="loadProgressNotePopup('Examination:','204313','','10109');" encid="11670581" label="SKIN:" notes=""
+                                                    <FONT size="2"> </FONT><FONT size="2">Capillary refill time less than 3 seconds. Skin moist and warm with normal tone.</FONT>" categoryPropId="10109" examid="204313">SKIN:&nbsp;
+                                                  </SPAN><SPAN onclick="showTip(this,'Examination','11670581','204313','10109')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="10109" categoryId="204313">
+                                                    <FONT size="2"> </FONT><FONT size="2">Capillary refill time less than 3 seconds. Skin moist and warm with normal tone.</FONT>.&nbsp;
+                                                  </SPAN><BR>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN class="examlink" ng-click="loadProgressNotePopup('Examination:','204313','','10110');" encid="11670581" label="**NEUROLOGIC EXAM:" notes=""
+                                                      <FONT size="2"> </FONT><FONT size="2">Alert, non-focal exam</FONT>" categoryPropId="10110" examid="204313">**NEUROLOGIC EXAM:&nbsp;
+                                                    </SPAN><SPAN onclick="showTip(this,'Examination','11670581','204313','10110')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="10110" categoryId="204313">
+                                                      <FONT size="2"> </FONT><FONT size="2">Alert, non-focal exam</FONT>.&nbsp;
+                                                    </SPAN><BR>
+                                          </DIV>
+                                        </DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Physical Examination:');">
+                                          <FONT class="pnLink" color="blue" size="2">
+                                            <B onclick="pnSectionClicked('Physical Examination:')">Physical Examination:</B>
+                                          </FONT>
+                                        </A><IMG onclick="showPopUp(this,'/mobiledoc/jsp/picks/selPhyExam.jsp',  11670581, 135589, '07/28/2021', 'PhyExam')" style="CURSOR: pointer" src="/mobiledoc/jsp/catalog/Images/arrow_open.gif" encdate="07/28/2021" encid="11670581" pid="135589" size="15">
+                                          <BR>
+                                            <BR>
+                                              <BR>
+                                                <DIV class="soapTitle">
+                                                  <B>Assessment: </B>
+                                                </DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Assessment:');">
+                                                  <FONT class="pnLink" color="blue" size="2">
+                                                    <B onclick="pnSectionClicked('Assessment:')">Assessment:</B>
+                                                  </FONT>
+                                                </A><IMG onclick="showPopUp(this,'/mobiledoc/jsp/picks/selAssessment.jsp', 11670581, 135589, '07/28/2021', 'Assessment')" style="CURSOR: pointer" src="/mobiledoc/jsp/catalog/Images/arrow_open.gif" encdate="07/28/2021" encid="11670581" pid="135589" size="15">
+                                                  <BR>
+                                                    <DIV id="category" sizcache007344180001517059="0" sizset="20">
+                                                      <DIV id="editCategoryTpl" class="inline-edit"></DIV>
+                                                      <DIV id="readOnlyCategory_" sizcache007344180001517059="0" sizset="20">
+                                                        <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0" sizcache007344180001517059="0" sizset="20">
+                                                          <TBODY sizcache007344180001517059="0" sizset="20">
+                                                            <TR sizcache007344180001517059="0" sizset="20">
+                                                              <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+                                                              <TD sizcache007344180001517059="0" sizset="20">
+                                                                <LI>
+                                                                  <FONT size="2">Vomiting, intractability of vomiting not specified, presence of nausea not specified, unspecified vomiting type - R11.10 (Primary)</FONT>
+                                                                </LI>
+                                                              </TD>
+                                                            </TR>
+                                                          </TBODY>
+                                                        </TABLE>
+                                                      </DIV>
+                                                    </DIV>
+                                                    <BR>
+                                                      <BR>
+                                                        <DIV class="soapTitle">
+                                                          <B>Plan:</B>
+                                                        </DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Treatment:');">
+                                                          <FONT class="pnLink" color="blue" size="2">
+                                                            <B onclick="pnSectionClicked('Treatment:')">Treatment:</B>
+                                                          </FONT>
+                                                        </A><BR>
+                                                          <DIV id="category">
+                                                            <DIV id="editCategoryTpl" class="inline-edit"></DIV>
+                                                            <DIV id="readOnlyCategory_">
+                                                              <FONT color="purple" size="2">
+                                                                &nbsp;&nbsp;&nbsp;&nbsp;<U>Vomiting, intractability of vomiting not specified, presence of nausea not specified, unspecified vomiting type</U>
+                                                              </FONT>
+                                                              <BR>
+                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT size="2">Start Zofran tablet, 4 mg, 1 tab(s), orally, every 8 hours, 12, Refills 0</FONT><BR>
+                                                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN class="lablink" ng-click="loadProgressNotePopup('','4668265','','','','lablink');" labid="4668265">Lab:SARS COV-2 by PCR (COVID-- Interpath)</SPAN>&nbsp; <BR>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT size="2">Notes: I have diagnosed Coralina with viral gastroenteritis. Differential diagnosis considered include (but not limited to) viral gastroenteritis, diverticular disease, food intolerance, irritable bowel syndrom, intestinal obstruction, hernia, and ulcerative colitis. More serious diagnosis considered less likely include infectious colitis, Crohn's, and bowel infarction. For treatment I will prescribe Zofran. Over the counter interventions for symptom management include sugar free Gatoraide and Imodium. Return to clinic if not improving within 2-3 days, sooner if worse. Proceed to ED if significantly worse after clinic hours. I recommend that she push fluids, avoiding sports drinks with lots of sugar. I recommended occasionally drinking chicken or beef broth with water in between, Pedialyte, or sugar-free sports drinks. I discussed at length with Coralina the signs and symptoms of orthostasis and to use caution while standing up to avoid potential injury from passing out. If not improving with fluid hydration I recommend proceeding to the ED to consider IV hydration.</FONT><BR>
+                                                            </DIV>
+                                                          </DIV>
+                                                          <DIV id="category" sizcache007344180001517059="0" sizset="21">
+                                                            <DIV id="editCategoryTpl" class="inline-edit"></DIV>
+                                                            <DIV id="readOnlyCategory_">
+                                                              <FONT color="purple" size="2">
+                                                                &nbsp;&nbsp;&nbsp;&nbsp;<U>Others </U>
+                                                              </FONT>
+                                                              <BR>
+                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT size="2">
+                                                                  Notes:
+                                                                  <DIV id="temp">
+                                                                    <FONT size="2">
+                                                                      The patient was given instructions on care for symptoms and complaints with guidance on follow up for increasing, new or extended duration of symptoms in accordance to the chosen level of evaluation. Also discussed the appropriate use and potential side effects or risks of any OTC or prescribed medications recommended or given at today's visit. <BR>
+                                                                        <BR>
+                                                                          Patients tested for COVID-19 were also provided COVID-19 specific patient instructions including: <BR>
+                                                                            CDC recommendations for isolation and quarantine protocol, appropriate care and follow up <BR>Work or School excuse based on CDC recommendations</FONT>.
+                                                                </FONT><BR>
+                                                            </DIV>
+                                                          </DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Procedures:');">
+                                                            <FONT class="pnLink" color="blue" size="2">
+                                                              <B onclick="pnSectionClicked('Procedures:')">Procedures:</B>
+                                                            </FONT>
+                                                          </A> &nbsp; <IMG onclick="showPopUp(this,'/mobiledoc/jsp/picks/selProcedures.jsp', 11670581, 135589, '07/28/2021', 'Procedures')" style="CURSOR: pointer" src="/mobiledoc/jsp/catalog/Images/arrow_open.gif" encdate="07/28/2021" encid="11670581" pid="135589" size="15">
+                                                            <BR>
+                                                              <DIV id="category307667">
+                                                                <DIV id="editCategoryTpl307667" class="inline-edit"></DIV>
+                                                                <DIV id="readOnlyCategory_307667">
+                                                                  <SPAN class="cattablink" ng-click="loadProgressNotePopup('Procedures:','307667');" cattabindex="1" cattabid="307667" cattabitemname="Procedures:">
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp; Orthostatic Blood Pressure<BR>
+                                                                  </SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN class="proclink" ng-click="loadProgressNotePopup('Procedures:','307667','','308081');" value="Blood Pressure: 110/72 Pulse:71" label="After lying 5 minutes:" notes=""
+                                                                    <FONT size="2">Blood Pressure: 110/72 Pulse:71</FONT>&#10;<FONT size="2"></FONT><FONT size="2"></FONT>" options="" propid="" itemid="308081" categoryid="307667" encounterid="11670581">After lying 5 minutes:
+                                                                  </SPAN><SPAN onclick="showTip(this,'Procedures', '11670581','307667','308081','','', 'false')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="308081" categoryId="307667" isLacerationItem="false" docCount="0">
+                                                                    &nbsp;<FONT size="2">Blood Pressure: 110/72 Pulse:71</FONT> <FONT size="2"></FONT><FONT size="2"></FONT>.&nbsp;
+                                                                  </SPAN><BR>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN class="proclink" ng-click="loadProgressNotePopup('Procedures:','307667','','308082');" value="Blood Pressure: 109/72 Pulse:93" label="After standing 1 minute:" notes=""
+                                                                      <FONT size="2">Blood Pressure: 109/72 Pulse:93</FONT>&#10;<FONT size="2"></FONT><FONT size="2"></FONT>" options="" propid="" itemid="308082" categoryid="307667" encounterid="11670581">After standing 1 minute:
+                                                                    </SPAN><SPAN onclick="showTip(this,'Procedures', '11670581','307667','308082','','', 'false')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="308082" categoryId="307667" isLacerationItem="false" docCount="0">
+                                                                      &nbsp;<FONT size="2">Blood Pressure: 109/72 Pulse:93</FONT> <FONT size="2"></FONT><FONT size="2"></FONT>.&nbsp;
+                                                                    </SPAN><BR>
+                                                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN class="proclink" ng-click="loadProgressNotePopup('Procedures:','307667','','308083');" value="Blood Pressure: 108/78 Pulse:103 (Change: -2/+6 Pulse: +32)" label="After standing additional 3 minutes:" notes=""
+                                                                        <FONT size="2">Blood Pressure: 108/78 Pulse:103 (Change: -2/+6 Pulse: +32)</FONT>&#10;<FONT size="2"></FONT><FONT size="2"></FONT>" options="" propid="" itemid="308083" categoryid="307667" encounterid="11670581">After standing additional 3 minutes:
+                                                                      </SPAN><SPAN onclick="showTip(this,'Procedures', '11670581','307667','308083','','', 'false')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="308083" categoryId="307667" isLacerationItem="false" docCount="0">
+                                                                        &nbsp;<FONT size="2">Blood Pressure: 108/78 Pulse:103 (Change: -2/+6 Pulse: +32)</FONT> <FONT size="2"></FONT><FONT size="2"></FONT>.&nbsp;
+                                                                      </SPAN><BR>
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN class="proclink" ng-click="loadProgressNotePopup('Procedures:','307667','','308084');" value="Coralina did not report symptoms of orthostasis while supine. Coralina reported symptoms of orthostasis after standing before 1 minute. The symptoms resolved within 3 minutes. " label="Symptoms reported:" notes=""
+                                                                          <FONT size="2">Coralina did not report symptoms of orthostasis while supine. Coralina reported symptoms of orthostasis after standing before 1 minute. The symptoms resolved within 3 minutes. </FONT>&#10;<FONT size="2"></FONT><FONT size="2"></FONT>" options="" propid="" itemid="308084" categoryid="307667" encounterid="11670581">Symptoms reported:
+                                                                        </SPAN><SPAN onclick="showTip(this,'Procedures', '11670581','307667','308084','','', 'false')" class="normaltext" style="CURSOR: pointer" encid="11670581" itemId="308084" categoryId="307667" isLacerationItem="false" docCount="0">
+                                                                          &nbsp;<FONT size="2">Coralina did not report symptoms of orthostasis while supine. Coralina reported symptoms of orthostasis after standing before 1 minute. The symptoms resolved within 3 minutes. </FONT><FONT size="2"></FONT><FONT size="2"></FONT>.&nbsp;
+                                                                        </SPAN><BR>
+                                                                </DIV>
+                                                              </DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Immunizations:');">
+                                                                <FONT class="pnLink" color="blue" size="2">
+                                                                  <B onclick="pnSectionClicked('Immunizations:')">Immunizations:</B>
+                                                                </FONT>
+                                                              </A><BR>
+                                                                &nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Therapeutic Injections:');">
+                                                                  <FONT class="pnLink" color="blue" size="2">
+                                                                    <B onclick="pnSectionClicked('Therapeutic Injections:')">Therapeutic Injections:</B>
+                                                                  </FONT>
+                                                                </A><BR>
+                                                                  &nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Diagnostic Imaging:');">
+                                                                    <FONT class="pnLink" color="blue" size="2">
+                                                                      <B onclick="pnSectionClicked('Diagnostic Imaging:')">Diagnostic Imaging:</B>
+                                                                    </FONT>
+                                                                  </A><BR>
+                                                                    &nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Lab Reports:');">
+                                                                      <FONT class="pnLink" color="blue" size="2">
+                                                                        <B onclick="pnSectionClicked('Lab Reports:')">Lab Reports:</B>
+                                                                      </FONT>
+                                                                    </A><BR>
+                                                                      &nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Procedure Orders:');">
+                                                                        <FONT class="pnLink" color="blue" size="2">
+                                                                          <B onclick="pnSectionClicked('Procedure Orders:')">Procedure Orders:</B>
+                                                                        </FONT>
+                                                                      </A><BR>
+                                                                        &nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Preventive Medicine:');">
+                                                                          <FONT class="pnLink" color="blue" size="2">
+                                                                            <B onclick="pnSectionClicked('Preventive Medicine:')">Preventive Medicine:</B>
+                                                                          </FONT>
+                                                                        </A><IMG onclick="showPopUp(this,'/mobiledoc/jsp/picks/selPreventiveMedicine.jsp',  11670581, 135589, '07/28/2021', 'PreventiveMedicine')" style="CURSOR: pointer" src="/mobiledoc/jsp/catalog/Images/arrow_open.gif" encdate="07/28/2021" encid="11670581" pid="135589" size="15">
+                                                                          <BR>
+                                                                            <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0">
+                                                                              <TBODY>
+                                                                                <TR>
+                                                                                  <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+                                                                                  <TD>
+                                                                                    <FONT size="2">
+                                                                                      PPE:&nbsp; <BR>
+                                                                                        &nbsp;&nbsp;&nbsp; Patient:&nbsp;Mask.&nbsp;<BR>
+                                                                                          &nbsp;&nbsp;&nbsp; Surgical mask worn by Provider&nbsp;yes.&nbsp;<BR>
+                                                                                            &nbsp;&nbsp;&nbsp; Face Shield worn by Provider&nbsp;yes.&nbsp;<BR>
+                                                                                              &nbsp;&nbsp;&nbsp; Gloves worn by Provider&nbsp;yes.&nbsp;<BR>&nbsp;&nbsp;&nbsp; BO staff--direct patient contact?&nbsp;Surgical mask , Face Shield and, Gloves worn by staff during patient engagement. No exposure..&nbsp;
+                                                                                    </FONT>
+                                                                                  </TD>
+                                                                                </TR>
+                                                                              </TBODY>
+                                                                            </TABLE>
+                                                                            <DIV id="category">
+                                                                              <DIV id="editCategoryTpl" class="inline-edit"></DIV>
+                                                                              <DIV id="readOnlyCategory_">
+                                                                                <SPAN class="cattablink" ng-click="loadProgressNotePopup('Preventive Medicine:','');" cattabindex="1" cattabid="" cattabitemname="Preventive Medicine:"></SPAN>
+                                                                              </DIV>
+                                                                            </DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Next Appointment:');">
+                                                                              <FONT class="pnLink" color="blue" size="2">
+                                                                                <B onclick="pnSectionClicked('Next Appointment:')">Next Appointment:</B>
+                                                                              </FONT>
+                                                                            </A> &nbsp; <IMG onclick="showPopUp(this,'/mobiledoc/jsp/picks/selNextAppt.jsp', 11670581, 135589, '07/28/2021', 'Next Appointment')" style="CURSOR: pointer" src="/mobiledoc/jsp/catalog/Images/arrow_open.gif" encdate="07/28/2021" encid="11670581" pid="135589" size="15">
+                                                                              <BR>
+                                                                                <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0">
+                                                                                  <TBODY>
+                                                                                    <TR>
+                                                                                      <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+                                                                                      <TD>
+                                                                                        <FONT size="2">See plan for follow-up instructions.</FONT>
+                                                                                      </TD>
+                                                                                    </TR>
+                                                                                  </TBODY>
+                                                                                </TABLE>
+                                                                                <BR>
+                                                                                  <BR>
+                                                                                    <DIV class="soapTitle">
+                                                                                      <B>Billing Information:</B>
+                                                                                    </DIV>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Visit Code:');">
+                                                                                      <FONT class="pnLink" color="blue" size="2">
+                                                                                        <B onclick="pnSectionClicked('Visit Code:')">Visit Code:</B>
+                                                                                      </FONT>
+                                                                                    </A> &nbsp; <IMG onclick="showPopUp(this,'/mobiledoc/jsp/picks/selVisitCodes.jsp',  11670581, 135589, '07/28/2021', 'VisitCodes')" style="CURSOR: pointer" src="/mobiledoc/jsp/catalog/Images/arrow_open.gif" encdate="07/28/2021" encid="11670581" pid="135589" size="15">
+                                                                                      <BR>
+                                                                                        <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0" sizcache007344180001517059="0" sizset="21">
+                                                                                          <TBODY sizcache007344180001517059="0" sizset="21">
+                                                                                            <TR sizcache007344180001517059="0" sizset="21">
+                                                                                              <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+                                                                                              <TD sizcache007344180001517059="0" sizset="21">
+                                                                                                <LI>
+                                                                                                  <FONT size="2">99213 OV ESTABLISHED PATIENT. </FONT>
+                                                                                                </LI>
+                                                                                              </TD>
+                                                                                            </TR>
+                                                                                          </TBODY>
+                                                                                        </TABLE>&nbsp;&nbsp; <A class="cursor" ng-click="loadProgressNotePopup('Procedure Codes:');">
+                                                                                          <FONT class="pnLink" color="blue" size="2">
+                                                                                            <B onclick="pnSectionClicked('Procedure Codes:')">Procedure Codes:</B>
+                                                                                          </FONT>
+                                                                                        </A> &nbsp; <IMG onclick="showPopUp(this,'/mobiledoc/jsp/picks/selProcedureCodes.jsp', 11670581, 135589, '07/28/2021', 'ProcedureCodes')" style="CURSOR: pointer" src="/mobiledoc/jsp/catalog/Images/arrow_open.gif" encdate="07/28/2021" encid="11670581" pid="135589" size="15">
+                                                                                          <BR>
+                                                                                            <TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0" sizcache007344180001517059="0" sizset="22">
+                                                                                              <TBODY sizcache007344180001517059="0" sizset="22">
+                                                                                                <TR sizcache007344180001517059="0" sizset="22">
+                                                                                                  <TD style="FONT-SIZE: 2pt" width="4%">&nbsp;</TD>
+                                                                                                  <TD sizcache007344180001517059="0" sizset="22">
+                                                                                                    <LI>
+                                                                                                      <FONT size="2">U0004 COVID19 2019 Novel Coronavirus Test Interpath. Modifiers: 90, CS</FONT>
+                                                                                                    </LI>
+                                                                                                  </TD>
+                                                                                                </TR>
+                                                                                              </TBODY>
+                                                                                            </TABLE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT size="2">EP, Vehicle make model and color: Black Ford Edge Symptoms/reason for testing:Fever, Weakness If pediatric patient school attended: Phone number: 208-440-5135 Ins (update in demographics and list here):N Self Pay (add SSN to demographics and Y/N here):Y.</FONT><BR>
+                                                                                              <BR>
+                                                                                                <BR>
+                                                                                                  <DIV class="soapTitle">
+                                                                                                    <B>Images:</B>
+                                                                                                  </DIV></DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                                  <DIV id="ConvConfirm" style="TEXT-ALIGN: center; DISPLAY: none">
+                                                                                                    <P id="cngmsg" style="VISIBILITY: hidden">Are you sure you want to convert ICD9 to ICD10?</P>
+                                                                                                    <INPUT id="chkcnf" style="VISIBILITY: hidden" type="checkbox" jQuery17102793315902923451="3">
+                                                                                                      &nbsp;<SPAN id="chkmsg" style="FONT-SIZE: 7.5pt; VISIBILITY: hidden">Don't show this confirmation prompt next time, but do perform ICD9 to ICD10 conversion</SPAN><BR>
+                                                                                                        <INPUT id="showconfirm" type="hidden" value="yes">
+                                                                                                          <BR>
+                                                                                                            <INPUT onclick="mapconfirmyes"() id="ybtn" style="FONT-SIZE: 11px; TEXT-DECORATION: none; FONT-FAMILY: tahoma,Verdana; WIDTH: 65px; FONT-WEIGHT: bold; COLOR: #ffffff; VISIBILITY: hidden; BACKGROUND-COLOR: #336699" type="button" value="Yes">
+                                                                                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <INPUT onclick="mapconfirmno"() id="nbtn" style="FONT-SIZE: 11px; TEXT-DECORATION: none; FONT-FAMILY: tahoma,Verdana; WIDTH: 65px; FONT-WEIGHT: bold; COLOR: #ffffff; VISIBILITY: hidden; BACKGROUND-COLOR: #336699" type="button" value="No">
+                                                                                                  </DIV>
+                                                                                                  <DIV id="ICDChoose">
+                                                                                                    <IFRAME id="icdselection" style="DISPLAY: none" src="" frameBorder="0"></IFRAME>
+                                                                                                  </DIV>
+                                                                                                  <DIV id="div_physicaltherapy">
+                                                                                                    <IFRAME id="frame_physicaltherapy" style="DISPLAY: none" src="" frameBorder="0"></IFRAME>
+                                                                                                  </DIV>

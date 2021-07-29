@@ -1,0 +1,23 @@
+﻿<Window x:Class="AI_Note_Review.WinAddTag"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AI_Note_Review"
+        mc:Ignorable="d"
+        Topmost="True"
+        WindowStartupLocation="CenterOwner"
+        Title="WinAddTag" Height="350" Width="350">
+    <DockPanel Background="Black">
+        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="16" Style="{StaticResource MyTbStyle}">Tag Selector</TextBlock>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBox x:Name="tbSearch" TextChanged="tbSearch_TextChanged" MinWidth="100" VerticalAlignment="Top" Style="{StaticResource MyTextBox}"></TextBox>
+            <Button Grid.Row="1" x:Name="btnAdd" Click="Button_Click" Style="{StaticResource LinkButton}" Margin="10">Add</Button>
+            <ListBox MouseDoubleClick="lbTags_MouseDoubleClick" Visibility="Collapsed" DisplayMemberPath="TagText" SelectedValuePath="TagText" Grid.Row="1" x:Name="lbTags" Style="{StaticResource MyListBox}"></ListBox>
+        </Grid>
+    </DockPanel>
+</Window>

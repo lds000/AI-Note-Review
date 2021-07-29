@@ -25,6 +25,17 @@ namespace AI_Note_Review
             }
         }
 
+        public static List<SqlTag> GetTags(string strSearch)
+        {
+            string sql = $"Select * from Tags where TagText like '%{strSearch.ToLower()}%' COLLATE NOCASE order by TagText;";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                var output = cnn.Query<SqlTag>(sql).ToList();
+                return output;
+            }
+
+        }
+
         public static List<string> GetAllTags()
         {
             string sql = $"Select TagText from Tags;";

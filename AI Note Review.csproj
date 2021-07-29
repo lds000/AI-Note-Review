@@ -82,11 +82,17 @@
     <Compile Include="UCTag.xaml.cs">
       <DependentUpon>UCTag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WinAddTag.xaml.cs">
+      <DependentUpon>WinAddTag.xaml</DependentUpon>
+    </Compile>
     <Compile Include="winDbRelICD10CheckpointsEditor.xaml.cs">
       <DependentUpon>winDbRelICD10CheckpointsEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="WinEnterText.xaml.cs">
       <DependentUpon>WinEnterText.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WinReport.xaml.cs">
+      <DependentUpon>WinReport.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -106,11 +112,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="WinAddTag.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="winDbRelICD10CheckpointsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WinEnterText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WinReport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
