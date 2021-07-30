@@ -17,6 +17,9 @@ namespace AI_Note_Review
         public static List<SqlCheckpoint> FailedCP = new List<SqlCheckpoint>();
         public static List<SqlCheckpoint> RelevantCP = new List<SqlCheckpoint>();
         public static List<SqlCheckpoint> IrrelaventCP = new List<SqlCheckpoint>();
+        public static DocInfo CurrentDoc = new DocInfo();
+        public static List<SqlCheckpoint> CheckPointList = new List<SqlCheckpoint>();
+
 
         public static void SetWindowPosition(Window _Window)
         {

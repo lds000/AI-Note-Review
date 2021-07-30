@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
+        Loaded="Window_Loaded"        
+        Closing="Window_Closing"
+
         Topmost="True"
         Title="MainWindow" Height="450" Width="900">
     <Grid Background="Black">
         <DockPanel>
-            <Label  MouseDown="Label_MouseDown" Content="{Binding PtName, FallbackValue=Patient Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="18"></Label>
-            <Label  MouseDown="Label_MouseDown" Content="{Binding VisitDate, FallbackValue=Patient Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="18"></Label>
-            <Label  MouseDown="Label_MouseDown" Content="{Binding AgeStr, FallbackValue=Reason for appointment}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
+            <local:UC_PatientConsole DockPanel.Dock="Top"></local:UC_PatientConsole>
             <StackPanel DockPanel.Dock="Left" Margin="5,0,10,0">
                 <Button Click="EditorClick" Style="{StaticResource LinkButton}">Editor</Button>
             </StackPanel>
@@ -47,6 +48,7 @@
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button  Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
                 <Button Margin="100,0,0,0" VerticalAlignment="Center" Click="CheckNote" Style="{StaticResource LinkButton}">Check!</Button>
+                <Button Margin="100,0,0,0" VerticalAlignment="Center" Click="EditCP" Style="{StaticResource LinkButton}">Edit Checkpoints</Button>
             </StackPanel>
             <TabControl x:Name="tcNote">
                 <TabItem Foreground="Red" Header="HPI (2)">
@@ -99,6 +101,9 @@
                 </TabItem>
                 <TabItem Header="HTML">
                     <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding NoteHTML}"></TextBox>
+                </TabItem>
+                <TabItem Header="HashTags">
+                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding HashTags}"></TextBox>
                 </TabItem>
 
             </TabControl>

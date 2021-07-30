@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="AI_Note_Review.UC_PatientConsole"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AI_Note_Review"
+             mc:Ignorable="d" 
+             Height="100" d:DesignWidth="900">
+    <Border Padding="5" Background="Black" Name="bPatient" BorderBrush="White" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Border BorderBrush="White" BorderThickness="1" Grid.ColumnSpan="2">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Foreground="White" FontSize="24" Content="{Binding Path=PtName, FallbackValue=-}"></Label>
+                    </StackPanel>
+                </Border>
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border BorderBrush="White" BorderThickness="1">
+                        <Grid Width="105">
+                            <Label Foreground="Gray" Margin="2,0,0,0" Padding="0">BP</Label>
+                            <Label Foreground="{Binding Path=BPColor, FallbackValue=Blue, TargetNullValue=White}"  Padding="0" Margin="0,0,55,0" FontSize="20" HorizontalAlignment="Right" Content="{Binding Path=VitalsSystolic, FallbackValue=-}"></Label>
+                            <Label Foreground="{Binding Path=BPColor, FallbackValue=Blue, TargetNullValue=White}" Padding="0" Margin="0,2,45,0" FontSize="25" HorizontalAlignment="Right">/</Label>
+                            <Label Foreground="{Binding Path=BPColor, FallbackValue=Blue, TargetNullValue=White}" Padding="0" Margin="60,10,0,0" FontSize="20" HorizontalAlignment="Left" Content="{Binding Path=VitalsDiastolic, FallbackValue=-}"></Label>
+                        </Grid>
+                    </Border>
+                    <Border  Grid.Column="1" BorderBrush="White" BorderThickness="1">
+                        <Grid>
+                            <Label Foreground="Gray" Padding="3,0,0,0">HR</Label>
+                            <Label Foreground="{Binding Path=HRColor, FallbackValue=Blue, TargetNullValue=White}" Margin="10,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Content="{Binding Path=VitalsHR, FallbackValue=-}"></Label>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="2" BorderBrush="White" BorderThickness="1">
+                        <Grid >
+                            <Label Foreground="Gray" Padding="3,0,0,0">RR</Label>
+                            <Label Foreground="{Binding Path=RRColor, FallbackValue=Blue, TargetNullValue=White}" Margin="0,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Content="{Binding Path=VitalsRR, FallbackValue=-}"></Label>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="3" BorderBrush="White" BorderThickness="1">
+                        <Grid>
+                            <Label Foreground="Gray" Padding="3,0,0,0">O2</Label>
+                            <Label Foreground="{Binding Path=O2Color, FallbackValue=Blue, TargetNullValue=White}" Margin="0,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Content="{Binding Path=VitalsO2, FallbackValue=-}"></Label>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="4" BorderBrush="White" BorderThickness="1">
+                        <Grid>
+                            <Label Foreground="Gray" Padding="5,0,0,0">T</Label>
+                            <Label Foreground="{Binding Path=TempColor, FallbackValue=Blue, TargetNullValue=White}" Margin="10,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Content="{Binding Path=VitalsTemp, FallbackValue=-}"></Label>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="5" BorderBrush="White" BorderThickness="1">
+                        <Grid>
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Foreground="{Binding Path=WtColor, FallbackValue=Blue, TargetNullValue=White}" Margin="10,0,0,0" Padding="0" FontSize="16" Content="{Binding Path=VitalsWt, FallbackValue=-}"></Label>
+                                    <Label Foreground="{Binding Path=WtColor, FallbackValue=Blue, TargetNullValue=White}" Margin="2,0,0,0" Padding="0" FontSize="16">lbs</Label>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Foreground="{Binding Path=WtColor, FallbackValue=Blue, TargetNullValue=White}" Margin="10,0,0,0" Padding="0" FontSize="16" Content="{Binding Path=WtKg, FallbackValue=-}"></Label>
+                                    <Label Foreground="{Binding Path=WtColor, FallbackValue=Blue, TargetNullValue=White}" Margin="2,0,0,0" Padding="0" FontSize="16">kg</Label>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+            <Border BorderBrush="White" BorderThickness="1" Grid.Row="1">
+                <Grid Grid.Row="1">
+                    <Viewbox HorizontalAlignment="Left">
+                        <Label Foreground="White" Content="{Binding Path=CC, FallbackValue=-}"></Label>
+                    </Viewbox>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </Border>
+
+</UserControl>
