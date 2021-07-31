@@ -5,5 +5,8 @@
     <Setting Name="DataFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Users\llostod\source\repos\AI Note Review\NoteReviewDB.db</Value>
     </Setting>
+    <Setting Name="DataFolder1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Lloyd\Source\Repos\lds000\NoteReviewDB.db</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

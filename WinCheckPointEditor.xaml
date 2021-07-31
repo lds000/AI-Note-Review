@@ -7,12 +7,10 @@
         mc:Ignorable="d"
                 Loaded="Window_Loaded"        
         Closing="Window_Closing"
-
-        Topmost="True"
         WindowStartupLocation="CenterOwner"
         Title="WinCheckPointEditor" Height="850" Width="1000">
     <Border BorderBrush="White" BorderThickness="1" Background="Black">
-        <DockPanel>
+        <DockPanel Name="dpCheckpoint">
             <Button HorizontalAlignment="Center" FontSize="16" Click="Button_Click" DockPanel.Dock="Bottom" Style="{StaticResource LinkButton}">Close</Button>
             <Border Margin="5" DockPanel.Dock="Bottom" BorderThickness="1" BorderBrush="White" >
                 <TextBlock x:Name="tbTargetText" TextWrapping="Wrap" Padding="5" Style="{StaticResource MyTbStyle}"></TextBlock>
@@ -22,7 +20,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <DockPanel Grid.Column="0" Name="dpCheckpoint">
+                <DockPanel Grid.Column="0">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
                         <Label Style="{StaticResource MyLblStyle}">Checkpoint:</Label>
                         <Label  Style="{StaticResource MyLblStyle}" Content="{Binding Path=CheckPointTitle, FallbackValue=CheckPointTitle}"></Label>
@@ -79,7 +77,8 @@
                     </StackPanel>
                     <Border BorderBrush="White" BorderThickness="1">
                         <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
-                            <StackPanel x:Name="spTags"></StackPanel>
+                            <!--<StackPanel x:Name="spTags"></StackPanel>-->
+                            <local:UCTag1 AddMe="UCTag1_AddMe" DataContext="{Binding}"></local:UCTag1>
                         </ScrollViewer>
                     </Border>
                 </DockPanel>

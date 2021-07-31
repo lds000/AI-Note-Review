@@ -12,9 +12,7 @@ namespace AI_Note_Review
     public static class SqlLiteDataAccess
     {
         public static string SQLiteDBLocation { get; set; }
-        public static List<SqlNoteSection> NoteSections { get; set; }
         public static List<SqlICD10Segment> ICD10Segments { get; set; }
-        public static List<SqlCheckpoint> Checkpoints { get; set; }
         public static WindowPosition GetWindowPosition(string TargetWindowTitle)
         {
             string sql = $"Select * from WindowPositions where WindowPositionTitle = '{TargetWindowTitle}'";

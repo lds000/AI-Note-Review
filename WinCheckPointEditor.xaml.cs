@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
@@ -34,11 +35,35 @@ namespace AI_Note_Review
         {
             InitializeComponent();
             CurrentCheckpoint = cp;
+
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
+                SqlLiteDataAccess.ICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
+                sql = "Select * from CheckPointTypes;";
+                cbTypes.ItemsSource = cnn.Query(sql).ToList();
+                sql = "Select * from ICD10Segments  order by icd10Chapter, icd10CategoryStart;";
+                cbTargetICD10.ItemsSource = cnn.Query(sql).ToList();
+            }
+            cbTargetSection.ItemsSource = CF.NoteSections;
+            IList dictionaries = SpellCheck.GetCustomDictionaries(tbComment);
+            dictionaries.Add(new Uri(@"pack://application:,,,/MedTerms.lex"));
+            //I'm getting an error below
+            try
+            {
+                tbComment.SpellCheck.IsEnabled = true;
+            }
+            catch (Exception)
+            {
+
+            }
+
             UpdateCurrentCheckPoint();
         }
 
         private void UpdateCurrentCheckPoint()
         {
+            dpCheckpoint.DataContext = null;
             if (CurrentCheckpoint == null) return;
             dpCheckpoint.DataContext = CurrentCheckpoint;
             string strRtext = @"{\rtf1\ansi\ansicpg1252\uc1\htmautsp\deff2{\fonttbl{\f0\fcharset0 Times New Roman;}{\f2\fcharset0 Segoe UI;}}{\colortbl\red0\green0\blue0;\red255\green255\blue255;}\loch\hich\dbch\pard\plain\ltrpar\itap0{\lang1033\fs18\f2\cf0 \cf0\ql}}";
@@ -54,9 +79,9 @@ namespace AI_Note_Review
             string str2 = RTBtoStr(myRTB);
             StrToRTB(str2, myRTB);
 
+/*            
             using (var d = Dispatcher.DisableProcessing())
             {
-                /* your work... Use dispacher.begininvoke... */
 
                 spTags.Children.Clear();
                 foreach (SqlTag st in CurrentCheckpoint.GetTags())
@@ -69,7 +94,10 @@ namespace AI_Note_Review
                     spTags.Children.Add(tb);
                     foreach (SqlTagRegEx strex in st.GetTagRegExs())
                     {
-                        spTags.Children.Add(MakeUC(strex));
+                        //spTags.Children.Add(MakeUC(strex));
+                        UCTagRegEx uctrex = new UCTagRegEx(strex);
+                        uctrex.DeleteMe += Uctrex_DeleteMe;
+                        spTags.Children.Add(uctrex);
                     }
 
                     Button b = new Button();
@@ -82,6 +110,12 @@ namespace AI_Note_Review
 
                 }
             }
+  */      
+        }
+
+        private void Uctrex_DeleteMe(object sender, EventArgs e)
+        {
+            UpdateCurrentCheckPoint();
         }
 
         private void B_Click(object sender, RoutedEventArgs e)
@@ -373,6 +407,11 @@ namespace AI_Note_Review
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void UCTag1_AddMe(object sender, EventArgs e)
+        {
+            UpdateCurrentCheckPoint();
         }
     }
 }

@@ -157,6 +157,25 @@ namespace AI_Note_Review
         public double VitalsWt { get; set; }
         public double VitalsBMI { get; set; }
 
+        bool isMale
+        {
+           get
+            {
+                if (PtSex.ToLower().StartsWith("m")) return true;
+                return false;
+            }
+
+        }
+
+        bool isFemale
+        {
+            get
+            {
+                if (PtSex.ToLower().StartsWith("f")) return true;
+                return false;
+            }
+
+        }
 
         public Brush BPColor
         {
@@ -185,6 +204,31 @@ namespace AI_Note_Review
                 return bReturn;
             }
         }
+
+        public bool IsHTNUrgency
+        {
+            get
+            {
+                if (VitalsSystolic >= 180) return true;
+                if (VitalsDiastolic >= 120) return true;
+                return false;
+            }
+        }
+
+        public bool IsPregCapable
+        {
+            get
+            {
+                if (isMale) return false;
+                if (PtAgeYrs >= 10)
+                {
+                    if (PtAgeYrs <= 55) //this is an arbitrary age, consider older
+                    return true;
+                }
+                return false;
+            }
+        }
+
 
         public bool IsBpHigh
         {

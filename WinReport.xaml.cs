@@ -26,10 +26,9 @@ namespace AI_Note_Review
             
             GetHashTags();
 
-            lbFail.ItemsSource = CF.FailedCP;
-            lbPassed.ItemsSource = CF.PassedCP;
-            lbIrrelavant.ItemsSource = CF.IrrelaventCP;
-            lbRelavant.ItemsSource = CF.RelevantCP;
+            lbSegmentsCheck.ItemsSource = CF.RelevantICD10Segments;
+
+            GenerateReport();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -106,6 +105,17 @@ namespace AI_Note_Review
             CF.RelevantICD10Segments.Clear();
 
             CF.RelevantICD10Segments = CF.CurrentDoc.ICD10Segments;
+            if (CF.CurrentDoc.IsHTNUrgency)
+            {
+                CF.RelevantICD10Segments.Add(SqlLiteDataAccess.GetSegment(40)); //pull in HTNUrgencySegment
+            }
+
+            CF.RelevantICD10Segments.Add(SqlLiteDataAccess.GetSegment(36)); //add general segment that applies to all visits.
+        }
+
+        private void GenerateReport()
+        {
+
             CF.PassedCP.Clear();
             CF.FailedCP.Clear();
             CF.IrrelaventCP.Clear();
@@ -122,8 +132,6 @@ namespace AI_Note_Review
             int[] relType = { 5, 6, 9, 10, 12 };
 
             List<int> AlreadyAddedPoints = new List<int>();
-
-            CF.RelevantICD10Segments.Add(SqlLiteDataAccess.GetSegment(36)); //add general segment that applies to all visits.
 
             foreach (SqlICD10Segment ns in CF.RelevantICD10Segments)
             {
@@ -167,7 +175,19 @@ namespace AI_Note_Review
                         }
                     }
                 }
+                lbFail.ItemsSource = null;
+                lbPassed.ItemsSource = null;
+                lbIrrelavant.ItemsSource = null;
+                lbRelavant.ItemsSource = null;
+
+                lbFail.ItemsSource = CF.FailedCP;
+                lbPassed.ItemsSource = CF.PassedCP;
+                lbIrrelavant.ItemsSource = CF.IrrelaventCP;
+                lbRelavant.ItemsSource = CF.RelevantCP;
+
             }
+
+
 
             //Generate Report
 
@@ -200,7 +220,6 @@ namespace AI_Note_Review
             {
                 Console.WriteLine($"\t{cp.CheckPointTitle}");
             }
-
 
         }
 
@@ -237,6 +256,31 @@ namespace AI_Note_Review
             lbPassed.ItemsSource = CF.PassedCP;
             lbIrrelavant.ItemsSource = CF.IrrelaventCP;
             lbRelavant.ItemsSource = CF.RelevantCP;
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (lbSegmentsCheck != null)
+            {
+                CheckBox cb = sender as CheckBox;
+                SqlICD10Segment seg = cb.DataContext as SqlICD10Segment;
+                   if (!CF.RelevantICD10Segments.Contains(seg)) CF.RelevantICD10Segments.Add(seg);
+                GenerateReport();
+
+            }
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (lbSegmentsCheck != null)
+            {
+                CheckBox cb = sender as CheckBox;
+                SqlICD10Segment seg = cb.DataContext as SqlICD10Segment;
+                if (CF.RelevantICD10Segments.Contains(seg)) CF.RelevantICD10Segments.Remove(seg);
+                GenerateReport();
+
+            }
+
         }
     }
 }

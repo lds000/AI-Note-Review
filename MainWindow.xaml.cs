@@ -21,6 +21,7 @@ using System.Threading;
 using System.Data.SQLite;
 using Dapper;
 using System.Text.RegularExpressions;
+using System.IO;
 
 
 //Ctrl-KX, or KS (surround) snippet
@@ -39,16 +40,24 @@ namespace AI_Note_Review
         {
             InitializeComponent();
             ProgramInit();
+            //C:\Users\Lloyd\Source\Repos\lds000\NoteReviewDB.db
             //C:\Users\llostod\source\repos\AI Note Review\NoteReviewDB.db
             SqlLiteDataAccess.SQLiteDBLocation = Properties.Settings.Default.DataFolder;
 
+            if (File.Exists(@"C:\Users\Lloyd\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db"))
+            {
+                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\Lloyd\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db";
+            }
+            else
+            {
+                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\llostod\source\repos\AI Note Review\NoteReviewDB.db";
+            }
+
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                string sql = "Select * from NoteSections;";
-                SqlLiteDataAccess.NoteSections =  cnn.Query<SqlNoteSection>(sql).ToList();
-                sql = "Select * from CheckPoints;";
+                string sql = "Select * from CheckPoints;";
                 CF.CheckPointList = cnn.Query<SqlCheckpoint>(sql).ToList();
-                sql = "Select * from NoteSections;";
+                sql = "Select * from NoteSections order by SectionOrder;";
                 CF.NoteSections = cnn.Query<SqlNoteSection>(sql).ToList();
                 sql = "Select * from TagRegExTypes;";
                 CF.TagRegExTypes = cnn.Query<SqlTagRegExType>(sql).ToList();
@@ -61,6 +70,17 @@ namespace AI_Note_Review
             CF.CurrentDoc.PtAgeYrs = 18;
             CF.CurrentDoc.PtSex = "M";
             CF.CurrentDoc.VisitDate = "7/12/2021";
+            CF.CurrentDoc.CC = "Abdominal pain for 10 days";
+            CF.CurrentDoc.DOB = new DateTime(1969, 10, 23);
+            CF.CurrentDoc.Facility = "Meridian UC";
+            CF.CurrentDoc.VitalsBMI = 41;
+            CF.CurrentDoc.VitalsDiastolic = 115;
+            CF.CurrentDoc.VitalsHR = 88;
+            CF.CurrentDoc.VitalsO2 = 92;
+            CF.CurrentDoc.VitalsRR = 16;
+            CF.CurrentDoc.VitalsSystolic = 182;
+            CF.CurrentDoc.VitalsTemp = 101.2;
+            CF.CurrentDoc.VitalsWt = 194;
             CF.CurrentDoc.ICD10s.Add("R10.10");
             CF.CurrentDoc.ICD10s.Add("I10");
 
@@ -70,28 +90,7 @@ namespace AI_Note_Review
 
             CF.CurrentDoc.CurrentMeds = "ibuprofen, Tylenol, prednisone";
 
-            //******************************* Test document ************************
-            CF.CurrentDoc.ICD10s.Add("R11");
-            CF.CurrentDoc.NoteSectionText[0] = $"Age:57 Sex:F Elderly"; //Demographics 
-            CF.CurrentDoc.NoteSectionText[1] = CF.CurrentDoc.HPI + CF.CurrentDoc.ROS; //HPI
-            CF.CurrentDoc.NoteSectionText[2] = CF.CurrentDoc.CurrentMeds; //CurrentMeds
-            CF.CurrentDoc.NoteSectionText[3] = CF.CurrentDoc.ProblemList; //Active Problem List
-            CF.CurrentDoc.NoteSectionText[4] = CF.CurrentDoc.PMHx; //Past Medical History
-            CF.CurrentDoc.NoteSectionText[5] = CF.CurrentDoc.SocHx; //Social History
-            CF.CurrentDoc.NoteSectionText[6] = CF.CurrentDoc.Allergies; //Allergies
-            CF.CurrentDoc.NoteSectionText[7] = CF.CurrentDoc.Vitals; //Vital Signs
-            CF.CurrentDoc.NoteSectionText[8] = ""; //Examination
-            CF.CurrentDoc.NoteSectionText[9] = CF.CurrentDoc.Assessments; //Assessments
-            CF.CurrentDoc.NoteSectionText[10] = CF.CurrentDoc.Treatment; //Treatment
-            CF.CurrentDoc.NoteSectionText[11] = CF.CurrentDoc.LabsOrdered; //Labs
-            CF.CurrentDoc.NoteSectionText[12] = CF.CurrentDoc.ImagesOrdered; //Imaging
-            CF.CurrentDoc.NoteSectionText[13] = CF.CurrentDoc.ROS; //Review of Systems
-            CF.CurrentDoc.NoteSectionText[14] = CF.CurrentDoc.Assessments; //Assessments
-            CF.CurrentDoc.NoteSectionText[15] = CF.CurrentDoc.MedsStarted; //Prescribed Medications
-
-            this.DataContext = CF.CurrentDoc;
-
-            //GetHashTags();
+            SetDataContext();
 
 
             //winDbRelICD10CheckpointsEditor wdb = new winDbRelICD10CheckpointsEditor();
@@ -557,10 +556,13 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
                 if (CF.CurrentDoc.PtSex.StartsWith("M")) CF.CurrentDoc.HashTags += "#Male, ";
                 if (CF.CurrentDoc.PtSex.StartsWith("F")) CF.CurrentDoc.HashTags += "#Female, ";
                 if (CF.CurrentDoc.PtAgeYrs < 4) CF.CurrentDoc.HashTags += "#Child, ";
+                if (CF.CurrentDoc.IsHTNUrgency) CF.CurrentDoc.HashTags += "#HTNUrgency, ";
+                if (CF.CurrentDoc.isO2Abnormal) CF.CurrentDoc.HashTags += "#Hypoxic, ";
+                if (CF.CurrentDoc.IsPregCapable) CF.CurrentDoc.HashTags += "@pregnantcapable, ";
 
 
 
-                CF.CurrentDoc.NoteSectionText[0] = $"{CF.CurrentDoc.PtAgeYrs} Sex{CF.CurrentDoc.PtSex}"; //Demographics 
+            CF.CurrentDoc.NoteSectionText[0] = $"{CF.CurrentDoc.PtAgeYrs} Sex{CF.CurrentDoc.PtSex}"; //Demographics 
                 CF.CurrentDoc.NoteSectionText[1] = CF.CurrentDoc.HPI + CF.CurrentDoc.ROS; //HPI
                 CF.CurrentDoc.NoteSectionText[2] = CF.CurrentDoc.CurrentMeds + CF.CurrentDoc.CurrentPrnMeds; //CurrentMeds
                 CF.CurrentDoc.NoteSectionText[3] = CF.CurrentDoc.ProblemList; //Active Problem List

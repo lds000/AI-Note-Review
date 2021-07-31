@@ -35,7 +35,7 @@ namespace AI_Note_Review
                 SqlLiteDataAccess.ICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
                 sql = "Select * from CheckPointTypes;";
                 cbTypes.ItemsSource = cnn.Query(sql).ToList();
-                sql = "Select * from ICD10Segments;";
+                sql = "Select * from ICD10Segments  order by icd10Chapter, icd10CategoryStart;";
                 cbTargetICD10.ItemsSource = cnn.Query(sql).ToList();
             }
             lbICD10.ItemsSource = SqlLiteDataAccess.ICD10Segments;
@@ -172,23 +172,26 @@ namespace AI_Note_Review
             UpdateCurrentCheckPoint();
         }
 
-        private StackPanel MakeUC(SqlTagRegEx strex)
+        private StackPanel MakeUC(SqlTagRegEx strex) //I did this manually instead of UserControl to improve performance... not sure if it helped.
         {
+            StackPanel spMain = new StackPanel();
             StackPanel sp = new StackPanel();
+            spMain.Children.Add(sp);
             sp.Orientation = Orientation.Horizontal;
             sp.HorizontalAlignment = HorizontalAlignment.Center;
             sp.DataContext = strex;
 
+            Grid g = new Grid();
+            
             TextBox tbtitle = new TextBox();
             tbtitle.Foreground = Brushes.White;
             tbtitle.Background = Brushes.Black;
             tbtitle.Text = strex.RegExText;
-            tbtitle.Width = 100;
             tbtitle.GotFocus += Tbtitle_GotFocus;
             tbtitle.LostFocus += Tbtitle_LostFocus;
             if (strex.RegExText == "Search Text") tbtitle.Foreground = Brushes.Gray;
             tbtitle.Tag = strex;
-            sp.Children.Add(tbtitle);
+            spMain.Children.Add(tbtitle);
 
             Image Img = new Image();
             Img.Source = new BitmapImage(
@@ -231,7 +234,7 @@ namespace AI_Note_Review
             sp.Children.Add(b);
 
 
-            return sp;
+            return spMain;
         }
 
         private void Img_MouseDown(object sender, MouseButtonEventArgs e)

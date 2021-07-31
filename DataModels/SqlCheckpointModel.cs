@@ -30,8 +30,23 @@ namespace AI_Note_Review
         public string Action { get; set; }
         public string Link { get; set; }
 
+        public List<SqlTag> Tags
+        {
+            get
+            {
+                string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID};";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.Query<SqlTag>(sql, this).ToList();
+                }
+            }
+        }
+
+
         public string RichText { get; set; }
         public int TargetICD10Segment { get; set; }
+
+
 
         public SqlCheckpoint()
         {
@@ -113,6 +128,16 @@ namespace AI_Note_Review
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 return  cnn.Query<SqlTag>(sql, this).ToList();
+            }
+
+        }
+
+        public void RemoveTag(SqlTag st)
+        {
+            string sql = $"Delete From RelTagCheckPoint where CheckPointID = {CheckPointID} AND TagID = {st.TagID};";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
             }
 
         }

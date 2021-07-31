@@ -18,6 +18,20 @@ namespace AI_Note_Review
         public int TagID { get; set; }
         public string TagText { get; set; }
 
+        public List<SqlTagRegEx> TagRegExs
+        {
+            get
+            {
+                string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.Query<SqlTagRegEx>(sql, this).ToList();
+                }
+            }
+
+        }
+
+
         public SqlTag()
         {
         }

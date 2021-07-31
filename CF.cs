@@ -9,8 +9,8 @@ namespace AI_Note_Review
 {
     class CF
     {
-        public static List<SqlNoteSection> NoteSections = new List<SqlNoteSection>();
-        public static List<SqlTagRegExType> TagRegExTypes = new List<SqlTagRegExType>();
+        public static List<SqlNoteSection> NoteSections { get; set; }
+        public static List<SqlTagRegExType> TagRegExTypes { get; set; }
         public static List<SqlICD10Segment> NoteICD10Segments = new List<SqlICD10Segment>();
         public static List<SqlICD10Segment> RelevantICD10Segments = new List<SqlICD10Segment>();
         public static List<SqlCheckpoint> PassedCP = new List<SqlCheckpoint>();

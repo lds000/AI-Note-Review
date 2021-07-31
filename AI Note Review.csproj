@@ -86,6 +86,12 @@
     <Compile Include="UCTag.xaml.cs">
       <DependentUpon>UCTag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UCTag1.xaml.cs">
+      <DependentUpon>UCTag1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UCTagRegEx.xaml.cs">
+      <DependentUpon>UCTagRegEx.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WinAddTag.xaml.cs">
       <DependentUpon>WinAddTag.xaml</DependentUpon>
     </Compile>
@@ -120,6 +126,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UCTag.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UCTag1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UCTagRegEx.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
