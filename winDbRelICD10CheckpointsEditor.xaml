@@ -21,12 +21,17 @@
             <DockPanel>
                 <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">ICD-10</Label>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                    <Button Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
+                    <Button Click="AddGroupClick" Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
                 </StackPanel>
                 <ListBox x:Name="lbICD10" Style="{StaticResource MyListBox}" SelectionChanged="lbICD10_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Edit" Click="MenuItemEditSegment_Click"/>
+                                    </ContextMenu>
+                                </Grid.ContextMenu>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="80"/>
                                     <ColumnDefinition/>
@@ -39,6 +44,7 @@
                                     <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=icd10CategoryEnd}"/>
                                 </StackPanel>
                             </Grid>
+                            
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -48,18 +54,29 @@
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
                     <Button Style="{StaticResource LinkButton}" Margin="3" Click="AddCP">Add CheckPoint</Button>
                 </StackPanel>
-                <ListBox x:Name="lbCheckpoints" SelectionChanged="lbCheckpoints_SelectionChanged" Style="{StaticResource MyListBox}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
-                                <TextBlock Margin="0,0,0,0" Padding="0,0,0,0" Grid.Column="1" Text="{Binding Path=CheckPointTitle}" ToolTip="{Binding Path=Comment}"/>
-                                <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
-                                <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding Path=Title}" ToolTip="{Binding Path=Comment}"/>
-                                <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <ListBox x:Name="lbCheckpoints" SelectionChanged="lbCheckpoints_SelectionChanged" Style="{StaticResource MyListBox}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
+                                    <TextBlock Margin="0,0,0,0" Padding="0,0,0,0" Grid.Column="1" Text="{Binding Path=CheckPointTitle}" ToolTip="{Binding Path=Comment}"/>
+                                    <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
+                                    <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding Path=Title}" ToolTip="{Binding Path=Comment}"/>
+                                    <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="1" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow" MaxHeight="300" >Comments</TextBlock>
+                    <TextBox Text="{Binding SegmentComment}" x:Name="tbComments" Grid.Row="2" Style="{StaticResource MyTextBox}" LostFocus="TextBox_LostFocus" TextWrapping="Wrap" AcceptsReturn="True">
+                        
+                    </TextBox>
+                </Grid>
             </DockPanel>
             <DockPanel Grid.Column="2" Name="dpCheckpoint">
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">

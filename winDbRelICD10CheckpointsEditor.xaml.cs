@@ -472,5 +472,63 @@ namespace AI_Note_Review
                 UpdateCurrentCheckPoint();
             }
         }
+
+        private void TextBlock_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
+            if (seg != null)
+            {
+                seg.SegmentComment = tbComment.Text;
+                seg.SaveToDB();
+            }
+
+        }
+        private void ButtonEditGroups_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItemEditSegment_Click(object sender, RoutedEventArgs e)
+        {
+            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
+            if (seg != null)
+            {
+                WinEditSegment wes = new WinEditSegment(seg);
+                wes.Owner = this;
+                wes.ShowDialog();
+                lbICD10.ItemsSource = null;
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
+                    SqlLiteDataAccess.ICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
+                }
+                lbICD10.ItemsSource = SqlLiteDataAccess.ICD10Segments;
+            }
+        }
+
+        private void AddGroupClick(object sender, RoutedEventArgs e)
+        {
+            SqlICD10Segment seg = new SqlICD10Segment("Enter Segment Title");
+            WinEditSegment wes = new WinEditSegment(seg);
+            wes.Owner = this;
+            wes.ShowDialog();
+            lbICD10.ItemsSource = null;
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
+                SqlLiteDataAccess.ICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
+            }
+            lbICD10.ItemsSource = SqlLiteDataAccess.ICD10Segments;
+        }
     }
 }

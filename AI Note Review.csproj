@@ -101,6 +101,9 @@
     <Compile Include="winDbRelICD10CheckpointsEditor.xaml.cs">
       <DependentUpon>winDbRelICD10CheckpointsEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WinEditSegment.xaml.cs">
+      <DependentUpon>WinEditSegment.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WinEnterText.xaml.cs">
       <DependentUpon>WinEnterText.xaml</DependentUpon>
     </Compile>
@@ -146,6 +149,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="winDbRelICD10CheckpointsEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WinEditSegment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

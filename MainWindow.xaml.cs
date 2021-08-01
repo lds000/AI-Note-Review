@@ -550,15 +550,16 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
             public void SetDataContext()
             {
 
-                //add hashtags here.
-
-                if (CF.CurrentDoc.PtAgeYrs > 65) CF.CurrentDoc.HashTags += "#Elderly, ";
+            //add hashtags here.
+                CF.CurrentDoc.HashTags = "";
+                if (CF.CurrentDoc.PtAgeYrs > 65) CF.CurrentDoc.HashTags += "!Elderly, ";
                 if (CF.CurrentDoc.PtSex.StartsWith("M")) CF.CurrentDoc.HashTags += "#Male, ";
                 if (CF.CurrentDoc.PtSex.StartsWith("F")) CF.CurrentDoc.HashTags += "#Female, ";
                 if (CF.CurrentDoc.PtAgeYrs < 4) CF.CurrentDoc.HashTags += "#Child, ";
-                if (CF.CurrentDoc.IsHTNUrgency) CF.CurrentDoc.HashTags += "#HTNUrgency, ";
-                if (CF.CurrentDoc.isO2Abnormal) CF.CurrentDoc.HashTags += "#Hypoxic, ";
-                if (CF.CurrentDoc.IsPregCapable) CF.CurrentDoc.HashTags += "@pregnantcapable, ";
+                if (CF.CurrentDoc.IsHTNUrgency) CF.CurrentDoc.HashTags += "!HTNUrgency, ";
+                if (CF.CurrentDoc.isO2Abnormal) CF.CurrentDoc.HashTags += "!Hypoxic, ";
+                if (CF.CurrentDoc.IsPregCapable) CF.CurrentDoc.HashTags += "!pregnantcapable, ";
+                if (CF.CurrentDoc.PtAgeYrs >= 13) CF.CurrentDoc.HashTags += "!sexuallyActiveAge, ";
 
 
 
@@ -873,6 +874,26 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
             w.Owner = this;
             w.ShowDialog();
         }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lbSegments == null) return;
+            if (lbSegments.SelectedValue == null) return;
+            SqlICD10Segment seg = lbSegments.SelectedValue as SqlICD10Segment;
+            if (seg != null)
+            {
+                winDbRelICD10CheckpointsEditor w = new winDbRelICD10CheckpointsEditor();
+                
+                foreach (SqlICD10Segment tmpSeg in w.lbICD10.Items)
+                {
+                    if (tmpSeg.ICD10SegmentID == seg.ICD10SegmentID)
+                    {
+                        w.lbICD10.SelectedValue = tmpSeg;
+                    }
+                }
+                w.ShowDialog();
+            }
+            }
     }
 
     public static class ExtensionMethods

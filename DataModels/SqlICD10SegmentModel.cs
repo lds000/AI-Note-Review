@@ -22,12 +22,12 @@ namespace AI_Note_Review
         {
         }
 
-        public SqlICD10Segment(string strCheckPointTitle)
+        public SqlICD10Segment(string strSegmentTitle)
         {
-            strCheckPointTitle = strCheckPointTitle.Replace("'", "''"); //used to avoid errors in titles with ' character
+            strSegmentTitle = strSegmentTitle.Replace("'", "''"); //used to avoid errors in titles with ' character
             string sql = "";
-            sql = $"INSERT INTO ICD10Segments (SegmentTitle) VALUES ('{strCheckPointTitle}');";
-            sql += $"Select * from Phrases where PhraseTitle = '{strCheckPointTitle}';"; //this part is to get the ID of the newly created phrase
+            sql = $"INSERT INTO ICD10Segments (SegmentTitle) VALUES ('{strSegmentTitle}');";
+            sql += $"Select * from ICD10Segments where SegmentTitle = '{strSegmentTitle}';"; //this part is to get the ID of the newly created phrase
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 SqlICD10Segment p = cnn.QueryFirstOrDefault<SqlICD10Segment>(sql);
