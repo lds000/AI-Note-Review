@@ -36,13 +36,24 @@ namespace AI_Note_Review
             this.Close();
         }
 
-        enum TagResult { Pass, Fail, FailNoCount };
+        private bool CheckTag(SqlTag tag)
+        {
+            if (CF.CurrentDoc.DocumentTags.Contains(tag.TagText)) return true; //do not double check tags
 
-        private TagResult CheckTagGroup(List<SqlTagRegEx> tmpTagRegExs)
+            List<SqlTagRegEx> tmpTagRegExs = tag.GetTagRegExs();
+
+            bool includeTag = CheckTagGroup(tmpTagRegExs);
+
+            if (includeTag) CF.CurrentDoc.DocumentTags.Add(tag.TagText);
+
+            return includeTag;
+        }
+
+        private bool CheckTagGroup(List<SqlTagRegEx> tmpTagRegExs)
         {
             foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
             {
-                if (TagRegEx.TagRegExType == 1 || TagRegEx.TagRegExType == 4) //Any, if one match then include tag
+                if (TagRegEx.TagRegExType == 1) //Any, if one match then include tag
                 {
                     bool isMatch = false;
                     foreach (string strRegEx in TagRegEx.RegExText.Split(','))
@@ -51,10 +62,10 @@ namespace AI_Note_Review
                             if (Regex.IsMatch(CF.CurrentDoc.NoteSectionText[TagRegEx.TargetSection].ToLower(), strRegEx.Trim().ToLower())) // /i is lower case directive for regex
                             {
                                 isMatch = true;
+                                break; //condition met, go to next.
                             }
-                        if (isMatch == false && TagRegEx.TagRegExType == 4) return TagResult.FailNoCount; //don't continue if type is "ANY NF" this is a stopper.
                     }
-                    if (!isMatch) return TagResult.Fail; //no conditions met for this one so all fail.
+                    if (!isMatch) return false; //no conditions met for this one so all fail.
                 }
 
                 //todo: check the logic for the rest!
@@ -66,7 +77,7 @@ namespace AI_Note_Review
                         if (CF.CurrentDoc.NoteSectionText[TagRegEx.TargetSection] != null)
                             if (!Regex.IsMatch(CF.CurrentDoc.NoteSectionText[TagRegEx.TargetSection], strRegEx.Trim() + "/i"))
                             {
-                                return TagResult.Fail; //any mismatch makes it false.
+                                return false; //any mismatch makes it false.
                             }
                     }
                 }
@@ -78,13 +89,13 @@ namespace AI_Note_Review
                         if (CF.CurrentDoc.NoteSectionText[TagRegEx.TargetSection] != null)
                             if (Regex.IsMatch(CF.CurrentDoc.NoteSectionText[TagRegEx.TargetSection], strRegEx.Trim() + "/i")) ;
                         {
-                            return TagResult.Fail; //any match makes it false
+                            return false; //any match makes it false
                         }
                     }
                 }
             }
 
-            return TagResult.Pass;
+            return true;
         }
 
         private void GetHashTags()
@@ -122,7 +133,6 @@ namespace AI_Note_Review
 
             List<int> AlreadyAddedPoints = new List<int>();
 
-
             foreach (SqlICD10Segment ns in CF.RelevantICD10Segments)
             {
                 Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
@@ -136,33 +146,16 @@ namespace AI_Note_Review
                     }
                     AlreadyAddedPoints.Add(cp.CheckPointID);
                     Console.WriteLine($"Now analyzing '{cp.CheckPointTitle}' checkpoint.");
-                    TagResult pass = TagResult.Pass;
+                    bool pass = true;
                     foreach (SqlTag tag in cp.GetTags())
                     {
-                        if (tag.TagText.Contains("Diarrhea"))
-                        {
-
-                        }
-
-                        TagResult includeTag;
-                        List<SqlTagRegEx> tmpTagRegExs = tag.GetTagRegExs();
-                        includeTag = CheckTagGroup(tmpTagRegExs);
-
-
-                        if (includeTag == TagResult.Fail || includeTag == TagResult.FailNoCount)
-                        {
-                            //tag fails, no match.
-                            pass = includeTag;
-                            break; //if the first tag does not qualify, then do not proceed to the next tag.
-                        }
-                        CF.CurrentDoc.DocumentTags.Add(tag.TagText);
+                        if (!CheckTag(tag)) pass = false;
                     }
-
-                    if (pass == TagResult.Pass)
+                    if (pass)
                     {
                         if (relType.Contains(cp.CheckPointType))
                         {
-                                CF.RelevantCP.Add(cp);
+                            CF.RelevantCP.Add(cp);
                         }
                         else
                         {
@@ -172,7 +165,7 @@ namespace AI_Note_Review
                     }
                     else
                     {
-                        if (relType.Contains(cp.CheckPointType) || pass == TagResult.FailNoCount)
+                        if (relType.Contains(cp.CheckPointType))
                         {
                             if (ns.ICD10SegmentID != 36) CF.IrrelaventCP.Add(cp); //do not include irrelevant for All diagnosis.
                         }

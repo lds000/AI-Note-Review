@@ -117,7 +117,6 @@ namespace AI_Note_Review
 
         private void UpdateCurrentCheckPoint()
         {
-            dpCheckpoint.DataContext = null;
             if (CurrentCheckpoint == null) return;
             dpCheckpoint.DataContext = CurrentCheckpoint;
             string strRtext = @"{\rtf1\ansi\ansicpg1252\uc1\htmautsp\deff2{\fonttbl{\f0\fcharset0 Times New Roman;}{\f2\fcharset0 Segoe UI;}}{\colortbl\red0\green0\blue0;\red255\green255\blue255;}\loch\hich\dbch\pard\plain\ltrpar\itap0{\lang1033\fs18\f2\cf0 \cf0\ql}}";
@@ -133,10 +132,9 @@ namespace AI_Note_Review
             string str2 = RTBtoStr(myRTB);
             StrToRTB(str2, myRTB);
 
-
-            /*
             using (var d = Dispatcher.DisableProcessing())
             {
+                /* your work... Use dispacher.begininvoke... */
 
                 spTags.Children.Clear();
                 foreach (SqlTag st in CurrentCheckpoint.GetTags())
@@ -161,7 +159,6 @@ namespace AI_Note_Review
                     spTags.Children.Add(b);
                 }
             }
-            */
         }
 
         private void B_Click(object sender, RoutedEventArgs e)
@@ -474,94 +471,6 @@ namespace AI_Note_Review
                 }
                 UpdateCurrentCheckPoint();
             }
-        }
-
-        private void TextBlock_LostFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
-            if (seg != null)
-            {
-                seg.SegmentComment = tbComment.Text;
-                seg.SaveToDB();
-            }
-
-        }
-        private void ButtonEditGroups_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void MenuItemEditSegment_Click(object sender, RoutedEventArgs e)
-        {
-            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
-            if (seg != null)
-            {
-                WinEditSegment wes = new WinEditSegment(seg);
-                wes.Owner = this;
-                wes.ShowDialog();
-                lbICD10.ItemsSource = null;
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
-                    SqlLiteDataAccess.ICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
-                }
-                lbICD10.ItemsSource = SqlLiteDataAccess.ICD10Segments;
-            }
-        }
-
-        private void AddGroupClick(object sender, RoutedEventArgs e)
-        {
-            SqlICD10Segment seg = new SqlICD10Segment("Enter Segment Title");
-            WinEditSegment wes = new WinEditSegment(seg);
-            wes.Owner = this;
-            wes.ShowDialog();
-            lbICD10.ItemsSource = null;
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
-                SqlLiteDataAccess.ICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
-            }
-            lbICD10.ItemsSource = SqlLiteDataAccess.ICD10Segments;
-        }
-
-        private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            StackPanel parent = (StackPanel)sender;
-            int cpID = int.Parse(parent.Tag.ToString());
-            DragDrop.DoDragDrop(parent, cpID, DragDropEffects.Move);
-        }
-        private void ListBox_Drop(object sender, DragEventArgs e)
-        {
-            SqlICD10Segment CurrentSeg = lbICD10.SelectedItem as SqlICD10Segment;
-            if (CurrentSeg != null)
-            {
-                Grid g = (Grid)sender;
-                SqlICD10Segment DestinationSeg = g.DataContext as SqlICD10Segment;
-                int cpID = (int)e.Data.GetData(typeof(int));
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    string sql = $"Select * from CheckPoints where CheckPointID = {cpID};";
-                    SqlCheckpoint cp = cnn.Query<SqlCheckpoint>(sql).FirstOrDefault();
-                    cp.TargetICD10Segment = DestinationSeg.ICD10SegmentID;
-                    cp.SaveToDB();
-                    RefreshICD10();
-                }
-            }
-        }
-
-        private void UCTag1_AddMe(object sender, EventArgs e)
-        {
-            UpdateCurrentCheckPoint();
         }
     }
 }

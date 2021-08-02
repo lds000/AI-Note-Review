@@ -11,6 +11,9 @@
     <Grid Background="Black">
         <DockPanel>
             <local:UC_PatientConsole DockPanel.Dock="Top"></local:UC_PatientConsole>
+            <StackPanel DockPanel.Dock="Left" Margin="5,0,10,0">
+                <Button Click="EditorClick" Style="{StaticResource LinkButton}">Editor</Button>
+            </StackPanel>
             <Border BorderBrush="White" DockPanel.Dock="Left">
                 <DockPanel>
                     <Label Content="{Binding Provider, FallbackValue=Provider Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
@@ -28,7 +31,7 @@
                         </ListBox>
                     </Border>
                     <Border Padding="5" HorizontalAlignment="Center" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" >
-                        <ListBox x:Name="lbSegments" ItemsSource="{Binding ICD10Segments}" Style="{StaticResource MyListBox}" SelectionChanged="ListBox_SelectionChanged">
+                        <ListBox ItemsSource="{Binding ICD10Segments}" Style="{StaticResource MyListBox}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
@@ -46,9 +49,6 @@
                 <Button Margin="100,0,0,0" VerticalAlignment="Center" Click="EditCP" Style="{StaticResource LinkButton}">Edit Checkpoints</Button>
             </StackPanel>
             <TabControl x:Name="tcNote">
-                <TabItem Foreground="Black" Header="CC">
-                    <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding CC}"></TextBox>
-                </TabItem>
                 <TabItem Foreground="Red" Header="HPI (2)">
                     <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding HPI}"></TextBox>
                 </TabItem>
