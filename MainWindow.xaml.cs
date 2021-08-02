@@ -36,6 +36,50 @@ namespace AI_Note_Review
     {
         string strApikey = "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";
 
+        public void SetDataContext()
+        {
+
+            //add hashtags here.
+            CF.CurrentDoc.HashTags = "";
+            if (CF.CurrentDoc.PtAgeYrs > 65) CF.CurrentDoc.HashTags += "!Elderly, ";
+            if (CF.CurrentDoc.PtSex.StartsWith("M")) CF.CurrentDoc.HashTags += "#Male, ";
+            if (CF.CurrentDoc.PtSex.StartsWith("F")) CF.CurrentDoc.HashTags += "#Female, ";
+            if (CF.CurrentDoc.PtAgeYrs < 4) CF.CurrentDoc.HashTags += "#Child, ";
+            if (CF.CurrentDoc.IsHTNUrgency) CF.CurrentDoc.HashTags += "!HTNUrgency, ";
+            if (CF.CurrentDoc.isO2Abnormal) CF.CurrentDoc.HashTags += "!Hypoxic, ";
+            if (CF.CurrentDoc.IsPregCapable) CF.CurrentDoc.HashTags += "!pregnantcapable, ";
+            if (CF.CurrentDoc.PtAgeYrs >= 13) CF.CurrentDoc.HashTags += "!sexuallyActiveAge, ";
+
+
+
+            CF.CurrentDoc.NoteSectionText[0] = $"{CF.CurrentDoc.PtAgeYrs} Sex{CF.CurrentDoc.PtSex}"; //Demographics 
+            CF.CurrentDoc.NoteSectionText[1] = CF.CurrentDoc.HPI + CF.CurrentDoc.ROS; //HPI
+            CF.CurrentDoc.NoteSectionText[2] = CF.CurrentDoc.CurrentMeds + CF.CurrentDoc.CurrentPrnMeds; //CurrentMeds
+            CF.CurrentDoc.NoteSectionText[3] = CF.CurrentDoc.ProblemList; //Active Problem List
+            CF.CurrentDoc.NoteSectionText[4] = CF.CurrentDoc.PMHx; //Past Medical History
+            CF.CurrentDoc.NoteSectionText[5] = CF.CurrentDoc.SocHx; //Social History
+            CF.CurrentDoc.NoteSectionText[6] = CF.CurrentDoc.Allergies; //Allergies
+            CF.CurrentDoc.NoteSectionText[7] = CF.CurrentDoc.Vitals; //Vital Signs
+            CF.CurrentDoc.NoteSectionText[8] = CF.CurrentDoc.Exam; //Examination
+            CF.CurrentDoc.NoteSectionText[9] = CF.CurrentDoc.Assessments; //Assessments
+            CF.CurrentDoc.NoteSectionText[10] = CF.CurrentDoc.Treatment; //Treatment
+            CF.CurrentDoc.NoteSectionText[11] = CF.CurrentDoc.LabsOrdered; //Labs
+            CF.CurrentDoc.NoteSectionText[12] = CF.CurrentDoc.ImagesOrdered; //Imaging
+            CF.CurrentDoc.NoteSectionText[13] = CF.CurrentDoc.ROS; //Review of Systems
+            CF.CurrentDoc.NoteSectionText[14] = CF.CurrentDoc.Assessments; //Assessments
+            CF.CurrentDoc.NoteSectionText[15] = CF.CurrentDoc.MedsStarted; //Prescribed Medications
+            CF.CurrentDoc.NoteSectionText[16] = CF.CurrentDoc.FamHx;
+            CF.CurrentDoc.NoteSectionText[17] = CF.CurrentDoc.SurgHx;
+            CF.CurrentDoc.NoteSectionText[18] = CF.CurrentDoc.HashTags;
+            CF.CurrentDoc.NoteSectionText[19] = CF.CurrentDoc.CC;
+
+            //CF.CurrentDoc.NoteSectionText[1].ParseHistory();
+
+            this.DataContext = null;
+            this.DataContext = CF.CurrentDoc;
+        }
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -88,7 +132,13 @@ namespace AI_Note_Review
                 "He denies diarrhea or constipation.  He states he cannot tolerate a full meal due to the pain.  " +
                 "Mark has tried OTC medications.  He denies chest pain.  He denies blood in the vomit. Thus far he has tried ibuprofen and tylenol";
 
+            CF.CurrentDoc.HPI = "Dalton Anthony Ware is a 26 y.o. male who presents with a chief complaint of rash, blisters. Patient presents to the ER today with rash, lesions in the mouth, nose and eye on the left.He indicates that about 2 - 3 weeks ago he felt like he got a cold / sinus infection.He was taking multiple medications for this including NSAID, mucinex, spray in the nose to help with this.Didn't have a cough, didn't have a fever.  Had some chest discomfort that he felt was due to some chest congestion that seems to have resolved.Never had any n / v / d.He has not had any pain with urination, but indicates that his urine smells funny like he has had asparagus, but he has not. On Tuesday felt like he was getting a canker sore on the left side of the lip and by the next day was getting larger.He now has very large sores on the left, bilateral cheeks and under the tongue, also feels like something in the throat as well.He has some pain and irritation up in the nose on the left side, feels some crusting there.He has had purulent drainage from the left eye as well over the last couple of days and some generalized irritation.He has not been able to eat / drink much over the last couple of days due to the oral discomfort.He did use a new toothpaste once prior to this all starting, no longer using, this was thought to be part of the cause.  He denies any current n / v / d.He was told that might be SJS and he then looked at the scrotum today and feels like it might be more red than normal, but again, no pain with urination.No fever or chills.  He was never tested for COVID during the URI type illness that he had prior.He does currently complain of headache and pressure behind the eyes as well. No oral sex, patient states ever.Neither have ever had STI otherwise. Patients partner is 7 months pregnant at this point as well.He has never had acold sore, but does get canker sores occasionally.";
+
             CF.CurrentDoc.CurrentMeds = "ibuprofen, Tylenol, prednisone";
+
+
+            //CF.CurrentDoc.HPI.ParseHistory();
+            //Close();
 
             SetDataContext();
 
@@ -547,46 +597,6 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
             
         }
 
-            public void SetDataContext()
-            {
-
-            //add hashtags here.
-                CF.CurrentDoc.HashTags = "";
-                if (CF.CurrentDoc.PtAgeYrs > 65) CF.CurrentDoc.HashTags += "!Elderly, ";
-                if (CF.CurrentDoc.PtSex.StartsWith("M")) CF.CurrentDoc.HashTags += "#Male, ";
-                if (CF.CurrentDoc.PtSex.StartsWith("F")) CF.CurrentDoc.HashTags += "#Female, ";
-                if (CF.CurrentDoc.PtAgeYrs < 4) CF.CurrentDoc.HashTags += "#Child, ";
-                if (CF.CurrentDoc.IsHTNUrgency) CF.CurrentDoc.HashTags += "!HTNUrgency, ";
-                if (CF.CurrentDoc.isO2Abnormal) CF.CurrentDoc.HashTags += "!Hypoxic, ";
-                if (CF.CurrentDoc.IsPregCapable) CF.CurrentDoc.HashTags += "!pregnantcapable, ";
-                if (CF.CurrentDoc.PtAgeYrs >= 13) CF.CurrentDoc.HashTags += "!sexuallyActiveAge, ";
-
-
-
-            CF.CurrentDoc.NoteSectionText[0] = $"{CF.CurrentDoc.PtAgeYrs} Sex{CF.CurrentDoc.PtSex}"; //Demographics 
-                CF.CurrentDoc.NoteSectionText[1] = CF.CurrentDoc.HPI + CF.CurrentDoc.ROS; //HPI
-                CF.CurrentDoc.NoteSectionText[2] = CF.CurrentDoc.CurrentMeds + CF.CurrentDoc.CurrentPrnMeds; //CurrentMeds
-                CF.CurrentDoc.NoteSectionText[3] = CF.CurrentDoc.ProblemList; //Active Problem List
-                CF.CurrentDoc.NoteSectionText[4] = CF.CurrentDoc.PMHx; //Past Medical History
-                CF.CurrentDoc.NoteSectionText[5] = CF.CurrentDoc.SocHx; //Social History
-                CF.CurrentDoc.NoteSectionText[6] = CF.CurrentDoc.Allergies; //Allergies
-                CF.CurrentDoc.NoteSectionText[7] = CF.CurrentDoc.Vitals; //Vital Signs
-                CF.CurrentDoc.NoteSectionText[8] = CF.CurrentDoc.Exam; //Examination
-                CF.CurrentDoc.NoteSectionText[9] = CF.CurrentDoc.Assessments; //Assessments
-                CF.CurrentDoc.NoteSectionText[10] = CF.CurrentDoc.Treatment; //Treatment
-                CF.CurrentDoc.NoteSectionText[11] = CF.CurrentDoc.LabsOrdered; //Labs
-                CF.CurrentDoc.NoteSectionText[12] = CF.CurrentDoc.ImagesOrdered; //Imaging
-                CF.CurrentDoc.NoteSectionText[13] = CF.CurrentDoc.ROS; //Review of Systems
-                CF.CurrentDoc.NoteSectionText[14] = CF.CurrentDoc.Assessments; //Assessments
-                CF.CurrentDoc.NoteSectionText[15] = CF.CurrentDoc.MedsStarted; //Prescribed Medications
-                CF.CurrentDoc.NoteSectionText[16] = CF.CurrentDoc.FamHx;
-                CF.CurrentDoc.NoteSectionText[17] = CF.CurrentDoc.SurgHx;
-                CF.CurrentDoc.NoteSectionText[18] = CF.CurrentDoc.HashTags;
-
-
-                this.DataContext = null;
-                this.DataContext = CF.CurrentDoc;
-            }
 
             public void processDocument(HtmlDocument HDoc)
             {
@@ -913,5 +923,96 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
             RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace;
             return Regex.IsMatch(input, strRegEx, options);
         }
+
+
+
+        public static string ParseHistory(this string strInput)
+        {
+            char[] delimiterChars = { ' ', ',', '.', ':', '\t' };
+
+            string strHPI = strInput;
+            strHPI = strHPI.Replace("has not had", "hasnothad");
+            strHPI = strHPI.Replace("has had", "hashad");
+            strHPI = strHPI.Replace("not have", "nothave");
+
+            string[] strNegMarker = { "denies", "no history of", "no hx of", "does not have", "didn't have","nothave", "hasnothad", "reports", "admits" };
+            string[] strPosMarker = { "complain", "c/o", "endorses","indicates","hashad", "presents", "presented", "presenting", "has been", "states", "does have" };
+            string[] words = strHPI.Split(delimiterChars);
+            System.Console.WriteLine($"{words.Length} words in text:");
+            string strCompare = "";
+            Queue<string> strStack = new Queue<string>();
+            string strPosNeg = "Intro";
+            string strLastCompareResult = "";
+            string strResult = "";
+            foreach (var word in words)
+            {
+                if (word == "") continue;
+                strCompare += " " + word.ToLower();
+                strStack.Enqueue(word);
+
+                bool strContainsPos = false;
+                foreach (string str in strPosMarker)
+                {
+                    if (strCompare.Contains(str))
+                    {
+                        strContainsPos = true;
+                        strResult = str;
+                        break;
+                    }
+                }
+                if (strContainsPos)
+                {
+                    string strOutput = "";
+                    while (strStack.Count > 0)
+                    {
+                        strOutput += strStack.Dequeue() + " ";
+                    }
+                    strOutput = strOutput.Trim();
+                    strOutput = strOutput.Replace(strResult, "");
+                    System.Console.WriteLine($"{strPosNeg}- <{strLastCompareResult}>  {strOutput}");
+                    strLastCompareResult = strResult;
+                    strPosNeg = "Pos";
+                    strCompare = "";
+                }
+
+                bool strContainsNeg = false;
+                foreach (string str in strNegMarker)
+                {
+                    if (strCompare.Contains(str))
+                    {
+                        strContainsNeg = true;
+                        strResult = str;
+                        break;
+                    }
+                }
+                if (strContainsNeg)
+                {
+                    string strOutput = "";
+                    while (strStack.Count > 0)
+                    {
+                        strOutput += strStack.Dequeue() + " ";
+                    }
+                    strOutput = strOutput.Trim();
+                    strOutput = strOutput.Replace(strResult, "");
+                    System.Console.WriteLine($"{strPosNeg}- <{strLastCompareResult}>  {strOutput}");
+                    strLastCompareResult = strResult;
+                    strPosNeg = "Neg";
+                    strCompare = "";
+                }
+            }
+            string strOutputFinal = "";
+            while (strStack.Count > 0)
+            {
+                strOutputFinal += strStack.Dequeue() + " ";
+            }
+            strOutputFinal = strOutputFinal.Trim();
+            if (strResult!="")
+            strOutputFinal = strOutputFinal.Replace(strResult, "");
+            System.Console.WriteLine($"{strPosNeg}- <{strLastCompareResult}>  {strOutputFinal}");
+
+            return strHPI;
+        }
+
+
     }
 }

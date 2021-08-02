@@ -1,0 +1,4 @@
+﻿Not working as expected.
+	When editing ICD10segment, not reloading.
+	When editing a tag and recheck note, not updating tag changes.
+	Copy the Tag UC from the checkpoint editor to the main editor, or better yet, combine them into one user control
