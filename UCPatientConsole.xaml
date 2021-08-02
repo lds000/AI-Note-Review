@@ -7,6 +7,9 @@
              mc:Ignorable="d" 
              Height="100" d:DesignWidth="900">
     <Border Padding="5" Background="Black" Name="bPatient" BorderBrush="White" BorderThickness="1">
+        <Border.Resources>
+            <local:HashTagConverter x:Key="HashConvert"></local:HashTagConverter>        
+        </Border.Resources>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -82,10 +85,15 @@
                 </Grid>
             </Grid>
             <Border BorderBrush="White" BorderThickness="1" Grid.Row="1">
-                <Grid Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
                     <Viewbox HorizontalAlignment="Left">
                         <Label Foreground="White" Content="{Binding Path=CC, FallbackValue=-}"></Label>
                     </Viewbox>
+                    <TextBlock MaxWidth="200" Text="{Binding HashTags}" Grid.Column="1" Style="{StaticResource MyTbStyle}"></TextBlock>
                 </Grid>
             </Border>
 

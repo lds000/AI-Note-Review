@@ -34,10 +34,14 @@ namespace AI_Note_Review
                 double dblTop = wp.WindowPositionTop;
                 double dblLeft = wp.WindowPositionLeft;
 
+                    double primW = System.Windows.SystemParameters.PrimaryScreenWidth;
+                    double primH = System.Windows.SystemParameters.PrimaryScreenHeight;
+                double virtW = SystemParameters.VirtualScreenWidth;
+                double virtH = SystemParameters.VirtualScreenHeight;
                 //if (dblTop < 0) dblTop = 0; //do this if you don't have two screens.
                 //if (dblLeft < 0) dblLeft = 0;
 
-                _Window.Top = dblTop;
+            _Window.Top = dblTop;
                 _Window.Left = dblLeft;
         }
         public static void SaveWindowPosition(Window _Window)
