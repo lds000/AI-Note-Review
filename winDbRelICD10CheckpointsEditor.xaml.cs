@@ -386,6 +386,10 @@ namespace AI_Note_Review
                     //CurrentCheckpoint.SaveToDB();
                 }
             }
+            else
+            {
+                MessageBox.Show("Select an ICD10 segment 1st");
+            }
         }
 
         private void deleteCP(object sender, RoutedEventArgs e)
@@ -472,6 +476,8 @@ namespace AI_Note_Review
                 {
                     cnn.Execute(sql);
                 }
+                SqlTagRegEx srex = new SqlTagRegEx(tg.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
+
                 UpdateCurrentCheckPoint();
             }
         }

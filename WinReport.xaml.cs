@@ -24,10 +24,8 @@ namespace AI_Note_Review
         {
             InitializeComponent();
             
-            GetHashTags();
-
+            GetSegments();
             lbSegmentsCheck.ItemsSource = CF.RelevantICD10Segments;
-
             GenerateReport();
         }
 
@@ -38,7 +36,7 @@ namespace AI_Note_Review
 
         enum TagResult { Pass, Fail, FailNoCount };
 
-        private TagResult CheckTagGroup(List<SqlTagRegEx> tmpTagRegExs)
+        private TagResult CheckTagRegExs(List<SqlTagRegEx> tmpTagRegExs)
         {
             foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
             {
@@ -87,28 +85,23 @@ namespace AI_Note_Review
             return TagResult.Pass;
         }
 
-        private void GetHashTags()
+        private void GetSegments()
         {
-            CF.CurrentDoc.DocumentTags.Clear();
             //get icd10 segments
             CF.RelevantICD10Segments.Clear();
-
             CF.RelevantICD10Segments = CF.CurrentDoc.ICD10Segments;
-            if (CF.CurrentDoc.IsHTNUrgency)
-            {
-                CF.RelevantICD10Segments.Add(SqlLiteDataAccess.GetSegment(40)); //pull in HTNUrgencySegment
-            }
-
+            if (CF.CurrentDoc.IsHTNUrgency) CF.RelevantICD10Segments.Add(SqlLiteDataAccess.GetSegment(40)); //pull in HTNUrgencySegment
             CF.RelevantICD10Segments.Add(SqlLiteDataAccess.GetSegment(36)); //add general segment that applies to all visits.
         }
 
         private void GenerateReport()
         {
 
-            CF.PassedCP.Clear();
-            CF.FailedCP.Clear();
+            CF.CurrentDoc.DocumentTags.Clear();
+            CF.PassedCheckPoints.Clear();
+            CF.FailedCheckPoints.Clear();
             CF.IrrelaventCP.Clear();
-            CF.RelevantCP.Clear();
+            CF.RelevantCheckPoints.Clear();
 
 
             if (CF.RelevantICD10Segments.Count == 0)
@@ -118,86 +111,73 @@ namespace AI_Note_Review
             }
 
             //todo put into database as relevant/irrelavent vs pass/fail
-            int[] relType = { 5, 6, 9, 10, 12 };
-
+            int[] relType = { 5, 6, 9, 10, 12 }; //this is a cheesy short term fix
             List<int> AlreadyAddedPoints = new List<int>();
-
 
             foreach (SqlICD10Segment ns in CF.RelevantICD10Segments)
             {
-                Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
-
-
+                //Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
                 foreach (SqlCheckpoint cp in ns.GetCheckPoints())
                 {
-                    if (AlreadyAddedPoints.Contains(cp.CheckPointID))
+                    if (AlreadyAddedPoints.Contains(cp.CheckPointID)) //no need to double check
                     {
                         continue;
                     }
                     AlreadyAddedPoints.Add(cp.CheckPointID);
-                    Console.WriteLine($"Now analyzing '{cp.CheckPointTitle}' checkpoint.");
-                    TagResult pass = TagResult.Pass;
-                    foreach (SqlTag tag in cp.GetTags())
+                    ///Console.WriteLine($"Now analyzing '{cp.CheckPointTitle}' checkpoint.");
+                    TagResult trTagResult = TagResult.Pass;
+                    foreach (SqlTag tagCurrentTag in cp.GetTags())
                     {
-                        if (tag.TagText.Contains("Diarrhea"))
-                        {
+                        TagResult trCurrentTagResult;
+                        List<SqlTagRegEx> tmpTagRegExs = tagCurrentTag.GetTagRegExs();
+                        trCurrentTagResult = CheckTagRegExs(tmpTagRegExs);
 
-                        }
-
-                        TagResult includeTag;
-                        List<SqlTagRegEx> tmpTagRegExs = tag.GetTagRegExs();
-                        includeTag = CheckTagGroup(tmpTagRegExs);
-
-
-                        if (includeTag == TagResult.Fail || includeTag == TagResult.FailNoCount)
+                        if (trCurrentTagResult == TagResult.Fail || trCurrentTagResult == TagResult.FailNoCount)
                         {
                             //tag fails, no match.
-                            pass = includeTag;
+                            trTagResult = trCurrentTagResult;
                             break; //if the first tag does not qualify, then do not proceed to the next tag.
                         }
-                        CF.CurrentDoc.DocumentTags.Add(tag.TagText);
+                        CF.CurrentDoc.DocumentTags.Add(tagCurrentTag.TagText);
                     }
 
-                    if (pass == TagResult.Pass)
+                    if (trTagResult == TagResult.Pass)
                     {
                         if (relType.Contains(cp.CheckPointType))
                         {
-                                CF.RelevantCP.Add(cp);
+                                CF.RelevantCheckPoints.Add(cp);
                         }
                         else
                         {
-                            if (ns.ICD10SegmentID != 36) CF.PassedCP.Add(cp); //do not include passed for All diagnosis.
+                            if (ns.ICD10SegmentID != 36) CF.PassedCheckPoints.Add(cp); //do not include passed for All diagnosis.
                         }
-
                     }
                     else
                     {
-                        if (relType.Contains(cp.CheckPointType) || pass == TagResult.FailNoCount)
+                        if (relType.Contains(cp.CheckPointType) || trTagResult == TagResult.FailNoCount)
                         {
                             if (ns.ICD10SegmentID != 36) CF.IrrelaventCP.Add(cp); //do not include irrelevant for All diagnosis.
                         }
                         else
                         {
-                            CF.FailedCP.Add(cp);
+                            CF.FailedCheckPoints.Add(cp);
                         }
                     }
                 }
+                //todo: there must be a better function to call to refresh the itemssource
                 lbFail.ItemsSource = null;
                 lbPassed.ItemsSource = null;
                 lbIrrelavant.ItemsSource = null;
                 lbRelavant.ItemsSource = null;
 
-                lbFail.ItemsSource = CF.FailedCP;
-                lbPassed.ItemsSource = CF.PassedCP;
+                lbFail.ItemsSource = CF.FailedCheckPoints;
+                lbPassed.ItemsSource = CF.PassedCheckPoints;
                 lbIrrelavant.ItemsSource = CF.IrrelaventCP;
-                lbRelavant.ItemsSource = CF.RelevantCP;
+                lbRelavant.ItemsSource = CF.RelevantCheckPoints;
 
             }
 
-
-
             //Generate Report
-
             Console.WriteLine($"Document report:");
             foreach (string strTag in CF.CurrentDoc.DocumentTags)
             {
@@ -205,19 +185,19 @@ namespace AI_Note_Review
             }
 
             Console.WriteLine($"Passed Checkpoints");
-            foreach (SqlCheckpoint cp in CF.PassedCP)
+            foreach (SqlCheckpoint cp in CF.PassedCheckPoints)
             {
                 Console.WriteLine($"\t{cp.CheckPointTitle}");
             }
 
             Console.WriteLine($"Failed Checkpoints");
-            foreach (SqlCheckpoint cp in CF.FailedCP)
+            foreach (SqlCheckpoint cp in CF.FailedCheckPoints)
             {
                 Console.WriteLine($"\t{cp.CheckPointTitle}");
             }
 
             Console.WriteLine($"Relevant Checkpoints");
-            foreach (SqlCheckpoint cp in CF.RelevantCP)
+            foreach (SqlCheckpoint cp in CF.RelevantCheckPoints)
             {
                 Console.WriteLine($"\t{cp.CheckPointTitle}");
             }
@@ -257,12 +237,12 @@ namespace AI_Note_Review
             lbIrrelavant.ItemsSource = null;
             lbRelavant.ItemsSource = null;
 
-            GetHashTags();
+            GetSegments();
 
-            lbFail.ItemsSource = CF.FailedCP;
-            lbPassed.ItemsSource = CF.PassedCP;
+            lbFail.ItemsSource = CF.FailedCheckPoints;
+            lbPassed.ItemsSource = CF.PassedCheckPoints;
             lbIrrelavant.ItemsSource = CF.IrrelaventCP;
-            lbRelavant.ItemsSource = CF.RelevantCP;
+            lbRelavant.ItemsSource = CF.RelevantCheckPoints;
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)

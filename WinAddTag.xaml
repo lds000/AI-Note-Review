@@ -7,9 +7,30 @@
         mc:Ignorable="d"
         Topmost="True"
         WindowStartupLocation="CenterOwner"
-        Title="WinAddTag" Height="350" Width="350">
+        Title="WinAddTag" Height="350" Width="500">
     <DockPanel Background="Black">
-        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="16" Style="{StaticResource MyTbStyle}">Tag Selector</TextBlock>
+        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="16" Style="{StaticResource MyTbStyle}" Margin="128,0">Tag Selector</TextBlock>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#CC">CC</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#Query">Query</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#CurrentDx">CurrentDx</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#CurrentMed">CurrentMed</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#Rx">Rx</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#Exam">Exam</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#HPI">HPI</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#Imaging">Imaging</Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#Labs">Labs</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#Allergy">Allergy</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#CurrentMed">CurrentMed</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#Rx">Rx</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#Exam">Exam</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#HPI">HPI</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#Imaging">Imaging</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#Suggest">Suggest</Button>
+            <Button Margin="3,0,3,0" Click="btnClueClick" Style="{StaticResource LinkButton}" FontSize="14" Tag="#Vitals">Vitals</Button>
+        </StackPanel>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

@@ -60,5 +60,11 @@ namespace AI_Note_Review
                 this.Close();
             }
         }
+
+        private void btnClueClick(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            tbSearch.Text = b.Tag.ToString();
+        }
     }
 }
