@@ -36,12 +36,17 @@
                                     <ColumnDefinition Width="80"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="1" DockPanel.Dock="Top" Text="{Binding Path=SegmentTitle}" ToolTip="{Binding Path=SegmentComment}"/>
                                 <StackPanel Grid.Column="0" Orientation="Horizontal">
                                     <TextBlock Grid.Column="1" Margin="0" Padding="0" Text="{Binding Path=icd10Chapter}" />
                                     <TextBlock Margin="0" Padding="0" Text="{Binding Path=icd10CategoryStart}"/>
                                     <TextBlock Margin="0" Padding="0" Text="-"/>
                                     <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=icd10CategoryEnd}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <TextBlock Grid.Column="1" DockPanel.Dock="Top" Text="{Binding Path=SegmentTitle}" ToolTip="{Binding Path=SegmentComment}"/>
+                                    <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
+                                    <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding CheckPointCount}"></TextBlock>
+                                    <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
                                 </StackPanel>
                             </Grid>
                             

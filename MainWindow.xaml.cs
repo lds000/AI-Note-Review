@@ -75,8 +75,8 @@ namespace AI_Note_Review
 
             //CF.CurrentDoc.NoteSectionText[1].ParseHistory();
 
-            this.DataContext = null;
-            this.DataContext = CF.CurrentDoc;
+            //this.DataContext = null;
+            //this.DataContext = CF.CurrentDoc;
         }
 
 
@@ -141,7 +141,7 @@ namespace AI_Note_Review
             //Close();
 
             SetDataContext();
-
+            this.DataContext = CF.CurrentDoc;
 
             //winDbRelICD10CheckpointsEditor wdb = new winDbRelICD10CheckpointsEditor();
             //wdb.ShowDialog();
@@ -316,7 +316,7 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
         public void processUnlocked(HtmlDocument HDoc)
         {
             Console.WriteLine("Processing document");
-            this.DataContext = null;
+            //this.DataContext = null;
             string strNote = HDoc.Body.InnerText;
             if (strNote == null) return;
             string strCommand = "";
@@ -482,6 +482,16 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
                 strVitals = CF.CurrentDoc.Vitals.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)[0];
             }
             strVitals = strVitals.Trim().TrimEnd('.');
+
+            CF.CurrentDoc.VitalsRR = 0;
+            CF.CurrentDoc.VitalsHR = 0;
+            CF.CurrentDoc.VitalsSystolic = 0;
+            CF.CurrentDoc.VitalsDiastolic = 0;
+            CF.CurrentDoc.VitalsTemp = 0;
+            CF.CurrentDoc.VitalsO2 = 0;
+            CF.CurrentDoc.VitalsWt = 0;
+            CF.CurrentDoc.VitalsBMI = 0;
+
             foreach (string strPartVital in strVitals.Split(','))
             {
                 if (strPartVital.Contains("BP"))
@@ -497,6 +507,7 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
                     }
 
                 }
+
 
                 if (strPartVital.Contains("HR"))
                 {
@@ -580,8 +591,9 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
 
 
 
-                //parse icd10
-                foreach (var tmpAssessment in CF.CurrentDoc.Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            //parse icd10
+            CF.CurrentDoc.ICD10s = new List<string>();
+            foreach (var tmpAssessment in CF.CurrentDoc.Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (tmpAssessment.Contains(" - "))
                     {
@@ -885,6 +897,7 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
             w.ShowDialog();
         }
 
+        /*
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (lbSegments == null) return;
@@ -904,6 +917,20 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
                 w.ShowDialog();
             }
             }
+            */
+
+        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void spReviewDate_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            WinGetReviewDate wr = new WinGetReviewDate();
+            wr.Owner = this;
+            wr.ShowDialog();
+            CF.CurrentDoc.ReviewDate = wr.SelectedDate;
+        }
     }
 
     public static class ExtensionMethods

@@ -9,34 +9,47 @@
         Closing="Window_Closing"
         Title="MainWindow" Height="450" Width="900">
     <Grid Background="Black">
+        <Grid.Resources>
+            <local:ICD10Segments x:Key="ICD10Segments"/>
+        </Grid.Resources>
         <DockPanel>
             <local:UC_PatientConsole DockPanel.Dock="Top"></local:UC_PatientConsole>
             <Border BorderBrush="White" DockPanel.Dock="Left">
                 <DockPanel>
-                    <Label Content="{Binding Provider, FallbackValue=Provider Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
-                    <Label Content="{Binding Facility, FallbackValue=Clinic Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
-                    <Label MouseDown="Label_MouseDown" Content="{Binding VisitDate, FallbackValue=6/23/2021}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
-                    <Border Padding="5" HorizontalAlignment="Center" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" >
-                        <ListBox ItemsSource="{Binding ICD10s}" Style="{StaticResource MyListBox}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                    <Border BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" Padding="3" Margin="3">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Provider, FallbackValue=Provider Name}" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
+                            <Label Grid.Row="1" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Facility, FallbackValue=Clinic Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
+                            <Label Grid.Row="2" Grid.Column="0" Margin="0" Padding="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Left" FontSize="12">Review Date:</Label>
+                            <Button Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" Padding="0" Content="{Binding ReviewDateStr, FallbackValue=1/1/1900}" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="12"></Button>
+                            <Label Grid.Row="3" Grid.Column="0" Margin="0" Padding="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Left" FontSize="12">Visit Date:</Label>
+                            <Label Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Padding="0" MouseDown="Label_MouseDown" Content="{Binding VisitDate, FallbackValue=6/23/2021}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
+                        </Grid>
                     </Border>
-                    <Border Padding="5" HorizontalAlignment="Center" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" >
-                        <ListBox x:Name="lbSegments" ItemsSource="{Binding ICD10Segments}" Style="{StaticResource MyListBox}" SelectionChanged="ListBox_SelectionChanged">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=SegmentTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                    <Border Margin="3" Padding="3" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" >
+                        <StackPanel>
+                            <Label Foreground="Gray" Margin="0" Padding="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Left" FontSize="12">Checkpoint Templates:</Label>
+                            <ListBox ItemsSource="{Binding ICD10s}" Style="{StaticResource MyListBox}" BorderBrush="Gray">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
+                                            <ItemsControl FontSize="10" Margin="10,0,0,0" ItemsSource="{Binding Converter={StaticResource ICD10Segments}}"></ItemsControl>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
                     </Border>
                 </DockPanel>
             </Border>

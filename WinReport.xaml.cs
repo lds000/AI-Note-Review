@@ -45,6 +45,10 @@ namespace AI_Note_Review
                     bool isMatch = false;
                     foreach (string strRegEx in TagRegEx.RegExText.Split(','))
                     {
+                        if (strRegEx.Contains("ASA"))
+                        {
+
+                        }
                         if (CF.CurrentDoc.NoteSectionText[TagRegEx.TargetSection] != null)
                             if (Regex.IsMatch(CF.CurrentDoc.NoteSectionText[TagRegEx.TargetSection].ToLower(), strRegEx.Trim().ToLower())) // /i is lower case directive for regex
                             {

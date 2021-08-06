@@ -1,0 +1,19 @@
+﻿<Window x:Class="AI_Note_Review.WinGetReviewDate"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        WindowStartupLocation="CenterOwner"
+        xmlns:local="clr-namespace:AI_Note_Review"
+        mc:Ignorable="d"
+        Title="WinGetReviewDate" Height="150" Width="250">
+    <DockPanel Background="Black">
+        <TextBlock DockPanel.Dock="Top" Style="{StaticResource MyTbStyle}" HorizontalAlignment="Center">Pick a date</TextBlock>
+        <Button DockPanel.Dock="Bottom" HorizontalAlignment="Center" Style="{StaticResource LinkButton}">Cancel</Button>
+        <DatePicker Name="calDate" SelectedDateChanged="DatePicker_SelectedDateChanged">
+            
+        </DatePicker>
+
+    </DockPanel>
+    
+</Window>

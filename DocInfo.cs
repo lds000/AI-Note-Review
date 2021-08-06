@@ -1,20 +1,86 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class DocInfo
+    public class DocInfo : INotifyPropertyChanged
     {
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // This method is called by the Set accessor of each property.  
+        // The CallerMemberName attribute that is applied to the optional propertyName  
+        // parameter causes the property name of the caller to be substituted as an argument.  
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
         public DocInfo()
         {
             ICD10s = new List<string>();
         }
-        public string PtName { get; set; }
-        public int PtAgeYrs { get; set; }
+
+        private string ptName;
+        public string PtName
+        {
+            get
+            {
+                return ptName;
+            }
+            set
+            {
+                ptName = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public int ptAgeYrs;
+        public int PtAgeYrs
+        {
+            get
+            {
+                return ptAgeYrs;
+            }
+            set
+            {
+                ptAgeYrs = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private DateTime reviewDate;
+        public DateTime ReviewDate
+        {
+            get {
+                return reviewDate; 
+            }
+            set
+            {
+                reviewDate = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("ReviewDateStr");
+            }
+        }
+
+        public string ReviewDateStr
+        {
+            get
+            {
+                if (reviewDate < new DateTime(2010, 1, 1)) return "Enter Date";
+                return reviewDate.ToShortDateString();
+            }
+        }
+
+
+
 
 
         DateTime _DOB;
@@ -24,11 +90,14 @@ namespace AI_Note_Review
             {
                 return _DOB;
             }
-            
+
             set
             {
                 _DOB = value;
                 PtAgeYrs = GetAgeInYears();
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("PtAgeYrs");
+                NotifyPropertyChanged("AgeStr");
             }
         }
         public string AgeStr
@@ -83,12 +152,34 @@ namespace AI_Note_Review
             if (now.Month < tmpDOB.Month || (now.Month == tmpDOB.Month && now.Day < tmpDOB.Day)) age--;
             return age;
         }
-        public List<string> ICD10s { get; set;}
+
+        public List<string> iCD10s;
+        public List<string> ICD10s
+        {
+            get
+            {
+                return iCD10s;
+            }
+            set
+            {
+                iCD10s = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("ICD10Segments");
+            }
+        }
+
+        public List<string> ICD10Seglist
+        {
+            get
+            {
+                return new List<string>();
+            }
+        }
 
         private List<SqlICD10Segment> _ICD10Segments = new List<SqlICD10Segment>();
-        public List<SqlICD10Segment> ICD10Segments 
+        public List<SqlICD10Segment> ICD10Segments
         {
-        get
+            get
             {
                 _ICD10Segments.Clear();
                 foreach (string strICD10 in ICD10s)
@@ -114,52 +205,456 @@ namespace AI_Note_Review
                 return _ICD10Segments;
             }
         }
+        public string PtSex
+        {
+            get
+            {
+                return ptSex;
+            }
+            set
+            {
+                ptSex = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string PtID
+        {
+            get
+            {
+                return ptID;
+            }
+            set
+            {
+                ptID = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string Facility
+        {
+            get
+            {
+                return facility;
+            }
+            set
+            {
+                facility = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string VisitDate
+        {
+            get
+            {
+                return visitDate;
+            }
+            set
+            {
+                visitDate = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string Provider
+        {
+            get
+            {
+                return provider;
+            }
+            set
+            {
+                provider = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string ReasonForAppt
+        {
+            get
+            {
+                return reasonForAppt;
+            }
+            set
+            {
+                reasonForAppt = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string Allergies
+        {
+            get
+            {
+                return allergies;
+            }
+            set
+            {
+                allergies = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string NoteHTML
+        {
+            get
+            {
+                return noteHTML;
+            }
+            set
+            {
+                noteHTML = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string Vitals
+        {
+            get
+            {
+                return vitals;
+            }
+            set
+            {
+                vitals = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string CC
+        {
+            get
+            {
+                return cC;
+            }
+            set
+            {
+                cC = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string HPI
+        {
+            get
+            {
+                return hPI;
+            }
+            set
+            {
+                hPI = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string CurrentMeds
+        {
+            get
+            {
+                return currentMeds;
+            }
+            set
+            {
+                currentMeds = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string CurrentPrnMeds
+        {
+            get
+            {
+                return currentPrnMeds;
+            }
+            set
+            {
+                currentPrnMeds = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string ProblemList
+        {
+            get
+            {
+                return problemList;
+            }
+            set
+            {
+                problemList = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string ROS
+        {
+            get
+            {
+                return rOS;
+            }
+            set
+            {
+                rOS = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string PMHx
+        {
+            get
+            {
+                return pMHx;
+            }
+            set
+            {
+                pMHx = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string SocHx
+        {
+            get
+            {
+                return socHx;
+            }
+            set
+            {
+                socHx = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string GeneralHx
+        {
+            get
+            {
+                return generalHx;
+            }
+            set
+            {
+                generalHx = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string Exam
+        {
+            get
+            {
+                return exam;
+            }
+            set
+            {
+                exam = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string Treatment
+        {
+            get
+            {
+                return treatment;
+            }
+            set
+            {
+                treatment = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string MedsStarted
+        {
+            get
+            {
+                return medsStarted;
+            }
+            set
+            {
+                medsStarted = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string ImagesOrdered
+        {
+            get
+            {
+                return imagesOrdered;
+            }
+            set
+            {
+                imagesOrdered = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string LabsOrdered
+        {
+            get
+            {
+                return labsOrdered;
+            }
+            set
+            {
+                labsOrdered = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string Assessments
+        {
+            get
+            {
+                return assessments;
+            }
+            set
+            {
+                assessments = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string FollowUp
+        {
+            get
+            {
+                return followUp;
+            }
+            set
+            {
+                followUp = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string HashTags
+        {
+            get
+            {
+                return hashTags;
+            }
+            set
+            {
+                hashTags = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string SurgHx
+        {
+            get
+            {
+                return surgHx;
+            }
+            set
+            {
+                surgHx = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public string FamHx
+        {
+            get
+            {
+                return famHx;
+            }
+            set
+            {
+                famHx = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public int VitalsSystolic
+        {
+            get
+            {
+                return vitalsSystolic;
+            }
+            set
+            {
+                vitalsSystolic = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("BPColor");
+            }
+        }
+        public int VitalsDiastolic
+        {
+            get
+            {
+                return vitalsDiastolic;
+            }
+            set
+            {
+                vitalsDiastolic = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("BPColor");
+            }
+        }
+        public int VitalsO2
+        {
+            get
+            {
+                return vitalsO2;
+            }
+            set
+            {
+                vitalsO2 = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("O2Color");
+                NotifyPropertyChanged("isO2Abnormal");
+            }
+        }
+        public int VitalsHR
+        {
+            get
+            {
+                return vitalsHR;
+            }
+            set
+            {
+                vitalsHR = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("HRColor");
 
-        public string PtSex { get; set; }
-        public string PtID { get; set; }
-        public string Facility { get; set; }
-        public string VisitDate { get; set; }
-        public string Provider { get; set; }
-        public string ReasonForAppt { get; set; }
-        public string Allergies { get; set; }
+            }
+        }
+        public int VitalsRR
+        {
+            get
+            {
+                return vitalsRR;
+            }
+            set
+            {
+                vitalsRR = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("isRRHigh");
+                NotifyPropertyChanged("isRRAbnormal");
 
-        public string NoteHTML { get; set; }
-        public string Vitals { get; set; }
-        public string CC { get; set; }
-        public string HPI { get; set; }
-        public string CurrentMeds { get; set; }
-        public string CurrentPrnMeds { get; set; }
-        public string ProblemList { get; set; }
-        public string ROS { get; set; }
-        public string PMHx { get; set; }
-        public string SocHx { get; set; }
-        public string GeneralHx { get; set; }
-        public  string Exam { get; set; }
-        public string Treatment { get; set; }
-        public string MedsStarted { get; set; }
-        public string ImagesOrdered { get; set; }
-        public string LabsOrdered { get; set; }
-        public string Assessments { get; set; }
-        public string FollowUp { get; set; }
+                NotifyPropertyChanged("RRColor");
+            }
+        }
+        public double VitalsTemp
+        {
+            get
+            {
+                return vitalsTemp;
+            }
+            set
+            {
+                vitalsTemp = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("TempColor");
+            }
+        }
+        public double VitalsWt
+        {
+            get
+            {
+                return vitalsWt;
+            }
+            set
+            {
+                vitalsWt = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("WtColor");
+                NotifyPropertyChanged("VitalsBMI");
+                NotifyPropertyChanged("WtKg");
 
-        public string HashTags { get; set; }
-
-        public string SurgHx { get; set; }
-
-        public string FamHx { get; set; }
-
-        public int VitalsSystolic { get; set; }
-        public int VitalsDiastolic { get; set; }
-        public int VitalsO2 { get; set; }
-        public int VitalsHR { get; set; }
-        public int VitalsRR { get; set; }
-        public double VitalsTemp { get; set; }
-        public double VitalsWt { get; set; }
-        public double VitalsBMI { get; set; }
-
+            }
+        }
+        public double VitalsBMI
+        {
+            get
+            {
+                return vitalsBMI;
+            }
+            set
+            {
+                vitalsBMI = value;
+                NotifyPropertyChanged();
+            }
+        }
         bool isMale
         {
-           get
+            get
             {
                 if (PtSex.ToLower().StartsWith("m")) return true;
                 return false;
@@ -223,7 +718,7 @@ namespace AI_Note_Review
                 if (PtAgeYrs >= 10)
                 {
                     if (PtAgeYrs <= 55) //this is an arbitrary age, consider older
-                    return true;
+                        return true;
                 }
                 return false;
             }
@@ -313,12 +808,12 @@ namespace AI_Note_Review
         {
             get
             {
-                if (VitalsBMI <= 0) return Brushes.Black;
+                if (VitalsBMI < 0) return Brushes.Black;
                 if (VitalsBMI >= 40)
                 {
                     return Brushes.Red;
                 }
-                return null; //use TargetNullValue
+                return Brushes.White; //use TargetNullValue
             }
         }
 
@@ -553,76 +1048,76 @@ namespace AI_Note_Review
 
         public void Clear()
         {
-         ICD10s.Clear();
-         PtName = "";
-         PtAgeYrs=0;
-         PtSex="";
-         PtID="";
-         Facility="";
-         VisitDate="";
-         Provider="";
-         ReasonForAppt="";
-         Allergies="";
-         NoteHTML="";
-         Vitals="";
-         CC="";
-         HPI="";
-         CurrentMeds="";
-         ProblemList="";
-         ROS="";
-         PMHx="";
-         SocHx="";
-         GeneralHx="";
-         Exam="";
-         Treatment="";
-         MedsStarted="";
-         ImagesOrdered="";
-         LabsOrdered="";
-         Assessments="";
-         FollowUp="";
-         SurgHx="";
-         FamHx="";
+            ICD10s.Clear();
+            PtName = "";
+            PtAgeYrs = 0;
+            PtSex = "";
+            PtID = "";
+            Facility = "";
+            VisitDate = "";
+            Provider = "";
+            ReasonForAppt = "";
+            Allergies = "";
+            NoteHTML = "";
+            Vitals = "";
+            CC = "";
+            HPI = "";
+            CurrentMeds = "";
+            ProblemList = "";
+            ROS = "";
+            PMHx = "";
+            SocHx = "";
+            GeneralHx = "";
+            Exam = "";
+            Treatment = "";
+            MedsStarted = "";
+            ImagesOrdered = "";
+            LabsOrdered = "";
+            Assessments = "";
+            FollowUp = "";
+            SurgHx = "";
+            FamHx = "";
         }
 
-    /*
-* 
-Subjective:,
-Chief Complaint(s):,
-HPI:,
-Current Medication:,
-Medical History:,
-Allergies/Intolerance:,
-Surgical History:,
-Hospitalization:,
-Family History:,
-Social History:,
-ROS:,
-Objective:,
-Vitals:,
-Past Results:,
-Examination:,
-GENERAL APPEARANCE:,
-Physical Examination:,
-Assessment:,
-Assessment:,
-Plan:,
-Treatment:,
-Notes:,
-Patients tested for COVID-19 were also provided COVID-19 specific patient instructions including:,
-Procedures:,
-Immunizations:,
-Therapeutic Injections:,
-Diagnostic Imaging:,
-Lab Reports:,
-Procedure Orders:,
-Preventive Medicine:,
-PPE:,
-Next Appointment:,
-Billing Information:,
-Visit Code:,
-Procedure Codes:,
-Images:,
-*/
+        /*
+    * 
+    Subjective:,
+    Chief Complaint(s):,
+    HPI:,
+    Current Medication:,
+    Medical History:,
+    Allergies/Intolerance:,
+    Surgical History:,
+    Hospitalization:,
+    Family History:,
+    Social History:,
+    ROS:,
+    Objective:,
+    Vitals:,
+    Past Results:,
+    Examination:,
+    GENERAL APPEARANCE:,
+    Physical Examination:,
+    Assessment:,
+    Assessment:,
+    Plan:,
+    Treatment:,
+    Notes:,
+    Patients tested for COVID-19 were also provided COVID-19 specific patient instructions including:,
+    Procedures:,
+    Immunizations:,
+    Therapeutic Injections:,
+    Diagnostic Imaging:,
+    Lab Reports:,
+    Procedure Orders:,
+    Preventive Medicine:,
+    PPE:,
+    Next Appointment:,
+    Billing Information:,
+    Visit Code:,
+    Procedure Codes:,
+    Images:,
+    */
 
 
         public List<string> DocumentTags = new List<string>();
@@ -631,6 +1126,41 @@ Images:,
         /// An array where the index matches the notesectionID
         /// </summary>
         public string[] NoteSectionText = new string[30];
-
+        private string ptSex;
+        private string ptID;
+        private string facility;
+        private string visitDate;
+        private string provider;
+        private string reasonForAppt;
+        private string allergies;
+        private string noteHTML;
+        private string vitals;
+        private string cC;
+        private string hPI;
+        private string currentMeds;
+        private string currentPrnMeds;
+        private string problemList;
+        private string rOS;
+        private string pMHx;
+        private string socHx;
+        private string generalHx;
+        private string exam;
+        private string treatment;
+        private string medsStarted;
+        private string imagesOrdered;
+        private string labsOrdered;
+        private string assessments;
+        private string followUp;
+        private string hashTags;
+        private string surgHx;
+        private string famHx;
+        private int vitalsSystolic;
+        private int vitalsDiastolic;
+        private int vitalsO2;
+        private int vitalsHR;
+        private int vitalsRR;
+        private double vitalsTemp;
+        private double vitalsWt;
+        private double vitalsBMI;
     }
 }

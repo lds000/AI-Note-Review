@@ -28,4 +28,37 @@ namespace AI_Note_Review
             throw new NotSupportedException();
         }
     }
+
+    [ValueConversion(typeof(string), typeof(List<String>))]
+    public class ICD10Segments : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string strTest = value as string;
+            List<string> _ICD10Segments = new List<string>();
+            string strAlphaCode = strTest.Substring(0, 1);
+            string str = "";
+            foreach (char ch in strTest)
+            {
+                if (Char.IsDigit(ch)) str += ch;
+                if (ch == '.') str += ch; //preserve decimal
+                if (Char.ToLower(ch) == 'x') break; //if placeholder character, then stop.
+            }
+            double icd10numeric = double.Parse(str);
+            foreach (SqlICD10Segment ns in CF.NoteICD10Segments)
+            {
+                if (strAlphaCode == ns.icd10Chapter)
+                {
+                    if (icd10numeric >= ns.icd10CategoryStart && icd10numeric <= ns.icd10CategoryEnd) _ICD10Segments.Add(ns.SegmentTitle);
+                }
+            }
+            return _ICD10Segments;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
 }

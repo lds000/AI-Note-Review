@@ -11,12 +11,25 @@ namespace AI_Note_Review
 {
     public class SqlICD10Segment
     {
+
         public int ICD10SegmentID { get; set; }
         public string icd10Chapter { get; set; }
         public double icd10CategoryStart { get; set; }
         public double icd10CategoryEnd { get; set; }
         public string SegmentTitle { get; set; }
         public string SegmentComment { get; set; }
+
+        public int CheckPointCount
+        {
+            get
+            {
+                string sql = $"Select Count(*) from CheckPoints where TargetICD10Segment = {ICD10SegmentID};";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.ExecuteScalar<int>(sql);
+                }
+            }
+        }
 
         public SqlICD10Segment()
         {
