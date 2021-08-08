@@ -14,11 +14,12 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="0,0,0,2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="8*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <ComboBox Name="cbTagRegExType"
@@ -42,9 +43,12 @@
                     Margin="10,0,0,0"
                     Grid.Column="2"
                     Style="{StaticResource LinkButton}" 
-                    Click="ButtonRemove_Click">Remove search term</Button>
+                    Click="ButtonRemove_Click">Remove</Button>
         </Grid>
-        <Grid Grid.Row="1" Margin="0,2,0,0">
+        <TextBlock FontSize="12" Foreground="Gray" Grid.ColumnSpan="3" Grid.Row="1" Style="{StaticResource MyTbStyle}" 
+                   Text="{Binding ElementName=cbTagRegExType, Path=SelectedItem.TagRegExTypeDescription, FallbackValue=Type description}"></TextBlock>
+
+        <Grid Grid.Row="2" Margin="0,2,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>

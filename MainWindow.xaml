@@ -8,6 +8,7 @@
         Loaded="Window_Loaded"        
         Closing="Window_Closing"
         Title="MainWindow" Height="450" Width="900">
+    <Border BorderBrush="White" BorderThickness="2">
     <Grid Background="Black">
         <Grid.Resources>
             <local:ICD10Segments x:Key="ICD10Segments"/>
@@ -31,7 +32,7 @@
                             <Label Grid.Row="0" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Provider, FallbackValue=Provider Name}" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
                             <Label Grid.Row="1" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Facility, FallbackValue=Clinic Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
                             <Label Grid.Row="2" Grid.Column="0" Margin="0" Padding="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Left" FontSize="12">Review Date:</Label>
-                            <Button Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" Padding="0" Content="{Binding ReviewDateStr, FallbackValue=1/1/1900}" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="12"></Button>
+                            <Button Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" Padding="0" Content="{Binding ReviewDateStr, FallbackValue=1/1/1900}" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="12" Click="Button_ClickReviewDate"></Button>
                             <Label Grid.Row="3" Grid.Column="0" Margin="0" Padding="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Left" FontSize="12">Visit Date:</Label>
                             <Label Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Padding="0" MouseDown="Label_MouseDown" Content="{Binding VisitDate, FallbackValue=6/23/2021}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
                         </Grid>
@@ -119,5 +120,6 @@
 
             </TabControl>
         </DockPanel>
-    </Grid>
+        </Grid>
+    </Border>
 </Window>

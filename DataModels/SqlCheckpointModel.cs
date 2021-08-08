@@ -14,6 +14,8 @@ namespace AI_Note_Review
 {
     public class SqlCheckpoint : INotifyPropertyChanged
     {
+        private bool includeCheckpoint = true;
+
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -24,11 +26,27 @@ namespace AI_Note_Review
         public int CheckPointID { get; set; }
         public string CheckPointTitle { get; set; }
 
+
+        public bool IncludeCheckpoint
+        {
+            get
+            {
+                return includeCheckpoint;
+            }
+            set
+            {
+                includeCheckpoint = value;
+            }
+        }
+        public int ErrorSeverity { get; set; }
         public int CheckPointType { get; set; }
         public int TargetSection { get; set; }
         public string Comment { get; set; }
         public string Action { get; set; }
         public string Link { get; set; }
+        public SqlCheckpoint()
+        {
+        }
 
         public List<SqlTag> Tags
         {
@@ -48,9 +66,6 @@ namespace AI_Note_Review
 
 
 
-        public SqlCheckpoint()
-        {
-        }
 
         public SqlCheckpoint(string strCheckPointTitle, int iTargetICD10Segment)
         {
@@ -75,7 +90,7 @@ namespace AI_Note_Review
             if (strCheckPointTitle.ToLower().Contains("elderly"))
             {
                 targetType = 10;
-                targetSection = 9;  
+                targetSection = 9;
             }
 
             if (strCheckPointTitle.ToLower().Contains("lab"))
@@ -127,7 +142,7 @@ namespace AI_Note_Review
             string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID};";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                return  cnn.Query<SqlTag>(sql, this).ToList();
+                return cnn.Query<SqlTag>(sql, this).ToList();
             }
 
         }
@@ -140,6 +155,32 @@ namespace AI_Note_Review
                 cnn.Execute(sql);
             }
 
+        }
+
+        public string GetReport()
+        {
+            string strReturn = ""; 
+            strReturn += Environment.NewLine;
+            strReturn += Environment.NewLine;
+            strReturn += Environment.NewLine;
+            if (ErrorSeverity == 0)
+            {
+                strReturn += "This is not a failed checkpoint but a something to consider in this clinical scenario for this ";
+            }
+            else
+            {
+                strReturn += "Failed ";
+            }
+            strReturn += $"check point: '{CheckPointTitle}' " + Environment.NewLine;
+            strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
+            strReturn += $"\tRecommended Remediation: {Action}" + Environment.NewLine;
+            strReturn += $"\tExplanation: {Comment}" + Environment.NewLine;
+            if (Link != "")
+            strReturn += $"\tLink: {Link}" + Environment.NewLine;
+            strReturn += Environment.NewLine;
+            strReturn += Environment.NewLine;
+            strReturn += Environment.NewLine;
+            return strReturn;
         }
 
         public void SaveToDB()

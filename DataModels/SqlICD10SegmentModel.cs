@@ -19,6 +19,18 @@ namespace AI_Note_Review
         public string SegmentTitle { get; set; }
         public string SegmentComment { get; set; }
 
+        private bool includeSegment = true;
+        public bool IncludeSegment {
+            get
+            {
+                return includeSegment;
+            }
+            set
+            {
+                includeSegment = value;
+            }
+        }
+
         public int CheckPointCount
         {
             get

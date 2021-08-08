@@ -22,6 +22,7 @@ using System.Data.SQLite;
 using Dapper;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Collections.ObjectModel;
 
 
 //Ctrl-KX, or KS (surround) snippet
@@ -36,79 +37,14 @@ namespace AI_Note_Review
     {
         string strApikey = "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";
 
-        public void SetDataContext()
-        {
-
-            //add hashtags here.
-            CF.CurrentDoc.HashTags = "";
-            if (CF.CurrentDoc.PtAgeYrs > 65) CF.CurrentDoc.HashTags += "!Elderly, ";
-            if (CF.CurrentDoc.PtSex.StartsWith("M")) CF.CurrentDoc.HashTags += "#Male, ";
-            if (CF.CurrentDoc.PtSex.StartsWith("F")) CF.CurrentDoc.HashTags += "#Female, ";
-            if (CF.CurrentDoc.PtAgeYrs < 4) CF.CurrentDoc.HashTags += "#Child, ";
-            if (CF.CurrentDoc.IsHTNUrgency) CF.CurrentDoc.HashTags += "!HTNUrgency, ";
-            if (CF.CurrentDoc.isO2Abnormal) CF.CurrentDoc.HashTags += "!Hypoxic, ";
-            if (CF.CurrentDoc.IsPregCapable) CF.CurrentDoc.HashTags += "!pregnantcapable, ";
-            if (CF.CurrentDoc.PtAgeYrs >= 13) CF.CurrentDoc.HashTags += "!sexuallyActiveAge, ";
-
-
-
-            CF.CurrentDoc.NoteSectionText[0] = $"{CF.CurrentDoc.PtAgeYrs} Sex{CF.CurrentDoc.PtSex}"; //Demographics 
-            CF.CurrentDoc.NoteSectionText[1] = CF.CurrentDoc.HPI + CF.CurrentDoc.ROS; //HPI
-            CF.CurrentDoc.NoteSectionText[2] = CF.CurrentDoc.CurrentMeds + CF.CurrentDoc.CurrentPrnMeds; //CurrentMeds
-            CF.CurrentDoc.NoteSectionText[3] = CF.CurrentDoc.ProblemList; //Active Problem List
-            CF.CurrentDoc.NoteSectionText[4] = CF.CurrentDoc.PMHx; //Past Medical History
-            CF.CurrentDoc.NoteSectionText[5] = CF.CurrentDoc.SocHx; //Social History
-            CF.CurrentDoc.NoteSectionText[6] = CF.CurrentDoc.Allergies; //Allergies
-            CF.CurrentDoc.NoteSectionText[7] = CF.CurrentDoc.Vitals; //Vital Signs
-            CF.CurrentDoc.NoteSectionText[8] = CF.CurrentDoc.Exam; //Examination
-            CF.CurrentDoc.NoteSectionText[9] = CF.CurrentDoc.Assessments; //Assessments
-            CF.CurrentDoc.NoteSectionText[10] = CF.CurrentDoc.Treatment; //Treatment
-            CF.CurrentDoc.NoteSectionText[11] = CF.CurrentDoc.LabsOrdered; //Labs
-            CF.CurrentDoc.NoteSectionText[12] = CF.CurrentDoc.ImagesOrdered; //Imaging
-            CF.CurrentDoc.NoteSectionText[13] = CF.CurrentDoc.ROS; //Review of Systems
-            CF.CurrentDoc.NoteSectionText[14] = CF.CurrentDoc.Assessments; //Assessments
-            CF.CurrentDoc.NoteSectionText[15] = CF.CurrentDoc.MedsStarted; //Prescribed Medications
-            CF.CurrentDoc.NoteSectionText[16] = CF.CurrentDoc.FamHx;
-            CF.CurrentDoc.NoteSectionText[17] = CF.CurrentDoc.SurgHx;
-            CF.CurrentDoc.NoteSectionText[18] = CF.CurrentDoc.HashTags;
-            CF.CurrentDoc.NoteSectionText[19] = CF.CurrentDoc.CC;
-
-            //CF.CurrentDoc.NoteSectionText[1].ParseHistory();
-
-            //this.DataContext = null;
-            //this.DataContext = CF.CurrentDoc;
-        }
 
 
         public MainWindow()
         {
             InitializeComponent();
             ProgramInit();
-            //C:\Users\Lloyd\Source\Repos\lds000\NoteReviewDB.db
-            //C:\Users\llostod\source\repos\AI Note Review\NoteReviewDB.db
-            SqlLiteDataAccess.SQLiteDBLocation = Properties.Settings.Default.DataFolder;
 
-            if (File.Exists(@"C:\Users\Lloyd\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db"))
-            {
-                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\Lloyd\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db";
-            }
-            else
-            {
-                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\llostod\source\repos\AI Note Review\NoteReviewDB.db";
-            }
-
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                string sql = "Select * from CheckPoints;";
-                CF.CheckPointList = cnn.Query<SqlCheckpoint>(sql).ToList();
-                sql = "Select * from NoteSections order by SectionOrder;";
-                CF.NoteSections = cnn.Query<SqlNoteSection>(sql).ToList();
-                sql = "Select * from TagRegExTypes;";
-                CF.TagRegExTypes = cnn.Query<SqlTagRegExType>(sql).ToList();
-                sql = "Select * from ICD10Segments;";
-                CF.NoteICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
-            }
-
+//sample note - hidden with ctrl M H
             CF.CurrentDoc.PtName = "Mark Smith";
             CF.CurrentDoc.Provider = "Lloyd Stolworthy, MD";
             CF.CurrentDoc.PtAgeYrs = 18;
@@ -136,16 +72,15 @@ namespace AI_Note_Review
 
             CF.CurrentDoc.CurrentMeds = "ibuprofen, Tylenol, prednisone";
 
-
             //CF.CurrentDoc.HPI.ParseHistory();
             //Close();
-
-            SetDataContext();
-            this.DataContext = CF.CurrentDoc;
 
             //winDbRelICD10CheckpointsEditor wdb = new winDbRelICD10CheckpointsEditor();
             //wdb.ShowDialog();
             //Close();
+
+            CF.CurrentDoc.SetUpNote();
+            this.DataContext = CF.CurrentDoc;
 
         }
 
@@ -227,6 +162,30 @@ namespace AI_Note_Review
                 0, 0, WINEVENT_OUTOFCONTEXT);
             ActiveWindowChanged += MainWindow_ActiveWindowChanged;
             string strUserName = Environment.GetEnvironmentVariable("USERNAME");
+
+            SqlLiteDataAccess.SQLiteDBLocation = Properties.Settings.Default.DataFolder;
+
+            if (File.Exists(@"C:\Users\Lloyd\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db"))
+            {
+                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\Lloyd\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db";
+            }
+            else
+            {
+                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\llostod\source\repos\AI Note Review\NoteReviewDB.db";
+            }
+
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                string sql = "Select * from NoteSections order by SectionOrder;";
+                CF.NoteSections = cnn.Query<SqlNoteSection>(sql).ToList();
+                sql = "Select * from CheckPoints;";
+                CF.CheckPointList = cnn.Query<SqlCheckpoint>(sql).ToList();
+                sql = "Select * from TagRegExTypes;";
+                CF.TagRegExTypes = cnn.Query<SqlTagRegExType>(sql).ToList();
+                sql = "Select * from ICD10Segments;";
+                CF.NoteICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
+            }
+
         }
 
         /// <summary>
@@ -278,7 +237,7 @@ namespace AI_Note_Review
                             if (h.EcwHTMLDocument.Body != null)
                                 if (h.EcwHTMLDocument.Body.InnerHtml != null)
                                 {
-                                    processDocument(h.EcwHTMLDocument);
+                                    processLockedt(h.EcwHTMLDocument);
                                     if (CF.CurrentDoc.PtName != "") break;
                                 }
                     }
@@ -288,30 +247,10 @@ namespace AI_Note_Review
             }
         }
 
-        private HtmlElement GetNextElement(HtmlElement el)
-        {
-            if (el.FirstChild != null) return el.FirstChild;
-            if (el.NextSibling != null) return el.NextSibling;
-            HtmlElement nextParentSibling = el.Parent.NextSibling;
-            if (nextParentSibling != null) return nextParentSibling;
-            while (nextParentSibling == null)
-            {
-                nextParentSibling = el.Parent.NextSibling;
-                if (nextParentSibling != null) return nextParentSibling;
-            }
-            return null;
-        }
-
 
         private string[] noteSection = {"Chief Complaint(s):", "HPI:", "Current Medication:", "Medical History:", "Allergies/Intolerance:", "Surgical History:", "Hospitalization:",
             "Family History:", "Social History:", "ROS:", "Vitals:", "Examination:", "Assessment:","Treatment:","Procedures:","Immunizations:","Therapeutic Injections:","Diagnostic Imaging:",
             "Lab Reports:","Next Appointment:","Visit Code:","Procedure Codes:","Images:", "Objective:","Procedure Orders:","Preventive Medicine:","Billing Information:","Plan:" };
-
-
-        /*
-         * 
-Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intolerance:, Surgical History:, Hospitalization:, Family History:, Social History:, ROS:, Vitals:, Examination:, Assessment:,Treatment:,Procedures:,Immunizations:,Therapeutic Injections:,Diagnostic Imaging:,Lab Reports:,Next Appointment:,Visit Code:,Procedure Codes:,Images:
-         */
 
         public void processUnlocked(HtmlDocument HDoc)
         {
@@ -592,7 +531,7 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
 
 
             //parse icd10
-            CF.CurrentDoc.ICD10s = new List<string>();
+            CF.CurrentDoc.ICD10s = new ObservableCollection<string>();
             foreach (var tmpAssessment in CF.CurrentDoc.Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (tmpAssessment.Contains(" - "))
@@ -604,13 +543,13 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
                     }
                 }
 
-                SetDataContext();
+                CF.CurrentDoc.SetUpNote();
 
             
         }
 
 
-            public void processDocument(HtmlDocument HDoc)
+            public void processLockedt(HtmlDocument HDoc)
             {
 
 
@@ -847,9 +786,10 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
                         }
 
                     }
-                
 
-                SetDataContext();
+
+                CF.CurrentDoc.SetUpNote();
+
 
                 Console.WriteLine($"Run time: {watch.ElapsedMilliseconds}");
 
@@ -897,34 +837,8 @@ Chief Complaint(s):,HPI:, Current Medication:, Medical History:, Allergies/Intol
             w.ShowDialog();
         }
 
-        /*
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (lbSegments == null) return;
-            if (lbSegments.SelectedValue == null) return;
-            SqlICD10Segment seg = lbSegments.SelectedValue as SqlICD10Segment;
-            if (seg != null)
-            {
-                winDbRelICD10CheckpointsEditor w = new winDbRelICD10CheckpointsEditor();
-                
-                foreach (SqlICD10Segment tmpSeg in w.lbICD10.Items)
-                {
-                    if (tmpSeg.ICD10SegmentID == seg.ICD10SegmentID)
-                    {
-                        w.lbICD10.SelectedValue = tmpSeg;
-                    }
-                }
-                w.ShowDialog();
-            }
-            }
-            */
 
-        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void spReviewDate_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Button_ClickReviewDate(object sender, RoutedEventArgs e)
         {
             WinGetReviewDate wr = new WinGetReviewDate();
             wr.Owner = this;

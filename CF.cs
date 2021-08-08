@@ -13,14 +13,10 @@ namespace AI_Note_Review
         public static List<SqlNoteSection> NoteSections { get; set; }
         public static List<SqlTagRegExType> TagRegExTypes { get; set; }
         public static List<SqlICD10Segment> NoteICD10Segments = new List<SqlICD10Segment>();
-        public static List<SqlICD10Segment> RelevantICD10Segments = new List<SqlICD10Segment>();
-        public static List<SqlCheckpoint> PassedCheckPoints = new List<SqlCheckpoint>();
-        public static List<SqlCheckpoint> FailedCheckPoints = new List<SqlCheckpoint>();
-        public static List<SqlCheckpoint> RelevantCheckPoints = new List<SqlCheckpoint>();
-        public static List<SqlCheckpoint> IrrelaventCP = new List<SqlCheckpoint>();
         public static DocInfo CurrentDoc = new DocInfo();
         public static List<SqlCheckpoint> CheckPointList = new List<SqlCheckpoint>();
 
+        
 
         public static void SetWindowPosition(Window _Window)
         {

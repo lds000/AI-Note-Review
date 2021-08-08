@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace AI_Note_Review
 {
@@ -21,6 +22,26 @@ namespace AI_Note_Review
                 return "N/A";
             var ns = (from c in CF.NoteSections where c.SectionID == (int)value select c).FirstOrDefault();
             return $" ({ns.NoteSectionShortTitle})";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    [ValueConversion(typeof(int), typeof(Brush))]
+    public class SeverityToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            
+            if (value == null)
+                return Brushes.White;
+            if ((int)value >= 7) return Brushes.Red;
+            if ((int)value >= 4) return Brushes.Yellow;
+            if ((int)value >= 0) return Brushes.Green;
+            return Brushes.White;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
