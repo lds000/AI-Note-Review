@@ -96,7 +96,7 @@
                     <Viewbox HorizontalAlignment="Left">
                         <Label Foreground="White" Content="{Binding Path=CC, FallbackValue=-}"></Label>
                     </Viewbox>
-                    <TextBlock MaxWidth="200" Text="{Binding HashTags}" Grid.Column="1" Style="{StaticResource MyTbStyle}"></TextBlock>
+                    <TextBlock MaxWidth="200" TextWrapping="WrapWithOverflow" Text="{Binding HashTags}" Grid.Column="1" Style="{StaticResource MyTbStyle}"></TextBlock>
                 </Grid>
             </Border>
 

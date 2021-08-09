@@ -63,6 +63,7 @@ namespace AI_Note_Review
             CF.CurrentDoc.VitalsWt = 194;
             CF.CurrentDoc.ICD10s.Add("R10.10");
             CF.CurrentDoc.ICD10s.Add("I10");
+            CF.CurrentDoc.ReviewDate = DateTime.Now;
 
             CF.CurrentDoc.HPI = "Mark is a 30yo male who presents today complaining of right lower quadrant abdominal pain that began two days ago and acutely worse today. " +
                 "He denies diarrhea or constipation.  He states he cannot tolerate a full meal due to the pain.  " +
@@ -197,7 +198,7 @@ namespace AI_Note_Review
         private void MainWindow_ActiveWindowChanged(object sender, string windowHeader, IntPtr hwnd)
         {
 
-            Console.WriteLine($"Window ({windowHeader}) focused.");
+            //Console.WriteLine($"Window ({windowHeader}) focused.");
             //Console.WriteLine($"Header: {windowHeader}");
             //Get window data (top, left, size)
             RECT rct;
@@ -422,6 +423,12 @@ namespace AI_Note_Review
             }
             strVitals = strVitals.Trim().TrimEnd('.');
 
+            parseVitalsString(strVitals);
+
+            }
+
+        private void parseVitalsString(string strVitals)
+        {
             CF.CurrentDoc.VitalsRR = 0;
             CF.CurrentDoc.VitalsHR = 0;
             CF.CurrentDoc.VitalsSystolic = 0;
@@ -430,6 +437,8 @@ namespace AI_Note_Review
             CF.CurrentDoc.VitalsO2 = 0;
             CF.CurrentDoc.VitalsWt = 0;
             CF.CurrentDoc.VitalsBMI = 0;
+
+            if (strVitals == null) return;
 
             foreach (string strPartVital in strVitals.Split(','))
             {
@@ -529,7 +538,6 @@ namespace AI_Note_Review
             }
 
 
-
             //parse icd10
             CF.CurrentDoc.ICD10s = new ObservableCollection<string>();
             foreach (var tmpAssessment in CF.CurrentDoc.Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
@@ -549,7 +557,7 @@ namespace AI_Note_Review
         }
 
 
-            public void processLockedt(HtmlDocument HDoc)
+        public void processLockedt(HtmlDocument HDoc)
             {
 
 
@@ -559,12 +567,10 @@ namespace AI_Note_Review
                     return;
                 }
                 var watch = System.Diagnostics.Stopwatch.StartNew();
+
                 HtmlElementCollection AllTRItems = HDoc.Body.GetElementsByTagName("TR"); //5 ms
                 HtmlElementCollection AllTHEADItems = HDoc.Body.GetElementsByTagName("THEAD"); //5 ms
-
-
                 CF.CurrentDoc.NoteHTML = HDoc.Body.InnerHtml; //3 ms
-
 
                 string strCurrentHeading = "";
                 foreach (HtmlElement TempEl in AllTHEADItems) //1 item, 1.9 seconds!
@@ -607,7 +613,19 @@ namespace AI_Note_Review
                                 string strInnerText = TempEl.InnerText;
                                 if (strInnerText.Contains("Account Number:")) CF.CurrentDoc.PtID = strInnerText.Split(':')[1].Trim();
                                 if (strInnerText.Contains("Appointment Facility:")) CF.CurrentDoc.Facility = strInnerText.Split(':')[1].Trim();
-                                // if (strInnerText.Contains("DOB:")) CF.CurrentDoc.PtAge = strInnerText.Split(':')[0].TrimEnd("DOB");
+                            if (strInnerText.Contains("DOB:"))
+                            {
+                                //   CF.CurrentDoc.PtAge = strInnerText.Split(':')[0].TrimEnd("DOB");
+                                CF.CurrentDoc.DOB = DateTime.Parse(strInnerText.Split(':')[1].Trim());
+                                if (strInnerText.Contains("Female"))
+                                {
+                                    CF.CurrentDoc.PtSex = "F";
+                                        }
+                                else
+                                {
+                                    CF.CurrentDoc.PtSex = "M";
+                                }
+                            }
                                 continue;
                             }
                             if (strClass == "rightPaneHeading" || strClass == "leftPaneHeading")
@@ -711,7 +729,8 @@ namespace AI_Note_Review
 
                                 if (strCurrentHeading == "Vital Signs")
                                 {
-                                    CF.CurrentDoc.Vitals = strInnerText;
+                                var result = strInnerText.Split(new[] { '\r', '\n' });
+                                CF.CurrentDoc.Vitals = result[0];
                                 }
                                 if (strCurrentHeading == "Examination")
                                 {
@@ -719,7 +738,7 @@ namespace AI_Note_Review
                                 }
                                 if (strCurrentHeading == "Follow Up")
                                 {
-                                    CF.CurrentDoc.FollowUp = strInnerText;
+                                CF.CurrentDoc.FollowUp = strInnerText;
                                 }
                                 if (strCurrentHeading == "Assessments")
                                 {
@@ -734,7 +753,7 @@ namespace AI_Note_Review
                                     string strOut = "";
                                     foreach (string strProblem in AssessmentList)
                                     {
-                                        strOut += strProblem + "\n";
+                                        strOut += strProblem + Environment.NewLine;
                                     }
                                     CF.CurrentDoc.Assessments = strOut;
                                 }
@@ -779,22 +798,39 @@ namespace AI_Note_Review
                                     }
                                     CF.CurrentDoc.ImagesOrdered = strImagesOrdered;
                                 }
+                            if (strCurrentHeading.Trim() == "Labs")
+                            {
+                                CF.CurrentDoc.LabsOrdered += strInnerText;
                             }
 
-
-                            //Console.WriteLine($"{strClass} - {TempEl.InnerText}");
                         }
+
+
+                        //Console.WriteLine($"{strClass} - {TempEl.InnerText}");
+                    }
 
                     }
 
 
-                CF.CurrentDoc.SetUpNote();
+
 
 
                 Console.WriteLine($"Run time: {watch.ElapsedMilliseconds}");
 
+                }
+            CF.CurrentDoc.ICD10s = new ObservableCollection<string>();
+            foreach (var tmpAssessment in CF.CurrentDoc.Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (tmpAssessment.Contains(" - "))
+                {
+                    string strClean = tmpAssessment.TrimEnd(" (Primary)").Trim();
+                  strClean = strClean.Replace(" - ", "|");
+                    string strCode = strClean.Split('|')[1].Trim();
+                    CF.CurrentDoc.ICD10s.Add(strCode);
+                }
             }
-
+            CF.CurrentDoc.SetUpNote();
+            parseVitalsString(CF.CurrentDoc.Vitals);
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
