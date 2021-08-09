@@ -98,11 +98,7 @@ namespace AI_Note_Review
 
         private void lbCheckpoints_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (lbCheckpoints.SelectedValue == null)
-            {
-                Console.WriteLine("null value selected;");
-                return;
-            }
+            if (lbCheckpoints.SelectedValue == null) return;
            int selectedCheckPointID = int.Parse(lbCheckpoints.SelectedValue.ToString());
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
@@ -121,16 +117,9 @@ namespace AI_Note_Review
 
         private void UpdateCurrentCheckPoint()
         {
-
             dpCheckpoint.DataContext = null;
-
             if (CurrentCheckpoint == null) return;
             dpCheckpoint.DataContext = CurrentCheckpoint;
-
-            //var watch = System.Diagnostics.Stopwatch.StartNew();
-            //watch.Stop();
-            //Console.WriteLine($"GroupPhraseModel RemovePhrase Execution Time: {watch.ElapsedMilliseconds} ms");
-
             string strRtext = @"{\rtf1\ansi\ansicpg1252\uc1\htmautsp\deff2{\fonttbl{\f0\fcharset0 Times New Roman;}{\f2\fcharset0 Segoe UI;}}{\colortbl\red0\green0\blue0;\red255\green255\blue255;}\loch\hich\dbch\pard\plain\ltrpar\itap0{\lang1033\fs18\f2\cf0 \cf0\ql}}";
             if (CurrentCheckpoint != null)
             {
@@ -144,6 +133,35 @@ namespace AI_Note_Review
             string str2 = RTBtoStr(myRTB);
             StrToRTB(str2, myRTB);
 
+
+            /*
+            using (var d = Dispatcher.DisableProcessing())
+            {
+
+                spTags.Children.Clear();
+                foreach (SqlTag st in CurrentCheckpoint.GetTags())
+                {
+                    TextBlock tb = new TextBlock();
+                    tb.Foreground = Brushes.White;
+                    tb.Background = Brushes.Black;
+                    tb.FontSize = 16;
+                    tb.Text = st.TagText;
+                    spTags.Children.Add(tb);
+                    foreach (SqlTagRegEx strex in st.GetTagRegExs())
+                    {                        
+                        spTags.Children.Add(MakeUC(strex));
+                    }
+
+                    Button b = new Button();
+                    b.Style = (Style)Application.Current.Resources["LinkButton"];
+                    b.Content = "Add Search Pattern";
+                    b.Margin = new Thickness(10, 0, 0, 0);
+                    b.Tag = st;
+                    b.Click += B_Click;
+                    spTags.Children.Add(b);
+                }
+            }
+            */
         }
 
         private void B_Click(object sender, RoutedEventArgs e)
@@ -526,8 +544,7 @@ namespace AI_Note_Review
         {
             StackPanel parent = (StackPanel)sender;
             int cpID = int.Parse(parent.Tag.ToString());
-            //This next statement is really slowing down the operation
-            //DragDrop.DoDragDrop(parent, cpID, DragDropEffects.Move);
+            DragDrop.DoDragDrop(parent, cpID, DragDropEffects.Move);
         }
         private void ListBox_Drop(object sender, DragEventArgs e)
         {
