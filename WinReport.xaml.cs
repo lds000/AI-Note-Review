@@ -120,5 +120,12 @@ namespace AI_Note_Review
             Clipboard.SetText(strReport);
             //MessageBox.Show(strReport);
         }
+
+        private void Button_CommittReportClick(object sender, RoutedEventArgs e)
+        {
+            WinCommittReport wcr = new WinCommittReport();
+            wcr.Owner = this;
+            wcr.ShowDialog();
+        }
     }
 }
