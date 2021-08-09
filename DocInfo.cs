@@ -24,6 +24,7 @@ namespace AI_Note_Review
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            //Console.WriteLine($"iNotify property {propertyName}");
         }
 
         #endregion
@@ -36,16 +37,18 @@ namespace AI_Note_Review
 
         public void SetUpNote()
         {
+
             //add hashtags here.
             HashTags = "";
-            if (PtAgeYrs > 65) HashTags += "!Elderly, ";
-            if (PtSex.StartsWith("M")) HashTags += "#Male, ";
-            if (PtSex.StartsWith("F")) HashTags += "#Female, ";
-            if (PtAgeYrs < 4) HashTags += "#Child, ";
+            if (PtAgeYrs > 65) HashTags += "@Elderly, ";
+            if (PtSex.StartsWith("M")) HashTags += "@Male, ";
+            if (PtSex.StartsWith("F")) HashTags += "@Female, ";
+            if (PtAgeYrs < 4) HashTags += "@Child, ";
             if (IsHTNUrgency) HashTags += "!HTNUrgency, ";
             if (isO2Abnormal) HashTags += "!Hypoxic, ";
-            if (IsPregCapable) HashTags += "!pregnantcapable, ";
-            if (PtAgeYrs >= 13) HashTags += "!sexuallyActiveAge, ";
+            if (IsPregCapable) HashTags += "@pregnantcapable, ";
+            if (PtAgeYrs >= 13) HashTags += "@sexuallyActiveAge, ";
+            if (PtAgeYrs >= 16) HashTags += "@DinkingAge, ";
 
             NoteSectionText[0] = $"{PtAgeYrs} Sex{PtSex}"; //Demographics 
             NoteSectionText[1] = HPI + ROS; //HPI
@@ -1165,7 +1168,7 @@ namespace AI_Note_Review
                     bool isMatch = false;
                     foreach (string strRegEx in TagRegEx.RegExText.Split(','))
                     {
-                        if (strRegEx.Contains("ASA"))
+                        if (strRegEx.ToLower().Contains("female"))
                         {
 
                         }
@@ -1254,6 +1257,7 @@ namespace AI_Note_Review
                     {
                         if (relType.Contains(cp.CheckPointType))
                         {
+                            cp.IncludeCheckpoint = true;
                             relevantCheckPoints.Add(cp);
                         }
                         else
@@ -1277,7 +1281,7 @@ namespace AI_Note_Review
                         }
                         else
                         {
-                            cp.IncludeCheckpoint = false;
+                            cp.IncludeCheckpoint = true;
                             failedCheckPoints.Add(cp);
                         }
                     }

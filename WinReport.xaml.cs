@@ -81,8 +81,7 @@ namespace AI_Note_Review
 
         private void Button_CopyReportClick(object sender, RoutedEventArgs e)
         {
-            string strReport = "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
-            strReport += Environment.NewLine;
+            string strReport = ""; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
             strReport += Environment.NewLine;
             strReport += Environment.NewLine;
             strReport += "Passed check points: " + Environment.NewLine;
@@ -93,8 +92,6 @@ namespace AI_Note_Review
                 strReport += $"\t'{cp.CheckPointTitle}'" + Environment.NewLine;
             }
 
-            strReport += Environment.NewLine;
-            strReport += Environment.NewLine;
             strReport += Environment.NewLine;
 
             foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.FailedCheckPoints orderby c.ErrorSeverity descending select c))
@@ -120,7 +117,8 @@ namespace AI_Note_Review
                     strReport += cp.GetReport();
             }
 
-            MessageBox.Show(strReport);
+            Clipboard.SetText(strReport);
+            //MessageBox.Show(strReport);
         }
     }
 }
