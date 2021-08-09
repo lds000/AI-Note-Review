@@ -46,10 +46,12 @@ namespace AI_Note_Review
 
 //sample note - hidden with ctrl M H
             CF.CurrentDoc.PtName = "Mark Smith";
-            CF.CurrentDoc.Provider = "Lloyd Stolworthy, MD";
+            CF.CurrentDoc.PtID = "518082";
+            CF.CurrentDoc.Provider = "Devin Hansen";
+            CF.CurrentDoc.ProviderID = 1;
             CF.CurrentDoc.PtAgeYrs = 18;
             CF.CurrentDoc.PtSex = "M";
-            CF.CurrentDoc.VisitDate = "7/12/2021";
+            CF.CurrentDoc.VisitDate = new DateTime(2021,7,12);
             CF.CurrentDoc.CC = "Abdominal pain for 10 days";
             CF.CurrentDoc.DOB = new DateTime(1969, 10, 23);
             CF.CurrentDoc.Facility = "Meridian UC";
@@ -281,7 +283,7 @@ namespace AI_Note_Review
                 {
                     string strPtInfo = myString.Replace("Encounter Date:", "");
                     strPtInfo = strPtInfo.Replace("Provider:", "|");
-                    CF.CurrentDoc.VisitDate = strPtInfo.Split('|')[0].Trim();
+                    CF.CurrentDoc.VisitDate = DateTime.Parse(strPtInfo.Split('|')[0].Trim());
                     CF.CurrentDoc.Provider = strPtInfo.Split('|')[1].Trim();
                 }
 
@@ -581,7 +583,7 @@ namespace AI_Note_Review
                         if (strInnerText.Contains("DOS:"))
                         {
                             strInnerText = strInnerText.Replace("DOS:", "|");
-                            CF.CurrentDoc.VisitDate = strInnerText.Split('|')[1];
+                            CF.CurrentDoc.VisitDate = DateTime.Parse(strInnerText.Split('|')[1]);
                             continue;
                         }
                     }

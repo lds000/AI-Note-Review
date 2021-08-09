@@ -270,7 +270,17 @@ namespace AI_Note_Review
                 NotifyPropertyChanged();
             }
         }
-        public string VisitDate
+
+        public int ProviderID
+        {
+            get { return providerID; }
+            set {
+                providerID = value;
+                NotifyPropertyChanged();
+
+            }
+        }
+        public DateTime VisitDate
         {
             get
             {
@@ -1348,7 +1358,7 @@ namespace AI_Note_Review
             ReviewDate = DateTime.MinValue;
 
             Facility = "";
-            VisitDate = "";
+            VisitDate = new DateTime(2020,1,1);
             Provider = "";
             ReasonForAppt = "";
             Allergies = "";
@@ -1387,11 +1397,12 @@ namespace AI_Note_Review
         private ObservableCollection<SqlICD10Segment> iCD10Segments = new ObservableCollection<SqlICD10Segment>();
         public string[] NoteSectionText = new string[30];
         public int ptAgeYrs;
+        private int providerID;
         private string ptName;
         private string ptSex;
         private string ptID;
         private string facility;
-        private string visitDate;
+        private DateTime visitDate;
         private string provider;
         private string reasonForAppt;
         private string allergies;

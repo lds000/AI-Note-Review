@@ -137,7 +137,17 @@ namespace AI_Note_Review
             }
         }
 
-        public List<SqlTag> GetTags()
+        public void Commit(DocInfo di)
+        {
+            string sql = $"INSERT INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate) VALUES ({di.ProviderID}, {CheckPointID}, {di.PtID}, '{di.ReviewDate.ToShortDateString()}', '{di.VisitDate.ToShortDateString()}');";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
+            }
+
+        }
+
+            public List<SqlTag> GetTags()
         {
             string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID} order by RelTagCheckPointID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
