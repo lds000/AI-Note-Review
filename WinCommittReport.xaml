@@ -1,0 +1,25 @@
+﻿<Window x:Class="AI_Note_Review.WinCommittReport"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AI_Note_Review"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        Title="WinCommittReport" Height="450" Width="800">
+    <DockPanel Background="Black">
+        <local:UC_PatientConsole x:Name="ptConsole" DockPanel.Dock="Top"></local:UC_PatientConsole>
+        <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="20">Reports</Label>
+        <Button Click="Button_Click" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Style="{StaticResource LinkButton}">Close</Button>
+        <Border BorderBrush="White" BorderThickness="1" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <ListBox Style="{StaticResource MyListBox}" Margin="3"></ListBox>
+            </Grid>            
+        </Border>
+    </DockPanel>
+</Window>
