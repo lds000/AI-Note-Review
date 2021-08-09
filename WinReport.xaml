@@ -24,8 +24,7 @@
             <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal">
                 <Button Margin="0,0,20,0" Click="Button_Click_Recheck"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Recheck</Button>
                 <Button Click="Button_Click"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Close</Button>
-                <Button Margin="20,0,0,0" Click="Button_CommittReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Committ Report</Button>
-                <Button Margin="20,0,0,0" Click="Button_CopyReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Report</Button>
+                <Button Margin="20,0,0,0" Click="Button_CopyReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Reoprt</Button>
             </StackPanel>
             <ScrollViewer>
                 <Grid>
