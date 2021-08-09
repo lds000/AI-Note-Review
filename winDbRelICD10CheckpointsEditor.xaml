@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
+        xmlns:sys="clr-namespace:System;assembly=system"
         Loaded="Window_Loaded"        
         Closing="Window_Closing"
         Title="winDbRelICD10CheckpointsEditor" Height="800" Width="1600">
@@ -78,7 +79,7 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                     <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="1" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow" MaxHeight="300" >Comments</TextBlock>
-                    <TextBox Text="{Binding SegmentComment}" x:Name="tbComments" Grid.Row="2" Style="{StaticResource MyTextBox}" LostFocus="TextBox_LostFocus" TextWrapping="Wrap" AcceptsReturn="True">
+                    <TextBox Text="{Binding Comment}" x:Name="tbComments" Grid.Row="2" Style="{StaticResource MyTextBox}" LostFocus="TextBox_LostFocus" TextWrapping="Wrap" AcceptsReturn="True">
                         
                     </TextBox>
                 </Grid>
@@ -119,13 +120,21 @@
                     <ComboBox Margin="5,2,5,2"  Grid.Column="1" Grid.Row="3" Name="cbTargetICD10" DisplayMemberPath="SegmentTitle" SelectedValuePath="ICD10SegmentID" SelectedValue="{Binding TargetICD10Segment}" SelectionChanged="cbTargetICD10_SelectionChanged"></ComboBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="4" Style="{StaticResource MyTbStyle}">Text:</TextBlock>
-                    <TextBox Margin="5" x:Name="tbComment" Grid.Row="4" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Comment}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" LostFocus="tbComment_LostFocus"></TextBox>
+                    <TextBox Margin="5" x:Name="tbComment" Grid.Row="4" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Comment}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" LostFocus="tbComment_LostFocus" SpellCheck.IsEnabled="True">
+                        <SpellCheck.CustomDictionaries>
+                            <sys:Uri>pack://application:,,,/MedTerms.lex</sys:Uri>
+                        </SpellCheck.CustomDictionaries>
+                    </TextBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="5" Style="{StaticResource MyTbStyle}">Images:</TextBlock>
                     <RichTextBox Margin="5" x:Name="myRTB" Grid.Column="1" Grid.Row="5" LostFocus="myRTB_LostFocus"></RichTextBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource MyTbStyle}">Action:</TextBlock>
-                    <TextBox Margin="5" x:Name="tbAction" Grid.Row="6" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Action}" ToolTip="{Binding Path=Action}" LostFocus="tbAction_LostFocus"></TextBox>
+                    <TextBox Margin="5" x:Name="tbAction" Grid.Row="6" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Action}" ToolTip="{Binding Path=Action}" LostFocus="tbAction_LostFocus" SpellCheck.IsEnabled="True">
+                        <SpellCheck.CustomDictionaries>
+                            <sys:Uri>pack://application:,,,/MedTerms.lex</sys:Uri>
+                        </SpellCheck.CustomDictionaries>
+                    </TextBox>
 
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="7" Style="{StaticResource MyTbStyle}">Link:</TextBlock>
@@ -135,21 +144,6 @@
                 </Grid>
 
             </DockPanel>
-
-            <!--
-            <DockPanel Grid.Column="3" Margin="3">
-                    <Label Style="{StaticResource MyLblStyle}" DockPanel.Dock="Top" HorizontalAlignment="Center">Tags</Label>
-                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                        <Button Style="{StaticResource LinkButton}" Margin="3" Click="AddTag">Add Tag</Button>
-                    </StackPanel>
-                <Border BorderBrush="White" BorderThickness="1">
-                    <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
-                        <StackPanel x:Name="spTags"></StackPanel>
-                    </ScrollViewer>
-                </Border>
-            </DockPanel>
-            -->
-
             <DockPanel Grid.Column="3" Margin="3">
                 <Label Style="{StaticResource MyLblStyle}" DockPanel.Dock="Top" HorizontalAlignment="Center">Tags</Label>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
@@ -157,7 +151,6 @@
                 </StackPanel>
                 <Border BorderBrush="White" BorderThickness="1">
                     <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
-                        <!--<StackPanel x:Name="spTags"></StackPanel>-->
                         <local:UCTag1 AddMe="UCTag1_AddMe" DataContext="{Binding}"></local:UCTag1>
                     </ScrollViewer>
                 </Border>

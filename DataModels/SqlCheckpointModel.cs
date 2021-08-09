@@ -139,7 +139,7 @@ namespace AI_Note_Review
 
         public List<SqlTag> GetTags()
         {
-            string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID};";
+            string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID} order by RelTagCheckPointID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 return cnn.Query<SqlTag>(sql, this).ToList();
@@ -161,8 +161,6 @@ namespace AI_Note_Review
         {
             string strReturn = ""; 
             strReturn += Environment.NewLine;
-            strReturn += Environment.NewLine;
-            strReturn += Environment.NewLine;
             if (ErrorSeverity == 0)
             {
                 strReturn += "This is not a failed checkpoint but a something to consider in this clinical scenario for this ";
@@ -177,7 +175,6 @@ namespace AI_Note_Review
             strReturn += $"\tExplanation: {Comment}" + Environment.NewLine;
             if (Link != "")
             strReturn += $"\tLink: {Link}" + Environment.NewLine;
-            strReturn += Environment.NewLine;
             strReturn += Environment.NewLine;
             strReturn += Environment.NewLine;
             return strReturn;
