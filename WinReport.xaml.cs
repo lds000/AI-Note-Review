@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -123,9 +126,48 @@ namespace AI_Note_Review
 
         private void Button_CommittReportClick(object sender, RoutedEventArgs e)
         {
-            WinCommittReport wcr = new WinCommittReport();
-            wcr.Owner = this;
-            wcr.ShowDialog();
+            string sqlCheck = $"Select Count() from RelCPPRovider where PtID={CF.CurrentDoc.PtID} AND VisitDate='{CF.CurrentDoc.VisitDate.ToString("yyyy-MM-dd")}';";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                int iCount = cnn.ExecuteScalar<int>(sqlCheck);
+                if (iCount > 0)
+                {
+                    MessageBoxResult mr = MessageBox.Show($"The patient ID and review date already exist with {iCount} checkpoints. Press 'ok' to continue and replace previous report.", "Review Already Exists!", MessageBoxButton.OKCancel);
+                    if (mr == MessageBoxResult.Cancel)
+                    {
+                        return;
+                    }
+                    string strDelete = $"Delete from RelCPPRovider where PtID={CF.CurrentDoc.PtID} AND VisitDate='{CF.CurrentDoc.VisitDate.ToString("yyyy-MM-dd")}';";
+                    using (IDbConnection cnn1 = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        cnn1.Execute(strDelete);
+                    }
+                }
+            }
+
+            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.FailedCheckPoints orderby c.ErrorSeverity descending select c))
+            {
+                 cp.Commit(CF.CurrentDoc, SqlRelCPProvider.MyCheckPointStates.Fail);
+            }
+
+            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.RelevantCheckPoints orderby c.ErrorSeverity descending select c))
+            {
+                 cp.Commit(CF.CurrentDoc, SqlRelCPProvider.MyCheckPointStates.Relevant);
+            }
+
+            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            {
+                 cp.Commit(CF.CurrentDoc, SqlRelCPProvider.MyCheckPointStates.Pass);
+            }
+            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.IrrelaventCP orderby c.ErrorSeverity descending select c))
+            {
+                cp.Commit(CF.CurrentDoc, SqlRelCPProvider.MyCheckPointStates.Irrelevant);
+            }
+
+        }
+
+        private void Button_ReportsReviewClick(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

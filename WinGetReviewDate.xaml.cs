@@ -22,6 +22,7 @@ namespace AI_Note_Review
         public WinGetReviewDate()
         {
             InitializeComponent();
+            DataContext = CF.CurrentDoc;
         }
 
         public DateTime SelectedDate { get; set; }
@@ -29,6 +30,24 @@ namespace AI_Note_Review
         {
             SelectedDate = (DateTime)calDate.SelectedDate;
             Close();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedDate = DateTime.MinValue;
+            Close();
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SqlVisitReview rev = lbDates.SelectedItem as SqlVisitReview;
+            if (rev != null)
+            {
+                SelectedDate = rev.ReviewDate;
+                Close();
+            }
+
+                    
         }
     }
 }

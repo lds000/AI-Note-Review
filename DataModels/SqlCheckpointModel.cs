@@ -137,9 +137,9 @@ namespace AI_Note_Review
             }
         }
 
-        public void Commit(DocInfo di)
+        public void Commit(DocInfo di, SqlRelCPProvider.MyCheckPointStates cpState)
         {
-            string sql = $"INSERT INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate) VALUES ({di.ProviderID}, {CheckPointID}, {di.PtID}, '{di.ReviewDate.ToShortDateString()}', '{di.VisitDate.ToShortDateString()}');";
+            string sql = $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus) VALUES ({di.ProviderID}, {CheckPointID}, {di.PtID}, '{di.ReviewDate.ToString("yyyy-MM-dd")}', '{di.VisitDate.ToString("yyyy-MM-dd")}', {(int)cpState});";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 cnn.Execute(sql);

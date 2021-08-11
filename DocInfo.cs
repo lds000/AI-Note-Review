@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SQLite;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -1167,6 +1170,30 @@ namespace AI_Note_Review
             }
         }
 
+        public ObservableCollection<SqlVisitReview> VisitDates
+        {
+            get
+            {
+                string sql = $"select Distinct PtID,VisitDate,ReviewDate from RelCPProvider r Where r.ProviderID = {ProviderID} and ReviewDate='{ReviewDate.ToString("yyyy-MM-dd")}' order by r.VisitDate;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return new ObservableCollection<SqlVisitReview>(cnn.Query<SqlVisitReview>(sql).ToList());
+                }
+            }
+        }
+
+        public ObservableCollection<SqlVisitReview> ReviewDates
+        {
+            get
+            {
+                string sql = $"select Distinct ReviewDate from RelCPProvider r Where r.ProviderID = {ProviderID} order by r.ReviewDate;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {                    
+                    return new ObservableCollection<SqlVisitReview>(cnn.Query<SqlVisitReview>(sql).ToList());
+                }
+            }
+        }
+
         enum TagResult { Pass, Fail, FailNoCount };
 
         private TagResult CheckTagRegExs(List<SqlTagRegEx> tmpTagRegExs)
@@ -1297,6 +1324,7 @@ namespace AI_Note_Review
                     }
                 }
             }
+
 
             /*
             //Generate Report

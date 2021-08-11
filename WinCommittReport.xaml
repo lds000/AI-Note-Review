@@ -8,18 +8,10 @@
         WindowStartupLocation="CenterOwner"
         Title="WinCommittReport" Height="450" Width="800">
     <DockPanel Background="Black">
-        <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="20">Commit Note Review</Label>
-        <StackPanel DockPanel.Dock="Top">
-            <Label Style="{StaticResource MyLblStyle}">Current Note:</Label>
-            <Label Content="{Binding Provider, FallbackValue=UCProvider Name}"  Style="{StaticResource MyLblStyle}"></Label>
-            <StackPanel Orientation="Horizontal">
-                <Label Margin="0,0,10,0" Padding="0" Content="{Binding PtID, FallbackValue=518082}"  Style="{StaticResource MyLblStyle}"></Label>
-                <Label Margin="3,0,3,0" Padding="0" Style="{StaticResource MyLblStyle}">-</Label>
-                <Label Margin="0" Padding="0" Content="{Binding VisitDate, FallbackValue=1/1/2021}"  Style="{StaticResource MyLblStyle}"></Label>
-                <Label Margin="10,0,0,0" Padding="0" Style="{StaticResource MyLblStyle}">(</Label>
-                <Label Margin="0" Padding="0" Content="{Binding Facility, FallbackValue=Crossroads}"  Style="{StaticResource MyLblStyle}"></Label>
-                <Label Margin="0" Padding="0" Style="{StaticResource MyLblStyle}">)</Label>
-            </StackPanel>
+        <Label DockPanel.Dock="Top" FontSize="30" HorizontalAlignment="Center" Content="{Binding Provider, FallbackValue=UCProvider Name}"  Style="{StaticResource MyLblStyle}"></Label>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Center">
+            <Label Margin="0" Padding="0"  Style="{StaticResource MyLblStyle}"  FontSize="20">Review Date:</Label>
+            <Label Margin="10,0,0,0" Padding="0"  Style="{StaticResource MyLblStyle}" Content="{Binding ReviewDate}" ContentStringFormat="d"  FontSize="20"></Label>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
             <Button Click="ButtonCommmit_Click" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Style="{StaticResource LinkButton}">Commit</Button>
@@ -32,7 +24,32 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <ListBox Style="{StaticResource MyListBox}" Margin="3"></ListBox>
+                <ListBox x:Name="lbReviewDates" ItemsSource="{Binding VisitDates}" AlternationCount="{Binding Path=ReviewDates.Count}" Style="{StaticResource MyListBox}" Margin="3">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding VisitDate, StringFormat=d}"></TextBlock>
+                                <TextBlock Margin="10,0,10,0" Padding="0" Style="{StaticResource MyTbStyle}">-</TextBlock>
+                                <TextBlock Text="{Binding PtID}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <ListBox 
+                    Grid.Column="1" 
+                    DataContext="{Binding ElementName=lbReviewDates, Path=SelectedValue}"
+                    ItemsSource="{Binding RelCPProviders}"
+                    Style="{StaticResource MyListBox}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding CheckPointStatus}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
+                                <TextBlock Margin="10,0,10,0" Padding="0" Style="{StaticResource MyTbStyle}">-</TextBlock>
+                                <TextBlock Text="{Binding CheckPointTitle}"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </Grid>
         </Border>
     </DockPanel>

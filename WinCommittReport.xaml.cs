@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,8 +26,6 @@ namespace AI_Note_Review
         {
             InitializeComponent();
             DataContext = CF.CurrentDoc;
-
-
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -34,24 +35,6 @@ namespace AI_Note_Review
 
         private void ButtonCommmit_Click(object sender, RoutedEventArgs e)
         {
-            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.FailedCheckPoints orderby c.ErrorSeverity descending select c))
-            {
-                if (cp.IncludeCheckpoint) cp.Commit(CF.CurrentDoc);
-            }
-
-            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.RelevantCheckPoints orderby c.ErrorSeverity descending select c))
-            {
-                if (cp.IncludeCheckpoint) cp.Commit(CF.CurrentDoc);
-            }
-
-            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.PassedCheckPoints orderby c.ErrorSeverity descending select c))
-            {
-                if (cp.IncludeCheckpoint) cp.Commit(CF.CurrentDoc);
-            }
-            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.IrrelaventCP orderby c.ErrorSeverity descending select c))
-            {
-                if (cp.IncludeCheckpoint) cp.Commit(CF.CurrentDoc);
-            }
             this.Close();
         }
     }

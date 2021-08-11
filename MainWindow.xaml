@@ -14,6 +14,23 @@
             <local:ICD10Segments x:Key="ICD10Segments"/>
         </Grid.Resources>
         <DockPanel>
+                <Menu DockPanel.Dock="Top">
+                    <MenuItem Header="Program">
+                        <MenuItem Header="Exit" ToolTip="Show the reviews for the selected provider and selected review date." Click="Button_ReportsReviewClick"></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Review">
+                        <MenuItem Header="Set Review Date" ToolTip="Set the current review date for the selected provider." Click="Button_ClickReviewDate"></MenuItem>
+                        <MenuItem Header="Provider Reviews" ToolTip="Show the reviews for the selected provider." Click="Button_ReportsReviewClick"></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Checkpoint">
+                        <MenuItem Header="Edit Checkpoints" ToolTip="Edit Checkpoint data." Click="EditCP"></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Provider">
+                        <MenuItem Header="Add Provider" ToolTip="Add new provider."></MenuItem>
+                        <MenuItem Header="Remove Provider" ToolTip="Remove existing provider."></MenuItem>
+                        <MenuItem Header="Edit Provider Details" ToolTip="Edit provider data."></MenuItem>
+                    </MenuItem>
+                </Menu>
             <local:UC_PatientConsole DockPanel.Dock="Top"></local:UC_PatientConsole>
             <Border BorderBrush="White" DockPanel.Dock="Left">
                 <DockPanel>
@@ -54,11 +71,10 @@
                     </Border>
                 </DockPanel>
             </Border>
-            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                 <Button  Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
-                <Button Margin="100,0,0,0" VerticalAlignment="Center" Click="CheckNote" Style="{StaticResource LinkButton}">Check!</Button>
-                <Button Margin="100,0,0,0" VerticalAlignment="Center" Click="EditCP" Style="{StaticResource LinkButton}">Edit Checkpoints</Button>
-            </StackPanel>
+                <Button Margin="100,0,0,0" VerticalAlignment="Center" Click="CheckNote" Style="{StaticResource LinkButton}" FontSize="20">Check!</Button>
+                </StackPanel>
             <TabControl x:Name="tcNote">
                 <TabItem Foreground="Black" Header="CC">
                     <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding CC}"></TextBox>

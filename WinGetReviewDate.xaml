@@ -6,14 +6,27 @@
         WindowStartupLocation="CenterOwner"
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
-        Title="WinGetReviewDate" Height="150" Width="250">
+        Title="WinGetReviewDate" SizeToContent="WidthAndHeight">
+    <Border Background="Black" BorderBrush="White" BorderThickness="1" Padding="5">
     <DockPanel Background="Black">
-        <TextBlock DockPanel.Dock="Top" Style="{StaticResource MyTbStyle}" HorizontalAlignment="Center">Pick a date</TextBlock>
-        <Button DockPanel.Dock="Bottom" HorizontalAlignment="Center" Style="{StaticResource LinkButton}">Cancel</Button>
-        <DatePicker Name="calDate" SelectedDateChanged="DatePicker_SelectedDateChanged">
-            
-        </DatePicker>
+        <TextBlock DockPanel.Dock="Top" Style="{StaticResource MyTbStyle}" HorizontalAlignment="Center" FontSize="20">Review Date</TextBlock>
+        <Button DockPanel.Dock="Bottom" HorizontalAlignment="Center" Style="{StaticResource LinkButton}" Click="Button_Click">Cancel</Button>
+            <StackPanel>
+                <Calendar Name="calDate" SelectionMode="SingleDate" SelectedDatesChanged="DatePicker_SelectedDateChanged">
 
+                </Calendar>
+                <Label Style="{StaticResource MyLblStyle}">Previous Reviews</Label>
+                <ListBox Name="lbDates" ItemsSource="{Binding ReviewDates}"  Style="{StaticResource MyListBox}" SelectionChanged="ListBox_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock  Text="{Binding Path=ReviewDate, StringFormat=d}" Style="{StaticResource MyTbStyle}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+            </StackPanel>
     </DockPanel>
-    
+    </Border>
 </Window>

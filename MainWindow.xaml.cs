@@ -44,14 +44,15 @@ namespace AI_Note_Review
             InitializeComponent();
             ProgramInit();
 
-//sample note - hidden with ctrl M H
+
+            //sample note - hidden with ctrl M H
             CF.CurrentDoc.PtName = "Mark Smith";
-            CF.CurrentDoc.PtID = "518082";
+            CF.CurrentDoc.PtID = "618084";
             CF.CurrentDoc.Provider = "Devin Hansen";
             CF.CurrentDoc.ProviderID = 1;
             CF.CurrentDoc.PtAgeYrs = 18;
             CF.CurrentDoc.PtSex = "M";
-            CF.CurrentDoc.VisitDate = new DateTime(2021,7,12);
+            CF.CurrentDoc.VisitDate = new DateTime(2021,7,14);
             CF.CurrentDoc.CC = "Abdominal pain for 10 days";
             CF.CurrentDoc.DOB = new DateTime(1969, 10, 23);
             CF.CurrentDoc.Facility = "Meridian UC";
@@ -65,7 +66,8 @@ namespace AI_Note_Review
             CF.CurrentDoc.VitalsWt = 194;
             CF.CurrentDoc.ICD10s.Add("R10.10");
             CF.CurrentDoc.ICD10s.Add("I10");
-            CF.CurrentDoc.ReviewDate = DateTime.Now;
+            CF.CurrentDoc.ReviewDate = new DateTime(2021, 8, 9);
+                //DateTime.Now;
 
             CF.CurrentDoc.HPI = "Mark is a 30yo male who presents today complaining of right lower quadrant abdominal pain that began two days ago and acutely worse today. " +
                 "He denies diarrhea or constipation.  He states he cannot tolerate a full meal due to the pain.  " +
@@ -881,7 +883,15 @@ namespace AI_Note_Review
             WinGetReviewDate wr = new WinGetReviewDate();
             wr.Owner = this;
             wr.ShowDialog();
+            if (wr.SelectedDate > DateTime.MinValue)
             CF.CurrentDoc.ReviewDate = wr.SelectedDate;
+        }
+
+        private void Button_ReportsReviewClick(object sender, RoutedEventArgs e)
+        {
+            WinCommittReport wcr = new WinCommittReport();
+            wcr.Owner = this;
+            wcr.ShowDialog();
         }
     }
 
@@ -991,7 +1001,36 @@ namespace AI_Note_Review
 
             return strHPI;
         }
+    }
 
+    public class DateTimeHandler : SqlMapper.TypeHandler<DateTimeOffset>
+    {
+        private readonly TimeZoneInfo databaseTimeZone = TimeZoneInfo.Local;
+        public static readonly DateTimeHandler Default = new DateTimeHandler();
 
+        public DateTimeHandler()
+        {
+
+        }
+
+        public override DateTimeOffset Parse(object value)
+        {
+            DateTime storedDateTime;
+            if (value == null)
+                storedDateTime = DateTime.MinValue;
+            else
+                storedDateTime = (DateTime)value;
+
+            if (storedDateTime.ToUniversalTime() <= DateTimeOffset.MinValue.UtcDateTime)
+                return DateTimeOffset.MinValue;
+            else
+                return new DateTimeOffset(storedDateTime, databaseTimeZone.BaseUtcOffset);
+        }
+
+        public override void SetValue(IDbDataParameter parameter, DateTimeOffset value)
+        {
+            DateTime paramVal = value.ToOffset(this.databaseTimeZone.BaseUtcOffset).DateTime;
+            parameter.Value = paramVal;
+        }
     }
 }

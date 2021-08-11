@@ -75,10 +75,12 @@
     <Compile Include="DataModels\SqlLightDataAccess.cs" />
     <Compile Include="DataModels\SqlNoteSectionModel.cs" />
     <Compile Include="DataModels\SqlProvider.cs" />
+    <Compile Include="DataModels\SqlRelCPProviderModel.cs" />
     <Compile Include="DataModels\SqlrelICD10SegmentsCheckPoints.cs" />
     <Compile Include="DataModels\SqlTagModel.cs" />
     <Compile Include="DataModels\SqlTagRegExModel.cs" />
     <Compile Include="DataModels\SqlTagRegExTypeModel.cs" />
+    <Compile Include="DataModels\SqlVisitReviewModel.cs" />
     <Compile Include="DataModels\WindowPositionModel.cs" />
     <Compile Include="MyConverters.cs" />
     <Compile Include="UCPatientConsole.xaml.cs">
