@@ -24,7 +24,8 @@
             <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal">
                 <Button Margin="0,0,20,0" Click="Button_Click_Recheck"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Recheck</Button>
                 <Button Click="Button_Click"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Close</Button>
-                <Button Margin="20,0,0,0" Click="Button_CopyReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Reoprt</Button>
+                <Button Margin="20,0,0,0" Click="Button_CopyReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Report</Button>
+                <Button Margin="20,0,0,0" Click="Button_CopyIndexClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Index</Button>
                 <Button Margin="20,0,0,0" Click="Button_CommittReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Commit Review</Button>
             </StackPanel>
             <ScrollViewer>
@@ -55,8 +56,8 @@
                     </StackPanel>
 
                     <DockPanel Grid.Row="0" Grid.Column="1">
-                        <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Failed Checkpoints</Label>
-                        <ListBox x:Name="lbFail" Margin="5" ItemsSource="{Binding  FailedCheckPoints}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
+                        <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Missed Checkpoints</Label>
+                        <ListBox x:Name="lbFail" Margin="5" ItemsSource="{Binding  MissedCheckPoints}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">

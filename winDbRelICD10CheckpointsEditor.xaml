@@ -102,6 +102,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -119,26 +120,47 @@
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="3" Style="{StaticResource MyTbStyle}">ICD10:</TextBlock>
                     <ComboBox Margin="5,2,5,2"  Grid.Column="1" Grid.Row="3" Name="cbTargetICD10" DisplayMemberPath="SegmentTitle" SelectedValuePath="ICD10SegmentID" SelectedValue="{Binding TargetICD10Segment}" SelectionChanged="cbTargetICD10_SelectionChanged"></ComboBox>
 
-                    <TextBlock Margin="5" Grid.Column="0" Grid.Row="4" Style="{StaticResource MyTbStyle}">Text:</TextBlock>
-                    <TextBox Margin="5" x:Name="tbComment" Grid.Row="4" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Comment}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" LostFocus="tbComment_LostFocus" SpellCheck.IsEnabled="True">
+                    <TextBlock Margin="5" Grid.Column="0" Grid.Row="4" Style="{StaticResource MyTbStyle}">Severity:</TextBlock>
+
+                    <Grid  Grid.Column="1" Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider Margin="5"  Name="slideSeverity"
+                            Value="{Binding ErrorSeverity}" 
+                            Minimum="0" Maximum="10"
+                            TickFrequency="1" 
+                            IsSnapToTickEnabled="True" 
+                            Ticks="1,2,3,4,5,6,7,8,9,10"
+                            TickPlacement="Both"
+                            ValueChanged="slideSeverity_ValueChanged"></Slider>
+                        <Label Grid.Column="1" Style="{StaticResource MyLblStyle}"
+                               Content="{Binding ElementName=slideSeverity, Path=Value}"
+                               HorizontalAlignment="Center" FontSize="20"></Label>
+
+                    </Grid>
+
+                    <TextBlock Margin="5" Grid.Column="0" Grid.Row="5" Style="{StaticResource MyTbStyle}">Text:</TextBlock>
+                    <TextBox Margin="5" x:Name="tbComment" Grid.Row="5" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Comment}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" LostFocus="tbComment_LostFocus" SpellCheck.IsEnabled="True">
                         <SpellCheck.CustomDictionaries>
                             <sys:Uri>pack://application:,,,/MedTerms.lex</sys:Uri>
                         </SpellCheck.CustomDictionaries>
                     </TextBox>
 
-                    <TextBlock Margin="5" Grid.Column="0" Grid.Row="5" Style="{StaticResource MyTbStyle}">Images:</TextBlock>
-                    <RichTextBox Margin="5" x:Name="myRTB" Grid.Column="1" Grid.Row="5" LostFocus="myRTB_LostFocus"></RichTextBox>
+                    <TextBlock Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource MyTbStyle}">Images:</TextBlock>
+                    <RichTextBox Margin="5" x:Name="myRTB" Grid.Column="1" Grid.Row="6" LostFocus="myRTB_LostFocus"></RichTextBox>
 
-                    <TextBlock Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource MyTbStyle}">Action:</TextBlock>
-                    <TextBox Margin="5" x:Name="tbAction" Grid.Row="6" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Action}" ToolTip="{Binding Path=Action}" LostFocus="tbAction_LostFocus" SpellCheck.IsEnabled="True">
+                    <TextBlock Margin="5" Grid.Column="0" Grid.Row="7" Style="{StaticResource MyTbStyle}">Action:</TextBlock>
+                    <TextBox Margin="5" x:Name="tbAction" Grid.Row="7" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Action}" ToolTip="{Binding Path=Action}" LostFocus="tbAction_LostFocus" SpellCheck.IsEnabled="True">
                         <SpellCheck.CustomDictionaries>
                             <sys:Uri>pack://application:,,,/MedTerms.lex</sys:Uri>
                         </SpellCheck.CustomDictionaries>
                     </TextBox>
 
 
-                    <TextBlock Margin="5" Grid.Column="0" Grid.Row="7" Style="{StaticResource MyTbStyle}">Link:</TextBlock>
-                    <TextBox Margin="5" x:Name="tbLink" Grid.Row="7" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Link}" ToolTip="{Binding Path=Link}" LostFocus="tbLink_LostFocus"></TextBox>
+                    <TextBlock Margin="5" Grid.Column="0" Grid.Row="8" Style="{StaticResource MyTbStyle}">Link:</TextBlock>
+                    <TextBox Margin="5" x:Name="tbLink" Grid.Row="8" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Link}" ToolTip="{Binding Path=Link}" LostFocus="tbLink_LostFocus"></TextBox>
 
 
                 </Grid>

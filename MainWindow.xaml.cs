@@ -259,7 +259,7 @@ namespace AI_Note_Review
 
         public void processUnlocked(HtmlDocument HDoc)
         {
-            Console.WriteLine("Processing document");
+            //Console.WriteLine("Processing document");
             //this.DataContext = null;
             string strNote = HDoc.Body.InnerText;
             if (strNote == null) return;
@@ -292,6 +292,11 @@ namespace AI_Note_Review
                 if (myString.StartsWith("Appointment Facility:"))
                 {
                     CF.CurrentDoc.Facility = myString.Split(':')[1];
+                }
+
+                if (myString.StartsWith("Account Number:"))
+                {
+                    CF.CurrentDoc.PtID = myString.Split(':')[1];
                 }
 
 
@@ -819,7 +824,7 @@ namespace AI_Note_Review
 
 
 
-                Console.WriteLine($"Run time: {watch.ElapsedMilliseconds}");
+                //Console.WriteLine($"Run time: {watch.ElapsedMilliseconds}");
 
                 }
             CF.CurrentDoc.ICD10s = new ObservableCollection<string>();

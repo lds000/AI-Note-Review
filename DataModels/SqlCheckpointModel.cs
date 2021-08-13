@@ -44,6 +44,8 @@ namespace AI_Note_Review
         public string Comment { get; set; }
         public string Action { get; set; }
         public string Link { get; set; }
+
+        public int Expiration { get; set; }
         public SqlCheckpoint()
         {
         }
@@ -167,19 +169,25 @@ namespace AI_Note_Review
 
         }
 
+        public string GetIndex()
+        {
+            string strReturn = "";
+            strReturn += $"CheckPoint: '{CheckPointTitle}'" + Environment.NewLine;
+            //strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
+            strReturn += $"\tRecommended Remediation: {Action}" + Environment.NewLine;
+            strReturn += $"\tExplanation: {Comment}" + Environment.NewLine;
+            if (Link != "")
+                strReturn += $"\tLink: {Link}" + Environment.NewLine;
+            strReturn += Environment.NewLine;
+            strReturn += Environment.NewLine;
+            return strReturn;
+        }
         public string GetReport()
         {
             string strReturn = ""; 
-            strReturn += Environment.NewLine;
-            if (ErrorSeverity == 0)
-            {
-                strReturn += "This is not a failed checkpoint but a something to consider in this clinical scenario for this ";
-            }
-            else
-            {
-                strReturn += "Failed ";
-            }
-            strReturn += $"check point: '{CheckPointTitle}' " + Environment.NewLine;
+            strReturn += $"\t'{CheckPointTitle}'" + Environment.NewLine;
+            
+            /*
             strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
             strReturn += $"\tRecommended Remediation: {Action}" + Environment.NewLine;
             strReturn += $"\tExplanation: {Comment}" + Environment.NewLine;
@@ -187,6 +195,8 @@ namespace AI_Note_Review
             strReturn += $"\tLink: {Link}" + Environment.NewLine;
             strReturn += Environment.NewLine;
             strReturn += Environment.NewLine;
+            */
+
             return strReturn;
         }
 
@@ -201,7 +211,9 @@ namespace AI_Note_Review
                     "Comment=@Comment, " +
                     "Action=@Action, " +
                     "RichText=@RichText, " +
-                    "Link=@Link " +
+                    "ErrorSeverity=@ErrorSeverity, " +
+                    "Link=@Link, " +
+                    "Expiration=@Expiration " +
                     "WHERE CheckPointID=@CheckPointID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {

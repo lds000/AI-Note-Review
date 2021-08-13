@@ -51,7 +51,37 @@ namespace AI_Note_Review
             {
 
             }
+
+            sliderValueChanged = false;
+            slideSeverity.PreviewMouseUp += new MouseButtonEventHandler(slider_MouseUp);
+            slideSeverity.ValueChanged += slider_ValueChanged;
+
         }
+
+        private void SlideSeverity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool sliderValueChanged { get; set; }
+
+        void slider_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sliderValueChanged == true)
+            {
+                int tmpi = (int)slideSeverity.Value;
+                CurrentCheckpoint.ErrorSeverity = tmpi;
+                CurrentCheckpoint.SaveToDB();
+                sliderValueChanged = false;
+                e.Handled = true;
+            }
+        }
+
+        private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            sliderValueChanged = true;
+        }
+
 
         private void closeclick(object sender, RoutedEventArgs e)
         {
@@ -107,15 +137,8 @@ namespace AI_Note_Review
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 string sql = $"Select * from CheckPoints where CheckPointID == {selectedCheckPointID};";
-                try
-                {
                     CurrentCheckpoint = cnn.QuerySingle<SqlCheckpoint>(sql);
                     UpdateCurrentCheckPoint();
-                }
-                catch (Exception e2)
-                {
-                    Console.WriteLine($"Error on saving variation data: {e2.Message}");
-                }
             }
         }
 
@@ -552,5 +575,11 @@ namespace AI_Note_Review
         {
             UpdateCurrentCheckPoint();
         }
+
+        private void slideSeverity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+        }
     }
+
+
 }

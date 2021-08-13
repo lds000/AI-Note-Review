@@ -7,9 +7,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace AI_Note_Review
@@ -1133,15 +1131,15 @@ namespace AI_Note_Review
                 NotifyPropertyChanged();
             }
         }
-        public ObservableCollection<SqlCheckpoint> FailedCheckPoints
+        public ObservableCollection<SqlCheckpoint> MissedCheckPoints
         {
             get
             {
-                return failedCheckPoints;
+                return missedCheckPoints;
             }
             set
             {
-                failedCheckPoints = value;
+                missedCheckPoints = value;
                 NotifyPropertyChanged();
             }
         }
@@ -1254,7 +1252,7 @@ namespace AI_Note_Review
 
             documentTags.Clear();
             passedCheckPoints.Clear();
-            failedCheckPoints.Clear();
+            missedCheckPoints.Clear();
             irrelaventCheckPoints.Clear();
             relevantCheckPoints.Clear();
 
@@ -1319,7 +1317,7 @@ namespace AI_Note_Review
                         else
                         {
                             cp.IncludeCheckpoint = true;
-                            failedCheckPoints.Add(cp);
+                            missedCheckPoints.Add(cp);
                         }
                     }
                 }
@@ -1368,7 +1366,7 @@ namespace AI_Note_Review
             //this doesn't seem to work, although logically it should
             NotifyPropertyChanged("DocumentTags");
             NotifyPropertyChanged("PassedCheckPoints");
-            NotifyPropertyChanged("FailedCheckPoints");
+            NotifyPropertyChanged("MissedCheckPoints");
             NotifyPropertyChanged("IrrelaventCP");
             NotifyPropertyChanged("RelevantCheckPoints");
         }
@@ -1467,7 +1465,7 @@ namespace AI_Note_Review
         private ObservableCollection<string> iCD10s = new ObservableCollection<string>();
         private ObservableCollection<string> documentTags = new ObservableCollection<string>();
         private ObservableCollection<SqlCheckpoint> irrelaventCheckPoints = new ObservableCollection<SqlCheckpoint>();
-        private ObservableCollection<SqlCheckpoint> failedCheckPoints = new ObservableCollection<SqlCheckpoint>();
+        private ObservableCollection<SqlCheckpoint> missedCheckPoints = new ObservableCollection<SqlCheckpoint>();
         private ObservableCollection<SqlCheckpoint> relevantCheckPoints = new ObservableCollection<SqlCheckpoint>();
         private ObservableCollection<SqlCheckpoint> passedCheckPoints = new ObservableCollection<SqlCheckpoint>();
         #endregion
