@@ -23,6 +23,7 @@ using Dapper;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Windows.Interop;
 
 
 //Ctrl-KX, or KS (surround) snippet
@@ -191,6 +192,8 @@ namespace AI_Note_Review
                 CF.NoteICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
             }
 
+        
+        
         }
 
         /// <summary>
@@ -227,6 +230,10 @@ namespace AI_Note_Review
                 dpiY = source.CompositionTarget.TransformToDevice.M22;
             }
 
+            if (windowHeader == "Encounters")
+            {
+
+            }
 
             //load patient.
             if (windowHeader.Contains("Patient Encounter Summary")) //Patient Encounter Summary
