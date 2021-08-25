@@ -50,6 +50,7 @@ namespace AI_Note_Review
             if (IsPregCapable) HashTags += "@pregnantcapable, ";
             if (PtAgeYrs >= 13) HashTags += "@sexuallyActiveAge, ";
             if (PtAgeYrs >= 16) HashTags += "@DinkingAge, ";
+            HashTags = HashTags.TrimEnd().TrimEnd(',');
 
             NoteSectionText[0] = $"{PtAgeYrs} Sex{PtSex}"; //Demographics 
             NoteSectionText[1] = HPI + ROS; //HPI
