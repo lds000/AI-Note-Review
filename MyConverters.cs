@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
@@ -22,6 +23,45 @@ namespace AI_Note_Review
                 return "N/A";
             var ns = (from c in CF.NoteSections where c.SectionID == (int)value select c).FirstOrDefault();
             return $" ({ns.NoteSectionShortTitle})";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    [ValueConversion(typeof(int), typeof(Thickness))]
+    public class ICD10Margin : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            char charChapter = 'A';
+            double CodeStart = 0;
+            double CodeEnd = 0;
+            foreach (SqlICD10Segment ns in CF.NoteICD10Segments)
+            {
+                if (charChapter == char.Parse(ns.icd10Chapter))
+                {
+                    if ((ns.icd10CategoryStart >= CodeStart) && (ns.icd10CategoryEnd <= CodeEnd))
+                    {
+                        if (ns.ICD10SegmentID == (int)value)
+                        {
+                            return new Thickness(5, 0, 0, 0);
+                        }
+                    }
+                    CodeStart = ns.icd10CategoryStart;
+                    CodeEnd = ns.icd10CategoryEnd;
+                    charChapter = char.Parse(ns.icd10Chapter);
+                }
+                else
+                {
+                    charChapter = char.Parse(ns.icd10Chapter);
+                    CodeStart = 0;
+                    CodeEnd = 0;
+                }
+            }
+            return 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

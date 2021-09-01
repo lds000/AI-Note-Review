@@ -71,6 +71,7 @@
     </ApplicationDefinition>
     <Compile Include="CF.cs" />
     <Compile Include="DataModels\SqlCheckpointModel.cs" />
+    <Compile Include="DataModels\SqlCheckPointType.cs" />
     <Compile Include="DataModels\SqlICD10SegmentModel.cs" />
     <Compile Include="DataModels\SqlLightDataAccess.cs" />
     <Compile Include="DataModels\SqlNoteSectionModel.cs" />

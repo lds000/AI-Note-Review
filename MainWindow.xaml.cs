@@ -188,12 +188,13 @@ namespace AI_Note_Review
                 CF.CheckPointList = cnn.Query<SqlCheckpoint>(sql).ToList();
                 sql = "Select * from TagRegExTypes;";
                 CF.TagRegExTypes = cnn.Query<SqlTagRegExType>(sql).ToList();
-                sql = "Select * from ICD10Segments;";
-                CF.NoteICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
             }
 
-        
-        
+            CF.UpdateNoteICD10Segments();
+
+
+
+
         }
 
         /// <summary>
@@ -886,7 +887,7 @@ namespace AI_Note_Review
         {
             winDbRelICD10CheckpointsEditor w = new winDbRelICD10CheckpointsEditor();
             w.Owner = this;
-            w.ShowDialog();
+            w.Show();
         }
 
 

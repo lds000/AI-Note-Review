@@ -38,9 +38,7 @@ namespace AI_Note_Review
 
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
-                SqlLiteDataAccess.ICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
-                sql = "Select * from CheckPointTypes;";
+                string sql = "Select * from CheckPointTypes;";
                 cbTypes.ItemsSource = cnn.Query(sql).ToList();
                 sql = "Select * from ICD10Segments  order by icd10Chapter, icd10CategoryStart;";
                 cbTargetICD10.ItemsSource = cnn.Query(sql).ToList();

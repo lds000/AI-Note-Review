@@ -6,6 +6,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace AI_Note_Review
 {
@@ -18,6 +19,8 @@ namespace AI_Note_Review
         public double icd10CategoryEnd { get; set; }
         public string SegmentTitle { get; set; }
         public string SegmentComment { get; set; }
+
+        public Thickness icd10Margin { get; set; }
 
         private bool includeSegment = true;
         public bool IncludeSegment {

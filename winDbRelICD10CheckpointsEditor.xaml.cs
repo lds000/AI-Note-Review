@@ -31,14 +31,39 @@ namespace AI_Note_Review
             InitializeComponent();
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
-                SqlLiteDataAccess.ICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
-                sql = "Select * from CheckPointTypes;";
+                string sql = "Select * from CheckPointTypes;";
                 cbTypes.ItemsSource = cnn.Query(sql).ToList();
-                sql = "Select * from ICD10Segments  order by icd10Chapter, icd10CategoryStart;";
-                cbTargetICD10.ItemsSource = cnn.Query(sql).ToList();
+
+                CF.UpdateNoteICD10Segments();
+                cbTargetICD10.ItemsSource = CF.NoteICD10Segments;
+
+                char charChapter = 'A';
+                double CodeStart = 0;
+                double CodeEnd = 0;
+                foreach (SqlICD10Segment ns in CF.NoteICD10Segments)
+                {
+                    ns.icd10Margin = new Thickness(0);
+                    if (charChapter == char.Parse(ns.icd10Chapter))
+                    {
+                        if ((ns.icd10CategoryStart >= CodeStart) && (ns.icd10CategoryEnd <= CodeEnd))
+                        {
+                            ns.icd10Margin = new Thickness(5, 0, 0, 0);
+                        }
+                        CodeStart = ns.icd10CategoryStart;
+                        CodeEnd = ns.icd10CategoryEnd;
+                        charChapter = char.Parse(ns.icd10Chapter);
+                    }
+                    else
+                    {
+                        charChapter = char.Parse(ns.icd10Chapter);
+                        CodeStart = 0;
+                        CodeEnd = 0;
+                    }
+                }
             }
-            lbICD10.ItemsSource = SqlLiteDataAccess.ICD10Segments;
+            CF.UpdateNoteICD10Segments();
+            lbICD10.ItemsSource = CF.NoteICD10Segments;
+
             cbTargetSection.ItemsSource = CF.NoteSections;
             IList dictionaries = SpellCheck.GetCustomDictionaries(tbComment);
             dictionaries.Add(new Uri(@"pack://application:,,,/MedTerms.lex"));
@@ -521,12 +546,8 @@ namespace AI_Note_Review
                 wes.Owner = this;
                 wes.ShowDialog();
                 lbICD10.ItemsSource = null;
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
-                    SqlLiteDataAccess.ICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
-                }
-                lbICD10.ItemsSource = SqlLiteDataAccess.ICD10Segments;
+                CF.UpdateNoteICD10Segments();
+                lbICD10.ItemsSource = CF.NoteICD10Segments;
             }
         }
 
@@ -537,12 +558,9 @@ namespace AI_Note_Review
             wes.Owner = this;
             wes.ShowDialog();
             lbICD10.ItemsSource = null;
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
-                SqlLiteDataAccess.ICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
-            }
-            lbICD10.ItemsSource = SqlLiteDataAccess.ICD10Segments;
+            CF.UpdateNoteICD10Segments();
+            cbTargetICD10.ItemsSource = CF.NoteICD10Segments;
+            lbICD10.ItemsSource = CF.NoteICD10Segments;
         }
 
         private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -578,6 +596,45 @@ namespace AI_Note_Review
 
         private void slideSeverity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+        }
+
+        private void CPSummaryClick(object sender, RoutedEventArgs e)
+        {
+            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
+            if (seg != null)
+            {
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = $"Select * from CheckPoints where TargetICD10Segment == {seg.ICD10SegmentID}";
+                    List<SqlCheckpoint> lcp = cnn.Query<SqlCheckpoint>(sql).ToList();
+                    sql = "Select * from CheckPointTypes order by ItemOrder;";
+                    List<CheckPointType> lcpt = cnn.Query<CheckPointType>(sql).ToList();
+
+                    string strSummary = "";
+                    foreach (CheckPointType cpt in lcpt)
+                    {
+                        string strTempOut = "";
+                        foreach (SqlCheckpoint cp in lcp)
+                        {
+                            if (cp.CheckPointType == cpt.CheckPointTypeID)
+                            {
+                                strTempOut += $"\t- {cp.CheckPointTitle}" + Environment.NewLine;
+                                strTempOut += $"\t\t {cp.Comment}" + Environment.NewLine;
+                                strTempOut += $"\t\t Severity: {cp.ErrorSeverity}/10" + Environment.NewLine;
+                                strTempOut += $"\t\t Action: {cp.Action}" + Environment.NewLine;
+                            }
+                        }
+                        if (strTempOut != "")
+                        {
+                            strSummary += $"Section: {cpt.Title} ({cpt.Comment})" + Environment.NewLine;
+                            strSummary += strTempOut;
+                            strSummary += Environment.NewLine;
+                        }
+                    }
+                    Clipboard.SetText(strSummary);
+                }
+
+            }
         }
     }
 

@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +19,40 @@ namespace AI_Note_Review
         public static DocInfo CurrentDoc = new DocInfo();
         public static List<SqlCheckpoint> CheckPointList = new List<SqlCheckpoint>();
 
+        public static void UpdateNoteICD10Segments()
+        {
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
+                NoteICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
+            }
+            char charChapter = 'A';
+            double CodeStart = 0;
+            double CodeEnd = 0;
+            foreach (SqlICD10Segment ns in CF.NoteICD10Segments)
+            {
+                ns.icd10Margin = new Thickness(0);
+                if (charChapter == char.Parse(ns.icd10Chapter))
+                {
+                    if ((ns.icd10CategoryStart >= CodeStart) && (ns.icd10CategoryEnd <= CodeEnd))
+                    {
+                        ns.icd10Margin = new Thickness(10, 0, 0, 0);
+                    }
+                    else
+                    {
+                        CodeStart = ns.icd10CategoryStart;
+                        CodeEnd = ns.icd10CategoryEnd;
+                        charChapter = char.Parse(ns.icd10Chapter);
+                    }
+                }
+                else
+                {
+                    charChapter = char.Parse(ns.icd10Chapter);
+                    CodeStart = 0;
+                    CodeEnd = 0;
+                }
+            }
+        }
         
 
         public static void SetWindowPosition(Window _Window)
