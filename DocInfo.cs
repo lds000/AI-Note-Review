@@ -268,7 +268,10 @@ namespace AI_Note_Review
             }
             set
             {
-                provider = value;
+
+                SqlProvider p = SqlProvider.SqlGetProviderByFullName(value);
+                provider = p.FullName;
+                ProviderID = p.ProviderID;
                 NotifyPropertyChanged();
             }
         }

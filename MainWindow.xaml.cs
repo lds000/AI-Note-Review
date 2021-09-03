@@ -67,7 +67,7 @@ namespace AI_Note_Review
             CF.CurrentDoc.VitalsWt = 194;
             CF.CurrentDoc.ICD10s.Add("R10.10");
             CF.CurrentDoc.ICD10s.Add("I10");
-            CF.CurrentDoc.ReviewDate = new DateTime(2021, 8, 9);
+            CF.CurrentDoc.ReviewDate = DateTime.Now;
                 //DateTime.Now;
 
             CF.CurrentDoc.HPI = "Mark is a 30yo male who presents today complaining of right lower quadrant abdominal pain that began two days ago and acutely worse today. " +
@@ -613,14 +613,28 @@ namespace AI_Note_Review
                     {
                         if (strClass != "")
                         {
-                            if (strClass == "TableFooter")
+                        //<TD class=PageHeader align=right>Progress Note:&nbsp; Patrick F Castellano, PA-C</TD>
+                        if (strClass == "PageHeader")
+                        {
+                            string strInnerText = TempEl.InnerText;
+                            if (strInnerText.StartsWith("Progress Note:"))
+                            {
+                                string strDocname = strInnerText.Split(':')[1].Trim();
+                                strDocname = strDocname.Replace("    ", "|");
+                                CF.CurrentDoc.Provider = strDocname.Split('|')[0];
+                            }
+                            continue;
+
+                        }
+                        if (strClass == "TableFooter")
                             {
                                 string strInnerText = TempEl.InnerText;
-                                if (strInnerText.StartsWith("Progress Note:"))
+                                if (strInnerText.Contains("Progress Note:"))
                                 {
                                     string strDocname = strInnerText.Split(':')[1].Trim();
                                     strDocname = strDocname.Replace("    ", "|");
                                     CF.CurrentDoc.Provider = strDocname.Split('|')[0];
+
                                 }
                                 continue;
                             }
@@ -628,6 +642,10 @@ namespace AI_Note_Review
                             if (strClass == "PtData") //field has note informaition
                             {
                                 string strInnerText = TempEl.InnerText;
+                            if (strInnerText == null)
+                            {
+                                continue;
+                            }
                                 if (strInnerText.Contains("Account Number:")) CF.CurrentDoc.PtID = strInnerText.Split(':')[1].Trim();
                                 if (strInnerText.Contains("Appointment Facility:")) CF.CurrentDoc.Facility = strInnerText.Split(':')[1].Trim();
                             if (strInnerText.Contains("DOB:"))

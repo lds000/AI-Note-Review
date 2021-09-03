@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SQLite;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -112,6 +115,17 @@ namespace AI_Note_Review
                 {
                     if (icd10numeric >= ns.icd10CategoryStart && icd10numeric <= ns.icd10CategoryEnd) _ICD10Segments.Add(ns.SegmentTitle);
                 }
+            }
+            if (_ICD10Segments.Count == 0 )
+            {
+                string sql = "";
+                sql = $"INSERT INTO MissingICD10Codes (StrCode) VALUES ('{strTest}');";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    cnn.Execute(sql);
+                }
+                Console.WriteLine($"ICD10 Code with no found segment: {strTest}");
+
             }
             return _ICD10Segments;
         }

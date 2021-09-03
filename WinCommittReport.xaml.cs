@@ -37,5 +37,27 @@ namespace AI_Note_Review
         {
             this.Close();
         }
+
+        private void BtnGetIndexClick(object sender, RoutedEventArgs e)
+        {
+            string sqlCheck = $"Select * from(Select distinct CheckPointID rel from RelCPPRovider where " +
+                $"ReviewDate = '{CF.CurrentDoc.ReviewDate.ToString("yyyy-MM-dd")}') " +
+                $"inner join CheckPoints cp on rel = cp.CheckPointID " +
+                $"order by cp.TargetSection, cp.ErrorSeverity desc;";
+
+            List<SqlCheckpoint> cplist = new List<SqlCheckpoint>();
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cplist = cnn.Query<SqlCheckpoint>(sqlCheck).ToList();
+            }
+
+            string strOut = "Index for relevant checkpoints." + Environment.NewLine;
+            foreach (SqlCheckpoint cp in cplist)
+            {
+                strOut += cp.GetIndex();
+            }
+            Clipboard.SetText(strOut);
+
+        }
     }
 }

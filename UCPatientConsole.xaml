@@ -20,12 +20,12 @@
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="5*"/>
                 </Grid.ColumnDefinitions>
-                <Border BorderBrush="White" BorderThickness="1" Grid.ColumnSpan="1">
+                <Border BorderBrush="White" BorderThickness="1">
                     <StackPanel Orientation="Horizontal">
-                        <Label VerticalAlignment="Center" Margin="0" Padding="0" Foreground="White" FontSize="24" Content="{Binding Path=PtName, FallbackValue=-}"></Label>
-                        <Label VerticalAlignment="Center" Margin="10,0,0,0" Padding="0" Foreground="White" FontSize="18">(</Label>
-                        <Label VerticalAlignment="Center" Margin="0" Padding="0" Foreground="White" FontSize="18" Content="{Binding Path=AgeStr, FallbackValue=-}"></Label>
-                        <Label VerticalAlignment="Center" Margin="0" Padding="0" Foreground="White" FontSize="18">)</Label>
+                        <Label VerticalAlignment="Top" Margin="0" Padding="0" Foreground="White" FontSize="24" Content="{Binding Path=PtName, FallbackValue=-}"></Label>
+                        <Label VerticalAlignment="Top" Margin="10,0,0,0" Padding="0" Foreground="White" FontSize="18">(</Label>
+                        <Label VerticalAlignment="Top" Margin="0" Padding="0" Foreground="White" FontSize="18" Content="{Binding Path=AgeStr, FallbackValue=-}"></Label>
+                        <Label VerticalAlignment="Top" Margin="0" Padding="0" Foreground="White" FontSize="18">)</Label>
                     </StackPanel>
                 </Border>
                 <Grid Grid.Column="1">

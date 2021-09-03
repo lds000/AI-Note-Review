@@ -14,8 +14,10 @@
             <Label Margin="10,0,0,0" Padding="0"  Style="{StaticResource MyLblStyle}" Content="{Binding ReviewDate}" ContentStringFormat="d"  FontSize="20"></Label>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
+            <Button Margin="0,0,10,0" Click="BtnGetIndexClick" Style="{StaticResource LinkButton}">Get Index</Button>
             <Button Click="ButtonCommmit_Click" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Style="{StaticResource LinkButton}">Commit</Button>
             <Button Margin="10,0,0,0" Click="Button_Click" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Style="{StaticResource LinkButton}">Close</Button>
+
         </StackPanel>
         <Border BorderBrush="White" BorderThickness="1" Margin="5">
             <Grid>

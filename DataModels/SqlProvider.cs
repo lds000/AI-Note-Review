@@ -17,15 +17,15 @@ namespace AI_Note_Review
         public string Cert { get; set; }
         public string HomeClinic { get; set; }
         public int ReviewInterval { get; set; }
-
+         public string FullName { get; set; }
         public SqlProvider()
         {
         }
 
-        public SqlProvider(string strFirstName, string strLastName, string strCert, string strHomeClinic, int intReviewInterval)
+        public SqlProvider(string strFirstName, string strLastName, string strCert, string strHomeClinic, int intReviewInterval, string strFullName)
         {
                 string sql = "";
-                sql = $"INSERT INTO Providers (FirstName,LastName,Cert,HomeClinic,ReviewInterval) VALUES ('{strFirstName}','{strLastName}','{strCert}','{strHomeClinic}',{intReviewInterval});";
+                sql = $"INSERT INTO Providers (FirstName,LastName,Cert,HomeClinic,ReviewInterval,FullName) VALUES ('{strFirstName}','{strLastName}','{strCert}','{strHomeClinic}',{intReviewInterval},'{strFullName}');";
                 sql += $"Select * from Providers where FirstName = '{FirstName}' AND LastName = '{LastName}';"; //this part is to get the ID of the newly created phrase
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
@@ -34,7 +34,27 @@ namespace AI_Note_Review
                 }
         }
 
-    
+        public static SqlProvider SqlGetProviderByFullName(string strFullName)
+        {
+            string sql = "";
+            sql += $"Select * from Providers where FullName = '{strFullName}';"; //this part is to get the ID of the newly created phrase
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                SqlProvider p = cnn.QueryFirstOrDefault<SqlProvider>(sql);
+                if (p != null)
+                {
+                    return p;
+                }
+            }
+            sql = $"INSERT INTO Providers (FullName) VALUES ('{strFullName}');";
+            sql += $"Select * from Providers where FullName = '{strFullName}';"; //this part is to get the ID of the newly created phrase
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                SqlProvider p = cnn.QueryFirstOrDefault<SqlProvider>(sql);
+                return p;
+            }
+        }
+
         public void SaveToDatabase()
         {
             string sql = "UPDATE Providers SET " +
@@ -42,7 +62,8 @@ namespace AI_Note_Review
         "LastName=@LastName, " +
         "Cert=@Cert, " +
         "ReviewInterval=@ReviewInterval, " +
-        "HomeClinic=@HomeClinic " +
+        "HomeClinic=@HomeClinic, " +
+        "FullName=@FullName " +
         "WHERE ProviderID=@ProviderID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {

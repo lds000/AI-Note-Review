@@ -182,6 +182,8 @@ namespace AI_Note_Review
                 cp.Commit(CF.CurrentDoc, SqlRelCPProvider.MyCheckPointStates.Irrelevant);
             }
 
+            MessageBox.Show("Report committed.");
+
         }
 
         private void Button_ReportsReviewClick(object sender, RoutedEventArgs e)
