@@ -45,11 +45,12 @@ namespace AI_Note_Review
             if (PtSex.StartsWith("M")) HashTags += "@Male, ";
             if (PtSex.StartsWith("F")) HashTags += "@Female, ";
             if (PtAgeYrs < 4) HashTags += "@Child, ";
+            if (PtAgeYrs < 2) HashTags += "@Infant, ";
             if (IsHTNUrgency) HashTags += "!HTNUrgency, ";
             if (isO2Abnormal) HashTags += "!Hypoxic, ";
             if (IsPregCapable) HashTags += "@pregnantcapable, ";
             if (PtAgeYrs >= 13) HashTags += "@sexuallyActiveAge, ";
-            if (PtAgeYrs >= 16) HashTags += "@DinkingAge, ";
+            if (PtAgeYrs >= 16) HashTags += "@DrinkingAge, ";
             HashTags = HashTags.TrimEnd().TrimEnd(',');
 
             NoteSectionText[0] = $"{PtAgeYrs} Sex{PtSex}"; //Demographics 

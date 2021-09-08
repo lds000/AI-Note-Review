@@ -27,6 +27,7 @@
                 <Button Margin="20,0,0,0" Click="Button_CopyReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Report</Button>
                 <Button Margin="20,0,0,0" Click="Button_CopyIndexClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Index</Button>
                 <Button Margin="20,0,0,0" Click="Button_CommittReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Commit Review</Button>
+                <Button Margin="20,0,0,0" Click="Button_CheckpointAuditClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Checkpoint Audit</Button>
             </StackPanel>
             <ScrollViewer>
                 <Grid>

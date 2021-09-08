@@ -211,5 +211,10 @@ namespace AI_Note_Review
             Clipboard.SetText(strOut);
 
         }
+
+        private void Button_CheckpointAuditClick(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
