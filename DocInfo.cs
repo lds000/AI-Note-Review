@@ -8,6 +8,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Media;
 
 namespace AI_Note_Review
@@ -39,7 +40,7 @@ namespace AI_Note_Review
         public void SetUpNote()
         {
 
-            //add hashtags here.
+            //add hashtags here. #Hash
             HashTags = "";
             if (PtAgeYrs > 65) HashTags += "@Elderly, ";
             if (PtSex.StartsWith("M")) HashTags += "@Male, ";
@@ -51,6 +52,16 @@ namespace AI_Note_Review
             if (IsPregCapable) HashTags += "@pregnantcapable, ";
             if (PtAgeYrs >= 13) HashTags += "@sexuallyActiveAge, ";
             if (PtAgeYrs >= 16) HashTags += "@DrinkingAge, ";
+            if (PtAgeYrs >= 2) HashTags += "@SpeakingAge, ";
+            if (PtAgeYrs < 1) HashTags += "@Age<1, ";
+            if (PtAgeYrs < 2) HashTags += "@Age<2, ";
+            if (PtAgeYrs < 4) HashTags += "@Age<4, ";
+            if (GetAgeInDays()<183) HashTags += "@Age<6mo, ";
+            if (GetAgeInDays()<=90 && VitalsTemp > 100.4)
+            {
+                MessageBoxResult mr = MessageBox.Show($"This patient is {GetAgeInDays()} days old and has a fever of {VitalsTemp}.  Was the patient sent to an ED or appropriate workup performed?", "Infant Fever", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (mr == MessageBoxResult.No) HashTags += "#NeonteNotSentToED";
+            }
             HashTags = HashTags.TrimEnd().TrimEnd(',');
 
             NoteSectionText[0] = $"{PtAgeYrs} Sex{PtSex}"; //Demographics 
@@ -168,6 +179,20 @@ namespace AI_Note_Review
             if (now.Month < tmpDOB.Month || (now.Month == tmpDOB.Month && now.Day < tmpDOB.Day)) age--;
             return age;
         }
+
+        /// <summary>
+        /// returns age in years, 200 if no age stored
+        /// </summary>
+        /// <returns></returns>
+        public int GetAgeInDays()
+        {
+            DateTime tmpDOB = DOB;
+            if (tmpDOB == DateTime.MaxValue) return 20000;
+            DateTime now = DateTime.Now;
+            int age = (now - tmpDOB).Days;
+            return age;
+        }
+
         public string PtSex
         {
             get
@@ -584,6 +609,20 @@ namespace AI_Note_Review
                 NotifyPropertyChanged();
             }
         }
+
+        public string VisitCodes
+        {
+            get
+            {
+                return visitCodes;
+            }
+            set
+            {
+                visitCodes = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public string LabsOrdered
         {
             get
@@ -1197,13 +1236,13 @@ namespace AI_Note_Review
             }
         }
 
-        enum TagResult { Pass, Fail, FailNoCount };
+        enum TagResult { Pass, Fail, FailNoCount, DropTag };
 
         private TagResult CheckTagRegExs(List<SqlTagRegEx> tmpTagRegExs)
         {
             foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
             {
-                if (TagRegEx.TagRegExType == 1 || TagRegEx.TagRegExType == 4) //Any, if one match then include tag
+                if (TagRegEx.TagRegExType == 1 || TagRegEx.TagRegExType == 4 || TagRegEx.TagRegExType == 5) //Any, if one match then include tag
                 {
                     bool isMatch = false;
                     foreach (string strRegEx in TagRegEx.RegExText.Split(','))
@@ -1218,6 +1257,12 @@ namespace AI_Note_Review
                                 isMatch = true;
                             }
                         if (isMatch == false && TagRegEx.TagRegExType == 4) return TagResult.FailNoCount; //don't continue if type is "ANY NF" this is a stopper.
+
+                        if (TagRegEx.TagRegExType == 5)
+                        if (isMatch == false && TagRegEx.TagRegExType == 5)
+                        {
+                            return TagResult.DropTag; //Contains none hide condition met.
+                        }
                     }
                     if (!isMatch) return TagResult.Fail; //no conditions met for this one so all fail.
                 }
@@ -1284,7 +1329,7 @@ namespace AI_Note_Review
                         List<SqlTagRegEx> tmpTagRegExs = tagCurrentTag.GetTagRegExs();
                         trCurrentTagResult = CheckTagRegExs(tmpTagRegExs);
 
-                        if (trCurrentTagResult == TagResult.Fail || trCurrentTagResult == TagResult.FailNoCount)
+                        if (trCurrentTagResult == TagResult.Fail || trCurrentTagResult == TagResult.FailNoCount || trCurrentTagResult == TagResult.DropTag)
                         {
                             //tag fails, no match.
                             trTagResult = trCurrentTagResult;
@@ -1293,6 +1338,7 @@ namespace AI_Note_Review
                         documentTags.Add(tagCurrentTag.TagText);
                     }
 
+                    if (trTagResult != TagResult.DropTag) //do not add to any category if droptag result.
                     if (trTagResult == TagResult.Pass)
                     {
                         if (relType.Contains(cp.CheckPointType))
@@ -1467,6 +1513,7 @@ namespace AI_Note_Review
         private double vitalsTemp;
         private double vitalsWt;
         private double vitalsBMI;
+        private string visitCodes;
         private ObservableCollection<string> iCD10s = new ObservableCollection<string>();
         private ObservableCollection<string> documentTags = new ObservableCollection<string>();
         private ObservableCollection<SqlCheckpoint> irrelaventCheckPoints = new ObservableCollection<SqlCheckpoint>();

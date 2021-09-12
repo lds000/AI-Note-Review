@@ -263,7 +263,7 @@ namespace AI_Note_Review
 
         private string[] noteSection = {"Chief Complaint(s):", "HPI:", "Current Medication:", "Medical History:", "Allergies/Intolerance:", "Surgical History:", "Hospitalization:",
             "Family History:", "Social History:", "ROS:", "Vitals:", "Examination:", "Assessment:","Treatment:","Procedures:","Immunizations:","Therapeutic Injections:","Diagnostic Imaging:",
-            "Lab Reports:","Next Appointment:","Visit Code:","Procedure Codes:","Images:", "Objective:","Procedure Orders:","Preventive Medicine:","Billing Information:","Plan:" };
+            "Lab Reports:","Next Appointment:","Visit Code:","Procedure Codes:","Images:", "Objective:","Procedure Orders:","Preventive Medicine:","Billing Information:","Plan:"};
 
         public void processUnlocked(HtmlDocument HDoc)
         {
@@ -423,6 +423,7 @@ namespace AI_Note_Review
                             CF.CurrentDoc.FollowUp += myString + Environment.NewLine;
                             break;
                         case "Visit Code:":
+                            CF.CurrentDoc.VisitCodes += myString + Environment.NewLine;
                             break;
                         default:
                             break;
@@ -771,7 +772,11 @@ namespace AI_Note_Review
                                 {
                                     CF.CurrentDoc.Exam = strInnerText;
                                 }
-                                if (strCurrentHeading == "Follow Up")
+                            if (strCurrentHeading == "Visit Code")
+                            {
+                                CF.CurrentDoc.VisitCodes = strInnerText;
+                            }
+                            if (strCurrentHeading == "Follow Up")
                                 {
                                 CF.CurrentDoc.FollowUp = strInnerText;
                                 }

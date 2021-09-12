@@ -127,7 +127,10 @@
                 <TabItem Header="FollowUp">
                     <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding FollowUp}"></TextBox>
                 </TabItem>
-                <TabItem Header="HTML">
+                    <TabItem Header="Visit Codes">
+                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding VisitCodes}"></TextBox>
+                    </TabItem>
+                    <TabItem Header="HTML">
                     <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding NoteHTML}"></TextBox>
                 </TabItem>
                 <TabItem Header="HashTags">
