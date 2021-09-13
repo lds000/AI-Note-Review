@@ -57,6 +57,7 @@ namespace AI_Note_Review
             if (PtAgeYrs < 2) HashTags += "@Age<2, ";
             if (PtAgeYrs < 4) HashTags += "@Age<4, ";
             if (GetAgeInDays()<183) HashTags += "@Age<6mo, ";
+            //Age>2,Age<18,Age=5,Age=6
             if (GetAgeInDays()<=90 && VitalsTemp > 100.4)
             {
                 MessageBoxResult mr = MessageBox.Show($"This patient is {GetAgeInDays()} days old and has a fever of {VitalsTemp}.  Was the patient sent to an ED or appropriate workup performed?", "Infant Fever", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -180,6 +181,16 @@ namespace AI_Note_Review
             return age;
         }
 
+        /// <summary>
+        /// returns age in years, 200 if no age stored
+        /// </summary>
+        /// <returns></returns>
+        public double GetAgeInYearsDouble()
+        {
+            DateTime bd = new DateTime(1999, 1, 2);
+            TimeSpan age = DateTime.Now.Subtract(bd);
+            return age.TotalDays / 365.25; 
+        }
         /// <summary>
         /// returns age in years, 200 if no age stored
         /// </summary>
@@ -1163,6 +1174,19 @@ namespace AI_Note_Review
             return tmpICD10Segments;
         }
 
+        public ObservableCollection<SqlCheckpoint> DroppedCheckPoints
+        {
+            get
+            {
+                return droppedCheckPoints;
+            }
+            set
+            {
+                droppedCheckPoints = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public ObservableCollection<SqlCheckpoint> PassedCheckPoints
         {
             get 
@@ -1247,10 +1271,12 @@ namespace AI_Note_Review
                     bool isMatch = false;
                     foreach (string strRegEx in TagRegEx.RegExText.Split(','))
                     {
-                        if (strRegEx.ToLower().Contains("female"))
-                        {
+                        double age = GetAgeInYearsDouble();
+                        if (age < TagRegEx.MinAge) return TagResult.DropTag;
+                        if (age > TagRegEx.MaxAge) return TagResult.DropTag;
+                        if (isMale && !TagRegEx.Male) return TagResult.DropTag;
+                        if (!isMale && !TagRegEx.Female) return TagResult.DropTag;
 
-                        }
                         if (NoteSectionText[TagRegEx.TargetSection] != null)
                             if (Regex.IsMatch(NoteSectionText[TagRegEx.TargetSection].ToLower(), strRegEx.Trim().ToLower())) // /i is lower case directive for regex
                             {
@@ -1338,7 +1364,12 @@ namespace AI_Note_Review
                         documentTags.Add(tagCurrentTag.TagText);
                     }
 
-                    if (trTagResult != TagResult.DropTag) //do not add to any category if droptag result.
+                    if (trTagResult == TagResult.DropTag) //do not add to any category if droptag result.
+                    {
+                        cp.IncludeCheckpoint = false;
+                        droppedCheckPoints.Add(cp);
+                    }
+                    else
                     if (trTagResult == TagResult.Pass)
                     {
                         if (relType.Contains(cp.CheckPointType))
@@ -1416,6 +1447,7 @@ namespace AI_Note_Review
 
             //this doesn't seem to work, although logically it should
             NotifyPropertyChanged("DocumentTags");
+            NotifyPropertyChanged("DroppedCheckPoints");
             NotifyPropertyChanged("PassedCheckPoints");
             NotifyPropertyChanged("MissedCheckPoints");
             NotifyPropertyChanged("IrrelaventCP");
@@ -1520,6 +1552,7 @@ namespace AI_Note_Review
         private ObservableCollection<SqlCheckpoint> missedCheckPoints = new ObservableCollection<SqlCheckpoint>();
         private ObservableCollection<SqlCheckpoint> relevantCheckPoints = new ObservableCollection<SqlCheckpoint>();
         private ObservableCollection<SqlCheckpoint> passedCheckPoints = new ObservableCollection<SqlCheckpoint>();
+        private ObservableCollection<SqlCheckpoint> droppedCheckPoints = new ObservableCollection<SqlCheckpoint>();
         #endregion
     }
 }

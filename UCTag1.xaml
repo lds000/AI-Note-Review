@@ -25,6 +25,8 @@
                             Margin="0,0,0,0">
                             <TextBlock
                             FontSize="20"
+                            Tag="{Binding}"
+                            MouseDown="TextBlock_MouseDown"
                             Text="{Binding TagText, FallbackValue=#TagTitle}" 
                             Style="{StaticResource MyTbStyle}"></TextBlock>
                             <Button 

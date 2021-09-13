@@ -28,8 +28,7 @@ namespace AI_Note_Review
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            WinEnterText wet = new WinEnterText();
-
+            //WinEnterText wet = new WinEnterText();
             Button b = sender as Button;
             SqlCheckpoint cp = DataContext as SqlCheckpoint;
             SqlTag st = b.DataContext as SqlTag;
@@ -50,6 +49,20 @@ namespace AI_Note_Review
             cp.RemoveTag(st);
             AddMe(this, EventArgs.Empty);
 
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock tb = sender as TextBlock;
+            SqlTag st = tb.DataContext as SqlTag;
+            WinEnterText wet = new WinEnterText("Edit Title", st.TagText);
+            wet.ShowDialog();
+            if (wet.ReturnValue != null)
+            {
+                st.TagText = wet.ReturnValue;
+                st.SaveToDB();
+                tb.Text = wet.ReturnValue;
+            }
         }
     }
 }

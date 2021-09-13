@@ -322,7 +322,7 @@ namespace AI_Note_Review
                     cnn.Execute(sql);
                 }
 
-                SqlTagRegEx srex = new SqlTagRegEx(tg.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
+                //SqlTagRegEx srex = new SqlTagRegEx(tg.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
 
                 UpdateCurrentCheckPoint();
             }

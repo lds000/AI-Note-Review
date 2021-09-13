@@ -41,20 +41,17 @@ namespace AI_Note_Review
             }
         }
 
-        private void tbTitle_GotFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-            if (tb.Text == "Search Text") tb.Text = "";
-            tb.Foreground = Brushes.White;
-        }
 
         private void tbTitle_LostFocus(object sender, RoutedEventArgs e)
         {
-            SqlTagRegEx ParentTagRegEx = DataContext as SqlTagRegEx;
-            ParentTagRegEx.RegExText = tbRegExSearchTerms.Text.Trim();
-            ParentTagRegEx.SaveToDB();
+            SaveData();
+        }
 
-            tbRegExSearchTerms.Foreground = Brushes.Gray;
+        private void SaveData()
+        {
+            if (!this.IsLoaded) return;
+            SqlTagRegEx ParentTagRegEx = DataContext as SqlTagRegEx;
+            ParentTagRegEx.SaveToDB();
         }
 
         private void ButtonRemove_Click(object sender, RoutedEventArgs e)
@@ -64,18 +61,44 @@ namespace AI_Note_Review
             DeleteMe(this, EventArgs.Empty);
         }
 
+
         private void ComboBoxTagRegExType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SqlTagRegEx ParentTagRegEx = DataContext as SqlTagRegEx;
-            ParentTagRegEx.TagRegExType = int.Parse(cbTagRegExType.SelectedValue.ToString());
-            ParentTagRegEx.SaveToDB();
+            SaveData();
         }
 
         private void CbTargetSection_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SqlTagRegEx ParentTagRegEx = DataContext as SqlTagRegEx;
-            ParentTagRegEx.TargetSection = int.Parse(cbTargetSection.SelectedValue.ToString());
-            ParentTagRegEx.SaveToDB();
+            SaveData();
+        }
+
+        private void tblostfocus(object sender, RoutedEventArgs e)
+        {
+            SaveData();
+        }
+
+        private void cblostfocus(object sender, RoutedEventArgs e)
+        {
+            SaveData();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+                bool approvedDecimalPoint = false;
+
+                if (e.Text == ".")
+                {
+                    if (!((TextBox)sender).Text.Contains("."))
+                        approvedDecimalPoint = true;
+                }
+
+                if (!(char.IsDigit(e.Text, e.Text.Length - 1) || approvedDecimalPoint))
+                    e.Handled = true;
         }
     }
 }

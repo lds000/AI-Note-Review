@@ -15,6 +15,7 @@
         <Border.Resources>
             <local:MultiplyConverter x:Key="MultiplyConverter"/>
             <local:SeverityToBrushConverter x:Key="BrushConverter"/>
+                <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </Border.Resources>
 
         <DockPanel Background="Black" Margin="5,7,5,3">
@@ -39,6 +40,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel DockPanel.Dock="Left" HorizontalAlignment="Center">
                         <Label Margin="0,10,0,10" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" Padding="0" FontSize="18">Included Groups</Label>
@@ -54,6 +56,7 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                        <CheckBox x:Name="cbShowDropped" Style="{StaticResource MyCBStyle}" IsChecked="False">Show Dropped</CheckBox>
                     </StackPanel>
 
                     <DockPanel Grid.Row="0" Grid.Column="1">
@@ -113,6 +116,21 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </DockPanel>
+                    <DockPanel Grid.Row="2" Grid.Column="2" Visibility="{Binding IsChecked, ElementName=cbShowDropped, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Dropped Checkpoints</Label>
+                        <ListBox x:Name="lbDrop" ItemsSource="{Binding DroppedCheckPoints}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox  Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" IsChecked="{Binding IncludeCheckpoint}" Margin="0,0,5,0"/>
+                                        <TextBlock  Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
+                                        <TextBlock Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DockPanel>
+
                 </Grid>
 
             </ScrollViewer>

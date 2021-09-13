@@ -92,6 +92,7 @@ namespace AI_Note_Review
 
         void slider_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            if (CurrentCheckpoint == null) return;
             if (sliderValueChanged == true)
             {
                 int tmpi = (int)slideSeverity.Value;

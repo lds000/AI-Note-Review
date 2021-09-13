@@ -859,15 +859,22 @@ namespace AI_Note_Review
 
                 }
             CF.CurrentDoc.ICD10s = new ObservableCollection<string>();
-            foreach (var tmpAssessment in CF.CurrentDoc.Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            try
             {
-                if (tmpAssessment.Contains(" - "))
+                foreach (var tmpAssessment in CF.CurrentDoc.Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    string strClean = tmpAssessment.TrimEnd(" (Primary)").Trim();
-                  strClean = strClean.Replace(" - ", "|");
-                    string strCode = strClean.Split('|')[1].Trim();
-                    CF.CurrentDoc.ICD10s.Add(strCode);
+                    if (tmpAssessment.Contains(" - "))
+                    {
+                        string strClean = tmpAssessment.TrimEnd(" (Primary)").Trim();
+                        strClean = strClean.Replace(" - ", "|");
+                        string strCode = strClean.Split('|')[1].Trim();
+                        CF.CurrentDoc.ICD10s.Add(strCode);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                throw;
             }
             CF.CurrentDoc.SetUpNote();
             parseVitalsString(CF.CurrentDoc.Vitals);
