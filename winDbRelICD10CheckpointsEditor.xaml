@@ -83,10 +83,6 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="1" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow" MaxHeight="300" >Comments</TextBlock>
-                    <TextBox Text="{Binding Comment}" x:Name="tbComments" Grid.Row="2" Style="{StaticResource MyTextBox}" LostFocus="TextBox_LostFocus" TextWrapping="Wrap" AcceptsReturn="True">
-                        
-                    </TextBox>
                 </Grid>
             </DockPanel>
             <DockPanel Grid.Column="2" >

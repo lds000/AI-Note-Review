@@ -1094,6 +1094,15 @@ namespace AI_Note_Review
             }
         }
 
+        public bool isTempHigh
+        {
+            get
+            {
+                if (VitalsTemp >= 102) return true;
+                return false;
+            }
+        }
+
         //Wt
         public double VitalsWt
         {
@@ -1169,7 +1178,12 @@ namespace AI_Note_Review
                     }
                 }
             }
+
             if (IsHTNUrgency) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(40)); //pull in HTNUrgencySegment
+            if (isRRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(71)); //pull in HTNUrgencySegment
+            if (isTempHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(72)); //pull in HTNUrgencySegment
+            if (isRRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(73)); //pull in HTNUrgencySegment
+
             tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(36)); //add general segment that applies to all visits.
             return tmpICD10Segments;
         }
