@@ -1278,31 +1278,44 @@ namespace AI_Note_Review
 
         private TagResult CheckTagRegExs(List<SqlTagRegEx> tmpTagRegExs)
         {
+/*
+1   Contains Any Pass
+2   Contains All Pass
+3   Contains None Pass
+4   Contains Any Hide
+5   Contains None Hide
+6   Pass if Yes
+7   Fail if Yes
+*/
             foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
             {
+                double age = GetAgeInYearsDouble();
+                if (age < TagRegEx.MinAge)
+                {
+                    return TagResult.DropTag;
+                }
+                if (age > TagRegEx.MaxAge)
+                {
+                    return TagResult.DropTag;
+                }
                 if (TagRegEx.TagRegExType == 1 || TagRegEx.TagRegExType == 4 || TagRegEx.TagRegExType == 5) //Any, if one match then include tag
                 {
                     bool isMatch = false;
                     foreach (string strRegEx in TagRegEx.RegExText.Split(','))
                     {
-                        double age = GetAgeInYearsDouble();
-                        if (age < TagRegEx.MinAge) return TagResult.DropTag;
-                        if (age > TagRegEx.MaxAge) return TagResult.DropTag;
                         if (isMale && !TagRegEx.Male) return TagResult.DropTag;
                         if (!isMale && !TagRegEx.Female) return TagResult.DropTag;
 
                         if (NoteSectionText[TagRegEx.TargetSection] != null)
-                            if (Regex.IsMatch(NoteSectionText[TagRegEx.TargetSection].ToLower(), strRegEx.Trim().ToLower())) // /i is lower case directive for regex
+                            if (Regex.IsMatch(NoteSectionText[TagRegEx.TargetSection].ToLower(), CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase)) // /i is lower case directive for regex
                             {
                                 isMatch = true;
                             }
-                        if (isMatch == false && TagRegEx.TagRegExType == 4) return TagResult.FailNoCount; //don't continue if type is "ANY NF" this is a stopper.
-
-                        if (TagRegEx.TagRegExType == 5)
-                        if (isMatch == false && TagRegEx.TagRegExType == 5)
-                        {
-                            return TagResult.DropTag; //Contains none hide condition met.
-                        }
+                        if (isMatch == true && TagRegEx.TagRegExType == 4) return TagResult.FailNoCount; //Contains Any Hide - don't continue if type is "ANY NF" this is a stopper.
+                    }
+                    if (TagRegEx.TagRegExType == 5 && isMatch == false) //5   Contains None Hide
+                    {
+                        return TagResult.FailNoCount; //Contains none hide condition met.
                     }
                     if (!isMatch) return TagResult.Fail; //no conditions met for this one so all fail.
                 }
@@ -1314,7 +1327,7 @@ namespace AI_Note_Review
                     foreach (string strRegEx in TagRegEx.RegExText.Split(','))
                     {
                         if (NoteSectionText[TagRegEx.TargetSection] != null)
-                            if (!Regex.IsMatch(NoteSectionText[TagRegEx.TargetSection], strRegEx.Trim() + "/i"))
+                            if (!Regex.IsMatch(NoteSectionText[TagRegEx.TargetSection], CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase))
                             {
                                 return TagResult.Fail; //any mismatch makes it false.
                             }
@@ -1326,7 +1339,7 @@ namespace AI_Note_Review
                     foreach (string strRegEx in TagRegEx.RegExText.Split(','))
                     {
                         if (NoteSectionText[TagRegEx.TargetSection] != null)
-                            if (Regex.IsMatch(NoteSectionText[TagRegEx.TargetSection], strRegEx.Trim() + "/i"))
+                            if (Regex.IsMatch(NoteSectionText[TagRegEx.TargetSection], CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase))
                             {
                                 return TagResult.Fail; //any match makes it false
                             }
@@ -1345,6 +1358,7 @@ namespace AI_Note_Review
             missedCheckPoints.Clear();
             irrelaventCheckPoints.Clear();
             relevantCheckPoints.Clear();
+            droppedCheckPoints.Clear();
 
             //todo put into database as relevant/irrelavent vs pass/fail
             int[] relType = { 5, 6, 9, 10, 12 }; //this is a cheesy short term fix
@@ -1419,6 +1433,12 @@ namespace AI_Note_Review
                 }
             }
 
+            //now re-order checkpoints by severity
+            passedCheckPoints = new  ObservableCollection< SqlCheckpoint >(passedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
+            missedCheckPoints = new ObservableCollection<SqlCheckpoint>(missedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
+            irrelaventCheckPoints = new ObservableCollection<SqlCheckpoint>(irrelaventCheckPoints.OrderByDescending(c => c.ErrorSeverity));
+            relevantCheckPoints = new ObservableCollection<SqlCheckpoint>(relevantCheckPoints.OrderByDescending(c => c.ErrorSeverity));
+            droppedCheckPoints = new ObservableCollection<SqlCheckpoint>(droppedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
 
             /*
             //Generate Report

@@ -120,6 +120,9 @@
     <Compile Include="WinReport.xaml.cs">
       <DependentUpon>WinReport.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WinShowCheckPointRichText.xaml.cs">
+      <DependentUpon>WinShowCheckPointRichText.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -182,6 +185,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="WinShowCheckPointRichText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -203,6 +210,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <Resource Include="Icons\edit_notes.png" />
+    <Resource Include="Icons\eye.png" />
     <Content Include="MedTerms.lex">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

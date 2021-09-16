@@ -13,6 +13,7 @@ namespace AI_Note_Review
 {
     class CF
     {
+        public static string strRegexPrefix = @"[ \-,.;\n\r\s]";
         public static List<SqlNoteSection> NoteSections { get; set; }
         public static List<SqlTagRegExType> TagRegExTypes { get; set; }
         public static List<SqlICD10Segment> NoteICD10Segments = new List<SqlICD10Segment>();

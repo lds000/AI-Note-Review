@@ -10,12 +10,30 @@
         Closing="Window_Closing"
 
         WindowStartupLocation="CenterOwner"
-        Title="WinReport" Height="800" Width="1000">
+        Title="WinReport" Height="800" Width="1200">
     <Border BorderBrush="White" BorderThickness="1" Background="Black">
         <Border.Resources>
+            <Style TargetType="ListBoxItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+            </Style>
             <local:MultiplyConverter x:Key="MultiplyConverter"/>
             <local:SeverityToBrushConverter x:Key="BrushConverter"/>
-                <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <DataTemplate x:Key="myCheckPointDataTemplate">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox Grid.Column="0"  Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" IsChecked="{Binding IncludeCheckpoint}" Margin="0,0,5,0"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
+                    <TextBlock Grid.Column="2" Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
+                    <Image MouseDown="Image_MouseDown" Grid.Column="3" Source="Icons\eye.png" Width="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></Image>
+                </Grid>
+            </DataTemplate>
         </Border.Resources>
 
         <DockPanel Background="Black" Margin="5,7,5,3">
@@ -61,74 +79,25 @@
 
                     <DockPanel Grid.Row="0" Grid.Column="1">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Missed Checkpoints</Label>
-                        <ListBox x:Name="lbFail" Margin="5" ItemsSource="{Binding  MissedCheckPoints}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding IncludeCheckpoint}" Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" Margin="0,0,5,0"/>
-                                        <TextBlock Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
-                                        <TextBlock Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
+                        <ListBox x:Name="lbFail" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" ItemsSource="{Binding  MissedCheckPoints}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
+
                         </ListBox>
                     </DockPanel>
                     <DockPanel Grid.Row="1" Grid.Column="1">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Relavant Checkpoints</Label>
-                        <ListBox x:Name="lbRelavant" ItemsSource="{Binding RelevantCheckPoints}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox  Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" IsChecked="{Binding IncludeCheckpoint}" Margin="0,0,5,0"/>
-                                        <TextBlock Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
-                                        <TextBlock Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                        <ListBox x:Name="lbRelavant" ItemsSource="{Binding RelevantCheckPoints}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
                     </DockPanel>
                     <DockPanel Grid.Row="0" Grid.Column="2">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Passed Checkpoints</Label>
-                        <ListBox x:Name="lbPassed" ItemsSource="{Binding PassedCheckPoints}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox  Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" IsChecked="{Binding IncludeCheckpoint}" Margin="0,0,5,0"/>
-                                        <TextBlock  Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
-                                        <TextBlock Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-
-                        </ListBox>
+                        <ListBox x:Name="lbPassed" ItemsSource="{Binding PassedCheckPoints}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
                     </DockPanel>
                     <DockPanel Grid.Row="1" Grid.Column="2">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Irrelavant Checkpoints</Label>
-                        <ListBox x:Name="lbIrrelavant" ItemsSource="{Binding IrrelaventCP}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox  Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" IsChecked="{Binding IncludeCheckpoint}" Margin="0,0,5,0"/>
-                                        <TextBlock  Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
-                                        <TextBlock Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                        <ListBox x:Name="lbIrrelavant"  ItemTemplate="{StaticResource myCheckPointDataTemplate}" ItemsSource="{Binding IrrelaventCP}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
                     </DockPanel>
                     <DockPanel Grid.Row="2" Grid.Column="2" Visibility="{Binding IsChecked, ElementName=cbShowDropped, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Dropped Checkpoints</Label>
-                        <ListBox x:Name="lbDrop" ItemsSource="{Binding DroppedCheckPoints}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox  Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" IsChecked="{Binding IncludeCheckpoint}" Margin="0,0,5,0"/>
-                                        <TextBlock  Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
-                                        <TextBlock Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                        <ListBox x:Name="lbDrop" ItemsSource="{Binding DroppedCheckPoints}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
                     </DockPanel>
 
                 </Grid>

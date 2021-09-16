@@ -217,5 +217,15 @@ namespace AI_Note_Review
         {
 
         }
+
+        private void Image_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Image i = sender as Image;
+            SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
+            WinShowCheckPointRichText scp = new WinShowCheckPointRichText();
+            scp.DataContext = cp;
+            scp.Owner = this;
+            scp.ShowDialog();
+        }
     }
 }

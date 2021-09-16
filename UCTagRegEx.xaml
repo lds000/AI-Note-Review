@@ -28,7 +28,7 @@
                 <ColumnDefinition Width="8*"/>
             </Grid.ColumnDefinitions>
             <ComboBox Name="cbTagRegExType"
-                      Margin="0,2,2,2"
+                      Margin="10,2,2,2"
                       ItemsSource="{Binding Source={StaticResource myCF}, Path=TagRegExTypes}"    
                   
                       SelectedValue="{Binding TagRegExType}" 
