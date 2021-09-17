@@ -74,6 +74,7 @@
     <Compile Include="DataModels\SqlCheckPointType.cs" />
     <Compile Include="DataModels\SqlICD10SegmentModel.cs" />
     <Compile Include="DataModels\SqlLightDataAccess.cs" />
+    <Compile Include="DataModels\SqlMonthReviewSummary.cs" />
     <Compile Include="DataModels\SqlNoteSectionModel.cs" />
     <Compile Include="DataModels\SqlProvider.cs" />
     <Compile Include="DataModels\SqlRelCPProviderModel.cs" />

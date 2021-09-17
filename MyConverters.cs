@@ -32,7 +32,7 @@ namespace AI_Note_Review
             {
                 var textBlock = new TextBlock();
                 textBlock.TextWrapping = TextWrapping.Wrap;
-                string escapedXml = SecurityElement.Escape(input);
+                string escapedXml = input; // SecurityElement.Escape(input);
                 foreach (string strSearch in s.RegExText.Split(','))
                 {
                     List<string> replacedStr = new List<string>();

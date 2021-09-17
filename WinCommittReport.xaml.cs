@@ -59,5 +59,6 @@ namespace AI_Note_Review
             Clipboard.SetText(strOut);
 
         }
+
     }
 }

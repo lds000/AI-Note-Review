@@ -1157,6 +1157,7 @@ namespace AI_Note_Review
         public ObservableCollection<SqlICD10Segment> GetSegments()
         {
             //get icd10 segments
+            
             ObservableCollection<SqlICD10Segment> tmpICD10Segments = new ObservableCollection<SqlICD10Segment>();
             foreach (string strICD10 in ICD10s)
             {
@@ -1174,15 +1175,18 @@ namespace AI_Note_Review
                 {
                     if (strAlphaCode == ns.icd10Chapter)
                     {
-                        if (icd10numeric >= ns.icd10CategoryStart && icd10numeric <= ns.icd10CategoryEnd) tmpICD10Segments.Add(ns);
+                        if (icd10numeric >= ns.icd10CategoryStart && icd10numeric <= ns.icd10CategoryEnd)
+                        {
+                            tmpICD10Segments.Add(ns);
+                        }
                     }
                 }
             }
 
             if (IsHTNUrgency) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(40)); //pull in HTNUrgencySegment
-            if (isRRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(71)); //pull in HTNUrgencySegment
-            if (isTempHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(72)); //pull in HTNUrgencySegment
-            if (isRRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(73)); //pull in HTNUrgencySegment
+            if (isRRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(72)); //pull in HTNUrgencySegment
+            if (isTempHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(73)); //pull in HTNUrgencySegment
+            if (isHRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(74)); //pull in HTNUrgencySegment
 
             tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(36)); //add general segment that applies to all visits.
             return tmpICD10Segments;
@@ -1250,6 +1254,8 @@ namespace AI_Note_Review
             }
         }
 
+        //select ProviderID, strftime("%m-%Y", ReviewDate) as 'month-year', Count(distinct PtID) as Reviews from RelCPPRovider where strftime("%Y", ReviewDate) = "2021" AND ProviderID = 10 group by strftime("%m-%Y", ReviewDate)
+
         public ObservableCollection<SqlVisitReview> VisitDates
         {
             get
@@ -1258,6 +1264,17 @@ namespace AI_Note_Review
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     return new ObservableCollection<SqlVisitReview>(cnn.Query<SqlVisitReview>(sql).ToList());
+                }
+            }
+        }
+        public ObservableCollection<SqlProvider> AllProviders
+        {
+            get
+            {
+                string sql = $"Select * from Providers where FullName != '' order by FullName;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return new ObservableCollection<SqlProvider>(cnn.Query<SqlProvider>(sql).ToList());
                 }
             }
         }
@@ -1510,6 +1527,7 @@ namespace AI_Note_Review
             CC = "";
             HPI = "";
             CurrentMeds = "";
+            CurrentPrnMeds = "";
             ProblemList = "";
             ROS = "";
             PMHx = "";

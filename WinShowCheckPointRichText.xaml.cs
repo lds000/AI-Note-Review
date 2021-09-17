@@ -19,26 +19,26 @@ namespace AI_Note_Review
     /// </summary>
     public partial class WinShowCheckPointRichText : Window
     {
-        public event EventHandler AddMe;
+        public event EventHandler ImChanged;
 
         public WinShowCheckPointRichText()
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e) //add search term
         {
             //WinEnterText wet = new WinEnterText();
             Button b = sender as Button;
             SqlCheckpoint cp = DataContext as SqlCheckpoint;
             SqlTag st = b.DataContext as SqlTag;
             SqlTagRegEx srex = new SqlTagRegEx(st.TagID, "Search Text", cp.TargetSection, 1);
-            AddMe(this, EventArgs.Empty);
+            ImChanged(this, EventArgs.Empty);
         }
 
         private void UCTagRegEx_DeleteMe(object sender, EventArgs e)
         {
-            AddMe(this, EventArgs.Empty);
+            ImChanged(this, EventArgs.Empty);
         }
 
         private void btnRemoveTag_Click(object sender, RoutedEventArgs e)
@@ -47,7 +47,7 @@ namespace AI_Note_Review
             SqlCheckpoint cp = DataContext as SqlCheckpoint;
             SqlTag st = b.DataContext as SqlTag;
             cp.RemoveTag(st);
-            AddMe(this, EventArgs.Empty);
+            ImChanged(this, EventArgs.Empty);
 
         }
 
@@ -63,6 +63,16 @@ namespace AI_Note_Review
                 st.SaveToDB();
                 tb.Text = wet.ReturnValue;
             }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click_Done(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

@@ -639,7 +639,10 @@ namespace AI_Note_Review
                                 }
                                 continue;
                             }
-                            if (strClass == "PtHeading") CF.CurrentDoc.PtName = TempEl.InnerText; //set first name
+                        if (strClass == "PtHeading")
+                        {
+                            CF.CurrentDoc.PtName = TempEl.InnerText.Replace("\n", "").Replace("\r", "");  //set first name
+                        }
                             if (strClass == "PtData") //field has note informaition
                             {
                                 string strInnerText = TempEl.InnerText;

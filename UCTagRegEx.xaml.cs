@@ -51,6 +51,9 @@ namespace AI_Note_Review
         {
             if (!this.IsLoaded) return;
             SqlTagRegEx ParentTagRegEx = DataContext as SqlTagRegEx;
+            double tmpOut;
+            ParentTagRegEx.MinAge = double.Parse(tbMinAge.Text);
+            ParentTagRegEx.MaxAge = double.Parse(tbMaxAge.Text);
             ParentTagRegEx.SaveToDB();
         }
 
@@ -99,6 +102,11 @@ namespace AI_Note_Review
 
                 if (!(char.IsDigit(e.Text, e.Text.Length - 1) || approvedDecimalPoint))
                     e.Handled = true;
+        }
+
+        private void Btn_UpdateClick(object sender, RoutedEventArgs e)
+        {
+            SaveData();
         }
     }
 }

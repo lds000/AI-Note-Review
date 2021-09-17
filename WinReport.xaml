@@ -21,6 +21,11 @@
             <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <DataTemplate x:Key="myCheckPointDataTemplate">
                 <Grid>
+                    <Grid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Move to Passed"></MenuItem>
+                        </ContextMenu>
+                    </Grid.ContextMenu>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
@@ -31,7 +36,7 @@
                     <CheckBox Grid.Column="0"  Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" IsChecked="{Binding IncludeCheckpoint}" Margin="0,0,5,0"/>
                     <TextBlock Grid.Column="1" Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
                     <TextBlock Grid.Column="2" Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
-                    <Image MouseDown="Image_MouseDown" Grid.Column="3" Source="Icons\eye.png" Width="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></Image>
+                    <Image MouseUp="Image_MouseDown" Grid.Column="3" Source="Icons\eye.png" Width="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></Image>
                 </Grid>
             </DataTemplate>
         </Border.Resources>

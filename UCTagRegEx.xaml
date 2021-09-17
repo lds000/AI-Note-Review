@@ -59,23 +59,42 @@
                      Foreground="Gray"
                      x:Name="tbRegExSearchTerms" 
                      Style="{StaticResource MyTextBox}" 
-                     LostFocus="tbTitle_LostFocus"></TextBox>
+                     LostKeyboardFocus="tbTitle_LostFocus"></TextBox>
             <Image ToolTip="Expand search term to a larger text box." Grid.Column="1" Tag="{Binding}" Source="/Icons/edit_notes.png" Width="15" MouseDown="Image_MouseDown" />
         </Grid>
         <TextBlock Grid.Row="4" Style="{StaticResource MyTbStyle}" FontSize="16">Demographics</TextBlock>
         <StackPanel Orientation="Horizontal" Grid.Row="5"  Margin="5,5,0,0" HorizontalAlignment="Left">
             <Label Style="{StaticResource MyLblStyle}">Min Age</Label>
-            <TextBox Margin="5,0,2.5,0" VerticalAlignment="Center" Width="30" PreviewTextInput="TextBox_PreviewTextInput" Grid.Column="0" FontSize="10" Padding="0" LostFocus="tblostfocus" Text="{Binding MinAge, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}"></TextBox>
+            <TextBox 
+                x:Name="tbMinAge"
+                Margin="5,0,2.5,0" 
+                VerticalAlignment="Center" 
+                Width="30" 
+                PreviewTextInput="TextBox_PreviewTextInput" 
+                Grid.Column="0" 
+                FontSize="10" 
+                Padding="0" 
+                LostFocus="tblostfocus" 
+                Text="{Binding MinAge, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}">
+                
+            </TextBox>
             <Label Style="{StaticResource MyLblStyle}">Max Age</Label>
-            <TextBox Margin="2.5,0,5,0" VerticalAlignment="Center" Width="30" PreviewTextInput="TextBox_PreviewTextInput" Grid.Column="1" FontSize="10" Padding="0" LostFocus="tblostfocus" Text="{Binding MaxAge, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}"></TextBox>
+            <TextBox
+                x:Name="tbMaxAge"
+                Margin="2.5,0,5,0" VerticalAlignment="Center" Width="30" PreviewTextInput="TextBox_PreviewTextInput" Grid.Column="1" FontSize="10" Padding="0" LostKeyboardFocus="tblostfocus" Text="{Binding MaxAge, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}"></TextBox>
             <Label Style="{StaticResource MyLblStyle}">Sex:</Label>
             <CheckBox Foreground="White" Grid.Column="2" VerticalAlignment="Center" FontSize="10" Margin="0" LostFocus="cblostfocus" Padding="0" IsChecked="{Binding Male, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">M</CheckBox>
             <CheckBox Foreground="White" Grid.Column="3" VerticalAlignment="Center" FontSize="10" Margin="0" LostFocus="cblostfocus" Padding="0" IsChecked="{Binding Female, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">F</CheckBox>
         </StackPanel>
-        <Button Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="leFT"
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="leFT"
                     Margin="0,5,0,0"
-                    Grid.Column="4"
                     Style="{StaticResource LinkButton}" 
                     Click="ButtonRemove_Click">Delete This Criterion</Button>
+        </Grid>
     </Grid>
 </UserControl>

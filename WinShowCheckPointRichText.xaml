@@ -12,6 +12,10 @@
             <local:SqlTagRegExToString x:Key="mySqlTagRegExToString"/>
             <local:SqlTagRegExToXamlConverter x:Key="mySqlTagRegExToXamlConverter"/>
         </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <Border BorderBrush="White" BorderThickness="1">
             <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
                 <ItemsControl ItemsSource="{Binding Tags}">
@@ -73,5 +77,6 @@
                 </ItemsControl>
             </ScrollViewer>
         </Border>
+        <Button Click="Button_Click_Done" Grid.Row="1" HorizontalAlignment="Center" Style="{StaticResource LinkButton}" FontSize="24">Done</Button>
     </Grid>
 </Window>

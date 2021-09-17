@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AI_Note_Review
 {
-    class SqlProvider
+    public class SqlProvider
     {
         public int ProviderID { get; set; }
         public string FirstName { get; set; }
@@ -18,6 +18,20 @@ namespace AI_Note_Review
         public string HomeClinic { get; set; }
         public int ReviewInterval { get; set; }
          public string FullName { get; set; }
+
+        public List<SqlMonthReviewSummary> ReviewsByMonth
+        {
+            get
+            {
+                string sql = "";
+                sql += $"select ProviderID, strftime('%Y-%m', VisitDate) as 'yearmonth', Count(distinct VisitDate || PtID) as Reviews from RelCPPRovider where strftime('%Y', VisitDate) = '2021' AND ProviderID={ProviderID} group by strftime('%Y-%m', VisitDate);";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.Query<SqlMonthReviewSummary>(sql).ToList();
+                }
+            }
+
+        }
         public SqlProvider()
         {
         }
@@ -33,6 +47,8 @@ namespace AI_Note_Review
                     ProviderID = p.ProviderID;
                 }
         }
+
+
 
         public static SqlProvider SqlGetProviderByFullName(string strFullName)
         {

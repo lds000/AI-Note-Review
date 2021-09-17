@@ -225,7 +225,14 @@ namespace AI_Note_Review
             WinShowCheckPointRichText scp = new WinShowCheckPointRichText();
             scp.DataContext = cp;
             scp.Owner = this;
+            scp.ImChanged += Scp_AddMe;
             scp.ShowDialog();
+        }
+
+        private void Scp_AddMe(object sender, EventArgs e)
+        {
+            CF.CurrentDoc.GenerateReport();
+            //todo: update checkpoints
         }
     }
 }
