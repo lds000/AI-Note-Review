@@ -124,6 +124,9 @@
     <Compile Include="WinShowCheckPointRichText.xaml.cs">
       <DependentUpon>WinShowCheckPointRichText.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WinShowRegExYesNo.xaml.cs">
+      <DependentUpon>WinShowRegExYesNo.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -187,6 +190,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WinShowCheckPointRichText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WinShowRegExYesNo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

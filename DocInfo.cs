@@ -1315,13 +1315,47 @@ namespace AI_Note_Review
                 {
                     return TagResult.DropTag;
                 }
+                if (isMale && !TagRegEx.Male) return TagResult.DropTag;
+
+                if (!isMale && !TagRegEx.Female) return TagResult.DropTag;
+
+                if (TagRegEx.TagRegExType == 6) //pass if yes
+                {
+                    WinShowRegExYesNo ws = new WinShowRegExYesNo();
+                    ws.tbQuestion.Text = TagRegEx.RegExText;
+                    ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
+                    ws.ShowDialog();
+                    if (ws.YesNoResult == true)
+                    {
+                        return TagResult.Pass;
+                    }
+                    else
+                    {
+                        return TagResult.Fail;
+                    }
+                }
+
+                if (TagRegEx.TagRegExType == 7) //pass if yes
+                {
+                    WinShowRegExYesNo ws = new WinShowRegExYesNo();
+                    ws.tbQuestion.Text = TagRegEx.RegExText;
+                    ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
+                    ws.ShowDialog();
+                    if (ws.YesNoResult == true)
+                    {
+                        return TagResult.Fail;
+                    }
+                    else
+                    {
+                        return TagResult.Pass;
+                    }
+                }
+
                 if (TagRegEx.TagRegExType == 1 || TagRegEx.TagRegExType == 4 || TagRegEx.TagRegExType == 5) //Any, if one match then include tag
                 {
                     bool isMatch = false;
                     foreach (string strRegEx in TagRegEx.RegExText.Split(','))
                     {
-                        if (isMale && !TagRegEx.Male) return TagResult.DropTag;
-                        if (!isMale && !TagRegEx.Female) return TagResult.DropTag;
 
                         if (NoteSectionText[TagRegEx.TargetSection] != null)
                             if (Regex.IsMatch(NoteSectionText[TagRegEx.TargetSection].ToLower(), CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase)) // /i is lower case directive for regex
