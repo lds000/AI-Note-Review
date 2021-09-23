@@ -187,7 +187,7 @@ namespace AI_Note_Review
         /// <returns></returns>
         public double GetAgeInYearsDouble()
         {
-            DateTime bd = new DateTime(1999, 1, 2);
+            DateTime bd = DOB;
             TimeSpan age = DateTime.Now.Subtract(bd);
             return age.TotalDays / 365.25; 
         }
@@ -1306,6 +1306,10 @@ namespace AI_Note_Review
 */
             foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
             {
+                if (TagRegEx.RegExText.Contains("PCN"))
+                {
+                        
+                }
                 double age = GetAgeInYearsDouble();
                 if (age < TagRegEx.MinAge)
                 {
@@ -1319,7 +1323,7 @@ namespace AI_Note_Review
 
                 if (!isMale && !TagRegEx.Female) return TagResult.DropTag;
 
-                if (TagRegEx.TagRegExType == 6) //pass if yes
+                if (TagRegEx.TagRegExType == 6) //pass if yes, fail if no
                 {
                     WinShowRegExYesNo ws = new WinShowRegExYesNo();
                     ws.tbQuestion.Text = TagRegEx.RegExText;
@@ -1335,7 +1339,7 @@ namespace AI_Note_Review
                     }
                 }
 
-                if (TagRegEx.TagRegExType == 7) //pass if yes
+                if (TagRegEx.TagRegExType == 7) //pass if no, fail if yes
                 {
                     WinShowRegExYesNo ws = new WinShowRegExYesNo();
                     ws.tbQuestion.Text = TagRegEx.RegExText;
@@ -1367,6 +1371,10 @@ namespace AI_Note_Review
                     if (TagRegEx.TagRegExType == 5 && isMatch == false) //5   Contains None Hide
                     {
                         return TagResult.FailNoCount; //Contains none hide condition met.
+                    }
+                    if (TagRegEx.TagRegExType == 4 && !isMatch)
+                    {
+                        return TagResult.Pass;
                     }
                     if (!isMatch) return TagResult.Fail; //no conditions met for this one so all fail.
                 }
@@ -1428,6 +1436,10 @@ namespace AI_Note_Review
                     AlreadyAddedPoints.Add(cp.CheckPointID);
                     ///Console.WriteLine($"Now analyzing '{cp.CheckPointTitle}' checkpoint.");
                     TagResult trTagResult = TagResult.Pass;
+                    if (cp.CheckPointTitle.Contains("Augmentin XR"))
+                    {
+
+                    }
                     foreach (SqlTag tagCurrentTag in cp.GetTags())
                     {
                         TagResult trCurrentTagResult;

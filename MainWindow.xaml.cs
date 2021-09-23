@@ -402,7 +402,14 @@ namespace AI_Note_Review
                             CF.CurrentDoc.Assessments += myString + Environment.NewLine;
                             break;
                         case "Treatment:":
-                            CF.CurrentDoc.Treatment += myString + Environment.NewLine;
+                            if (myString.StartsWith("         Start")) //may not always work, keep an eye on this.
+                            {
+                                CF.CurrentDoc.MedsStarted += myString + Environment.NewLine;
+                            }
+                            else
+                            {
+                                CF.CurrentDoc.Treatment += myString + Environment.NewLine;
+                            }
                             break;
                         case "Immunizations:":
                             CF.CurrentDoc.Treatment += myString + Environment.NewLine;
