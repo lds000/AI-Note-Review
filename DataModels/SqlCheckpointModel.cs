@@ -1,14 +1,17 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace AI_Note_Review
 {
@@ -58,6 +61,43 @@ namespace AI_Note_Review
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     return cnn.Query<SqlTag>(sql, this).ToList();
+                }
+            }
+        }
+
+        public void DeleteImage(SqlCheckPointImage sci)
+        {
+            sci.DeleteFromDB();
+            OnPropertyChanged("Images");
+        }
+
+        public void AddImageFromClipBoard()
+        {
+            BitmapSource bs = Clipboard.GetImage();
+            if (bs == null) return;
+            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bs));
+            encoder.QualityLevel = 100;
+            // byte[] bit = new byte[0];
+            using (MemoryStream stream = new MemoryStream())
+            {
+                encoder.Frames.Add(BitmapFrame.Create(bs));
+                encoder.Save(stream);
+                byte[] bit = stream.ToArray();
+                stream.Close();
+            }
+            new SqlCheckPointImage(CheckPointID, bs);
+            OnPropertyChanged("Images");
+        }
+
+        public ObservableCollection<SqlCheckPointImage> Images
+        {
+            get
+            {
+                string sql = $"select * from CheckPointImages where CheckPointID = @CheckPointID;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return new ObservableCollection<SqlCheckPointImage>(cnn.Query<SqlCheckPointImage>(sql, this).ToList());
                 }
             }
         }

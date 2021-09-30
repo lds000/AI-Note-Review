@@ -11,8 +11,20 @@ using System.Windows.Forms;
 
 namespace AI_Note_Review
 {
+
+    static class GenericMethods
+    {
+        public static void CreateNewOrUpdateExisting<TKey, TValue>(
+this IDictionary<TKey, TValue> map, TKey key, TValue value)
+        {
+            map[key] = value;
+        }
+
+    }
+
     class CF
     {
+
         public static string strRegexPrefix = @"[ \-,.;\n\r\s]";
         public static List<SqlNoteSection> NoteSections { get; set; }
         public static List<SqlTagRegExType> TagRegExTypes { get; set; }

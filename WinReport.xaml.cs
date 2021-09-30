@@ -27,8 +27,7 @@ namespace AI_Note_Review
         {
             InitializeComponent();
             CF.CurrentDoc.ICD10Segments = CF.CurrentDoc.GetSegments();
-
-            CF.CurrentDoc.GenerateReport();
+            CF.CurrentDoc.GenerateReport(true);
             DataContext = CF.CurrentDoc;
         }
 
@@ -62,10 +61,7 @@ namespace AI_Note_Review
 
         private void Button_Click_Recheck(object sender, RoutedEventArgs e)
         {
-
             CF.CurrentDoc.GenerateReport();
-
-
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -234,5 +230,30 @@ namespace AI_Note_Review
             CF.CurrentDoc.GenerateReport();
             //todo: update checkpoints
         }
+
+        private void MovePassedCP(object sender, RoutedEventArgs e)
+        {
+            MenuItem i = sender as MenuItem;
+            SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
+            CF.CurrentDoc.CPStatusOverrides.CreateNewOrUpdateExisting(cp, SqlRelCPProvider.MyCheckPointStates.Pass);
+            CF.CurrentDoc.GenerateReport();
+        }
+
+        private void MoveMissedCP(object sender, RoutedEventArgs e)
+        {
+            MenuItem i = sender as MenuItem;
+            SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
+            CF.CurrentDoc.CPStatusOverrides.CreateNewOrUpdateExisting(cp, SqlRelCPProvider.MyCheckPointStates.Fail);
+            CF.CurrentDoc.GenerateReport();
+        }
+
+        private void DropCP(object sender, RoutedEventArgs e)
+        {
+            MenuItem i = sender as MenuItem;
+            SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
+            CF.CurrentDoc.CPStatusOverrides.CreateNewOrUpdateExisting(cp, SqlRelCPProvider.MyCheckPointStates.Irrelevant);
+            CF.CurrentDoc.GenerateReport();
+        }
     }
+
 }

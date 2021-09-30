@@ -23,7 +23,9 @@
                 <Grid>
                     <Grid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Move to Passed"></MenuItem>
+                            <MenuItem Header="Move to passed." Click="MovePassedCP"></MenuItem>
+                            <MenuItem Header="Move to missed." Click="MoveMissedCP"></MenuItem>
+                            <MenuItem Header="Drop." Click="DropCP"></MenuItem>
                         </ContextMenu>
                     </Grid.ContextMenu>
                     <Grid.ColumnDefinitions>

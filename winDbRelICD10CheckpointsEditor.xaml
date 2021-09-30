@@ -12,6 +12,17 @@
     <DockPanel Background="Black" Name="dpCheckpoint">
         <DockPanel.Resources>
             <local:ICD10Margin x:Key="ICD10Margin"/>
+            <local:ImageConverter x:Key="ImageConverter"/>
+            <DataTemplate x:Key="myCheckPointImageTemplate">
+                <Grid>
+                    <Grid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Delete Image." Click="DeleteImage"></MenuItem>
+                        </ContextMenu>
+                    </Grid.ContextMenu>
+                    <Image Source="{Binding Converter={StaticResource ImageConverter}}" ></Image>
+                </Grid>
+            </DataTemplate>
         </DockPanel.Resources>
 
         <Label DockPanel.Dock="Top" HorizontalAlignment="Center" Style="{StaticResource MyLblStyle}" FontSize="20">ICD-10 to Checkpoint Editor</Label>
@@ -35,6 +46,7 @@
                                 <Grid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Edit" Click="MenuItemEditSegment_Click"/>
+                                        <MenuItem Header="Create Index" ToolTip="Create an index and copy it to the clipboard" Click="MenuItemCreateSegmentIndex"/>
                                     </ContextMenu>
                                 </Grid.ContextMenu>
                                 <Grid.ColumnDefinitions>
@@ -149,8 +161,18 @@
                         </SpellCheck.CustomDictionaries>
                     </TextBox>
 
-                    <TextBlock Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource MyTbStyle}">Images:</TextBlock>
-                    <RichTextBox Margin="5" x:Name="myRTB" Grid.Column="1" Grid.Row="6" LostFocus="myRTB_LostFocus"></RichTextBox>
+                    <Button Click="ButtonImage_Click" ToolTip="Click this button to add image from clipboard."  Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource LinkButton}">Images:</Button>
+                    <ListBox 
+                        x:Name="lbImages"
+                        ItemsSource="{Binding Images}"
+                        ItemTemplate="{StaticResource myCheckPointImageTemplate}"
+                        Margin="5"
+                        Grid.Column="1"
+                        Grid.Row="6" 
+                        Style="{StaticResource MyListBox}"/>
+
+                    <Image Margin="5" x:Name="myImage" Grid.Column="1" Grid.Row="6" Source="{Binding Path=Image}" ></Image>
+                    <RichTextBox Visibility="Collapsed" Margin="5" x:Name="myRTB" Grid.Column="1" Grid.Row="6" LostFocus="myRTB_LostFocus"></RichTextBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="7" Style="{StaticResource MyTbStyle}">Action:</TextBlock>
                     <TextBox Margin="5" x:Name="tbAction" Grid.Row="7" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Action}" ToolTip="{Binding Path=Action}" LostFocus="tbAction_LostFocus" SpellCheck.IsEnabled="True">

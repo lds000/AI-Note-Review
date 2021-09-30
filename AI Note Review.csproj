@@ -70,6 +70,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CF.cs" />
+    <Compile Include="DataModels\SqlCheckPointImagesModel.cs" />
     <Compile Include="DataModels\SqlCheckpointModel.cs" />
     <Compile Include="DataModels\SqlCheckPointType.cs" />
     <Compile Include="DataModels\SqlICD10SegmentModel.cs" />

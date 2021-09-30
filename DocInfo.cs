@@ -31,6 +31,7 @@ namespace AI_Note_Review
 
         #endregion
 
+        
 
         public DocInfo()
         {
@@ -283,6 +284,9 @@ namespace AI_Note_Review
                 return reviewDate.ToShortDateString();
             }
         }
+
+
+
         #endregion
         #region note details
         public string Facility
@@ -1180,6 +1184,10 @@ namespace AI_Note_Review
                             tmpICD10Segments.Add(ns);
                         }
                     }
+                    if (ns.icd10Chapter == "X")
+                    {
+                        tmpICD10Segments.Add(ns);
+                    }
                 }
             }
 
@@ -1188,8 +1196,23 @@ namespace AI_Note_Review
             if (isTempHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(73)); //pull in HTNUrgencySegment
             if (isHRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(74)); //pull in HTNUrgencySegment
 
-            tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(36)); //add general segment that applies to all visits.
+            //tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(36)); //add general segment that applies to all visits.
             return tmpICD10Segments;
+        }
+
+        /// <summary>
+        /// int CheckpointID, int CPstatus
+        /// </summary>
+        public Dictionary<SqlCheckpoint, SqlRelCPProvider.MyCheckPointStates> CPStatusOverrides 
+        { 
+            get
+            {
+                return cPStatusOverrides;
+            }
+            set
+            {
+                cPStatusOverrides = value;
+            }
         }
 
         public ObservableCollection<SqlCheckpoint> DroppedCheckPoints
@@ -1409,9 +1432,12 @@ namespace AI_Note_Review
             return TagResult.Pass;
         }
 
-        public void GenerateReport()
+        public void GenerateReport(bool resetOverides = false)
         {
-
+            if (resetOverides)
+            {
+                CPStatusOverrides.Clear();
+            }
             documentTags.Clear();
             passedCheckPoints.Clear();
             missedCheckPoints.Clear();
@@ -1429,6 +1455,31 @@ namespace AI_Note_Review
                 //Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
                 foreach (SqlCheckpoint cp in ns.GetCheckPoints())
                 {
+                    foreach (var p in CF.CurrentDoc.CPStatusOverrides)
+                    {
+                        if (p.Key.CheckPointID == cp.CheckPointID)
+                        {
+                            missedCheckPoints.Remove(p.Key);
+                            passedCheckPoints.Remove(p.Key);
+                            irrelaventCheckPoints.Remove(p.Key);
+                            if (p.Value == SqlRelCPProvider.MyCheckPointStates.Fail)
+                            {
+                                missedCheckPoints.Add(p.Key);
+                                p.Key.IncludeCheckpoint = true;
+                            }
+                            if (p.Value == SqlRelCPProvider.MyCheckPointStates.Pass)
+                            {
+                                passedCheckPoints.Add(p.Key);
+                                p.Key.IncludeCheckpoint = false;
+                            }
+                            if (p.Value == SqlRelCPProvider.MyCheckPointStates.Irrelevant)
+                            {
+                                irrelaventCheckPoints.Add(p.Key);
+                                p.Key.IncludeCheckpoint = false;
+                            }
+                            AlreadyAddedPoints.Add(p.Key.CheckPointID);
+                        }
+                    }
                     if (AlreadyAddedPoints.Contains(cp.CheckPointID)) //no need to double check
                     {
                         continue;
@@ -1651,6 +1702,8 @@ namespace AI_Note_Review
         private ObservableCollection<SqlCheckpoint> relevantCheckPoints = new ObservableCollection<SqlCheckpoint>();
         private ObservableCollection<SqlCheckpoint> passedCheckPoints = new ObservableCollection<SqlCheckpoint>();
         private ObservableCollection<SqlCheckpoint> droppedCheckPoints = new ObservableCollection<SqlCheckpoint>();
+        private Dictionary<SqlCheckpoint, SqlRelCPProvider.MyCheckPointStates> cPStatusOverrides = new Dictionary<SqlCheckpoint, SqlRelCPProvider.MyCheckPointStates>();
+
         #endregion
     }
 }
