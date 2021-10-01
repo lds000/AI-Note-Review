@@ -666,6 +666,15 @@ namespace AI_Note_Review
                                     {
                                         strTempOut += $"<br><a href='{cp.Link}'>[Link to source]</a>";
                                     }
+                                    if (cp.Images.Count > 0)
+                                    {
+                                        foreach (var imgCPimage in cp.Images)
+                                        {
+                                            var b64String = Convert.ToBase64String(imgCPimage.ImageData);
+                                            var dataUrl = "data:image/bmp;base64," + b64String;
+                                            strTempOut += $"<br><img src=\"{dataUrl}" + "\" />";
+                                        }
+                                    }
                                     strTempOut += "</ul>";
                                 }
                                 strTempOut += "</dl></li>";
@@ -707,6 +716,11 @@ namespace AI_Note_Review
             MenuItem mi = sender as MenuItem;
             SqlCheckPointImage sc = mi.DataContext as SqlCheckPointImage;
             CurrentCheckpoint.DeleteImage(sc);
+        }
+
+        private void btnLinkClick(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(CurrentCheckpoint.Link);
         }
     }
 

@@ -64,6 +64,10 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
                     CodeStart = 0;
                     CodeEnd = 0;
                 }
+                if (ns.ICD10SegmentID == 90)
+                {
+                    ns.IncludeSegment = false;
+                }
             }
         }
         

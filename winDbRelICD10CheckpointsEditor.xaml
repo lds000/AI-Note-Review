@@ -182,7 +182,7 @@
                     </TextBox>
 
 
-                    <TextBlock Margin="5" Grid.Column="0" Grid.Row="8" Style="{StaticResource MyTbStyle}">Link:</TextBlock>
+                    <Button ToolTip="Click here to follow link." Click="btnLinkClick" Margin="5" Grid.Column="0" Grid.Row="8" Style="{StaticResource LinkButton}">Link:</Button>
                     <TextBox Margin="5" x:Name="tbLink" Grid.Row="8" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Link}" ToolTip="{Binding Path=Link}" LostFocus="tbLink_LostFocus"></TextBox>
 
 

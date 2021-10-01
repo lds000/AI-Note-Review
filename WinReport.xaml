@@ -76,7 +76,6 @@
                                         <CheckBox IsChecked="{Binding IncludeSegment}" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked">
                                             <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding SegmentTitle}"></TextBlock>
                                         </CheckBox>
-
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
