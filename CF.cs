@@ -98,15 +98,7 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
 85	X	12	12	Referral Considerations
 90	X	13	13	ED Transfer
                  */
-                if (!CurrentDoc.HashTags.Contains("!HTNUrgency") && ns.ICD10SegmentID==40) //if htnurgency is not present
-                {
-                    ns.IncludeSegment = false;
-                }
-                if (!CurrentDoc.HashTags.Contains("!RRHigh") && ns.ICD10SegmentID == 72) //if htnurgency is not present
-                {
-                    ns.IncludeSegment = false;
-                }
-                
+
                 if (ns.ICD10SegmentID == 90) //ed transfer, never include
                 {
                     ns.IncludeSegment = false;

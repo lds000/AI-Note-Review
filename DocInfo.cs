@@ -41,33 +41,19 @@ namespace AI_Note_Review
         public void SetUpNote()
         {
             /*
-             * 36	X	99	99	All Diagnosis
-40	X	1	1	Hypertensive Urgency
-72	X	2	2	Rapid Respiratory Rate
-73	X	3	3	High Fever
-74	X	4	4	Tachycardia
-75	X	5	5	Elderly
-76	X	6	6	Infant
-80	X	7	7	Children
-81	X	8	8	Interactions
-82	X	9	9	Possible Pregnant State
-83	X	10	10	Lab Considerations
-84	X	11	11	Imaging Considerations
-85	X	12	12	Referral Considerations
-90	X	13	13	ED Transfer
 
              */
 
             //add hashtags here. #Hash
             HashTags = "";
-            if (PtAgeYrs > 65) AddHashTag("@Elderly");
+            if (PtAgeYrs > 65) AddHashTag("@Elderly");             //75	X	5	5	Elderly
             if (PtSex.StartsWith("M")) AddHashTag("@Male");
             if (PtSex.StartsWith("F")) AddHashTag("@Female");
-            if (PtAgeYrs < 4) AddHashTag("@Child");
-            if (PtAgeYrs < 2) AddHashTag("@Infant");
-            if (IsHTNUrgency) AddHashTag("!HTNUrgency");
+            if (PtAgeYrs < 4) AddHashTag("@Child");             //80	X	7	7	Children
+            if (PtAgeYrs < 2) AddHashTag("@Infant");             //76	X	6	6	Infant
+            if (IsHTNUrgency) AddHashTag("!HTNUrgency");             //40	X	1	1	Hypertensive Urgency
             if (isO2Abnormal) AddHashTag("!Hypoxic");
-            if (IsPregCapable) AddHashTag("@pregnantcapable");
+            if (IsPregCapable) AddHashTag("@pregnantcapable");            //82	X	9	9	Possible Pregnant State
             if (PtAgeYrs >= 13) AddHashTag("@sexuallyActiveAge");
             if (PtAgeYrs >= 16) AddHashTag("@DrinkingAge");
             if (PtAgeYrs >= 2) AddHashTag("@SpeakingAge");
@@ -75,8 +61,10 @@ namespace AI_Note_Review
             if (PtAgeYrs < 2) AddHashTag("@Age<2");
             if (PtAgeYrs < 4) AddHashTag("@Age<4");
             if (GetAgeInDays()<183) AddHashTag("@Age<6mo");
-            if (isRRHigh) AddHashTag("!RRHigh");
-            if (isTempHigh) AddHashTag("HighFever");
+            if (isRRHigh) AddHashTag("!RRHigh");             //72	X	2	2	Rapid Respiratory Rate
+            if (isTempHigh) AddHashTag("!HighFever");             //73	X	3	3	High Fever
+            if (isHRHigh) AddHashTag("!Tachycardia");             //74	X	4	4	Tachycardia
+
             //Age>2,Age<18,Age=5,Age=6
             if (GetAgeInDays()<=90 && VitalsTemp > 100.4)
             {
@@ -1478,6 +1466,40 @@ namespace AI_Note_Review
 
             foreach (SqlICD10Segment ns in ICD10Segments)
             {
+
+                    if (!CF.CurrentDoc.HashTags.Contains("!HTNUrgency") && ns.ICD10SegmentID == 40) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!CF.CurrentDoc.HashTags.Contains("!RRHigh") && ns.ICD10SegmentID == 72) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!CF.CurrentDoc.HashTags.Contains("@Elderly") && ns.ICD10SegmentID == 75) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!CF.CurrentDoc.HashTags.Contains("@Child") && ns.ICD10SegmentID == 80) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!CF.CurrentDoc.HashTags.Contains("@Infant") && ns.ICD10SegmentID == 76) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!CF.CurrentDoc.HashTags.Contains("@pregnantcapable") && ns.ICD10SegmentID == 82) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!CF.CurrentDoc.HashTags.Contains("!HighFever") && ns.ICD10SegmentID == 73) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!CF.CurrentDoc.HashTags.Contains("!Tachycardia") && ns.ICD10SegmentID == 74) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+
                 if (!ns.IncludeSegment) continue;
                 //Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
                 foreach (SqlCheckpoint cp in ns.GetCheckPoints())
