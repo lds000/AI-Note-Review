@@ -70,6 +70,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CF.cs" />
+    <Compile Include="ClipboardClass.cs" />
     <Compile Include="DataModels\SqlCheckPointImagesModel.cs" />
     <Compile Include="DataModels\SqlCheckpointModel.cs" />
     <Compile Include="DataModels\SqlCheckPointType.cs" />
@@ -118,6 +119,9 @@
     </Compile>
     <Compile Include="WinGetReviewDate.xaml.cs">
       <DependentUpon>WinGetReviewDate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WinPreviewHTML.xaml.cs">
+      <DependentUpon>WinPreviewHTML.xaml</DependentUpon>
     </Compile>
     <Compile Include="WinReport.xaml.cs">
       <DependentUpon>WinReport.xaml</DependentUpon>
@@ -183,6 +187,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WinGetReviewDate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WinPreviewHTML.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

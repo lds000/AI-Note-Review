@@ -64,7 +64,50 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
                     CodeStart = 0;
                     CodeEnd = 0;
                 }
-                if (ns.ICD10SegmentID == 90)
+
+                /*
+                 * 
+                 *             if (PtAgeYrs > 65) HashTags += "@Elderly, ";
+            if (PtSex.StartsWith("M")) HashTags += "@Male, ";
+            if (PtSex.StartsWith("F")) HashTags += "@Female, ";
+            if (PtAgeYrs < 4) HashTags += "@Child, ";
+            if (PtAgeYrs < 2) HashTags += "@Infant, ";
+            if (IsHTNUrgency) HashTags += "!HTNUrgency, ";
+            if (isO2Abnormal) HashTags += "!Hypoxic, ";
+            if (IsPregCapable) HashTags += "@pregnantcapable, ";
+            if (PtAgeYrs >= 13) HashTags += "@sexuallyActiveAge, ";
+            if (PtAgeYrs >= 16) HashTags += "@DrinkingAge, ";
+            if (PtAgeYrs >= 2) HashTags += "@SpeakingAge, ";
+            if (PtAgeYrs < 1) HashTags += "@Age<1, ";
+            if (PtAgeYrs < 2) HashTags += "@Age<2, ";
+            if (PtAgeYrs < 4) HashTags += "@Age<4, ";
+            if (GetAgeInDays()<183) HashTags += "@Age<6mo, ";
+
+36	X	99	99	All Diagnosis
+40	X	1	1	Hypertensive Urgency
+72	X	2	2	Rapid Respiratory Rate
+73	X	3	3	High Fever
+74	X	4	4	Tachycardia
+75	X	5	5	Elderly
+76	X	6	6	Infant
+80	X	7	7	Children
+81	X	8	8	Interactions
+82	X	9	9	Possible Pregnant State
+83	X	10	10	Lab Considerations
+84	X	11	11	Imaging Considerations
+85	X	12	12	Referral Considerations
+90	X	13	13	ED Transfer
+                 */
+                if (!CurrentDoc.HashTags.Contains("!HTNUrgency") && ns.ICD10SegmentID==40) //if htnurgency is not present
+                {
+                    ns.IncludeSegment = false;
+                }
+                if (!CurrentDoc.HashTags.Contains("!RRHigh") && ns.ICD10SegmentID == 72) //if htnurgency is not present
+                {
+                    ns.IncludeSegment = false;
+                }
+                
+                if (ns.ICD10SegmentID == 90) //ed transfer, never include
                 {
                     ns.IncludeSegment = false;
                 }

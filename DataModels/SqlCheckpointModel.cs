@@ -225,7 +225,7 @@ namespace AI_Note_Review
         public string GetReport()
         {
             string strReturn = ""; 
-            strReturn += $"\t'{CheckPointTitle}'" + Environment.NewLine;
+            strReturn += $"<li><dt><font size='+1'>{CheckPointTitle}</font></dt><dd><i>{Comment}</i></dd></li>" + Environment.NewLine;
             
             /*
             strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
