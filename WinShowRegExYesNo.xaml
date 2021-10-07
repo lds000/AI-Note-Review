@@ -18,8 +18,10 @@
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
         <Label Style="{StaticResource MyLblStyle}" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontSize="24">Please evaluate the following.</Label>
-        <TextBlock x:Name="tbQuestion" Style="{StaticResource MyTbStyle}" Grid.ColumnSpan="2" Grid.Row="1" FontSize="20">This is the question.</TextBlock>
-        <TextBlock x:Name="tbContent" Style="{StaticResource MyTbStyle}" Grid.ColumnSpan="2" Grid.Row="2" FontSize="16">This is the note content.</TextBlock>
+        <TextBlock Foreground="Red" x:Name="tbQuestion" Style="{StaticResource MyTbStyle}" Grid.ColumnSpan="2" Grid.Row="1" FontSize="20">This is the question.</TextBlock>
+        <Border BorderBrush="White" BorderThickness="2" Margin="5" Grid.ColumnSpan="2" Grid.Row="2" Padding="5" >
+            <TextBlock x:Name="tbContent" Style="{StaticResource MyTbStyle}" FontSize="16">This is the note content.</TextBlock>
+        </Border>
         <Button Margin="10" Grid.Row="4" FontSize="24" Click="clickYes">Yes</Button>
         <Button Margin="10" Grid.Row="4" Grid.Column="1" FontSize="24" Click="clickNo">No</Button>
     </Grid>

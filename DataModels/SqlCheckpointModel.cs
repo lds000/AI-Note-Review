@@ -48,6 +48,18 @@ namespace AI_Note_Review
         public string Action { get; set; }
         public string Link { get; set; }
 
+        private string customComment = "";
+        public string CustomComment {
+            get
+            {
+                return customComment;
+            }
+            set
+            {
+                customComment = value;
+                OnPropertyChanged("CustomComment");
+            }
+        }
         public int Expiration { get; set; }
         public SqlCheckpoint()
         {
@@ -181,7 +193,8 @@ namespace AI_Note_Review
 
         public void Commit(DocInfo di, SqlRelCPProvider.MyCheckPointStates cpState)
         {
-            string sql = $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus) VALUES ({di.ProviderID}, {CheckPointID}, {di.PtID}, '{di.ReviewDate.ToString("yyyy-MM-dd")}', '{di.VisitDate.ToString("yyyy-MM-dd")}', {(int)cpState});";
+            if (CustomComment == null) CustomComment = "";
+            string sql = $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({di.ProviderID}, {CheckPointID}, {di.PtID}, '{di.ReviewDate.ToString("yyyy-MM-dd")}', '{di.VisitDate.ToString("yyyy-MM-dd")}', {(int)cpState}, '{CustomComment}');";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 cnn.Execute(sql);
@@ -226,7 +239,12 @@ namespace AI_Note_Review
         {
             string strReturn = ""; 
             strReturn += $"<li><dt><font size='+1'>{CheckPointTitle}</font></dt><dd><i>{Comment}</i></dd></li>" + Environment.NewLine;
-            
+            if (CustomComment != "")
+            {
+                strReturn += $"<b>Comment: {CustomComment}</b><br>";
+            }
+            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Review for {CF.CurrentDoc.PtID} on {CF.CurrentDoc.VisitDate}.&body=Possible error on checkpoint: {CheckPointTitle}. (Ref:{CF.CurrentDoc.PtID}|{CF.CurrentDoc.VisitDate.ToShortDateString()}|{CheckPointID})'>Report error.</a>";
+
             /*
             strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
             strReturn += $"\tRecommended Remediation: {Action}" + Environment.NewLine;

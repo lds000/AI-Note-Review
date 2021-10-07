@@ -137,6 +137,27 @@ namespace AI_Note_Review
         }
     }
 
+    [ValueConversion(typeof(string), typeof(Visibility))]
+    public class CPCommentToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return Visibility.Collapsed;
+
+            if ((string)value == "")
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+    
+
     [ValueConversion(typeof(SqlCheckPointImage), typeof(BitmapImage))]
     public class ImageConverter : IValueConverter
     {

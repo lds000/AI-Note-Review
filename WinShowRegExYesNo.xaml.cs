@@ -32,7 +32,7 @@ namespace AI_Note_Review
         }
         private void clickNo(object sender, RoutedEventArgs e)
         {
-            YesNoResult = true;
+            YesNoResult = false;
             this.Close();
         }
     }

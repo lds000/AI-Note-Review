@@ -80,47 +80,74 @@ namespace AI_Note_Review
 
         private void Button_CopyReportClick(object sender, RoutedEventArgs e)
         {
+            string tmpCheck = "";
             string strReport = @"<!DOCTYPE html><html><head></head><body>";
             strReport += $"<font size='+3'>Date: {CF.CurrentDoc.VisitDate.ToShortDateString()}</font><br>"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
             strReport += $"<font size='+1'>Patient ID {CF.CurrentDoc.PtID}</font><br><HR>";
             strReport += Environment.NewLine;
-            strReport += $"<font size='+3'>Relevant ICD10 Segments {CF.CurrentDoc.PtID}</font><br><dl><ul>";
+
             foreach (var seg in CF.CurrentDoc.ICD10Segments)
             {
                 if (seg.IncludeSegment)
-                strReport += $"<li><font size='+1'>{seg.SegmentTitle}</font></li>" + Environment.NewLine;
+                tmpCheck += $"<li><font size='+1'>{seg.SegmentTitle}</font></li>" + Environment.NewLine;
             }
-            strReport += "</ul></dl>" + Environment.NewLine;
+            if (tmpCheck != "")
+            {
+                strReport += $"<font size='+3'>Relevant ICD10 Segments {CF.CurrentDoc.PtID}</font><br><dl><ul>";
+                strReport += tmpCheck;
+                strReport += "</ul></dl>" + Environment.NewLine;
+            }
 
-            strReport += "<font size='+3'>Passed check points:</FONT><BR><dl><ul>" + Environment.NewLine;
+            tmpCheck = "";
             foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
-                strReport += $"<li><font size='+1'>{cp.CheckPointTitle}</font></li>" + Environment.NewLine;
+                tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font></li>" + Environment.NewLine;
             }
-            strReport += "</ul></dl>" + Environment.NewLine;
+            if (tmpCheck != "")
+            {
+                strReport += "<font size='+3'>Passed check points:</FONT><BR><dl><ul>" + Environment.NewLine;
+                strReport += tmpCheck;
+                strReport += "</ul></dl>" + Environment.NewLine;
+            }
 
-            strReport += "<font size='+3'>Missed check points:</font><br><dl><ul>" + Environment.NewLine;
+            tmpCheck = "";
             foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
-                    strReport += cp.GetReport();        
+                    tmpCheck += cp.GetReport();        
             }
-            strReport += "</ul></dl>" + Environment.NewLine;
-            strReport += "<font size='+3'>Minor missed check points:</font><dl><ul>" + Environment.NewLine;
+            if (tmpCheck != "")
+            {
+                strReport += "<font size='+3'>Missed check points:</font><br><dl><ul>" + Environment.NewLine;
+                strReport += tmpCheck;
+                strReport += "</ul></dl>" + Environment.NewLine;
+            }
+
+            tmpCheck = "";
             foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
-                    strReport += cp.GetReport();
+                    tmpCheck += cp.GetReport();
             }
-            strReport += "</ul></dl>" + Environment.NewLine;
+            if (tmpCheck != "")
+            {
+                strReport += "<font size='+3'>Minor missed check points:</font><dl><ul>" + Environment.NewLine;
+                strReport += tmpCheck;
+                strReport += "</ul></dl>" + Environment.NewLine;
+            }
 
-            strReport += "<font size='+3'>Other relevant points to consider:</font><dl><ul>" + Environment.NewLine;
+            tmpCheck = "";
             foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.RelevantCheckPoints orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
                 strReport += cp.GetReport();
             }
-            strReport += "</ul></dl>" + Environment.NewLine;
+            if (tmpCheck != "")
+            {
+                strReport += "<font size='+3'>Other relevant points to consider:</font><dl><ul>" + Environment.NewLine;
+                strReport += tmpCheck;
+                strReport += "</ul></dl>" + Environment.NewLine;
+            }
 
             strReport += "</body></html>";
             Clipboard.SetText(strReport);
@@ -152,6 +179,8 @@ namespace AI_Note_Review
                     }
                 }
             }
+
+            CF.CurrentDoc.ReviewDate = DateTime.Now;
 
             foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.MissedCheckPoints orderby c.ErrorSeverity descending select c))
             {
@@ -247,6 +276,17 @@ namespace AI_Note_Review
             SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
             CF.CurrentDoc.CPStatusOverrides.CreateNewOrUpdateExisting(cp, SqlRelCPProvider.MyCheckPointStates.Irrelevant);
             CF.CurrentDoc.GenerateReport();
+        }
+
+        private void AddCommentCP(object sender, RoutedEventArgs e)
+        {
+            MenuItem i = sender as MenuItem;
+            SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
+            WinEnterText wet = new WinEnterText($"Add/Edit Comment: {cp.CheckPointTitle}", cp.CustomComment);
+            wet.Owner = this;
+            wet.ShowDialog();
+
+            cp.CustomComment = wet.ReturnValue;
         }
     }
 

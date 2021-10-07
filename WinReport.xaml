@@ -19,10 +19,12 @@
             <local:MultiplyConverter x:Key="MultiplyConverter"/>
             <local:SeverityToBrushConverter x:Key="BrushConverter"/>
             <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <local:CPCommentToVisibilityConverter x:Key="CPCommentToVisibilityConverter" />
             <DataTemplate x:Key="myCheckPointDataTemplate">
                 <Grid>
                     <Grid.ContextMenu>
                         <ContextMenu>
+                            <MenuItem Header="Add/Edit Comment." Click="AddCommentCP"></MenuItem>
                             <MenuItem Header="Move to passed." Click="MovePassedCP"></MenuItem>
                             <MenuItem Header="Move to missed." Click="MoveMissedCP"></MenuItem>
                             <MenuItem Header="Drop." Click="DropCP"></MenuItem>
@@ -33,12 +35,14 @@
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <CheckBox Grid.Column="0"  Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" IsChecked="{Binding IncludeCheckpoint}" Margin="0,0,5,0"/>
                     <TextBlock Grid.Column="1" Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
                     <TextBlock Grid.Column="2" Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
                     <Image MouseUp="Image_MouseDown" Grid.Column="3" Source="Icons\eye.png" Width="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></Image>
+                    <Button Style="{StaticResource LinkButton}" Visibility="{Binding Path=CustomComment, Converter={StaticResource CPCommentToVisibilityConverter}}" Foreground="Red" FontWeight="Bold" Grid.Column="4" Margin="3,0,0,0">!</Button>
                 </Grid>
             </DataTemplate>
         </Border.Resources>
@@ -80,6 +84,8 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                        <Separator Margin="0,5,0,5"/>
+                        <Button Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Check All</Button>
                         <CheckBox x:Name="cbShowDropped" Style="{StaticResource MyCBStyle}" IsChecked="False">Show Dropped</CheckBox>
                     </StackPanel>
 
