@@ -243,8 +243,7 @@ namespace AI_Note_Review
             {
                 strReturn += $"<b>Comment: {CustomComment}</b><br>";
             }
-            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Review for {CF.CurrentDoc.PtID} on {CF.CurrentDoc.VisitDate}.&body=Possible error on checkpoint: {CheckPointTitle}. (Ref:{CF.CurrentDoc.PtID}|{CF.CurrentDoc.VisitDate.ToShortDateString()}|{CheckPointID})'>Report error.</a>";
-
+            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Feedback on review of {CF.CurrentDoc.PtID} on {CF.CurrentDoc.VisitDate.ToShortDateString()}.&body=Feedback on checkpoint: '{CheckPointTitle}' (Ref:{CF.CurrentDoc.PtID}|{CF.CurrentDoc.VisitDate.ToShortDateString()}|{CheckPointID})'>Feedback</a>";
             /*
             strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
             strReturn += $"\tRecommended Remediation: {Action}" + Environment.NewLine;
@@ -254,6 +253,8 @@ namespace AI_Note_Review
             strReturn += Environment.NewLine;
             strReturn += Environment.NewLine;
             */
+
+            //HPi, exam, Dx, Rx
 
             return strReturn;
         }

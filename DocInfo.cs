@@ -1173,7 +1173,7 @@ namespace AI_Note_Review
 
         #endregion
 
-        public ObservableCollection<SqlICD10Segment> GetSegments()
+        public ObservableCollection<SqlICD10Segment> GetSegments(bool GeneralCheckPointsOnly = false)
         {
             //get icd10 segments
             
@@ -1196,20 +1196,24 @@ namespace AI_Note_Review
                     {
                         if (icd10numeric >= ns.icd10CategoryStart && icd10numeric <= ns.icd10CategoryEnd)
                         {
-                            tmpICD10Segments.Add(ns);
+                           if (!GeneralCheckPointsOnly) tmpICD10Segments.Add(ns);
                         }
-                    }
-                    if (ns.icd10Chapter == "X")
-                    {
-                        tmpICD10Segments.Add(ns);
                     }
                 }
             }
 
-            if (IsHTNUrgency) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(40)); //pull in HTNUrgencySegment
-            if (isRRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(72)); //pull in HTNUrgencySegment
-            if (isTempHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(73)); //pull in HTNUrgencySegment
-            if (isHRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(74)); //pull in HTNUrgencySegment
+            foreach (SqlICD10Segment ns in CF.NoteICD10Segments)
+            {
+                if (ns.icd10Chapter == "X")
+                {
+                    tmpICD10Segments.Add(ns);
+                }
+            }
+
+            //if (IsHTNUrgency) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(40)); //pull in HTNUrgencySegment
+            //if (isRRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(72)); //pull in HTNUrgencySegment
+            //if (isTempHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(73)); //pull in HTNUrgencySegment
+            //if (isHRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(74)); //pull in HTNUrgencySegment
 
             //tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(36)); //add general segment that applies to all visits.
             return tmpICD10Segments;

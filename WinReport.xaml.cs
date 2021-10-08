@@ -23,10 +23,10 @@ namespace AI_Note_Review
     /// </summary>
     public partial class WinReport : Window
     {
-        public WinReport()
+        public WinReport(bool GeneralCheckPointsOnly = false)
         {
             InitializeComponent();
-            CF.CurrentDoc.ICD10Segments = CF.CurrentDoc.GetSegments();
+            CF.CurrentDoc.ICD10Segments = CF.CurrentDoc.GetSegments(GeneralCheckPointsOnly);
             CF.CurrentDoc.GenerateReport(true);
             DataContext = CF.CurrentDoc;
         }
@@ -80,11 +80,41 @@ namespace AI_Note_Review
 
         private void Button_CopyReportClick(object sender, RoutedEventArgs e)
         {
+            double[] PassedScores = new double[] { 0,0,0,0 };
+            double[] MissedScores = new double[] { 0, 0, 0, 0 };
+            double[] Totals = new double[] { 0, 0, 0, 0 };
+            double[] Scores = new double[] { 0, 0, 0, 0 };
+            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            {
+                PassedScores[CF.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
+            }
+            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.MissedCheckPoints orderby c.ErrorSeverity descending select c))
+            {
+                MissedScores[CF.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
+            }
+
+            for (int i = 0; i <= 3; i++)
+            {
+                Totals[i] = PassedScores[i] + MissedScores[i];
+            }
+            for (int i = 0; i <= 3; i++)
+            {
+                if (Totals[i] == 0)
+                {
+                    Scores[i] = 100;
+                }
+                else
+                {
+                    Scores[i] = 80 + (PassedScores[i] / Totals[i]) * 20;
+                }
+            }
             string tmpCheck = "";
             string strReport = @"<!DOCTYPE html><html><head></head><body>";
             strReport += $"<font size='+3'>Date: {CF.CurrentDoc.VisitDate.ToShortDateString()}</font><br>"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
             strReport += $"<font size='+1'>Patient ID {CF.CurrentDoc.PtID}</font><br><HR>";
             strReport += Environment.NewLine;
+
+            strReport += $"Scores: HPI({(Scores[0]/100*2).ToString("0.##")}) Exam({(Scores[1]/100*2).ToString("0.##")}) Dx({(Scores[2]/100*2).ToString("0.##")}) Treatment({(Scores[3]/100*4).ToString("0.##")})<br>";
 
             foreach (var seg in CF.CurrentDoc.ICD10Segments)
             {

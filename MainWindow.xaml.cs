@@ -871,6 +871,7 @@ namespace AI_Note_Review
             CF.CurrentDoc.ICD10s = new ObservableCollection<string>();
             try
             {
+                if (CF.CurrentDoc.Assessments != null)
                 foreach (var tmpAssessment in CF.CurrentDoc.Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (tmpAssessment.Contains(" - "))
@@ -920,6 +921,11 @@ namespace AI_Note_Review
         private void CheckNote(object sender, RoutedEventArgs e)
         {
             WinReport wp = new WinReport();
+            wp.ShowDialog();
+        }
+        private void CheckNoteX(object sender, RoutedEventArgs e)
+        {
+            WinReport wp = new WinReport(true);
             wp.ShowDialog();
         }
 

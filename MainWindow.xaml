@@ -72,6 +72,7 @@
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                 <Button  Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
                 <Button Margin="100,0,0,0" VerticalAlignment="Center" Click="CheckNote" Style="{StaticResource LinkButton}" FontSize="20">Check!</Button>
+                <Button Margin="100,0,0,0" VerticalAlignment="Center" Click="CheckNoteX" Style="{StaticResource LinkButton}" FontSize="20">Check X Only</Button>
                 </StackPanel>
             <TabControl x:Name="tcNote">
                 <TabItem Foreground="Black" Header="CC">

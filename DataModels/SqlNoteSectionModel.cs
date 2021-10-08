@@ -9,8 +9,8 @@ namespace AI_Note_Review
     public class SqlNoteSection
     {
         public int SectionID { get; set; }
-
         public string NoteSectionShortTitle { get; set; }
         public string NoteSectionTitle { get; set; }
+        public int ScoreSection { get; set; }
     }
 }
