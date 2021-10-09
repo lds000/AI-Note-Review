@@ -238,7 +238,7 @@ namespace AI_Note_Review
         public string GetReport()
         {
             string strReturn = ""; 
-            strReturn += $"<li><dt><font size='+1'>{CheckPointTitle}</font></dt><dd><i>{Comment}</i></dd></li>" + Environment.NewLine;
+            strReturn += $"<li><dt><font size='+1'>{CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{ErrorSeverity}/10)</font></dt><dd><i>{Comment}</i></dd></li>" + Environment.NewLine;
             if (CustomComment != "")
             {
                 strReturn += $"<b>Comment: {CustomComment}</b><br>";

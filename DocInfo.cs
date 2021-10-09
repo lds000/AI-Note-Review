@@ -1567,20 +1567,12 @@ namespace AI_Note_Review
                     else
                     if (trTagResult == TagResult.Pass)
                     {
-                        if (relType.Contains(cp.CheckPointType))
-                        {
-                            cp.IncludeCheckpoint = true;
-                            relevantCheckPoints.Add(cp);
-                        }
-                        else
-                        {
                                 cp.IncludeCheckpoint = false;
                                 passedCheckPoints.Add(cp); //do not include passed for All diagnosis.
-                        }
                     }
                     else
                     {
-                        if (relType.Contains(cp.CheckPointType) || trTagResult == TagResult.FailNoCount)
+                        if (trTagResult == TagResult.FailNoCount)
                         {
                                 cp.IncludeCheckpoint = false;
                                 irrelaventCheckPoints.Add(cp); //do not include irrelevant for All diagnosis.
