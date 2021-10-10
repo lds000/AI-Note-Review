@@ -10,7 +10,7 @@
         Closing="Window_Closing"
 
         WindowStartupLocation="CenterOwner"
-        Title="WinReport" Height="800" Width="1200">
+        Title="WinReport" Height="800" Width="1400">
     <Border BorderBrush="White" BorderThickness="1" Background="Black">
         <Border.Resources>
             <Style TargetType="ListBoxItem">
@@ -96,8 +96,8 @@
                         </ListBox>
                     </DockPanel>
                     <DockPanel Grid.Row="1" Grid.Column="1">
-                        <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Relavant Checkpoints</Label>
-                        <ListBox x:Name="lbRelavant" ItemsSource="{Binding RelevantCheckPoints}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
+                        <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Dropped Checkpoints</Label>
+                        <ListBox x:Name="lbDrop" ItemsSource="{Binding DroppedCheckPoints}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
                     </DockPanel>
                     <DockPanel Grid.Row="0" Grid.Column="2">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Passed Checkpoints</Label>
@@ -107,11 +107,6 @@
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Irrelavant Checkpoints</Label>
                         <ListBox x:Name="lbIrrelavant"  ItemTemplate="{StaticResource myCheckPointDataTemplate}" ItemsSource="{Binding IrrelaventCP}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
                     </DockPanel>
-                    <DockPanel Grid.Row="2" Grid.Column="2" Visibility="{Binding IsChecked, ElementName=cbShowDropped, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Dropped Checkpoints</Label>
-                        <ListBox x:Name="lbDrop" ItemsSource="{Binding DroppedCheckPoints}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
-                    </DockPanel>
-
                 </Grid>
 
             </ScrollViewer>

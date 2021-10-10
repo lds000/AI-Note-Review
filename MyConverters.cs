@@ -240,6 +240,27 @@ namespace AI_Note_Review
         }
     }
 
+    [ValueConversion(typeof(int), typeof(Brush))]
+    public class ChartCountToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+
+            if (value == null)
+                return Brushes.White;
+            if ((int)value == 0) return Brushes.Red;
+            if ((int)value >= 10) return Brushes.Green;
+            if ((int)value >= 1) return Brushes.Yellow;
+            return Brushes.White;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+    
+
     [ValueConversion(typeof(string), typeof(List<String>))]
     public class ICD10Segments : IValueConverter
     {

@@ -74,6 +74,7 @@
     <Compile Include="DataModels\SqlCheckPointImagesModel.cs" />
     <Compile Include="DataModels\SqlCheckpointModel.cs" />
     <Compile Include="DataModels\SqlCheckPointType.cs" />
+    <Compile Include="DataModels\SqlCurrentReviewsSummary.cs" />
     <Compile Include="DataModels\SqlICD10SegmentModel.cs" />
     <Compile Include="DataModels\SqlLightDataAccess.cs" />
     <Compile Include="DataModels\SqlMonthReviewSummary.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="UCTagRegEx.xaml.cs">
       <DependentUpon>UCTagRegEx.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WebBrowserHelper.cs" />
     <Compile Include="WinAddTag.xaml.cs">
       <DependentUpon>WinAddTag.xaml</DependentUpon>
     </Compile>
@@ -123,8 +125,14 @@
     <Compile Include="WinPreviewHTML.xaml.cs">
       <DependentUpon>WinPreviewHTML.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WinProviderReviews.xaml.cs">
+      <DependentUpon>WinProviderReviews.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WinReport.xaml.cs">
       <DependentUpon>WinReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WinSettings.xaml.cs">
+      <DependentUpon>WinSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="WinShowCheckPointRichText.xaml.cs">
       <DependentUpon>WinShowCheckPointRichText.xaml</DependentUpon>
@@ -194,7 +202,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="WinProviderReviews.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WinReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WinSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -228,6 +244,7 @@
     </EmbeddedResource>
     <Resource Include="Icons\edit_notes.png" />
     <Resource Include="Icons\eye.png" />
+    <Resource Include="Icons\westside.jpg" />
     <Content Include="MedTerms.lex">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

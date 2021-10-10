@@ -8,5 +8,14 @@
     <Setting Name="DataFolder1" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Users\Lloyd\Source\Repos\lds000\NoteReviewDB.db</Value>
     </Setting>
+    <Setting Name="StartReviewDate" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="EndReviewDate" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AskYesNo" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

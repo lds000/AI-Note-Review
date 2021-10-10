@@ -318,10 +318,24 @@ namespace AI_Note_Review
             }
             set
             {
-
                 SqlProvider p = SqlProvider.SqlGetProviderByFullName(value);
                 provider = p.FullName;
                 ProviderID = p.ProviderID;
+                ProviderSql = p;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private SqlProvider providerSql;
+        public SqlProvider ProviderSql
+        {
+            get
+            {
+                return providerSql;
+                    }
+            set
+            {
+                providerSql = value;
                 NotifyPropertyChanged();
             }
         }
@@ -1020,7 +1034,7 @@ namespace AI_Note_Review
                 }
                 else
                 {
-                    if (VitalsRR >= 18) return true;
+                    if (VitalsRR >= 20) return true; //some suggest 18, but for document review purposes I want to be sure it is abnormal so 20
                 }
                 return false;
             }
@@ -1271,18 +1285,6 @@ namespace AI_Note_Review
                 NotifyPropertyChanged();
             }
         }
-        public ObservableCollection<SqlCheckpoint> RelevantCheckPoints
-        {
-            get
-            {
-                return relevantCheckPoints;
-            }
-            set
-            {
-                relevantCheckPoints = value;
-                NotifyPropertyChanged();
-            }
-        }
         public ObservableCollection<SqlCheckpoint> IrrelaventCP
         {
             get
@@ -1367,33 +1369,47 @@ namespace AI_Note_Review
 
                 if (TagRegEx.TagRegExType == 6) //pass if yes, fail if no
                 {
-                    WinShowRegExYesNo ws = new WinShowRegExYesNo();
-                    ws.tbQuestion.Text = TagRegEx.RegExText;
-                    ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
-                    ws.ShowDialog();
-                    if (ws.YesNoResult == true)
+                    if (Properties.Settings.Default.AskYesNo)
                     {
                         return TagResult.Pass;
                     }
                     else
                     {
-                        return TagResult.Fail;
+                        WinShowRegExYesNo ws = new WinShowRegExYesNo();
+                        ws.tbQuestion.Text = TagRegEx.RegExText;
+                        ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
+                        ws.ShowDialog();
+                        if (ws.YesNoResult == true)
+                        {
+                            return TagResult.Pass;
+                        }
+                        else
+                        {
+                            return TagResult.Fail;
+                        }
                     }
                 }
 
                 if (TagRegEx.TagRegExType == 7) //pass if no, fail if yes
                 {
-                    WinShowRegExYesNo ws = new WinShowRegExYesNo();
-                    ws.tbQuestion.Text = TagRegEx.RegExText;
-                    ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
-                    ws.ShowDialog();
-                    if (ws.YesNoResult == true)
+                    if (Properties.Settings.Default.AskYesNo)
                     {
-                        return TagResult.Fail;
+                        return TagResult.Pass;
                     }
                     else
                     {
-                        return TagResult.Pass;
+                        WinShowRegExYesNo ws = new WinShowRegExYesNo();
+                        ws.tbQuestion.Text = TagRegEx.RegExText;
+                        ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
+                        ws.ShowDialog();
+                        if (ws.YesNoResult == true)
+                        {
+                            return TagResult.Fail;
+                        }
+                        else
+                        {
+                            return TagResult.Pass;
+                        }
                     }
                 }
 
@@ -1461,7 +1477,6 @@ namespace AI_Note_Review
             passedCheckPoints.Clear();
             missedCheckPoints.Clear();
             irrelaventCheckPoints.Clear();
-            relevantCheckPoints.Clear();
             droppedCheckPoints.Clear();
 
             //todo put into database as relevant/irrelavent vs pass/fail
@@ -1475,9 +1490,15 @@ namespace AI_Note_Review
                     {
                         ns.IncludeSegment = false;
                     }
-                    if (!CF.CurrentDoc.HashTags.Contains("!RRHigh") && ns.ICD10SegmentID == 72) //if htnurgency is not present
+                    if (ns.ICD10SegmentID == 72) //Adult rapid RR
                     {
-                        ns.IncludeSegment = false;
+                    if (PtAgeYrs <= 17) ns.IncludeSegment = false; //do not include children in 72
+                    if (!CF.CurrentDoc.HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
+                    }
+                    if (ns.ICD10SegmentID == 91) //Peds rapid RR
+                    {
+                    if (PtAgeYrs >= 18) ns.IncludeSegment = false;
+                    if (!CF.CurrentDoc.HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
                     }
                     if (!CF.CurrentDoc.HashTags.Contains("@Elderly") && ns.ICD10SegmentID == 75) //if htnurgency is not present
                     {
@@ -1590,7 +1611,6 @@ namespace AI_Note_Review
             passedCheckPoints = new  ObservableCollection< SqlCheckpoint >(passedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
             missedCheckPoints = new ObservableCollection<SqlCheckpoint>(missedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
             irrelaventCheckPoints = new ObservableCollection<SqlCheckpoint>(irrelaventCheckPoints.OrderByDescending(c => c.ErrorSeverity));
-            relevantCheckPoints = new ObservableCollection<SqlCheckpoint>(relevantCheckPoints.OrderByDescending(c => c.ErrorSeverity));
             droppedCheckPoints = new ObservableCollection<SqlCheckpoint>(droppedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
 
             /*

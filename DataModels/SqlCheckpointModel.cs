@@ -243,7 +243,11 @@ namespace AI_Note_Review
             {
                 strReturn += $"<b>Comment: {CustomComment}</b><br>";
             }
-            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Feedback on review of {CF.CurrentDoc.PtID} on {CF.CurrentDoc.VisitDate.ToShortDateString()}.&body=Feedback on checkpoint: '{CheckPointTitle}' (Ref:{CF.CurrentDoc.PtID}|{CF.CurrentDoc.VisitDate.ToShortDateString()}|{CheckPointID})'>Feedback</a>";
+            if (Link != "")
+            {
+                strReturn += $"<a href={Link}>Click here for reference.</a><br>";
+            }
+            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Feedback on review of {CF.CurrentDoc.PtID} on {CF.CurrentDoc.VisitDate.ToShortDateString()}. (Ref:{CF.CurrentDoc.PtID}|{CF.CurrentDoc.VisitDate.ToShortDateString()}|{CheckPointID})'>Feedback</a>";
             /*
             strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
             strReturn += $"\tRecommended Remediation: {Action}" + Environment.NewLine;
@@ -277,6 +281,15 @@ namespace AI_Note_Review
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 cnn.Execute(sql, this);
+            }
+        }
+
+        public static SqlCheckpoint GetCP(int cpID)
+        {
+            string sql = $"Select * from CheckPoints WHERE CheckPointID={cpID};";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                return cnn.QueryFirstOrDefault<SqlCheckpoint>(sql);
             }
         }
 

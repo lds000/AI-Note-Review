@@ -12,15 +12,14 @@
     <Grid Background="Black">
         <Grid.Resources>
             <local:ICD10Segments x:Key="ICD10Segments"/>
-        </Grid.Resources>
+                <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            </Grid.Resources>
         <DockPanel>
                 <Menu DockPanel.Dock="Top">
                     <MenuItem Header="Program">
                         <MenuItem Header="Exit" ToolTip="Show the reviews for the selected provider and selected review date." Click="Button_ReportsReviewClick"></MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Review">
-                        <MenuItem Header="Set Review Date" ToolTip="Set the current review date for the selected provider." Click="Button_ClickReviewDate"></MenuItem>
-                        <MenuItem Header="Provider Reviews" ToolTip="Show the reviews for the selected provider." Click="Button_ReportsReviewClick"></MenuItem>
+                    <MenuItem Header="Reviews" Click="Reviews_Click">
                     </MenuItem>
                     <MenuItem Header="Checkpoint">
                         <MenuItem Header="Edit Checkpoints" ToolTip="Edit Checkpoint data." Click="EditCP"></MenuItem>
@@ -29,6 +28,8 @@
                         <MenuItem Header="Add Provider" ToolTip="Add new provider."></MenuItem>
                         <MenuItem Header="Remove Provider" ToolTip="Remove existing provider."></MenuItem>
                         <MenuItem Header="Edit Provider Details" ToolTip="Edit provider data."></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Settings" Click="OpenSettings">
                     </MenuItem>
                 </Menu>
             <local:UC_PatientConsole DockPanel.Dock="Top"></local:UC_PatientConsole>
@@ -48,6 +49,7 @@
                             </Grid.RowDefinitions>
                             <Label Grid.Row="0" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Provider, FallbackValue=Provider Name}" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
                             <Label Grid.Row="1" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Facility, FallbackValue=Clinic Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
+                                <Image Grid.Row="2" Grid.ColumnSpan="2" Visibility="{Binding ProviderSql.IsWestSidePod, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Source="Icons\westside.jpg" HorizontalAlignment="Center"></Image>
                             <Label Grid.Row="3" Grid.Column="0" Margin="0" Padding="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Left" FontSize="12">Visit Date:</Label>
                             <Label Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Padding="0" MouseDown="Label_MouseDown" Content="{Binding VisitDate, FallbackValue=6/23/2021}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
                         </Grid>

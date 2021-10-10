@@ -121,7 +121,7 @@ namespace AI_Note_Review
             strReport += $"<font size='+1'>Date: {CF.CurrentDoc.VisitDate.ToShortDateString()}</font><br>";
             strReport += Environment.NewLine;
 
-            strReport += $"Scores: HPI <b>{HPI_Score.ToString("0.##")}</b> Exam <b>{Exam_Score.ToString("0.##")}</b> Dx <b>{Dx_Score.ToString("0.##")}</b> Treatment <b>{Rx_Score.ToString("0.##")}</b> Total Score<sup>*</sup> <b>{Total_Score.ToString("0.##")}</b><br><hr>";
+            strReport += $"Scores: HPI <b>{HPI_Score.ToString("0.##")}</b> Exam <b>{Exam_Score.ToString("0.##")}</b> Dx <b>{Dx_Score.ToString("0.##")}</b> Treatment <b>{Rx_Score.ToString("0.##")}</b> <a href='#footnote'>Total Score<sup>*</sup></a> <b>{Total_Score.ToString("0.##")}</b><br><hr>";
 
             foreach (var seg in CF.CurrentDoc.ICD10Segments)
             {
@@ -130,7 +130,7 @@ namespace AI_Note_Review
             }
             if (tmpCheck != "")
             {
-                strReport += $"<font size='+3'>Relevant ICD10 Segments</font><br><dl><ul>";
+                strReport += $"<font size='+3'>Relevant ICD10 and Review Topic Segments</font><br><dl><ul>";
                 strReport += tmpCheck;
                 strReport += "</ul></dl>" + Environment.NewLine;
             }
@@ -173,12 +173,6 @@ namespace AI_Note_Review
                 strReport += "</ul></dl>" + Environment.NewLine;
             }
 
-            tmpCheck = "";
-            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.RelevantCheckPoints orderby c.ErrorSeverity descending select c))
-            {
-                if (cp.IncludeCheckpoint)
-                strReport += cp.GetReport();
-            }
             if (tmpCheck != "")
             {
                 strReport += "<font size='+3'>Other relevant points to consider:</font><dl><ul>" + Environment.NewLine;
@@ -188,7 +182,7 @@ namespace AI_Note_Review
 
             strReport += "<br><br><hl>";
             strReport += "Footnotes:<br>";
-            strReport += "* Total Score = (Total of Score Weights missed) / ((Total of Score Weights missed)+(Total of Score Weights passed)) * 2 + 8<br>";
+            strReport += "<p id='footnote'>* Total Score = (Total of Score Weights missed) / ((Total of Score Weights missed)+(Total of Score Weights passed)) * 2 + 8</p><br>";
             strReport += "** Score Weight = An assigned weight of the importance of the checkpoint.<br>";
             strReport += "</body></html>";
             Clipboard.SetText(strReport);
@@ -228,11 +222,6 @@ namespace AI_Note_Review
                  cp.Commit(CF.CurrentDoc, SqlRelCPProvider.MyCheckPointStates.Fail);
             }
 
-            foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.RelevantCheckPoints orderby c.ErrorSeverity descending select c))
-            {
-                 cp.Commit(CF.CurrentDoc, SqlRelCPProvider.MyCheckPointStates.Relevant);
-            }
-
             foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
                  cp.Commit(CF.CurrentDoc, SqlRelCPProvider.MyCheckPointStates.Pass);
@@ -241,9 +230,8 @@ namespace AI_Note_Review
             {
                 cp.Commit(CF.CurrentDoc, SqlRelCPProvider.MyCheckPointStates.Irrelevant);
             }
-
             MessageBox.Show("Report committed.");
-
+            this.Close();
         }
 
         private void Button_ReportsReviewClick(object sender, RoutedEventArgs e)

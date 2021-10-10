@@ -17,13 +17,14 @@ namespace AI_Note_Review
         public string Cert { get; set; }
         public string HomeClinic { get; set; }
         public int ReviewInterval { get; set; }
-         public string FullName { get; set; }
+        public string FullName { get; set; }
+        public bool IsWestSidePod { get; set; }
 
         public List<SqlMonthReviewSummary> ReviewsByMonth
         {
             get
             {
-                string sql = "";
+                string sql = ""; //.ToString("yyyy-MM-dd")
                 sql += $"select ProviderID, strftime('%Y-%m', VisitDate) as 'yearmonth', Count(distinct VisitDate || PtID) as Reviews from RelCPPRovider where strftime('%Y', VisitDate) = '2021' AND ProviderID={ProviderID} group by strftime('%Y-%m', VisitDate);";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
@@ -32,6 +33,32 @@ namespace AI_Note_Review
             }
 
         }
+
+        public List<SqlCurrentReviewsSummary> CurrentReviewsSummary
+        {
+            get
+            {
+                string sql = "";
+                sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{Properties.Settings.Default.StartReviewDate.ToString("yyyy-MM-dd")}' and '{Properties.Settings.Default.EndReviewDate.ToString("yyyy-MM-dd")}';";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.Query<SqlCurrentReviewsSummary>(sql).ToList();
+                }
+            }
+        }
+
+        public int CurrentReviewCount
+        {
+            get
+            {
+                string sql = "";
+                sql += $"Select Count(distinct VisitDate || PtID) from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{Properties.Settings.Default.StartReviewDate.ToString("yyyy-MM-dd")}' and '{Properties.Settings.Default.EndReviewDate.ToString("yyyy-MM-dd")}';";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.ExecuteScalar<int>(sql);
+                }
+            }
+        }
         public SqlProvider()
         {
         }
@@ -39,7 +66,7 @@ namespace AI_Note_Review
         public SqlProvider(string strFirstName, string strLastName, string strCert, string strHomeClinic, int intReviewInterval, string strFullName)
         {
                 string sql = "";
-                sql = $"INSERT INTO Providers (FirstName,LastName,Cert,HomeClinic,ReviewInterval,FullName) VALUES ('{strFirstName}','{strLastName}','{strCert}','{strHomeClinic}',{intReviewInterval},'{strFullName}');";
+                sql = $"INSERT INTO Providers (FirstName,LastName,Cert,HomeClinic,ReviewInterval,FullName, IsWestSidePod) VALUES ('{strFirstName}','{strLastName}','{strCert}','{strHomeClinic}',{intReviewInterval},'{strFullName}', {IsWestSidePod});";
                 sql += $"Select * from Providers where FirstName = '{FirstName}' AND LastName = '{LastName}';"; //this part is to get the ID of the newly created phrase
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
@@ -48,7 +75,15 @@ namespace AI_Note_Review
                 }
         }
 
-
+        public static List<SqlProvider> GetMyPeeps()
+        {
+            string sql = "";
+            sql += $"Select * from Providers where IsWestSidePod == 'true' order by FullName;"; //this part is to get the ID of the newly created phrase
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                return cnn.Query<SqlProvider>(sql).ToList();
+            }
+        }
 
         public static SqlProvider SqlGetProviderByFullName(string strFullName)
         {
@@ -80,6 +115,7 @@ namespace AI_Note_Review
         "ReviewInterval=@ReviewInterval, " +
         "HomeClinic=@HomeClinic, " +
         "FullName=@FullName " +
+        "IsWestSidePod=@IsWestSidePod " +
         "WHERE ProviderID=@ProviderID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
@@ -109,12 +145,11 @@ namespace AI_Note_Review
 
         public void AddCheckPoint(SqlCheckpoint cp, DateTime dtReviewDate)
         {
-            string sql = $"INSERT INTO RelCPPRovider (ProviderID,CheckPointID,PtID,HomeClinic,ReviewInterval) VALUES ({ProviderID},{cp.CheckPointID},{CF.CurrentDoc.PtID},'{dtReviewDate}','{CF.CurrentDoc.VisitDate}');";
+            string sql = $"INSERT INTO RelCPPRovider (ProviderID,CheckPointID,PtID,HomeClinic,ReviewInterval,IsWestSidePod) VALUES ({ProviderID},{cp.CheckPointID},{CF.CurrentDoc.PtID},'{dtReviewDate}','{CF.CurrentDoc.VisitDate}',{IsWestSidePod});";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 cnn.Execute(sql);
             }
         }
-
     }
 }

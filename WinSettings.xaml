@@ -1,0 +1,38 @@
+﻿<Window x:Class="AI_Note_Review.WinSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:properties="clr-namespace:AI_Note_Review.Properties"
+        xmlns:local="clr-namespace:AI_Note_Review"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d"
+        Title="WinSettings" Height="450" Width="800">
+    <DockPanel Background="Black">
+        <TextBlock DockPanel.Dock="Top" Style="{StaticResource MyTbStyle}" HorizontalAlignment="Center">Note Review Settings</TextBlock>
+        <Separator DockPanel.Dock="Top"></Separator>
+        <Button Margin="5,0,5,5" Click="Button_Click_1" DockPanel.Dock="Bottom" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
+        <Border BorderBrush="White" BorderThickness="1" Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Margin="5,0,10,0" Grid.Row="0" Grid.Column="0" Style="{StaticResource MyTbStyle}">Current Review Cycle</TextBlock>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Left">
+                    <DatePicker SelectedDateChanged="DatePicker_SelectedDateChanged" SelectedDate="{Binding Source={x:Static properties:Settings.Default}, Path=StartReviewDate, Mode=TwoWay}"></DatePicker>
+                    <DatePicker SelectedDateChanged="DatePicker_SelectedDateChanged" SelectedDate="{Binding Source={x:Static properties:Settings.Default}, Path=EndReviewDate, Mode=TwoWay}"></DatePicker>
+                </StackPanel>
+                <TextBlock Margin="5,0,10,0" Grid.Row="3" Grid.Column="0" Style="{StaticResource MyTbStyle}">Yes/No CheckPoints</TextBlock>
+                <CheckBox x:Name="cbYesNo" Checked="cbYesNo_Checked" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=AskYesNo, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" Style="{StaticResource MyCBStyle}">Do not ask yes / no pass questions.</CheckBox>
+            </Grid>
+        </Border>
+    </DockPanel>
+</Window>

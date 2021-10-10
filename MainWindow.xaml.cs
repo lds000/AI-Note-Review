@@ -952,6 +952,25 @@ namespace AI_Note_Review
             wcr.Owner = this;
             wcr.ShowDialog();
         }
+
+        private void OpenSettings(object sender, RoutedEventArgs e)
+        {
+            WinSettings ws = new WinSettings();
+            ws.Owner = this;
+            ws.ShowDialog();
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Reviews_Click(object sender, RoutedEventArgs e)
+        {
+            WinProviderReviews wp = new WinProviderReviews();
+            wp.Owner = this;
+            wp.ShowDialog();
+        }
     }
 
     public static class ExtensionMethods
