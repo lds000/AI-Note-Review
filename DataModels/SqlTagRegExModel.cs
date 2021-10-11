@@ -25,6 +25,7 @@ namespace AI_Note_Review
 
         public int TagRegExMatchType { get; set; }
         public int TagRegExMatchResult { get; set; }
+        public int TagRegExMatchNoResult { get; set; }
 
         public double MinAge { get; set; }
         public double MaxAge { get; set; }
@@ -55,6 +56,7 @@ namespace AI_Note_Review
                     "TagRegExType=@TagRegExType, " +
                     "TagRegExMatchType=@TagRegExMatchType, " +
                     "TagRegExMatchResult=@TagRegExMatchResult, " +
+                    "TagRegExMatchNoResult=@TagRegExMatchNoResult, " +
                     "TargetSection=@TargetSection, " +
                     "MinAge=@MinAge," +
                     "MaxAge=@MaxAge," +

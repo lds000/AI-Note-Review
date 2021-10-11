@@ -66,6 +66,15 @@
                       DisplayMemberPath="ResultTitle"
                       SelectedValuePath="ResultID"
                 ></ComboBox>
+                <ComboBox
+              x:Name="cbTagRexExMatchNoResult"
+                      ItemsSource="{Binding Source={StaticResource myCF}, Path=TagRegExMatchResults}"
+                      Grid.Column="1"
+                      SelectedValue="{Binding TagRegExMatchNoResult}"
+                      SelectionChanged="cbTagRexExMatchNoResult_SelectionChanged"
+                      DisplayMemberPath="ResultTitle"
+                      SelectedValuePath="ResultID"
+                ></ComboBox>
                 <TextBlock Margin="10,0,10,0" Style="{StaticResource MyTbStyle}" DataContext="{Binding ElementName=cbTagRexExMatchType, Path=SelectedItem}" Text="{Binding TypeDescription, FallbackValue=If this}"></TextBlock>
                 <Image Source="Icons\rightarrow.png" Height="15"></Image>
                 <TextBlock Margin="5,0,0,0" Style="{StaticResource MyTbStyle}" DataContext="{Binding ElementName=cbTagRexExMatchResult, Path=SelectedItem}" Text="{Binding ResultDescription, FallbackValue=Then that}"></TextBlock>

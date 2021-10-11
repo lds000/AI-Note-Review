@@ -1336,6 +1336,76 @@ namespace AI_Note_Review
         }
 
         enum TagResult { Pass, Fail, FailNoCount, DropTag };
+        enum TagResult2 { Pass, Hide, Miss};
+
+        private TagResult2 CheckTagResultsNew(List<SqlTagRegEx> tmpTagRegExs)
+        {
+            TagResult2 CurrentResult = TagResult2.Hide;
+            foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
+            {
+                if (TagRegEx.RegExText.Contains("PCN")) //used to debug
+                {
+                }
+                double age = GetAgeInYearsDouble();
+                if (age < TagRegEx.MinAge) return TagResult.DropTag;
+                if (age > TagRegEx.MaxAge) return TagResult.DropTag;
+                if (isMale && !TagRegEx.Male) return TagResult.DropTag;
+                if (!isMale && !TagRegEx.Female) return TagResult.DropTag;
+
+                if (TagRegEx.TagRegExType == 6) //pass if yes, fail if no
+                {
+                    if (Properties.Settings.Default.AskYesNo)
+                    {
+                        return TagRegEx.TagRegExMatchResult;
+                    }
+                    else
+                    {
+                        WinShowRegExYesNo ws = new WinShowRegExYesNo();
+                        ws.tbQuestion.Text = TagRegEx.RegExText;
+                        ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
+                        ws.ShowDialog();
+                        if (ws.YesNoResult == true)
+                        {
+                            return TagResult.Pass;
+                        }
+                        else
+                        {
+                            return TagResult.Fail;
+                        }
+                    }
+                }
+
+                if (TagRegEx.TagRegExType == 7) //pass if no, fail if yes
+                {
+                    if (Properties.Settings.Default.AskYesNo)
+                    {
+                        return TagResult.Pass;
+                    }
+                    else
+                    {
+                        WinShowRegExYesNo ws = new WinShowRegExYesNo();
+                        ws.tbQuestion.Text = TagRegEx.RegExText;
+                        ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
+                        ws.ShowDialog();
+                        if (ws.YesNoResult == true)
+                        {
+                            return TagResult.Fail;
+                        }
+                        else
+                        {
+                            return TagResult.Pass;
+                        }
+                    }
+                }
+
+
+                //1 any, 2 all, 3 None, 4 Ask
+
+
+                //1 pass, 2 Hide, 3 Miss
+
+                return TagResult.Pass; //default is pass
+        }
 
         private TagResult CheckTagRegExs(List<SqlTagRegEx> tmpTagRegExs)
         {
