@@ -83,6 +83,8 @@
     <Compile Include="DataModels\SqlRelCPProviderModel.cs" />
     <Compile Include="DataModels\SqlrelICD10SegmentsCheckPoints.cs" />
     <Compile Include="DataModels\SqlTagModel.cs" />
+    <Compile Include="DataModels\SqlTagRegExMatchResultsModel.cs" />
+    <Compile Include="DataModels\SqlTagRegExMatchTypeModel.cs" />
     <Compile Include="DataModels\SqlTagRegExModel.cs" />
     <Compile Include="DataModels\SqlTagRegExTypeModel.cs" />
     <Compile Include="DataModels\SqlVisitReviewModel.cs" />
@@ -245,6 +247,7 @@
     <Resource Include="Icons\edit_notes.png" />
     <Resource Include="Icons\eye.png" />
     <Resource Include="Icons\westside.jpg" />
+    <Resource Include="Icons\rightarrow.png" />
     <Content Include="MedTerms.lex">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

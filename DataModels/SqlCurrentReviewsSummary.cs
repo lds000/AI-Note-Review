@@ -37,6 +37,10 @@ namespace AI_Note_Review
                 foreach (SqlRelCPProvider r in rlist)
                 {
                     SqlCheckpoint cp = SqlCheckpoint.GetCP(r.CheckPointID);
+                    if (r.Comment != "")
+                    {
+                        cp.CustomComment = r.Comment;
+                    }
                     if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Pass)
                     {
                         CF.CurrentDoc.PassedCheckPoints.Add(cp);

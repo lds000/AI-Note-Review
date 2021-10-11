@@ -1426,9 +1426,11 @@ namespace AI_Note_Review
                             }
                         if (isMatch == true && TagRegEx.TagRegExType == 4) return TagResult.FailNoCount; //Contains Any Hide - don't continue if type is "ANY NF" this is a stopper.
                     }
-                    if (TagRegEx.TagRegExType == 5 && isMatch == false) //5   Contains None Hide
+                    if (TagRegEx.TagRegExType == 4) return TagResult.Fail; //Contains Any Hide - don't continue if type is "ANY NF" this is a stopper.
+                    if (TagRegEx.TagRegExType == 5) //5   Contains None Hide
                     {
-                        return TagResult.FailNoCount; //Contains none hide condition met.
+                      if (!isMatch)  return TagResult.FailNoCount; //Contains none hide condition met.
+                        if (isMatch) return TagResult.Fail;
                     }
                     if (TagRegEx.TagRegExType == 4 && !isMatch)
                     {
@@ -1485,7 +1487,7 @@ namespace AI_Note_Review
 
             foreach (SqlICD10Segment ns in ICD10Segments)
             {
-
+                    ns.IncludeSegment = true;
                     if (!CF.CurrentDoc.HashTags.Contains("!HTNUrgency") && ns.ICD10SegmentID == 40) //if htnurgency is not present
                     {
                         ns.IncludeSegment = false;
@@ -1524,6 +1526,7 @@ namespace AI_Note_Review
                     {
                         ns.IncludeSegment = false;
                     }
+
 
                 if (!ns.IncludeSegment) continue;
                 //Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");

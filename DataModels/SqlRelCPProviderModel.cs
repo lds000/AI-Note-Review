@@ -18,8 +18,7 @@ namespace AI_Note_Review
         public DateTime ReviewDate { get; set; }
         public DateTime VisitDate { get; set; }
         public MyCheckPointStates CheckPointStatus { get; set; }
-
-        public string CheckPointTitle { get; set; }
+        public string Comment { get; set; }
 
         public SqlRelCPProvider()
         {

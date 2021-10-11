@@ -27,10 +27,13 @@
                 <ColumnDefinition Width="6*"/>
                 <ColumnDefinition Width="8*"/>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
             <ComboBox Name="cbTagRegExType"
                       Margin="10,2,2,2"
                       ItemsSource="{Binding Source={StaticResource myCF}, Path=TagRegExTypes}"    
-                  
                       SelectedValue="{Binding TagRegExType}" 
                       SelectionChanged="ComboBoxTagRegExType_SelectionChanged"  
                       DisplayMemberPath="TagRegExTypeTitle" 
@@ -44,6 +47,30 @@
                 SelectionChanged="CbTargetSection_SelectionChanged" 
                 DisplayMemberPath="NoteSectionTitle" 
                 SelectedValuePath="SectionID"></ComboBox>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="10,0,0,0" Grid.ColumnSpan="2">
+                <ComboBox
+              x:Name="cbTagRexExMatchType"
+                      ItemsSource="{Binding Source={StaticResource myCF}, Path=TagRegExMatchTypes}"
+                      Grid.Column="0"
+                      SelectedValue="{Binding TagRegExMatchType}"
+                      SelectionChanged="cbTagRexExMatchType_SelectionChanged"
+                      DisplayMemberPath="TypeTitle"
+                      SelectedValuePath="TypeID"
+                ></ComboBox>
+                <ComboBox
+              x:Name="cbTagRexExMatchResult"
+                      ItemsSource="{Binding Source={StaticResource myCF}, Path=TagRegExMatchResults}"
+                      Grid.Column="1"
+                      SelectedValue="{Binding TagRegExMatchResult}"
+                      SelectionChanged="cbTagRexExMatchResult_SelectionChanged"
+                      DisplayMemberPath="ResultTitle"
+                      SelectedValuePath="ResultID"
+                ></ComboBox>
+                <TextBlock Margin="10,0,10,0" Style="{StaticResource MyTbStyle}" DataContext="{Binding ElementName=cbTagRexExMatchType, Path=SelectedItem}" Text="{Binding TypeDescription, FallbackValue=If this}"></TextBlock>
+                <Image Source="Icons\rightarrow.png" Height="15"></Image>
+                <TextBlock Margin="5,0,0,0" Style="{StaticResource MyTbStyle}" DataContext="{Binding ElementName=cbTagRexExMatchResult, Path=SelectedItem}" Text="{Binding ResultDescription, FallbackValue=Then that}"></TextBlock>
+            </StackPanel>
+
         </Grid>
         <TextBlock FontSize="12" Foreground="Gray" Grid.ColumnSpan="3" Grid.Row="2" Style="{StaticResource MyTbStyle}" 
                    Text="{Binding ElementName=cbTagRegExType, Path=SelectedItem.TagRegExTypeDescription, FallbackValue=Type description}"></TextBlock>

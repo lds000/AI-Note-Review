@@ -108,5 +108,15 @@ namespace AI_Note_Review
         {
             SaveData();
         }
+
+        private void cbTagRexExMatchResult_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SaveData();
+        }
+
+        private void cbTagRexExMatchType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SaveData();
+        }
     }
 }

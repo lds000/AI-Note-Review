@@ -27,10 +27,36 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
 
         public static string strRegexPrefix = @"[ \-,.;\n\r\s]";
         public static List<SqlNoteSection> NoteSections { get; set; }
-        public static List<SqlTagRegExType> TagRegExTypes { get; set; }
         public static List<SqlICD10Segment> NoteICD10Segments = new List<SqlICD10Segment>();
         public static DocInfo CurrentDoc = new DocInfo();
         public static List<SqlCheckpoint> CheckPointList = new List<SqlCheckpoint>();
+        public static List<SqlTagRegExType> TagRegExTypes { get; set; }
+
+        public static List<SqlTagRegExMatchResults> TagRegExMatchResults
+        {
+            get {
+                string sql = "Select * from TagRegExMatchResults;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.Query<SqlTagRegExMatchResults>(sql).ToList();
+                }
+
+            }
+        }
+
+        public static List<SqlTagRegExMatchTypes> TagRegExMatchTypes
+        {
+            get
+            {
+                string sql = "Select * from TagRegExMatchTypes;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.Query<SqlTagRegExMatchTypes>(sql).ToList();
+                }
+
+            }
+        }
+
 
         public static void UpdateNoteICD10Segments()
         {
@@ -167,6 +193,10 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
             foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
                 tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
+                if (cp.CustomComment!="")
+                {
+                    tmpCheck += $"<br><b>Note: {cp.CustomComment}</b><br>";
+                }
             }
             if (tmpCheck != "")
             {

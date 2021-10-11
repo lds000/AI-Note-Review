@@ -230,7 +230,9 @@ namespace AI_Note_Review
             {
                 cp.Commit(CF.CurrentDoc, SqlRelCPProvider.MyCheckPointStates.Irrelevant);
             }
-            MessageBox.Show("Report committed.");
+
+            
+            MessageBox.Show($"{CF.CurrentDoc.ProviderSql.CurrentReviewCount}/10 reports committed.");
             this.Close();
         }
 
