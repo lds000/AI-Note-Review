@@ -14,18 +14,44 @@ namespace AI_Note_Review
 {
     public class SqlTagRegEx
     {
+        private EnumMatch tagRegExMatchType;
+        private EnumResult tagRegExMatchResult;
+        private EnumResult tagRegExMatchNoResult;
+
         // Declare the event
         public int TagRegExID { get; set; }
         public int TargetTag { get; set; }
 
         public int TargetSection { get; set; }
 
+        public string TargetSectionTitle
+        {
+            get
+            {
+                string sql = $"Select NoteSectionTitle from NoteSections WHERE SectionID={TargetSection};";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.ExecuteScalar<string>(sql);
+                }
+            }
+        }
+
         public string RegExText { get; set; }
         public int TagRegExType { get; set; }
 
-        public int TagRegExMatchType { get; set; }
-        public int TagRegExMatchResult { get; set; }
-        public int TagRegExMatchNoResult { get; set; }
+        //1 pass, 2 Hide, 3 Miss
+        public enum EnumResult { Pass = 1, Hide = 2, Miss = 3 }
+
+        //1 any, 2 all, 3 None, 4 Ask
+        public enum EnumMatch { Any = 1, All = 2, None = 3, Ask = 4 }
+
+        public EnumMatch TagRegExMatchType { get => tagRegExMatchType; set => tagRegExMatchType = value; }
+        public EnumResult TagRegExMatchResult { get => tagRegExMatchResult; set => tagRegExMatchResult = value; }
+        public EnumResult TagRegExMatchNoResult { get => tagRegExMatchNoResult; set => tagRegExMatchNoResult = value; }
+
+        public int iTagRegExMatchType { get => (int)tagRegExMatchType; set => tagRegExMatchType = (EnumMatch) value; }
+        public int iTagRegExMatchResult { get => (int)tagRegExMatchResult; set => tagRegExMatchResult = (EnumResult)value; }
+        public int iTagRegExMatchNoResult { get => (int)tagRegExMatchNoResult; set => tagRegExMatchNoResult = (EnumResult)value; }
 
         public double MinAge { get; set; }
         public double MaxAge { get; set; }

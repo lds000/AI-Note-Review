@@ -33,7 +33,8 @@ namespace AI_Note_Review
             SqlCheckpoint cp = DataContext as SqlCheckpoint;
             SqlTag st = b.DataContext as SqlTag;
             SqlTagRegEx srex = new SqlTagRegEx(st.TagID, "Search Text", cp.TargetSection, 1);
-            ImChanged(this, EventArgs.Empty);
+            //ImChanged(this, EventArgs.Empty);
+            //I need to implement something else here
         }
 
         private void UCTagRegEx_DeleteMe(object sender, EventArgs e)
@@ -72,7 +73,29 @@ namespace AI_Note_Review
 
         private void Button_Click_Done(object sender, RoutedEventArgs e)
         {
+            UpDownPressed = false;
             Close();
+        }
+
+        public bool UpDownPressed = true;
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Down)
+            {
+                UpDownPressed = true;
+                this.Close();
+            }
+            if (e.Key == Key.Up)
+            {
+                UpDownPressed = true;
+                this.Close();
+            }
+            if (e.Key == Key.Return)
+            {
+                UpDownPressed = false;
+                this.Close();
+
+            }
         }
     }
 }

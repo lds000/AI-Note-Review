@@ -24,8 +24,11 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
 
     public class CF
     {
-
-        public static string strRegexPrefix = @"[ \-,.;\n\r\s]";
+        /// <summary>
+        /// This prefix is used to match whole words and not parts of words
+        /// </summary>
+        //public static string strRegexPrefix = @"[ \-,.;\n\r\s^]";
+        public static string strRegexPrefix = @"\b";
         public static List<SqlNoteSection> NoteSections { get; set; }
         public static List<SqlICD10Segment> NoteICD10Segments = new List<SqlICD10Segment>();
         public static DocInfo CurrentDoc = new DocInfo();

@@ -37,8 +37,10 @@ namespace AI_Note_Review
                 foreach (string strSearch in s.RegExText.Split(','))
                 {
                     List<string> replacedStr = new List<string>();
-
-                    if (input != null)
+// I took this out
+//                    foreach (Match m in Regex.Matches(input, CF.strRegexPrefix + strSearch.Trim(), RegexOptions.IgnoreCase))
+                        if (strSearch.Trim()!="")
+                        if (input != null)
                         foreach (Match m in Regex.Matches(input, CF.strRegexPrefix + strSearch.Trim(), RegexOptions.IgnoreCase))
                         {
                             if (!replacedStr.Contains(m.Value)) //do not replace same value more than once!

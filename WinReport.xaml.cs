@@ -270,13 +270,21 @@ namespace AI_Note_Review
 
         private void Image_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Image i = sender as Image;
-            SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
-            WinShowCheckPointRichText scp = new WinShowCheckPointRichText();
-            scp.DataContext = cp;
-            scp.Owner = this;
-            scp.ImChanged += Scp_AddMe;
-            scp.ShowDialog();
+            //Image i = sender as Image;
+            //SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
+
+            bool updown = true;            
+            while (updown)
+            {
+                WinShowCheckPointRichText scp = new WinShowCheckPointRichText();
+                ListBoxItem lbi = FocusManager.GetFocusedElement(this) as ListBoxItem;
+                SqlCheckpoint cp = lbi.DataContext as SqlCheckpoint;
+                scp.DataContext = cp;
+                scp.Owner = this;
+                //scp.ImChanged += Scp_AddMe;
+                scp.ShowDialog();
+                updown = scp.UpDownPressed;
+            }
         }
 
         private void Scp_AddMe(object sender, EventArgs e)

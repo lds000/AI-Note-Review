@@ -6,6 +6,8 @@
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
+        SizeToContent="Height"
+        PreviewKeyDown="Window_PreviewKeyDown"
         Title="WinShowCheckPointRichText" Height="450" Width="800">
     <Grid Background="Black">
         <Grid.Resources>
@@ -13,10 +15,12 @@
             <local:SqlTagRegExToXamlConverter x:Key="mySqlTagRegExToXamlConverter"/>
         </Grid.Resources>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Border BorderBrush="White" BorderThickness="1">
+        <TextBlock HorizontalAlignment="Center" Margin="10" FontSize="24" Style="{StaticResource MyTbStyle}" Text="{Binding CheckPointTitle}"></TextBlock>
+        <Border Grid.Row="1" BorderBrush="White" BorderThickness="1">
             <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
                 <ItemsControl ItemsSource="{Binding Tags}">
                     <ItemsControl.ItemTemplate>
@@ -44,22 +48,29 @@
                                     <Button 
                                 Margin="10,0,0,0"
                                 x:Name="btnRemoveTag" 
-                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                HorizontalAlignment="Right" VerticalAlignment="Center"
                                 Style="{StaticResource LinkButton}" Click="btnRemoveTag_Click" >Remove Tag</Button>
                                 </StackPanel>
-                                <ItemsControl Margin="20,0,10,0" Grid.Row="1"  ItemsSource="{Binding TagRegExs}">
+                                <ItemsControl Margin="10,5,10,5" Grid.Row="1"  ItemsSource="{Binding TagRegExs}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border BorderBrush="White" BorderThickness="1">
+                                            <Border BorderBrush="White" BorderThickness="1" Background="#373838">
                                                 <StackPanel>
                                                     <local:UCTagRegEx DeleteMe="UCTagRegEx_DeleteMe" DataContext="{Binding}"></local:UCTagRegEx>
-                                                    <Border BorderBrush="Wheat" BorderThickness="1">
-                                                        <ContentControl Margin="7,0,0,0"
+                                                        <Border BorderBrush="Gray" BorderThickness="1" Margin="5" Background="Black">
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                                <TextBlock Margin="5,0,0,0" Style="{StaticResource MyTbStyle}" FontSize="20"
+                                                                           Text="{Binding TargetSectionTitle}"></TextBlock>
+                                                            </StackPanel>
+                                                            <ContentControl Margin="10"
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     Content="{Binding Converter={StaticResource mySqlTagRegExToXamlConverter}}">
-                                                        </ContentControl>
+                                                            </ContentControl>
 
+
+                                                    </StackPanel>
                                                     </Border>
                                                 </StackPanel>
                                             </Border>
@@ -77,6 +88,6 @@
                 </ItemsControl>
             </ScrollViewer>
         </Border>
-        <Button Click="Button_Click_Done" Grid.Row="1" HorizontalAlignment="Center" Style="{StaticResource LinkButton}" FontSize="24">Done</Button>
+        <Button Click="Button_Click_Done" Grid.Row="2" HorizontalAlignment="Center" Style="{StaticResource LinkButton}" FontSize="24">Done</Button>
     </Grid>
 </Window>

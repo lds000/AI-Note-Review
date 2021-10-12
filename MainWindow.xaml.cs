@@ -78,6 +78,7 @@ namespace AI_Note_Review
 
             CF.CurrentDoc.CurrentMeds = "ibuprofen, Tylenol, prednisone";
 
+            CF.CurrentDoc.Exam = "AO, NAD PERRL\nNormal OP\nCTA bilat\nRRR no murmurs\nS NTND NABS, no guarding, no rebound\nNo edema";
             //CF.CurrentDoc.HPI.ParseHistory();
             //Close();
 

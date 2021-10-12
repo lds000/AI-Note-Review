@@ -31,7 +31,7 @@ namespace AI_Note_Review
 
         #endregion
 
-        
+
 
         public DocInfo()
         {
@@ -60,13 +60,13 @@ namespace AI_Note_Review
             if (PtAgeYrs < 1) AddHashTag("@Age<1");
             if (PtAgeYrs < 2) AddHashTag("@Age<2");
             if (PtAgeYrs < 4) AddHashTag("@Age<4");
-            if (GetAgeInDays()<183) AddHashTag("@Age<6mo");
+            if (GetAgeInDays() < 183) AddHashTag("@Age<6mo");
             if (isRRHigh) AddHashTag("!RRHigh");             //72	X	2	2	Rapid Respiratory Rate
             if (isTempHigh) AddHashTag("!HighFever");             //73	X	3	3	High Fever
             if (isHRHigh) AddHashTag("!Tachycardia");             //74	X	4	4	Tachycardia
 
             //Age>2,Age<18,Age=5,Age=6
-            if (GetAgeInDays()<=90 && VitalsTemp > 100.4)
+            if (GetAgeInDays() <= 90 && VitalsTemp > 100.4)
             {
                 MessageBoxResult mr = MessageBox.Show($"This patient is {GetAgeInDays()} days old and has a fever of {VitalsTemp}.  Was the patient sent to an ED or appropriate workup performed?", "Infant Fever", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (mr == MessageBoxResult.No) HashTags += "#NeonteNotSentToED";
@@ -199,7 +199,7 @@ namespace AI_Note_Review
         {
             DateTime bd = DOB;
             TimeSpan age = DateTime.Now.Subtract(bd);
-            return age.TotalDays / 365.25; 
+            return age.TotalDays / 365.25;
         }
         /// <summary>
         /// returns age in years, 200 if no age stored
@@ -332,7 +332,7 @@ namespace AI_Note_Review
             get
             {
                 return providerSql;
-                    }
+            }
             set
             {
                 providerSql = value;
@@ -343,7 +343,8 @@ namespace AI_Note_Review
         public int ProviderID
         {
             get { return providerID; }
-            set {
+            set
+            {
                 providerID = value;
                 NotifyPropertyChanged();
 
@@ -374,7 +375,7 @@ namespace AI_Note_Review
             }
         }
 
-        public void AddHashTag (string strHashTag)
+        public void AddHashTag(string strHashTag)
         {
             HashTags += strHashTag + ", ";
         }
@@ -398,7 +399,7 @@ namespace AI_Note_Review
             {
                 return iCD10Segments;
             }
-            set 
+            set
             {
                 iCD10Segments = value;
                 NotifyPropertyChanged();
@@ -414,9 +415,9 @@ namespace AI_Note_Review
         }
         public ObservableCollection<string> DocumentTags
         {
-            get 
+            get
             {
-                return documentTags;    
+                return documentTags;
             }
             set
             {
@@ -1190,7 +1191,7 @@ namespace AI_Note_Review
         public ObservableCollection<SqlICD10Segment> GetSegments(bool GeneralCheckPointsOnly = false)
         {
             //get icd10 segments
-            
+
             ObservableCollection<SqlICD10Segment> tmpICD10Segments = new ObservableCollection<SqlICD10Segment>();
             foreach (string strICD10 in ICD10s)
             {
@@ -1210,7 +1211,7 @@ namespace AI_Note_Review
                     {
                         if (icd10numeric >= ns.icd10CategoryStart && icd10numeric <= ns.icd10CategoryEnd)
                         {
-                           if (!GeneralCheckPointsOnly) tmpICD10Segments.Add(ns);
+                            if (!GeneralCheckPointsOnly) tmpICD10Segments.Add(ns);
                         }
                     }
                 }
@@ -1236,8 +1237,8 @@ namespace AI_Note_Review
         /// <summary>
         /// int CheckpointID, int CPstatus
         /// </summary>
-        public Dictionary<SqlCheckpoint, SqlRelCPProvider.MyCheckPointStates> CPStatusOverrides 
-        { 
+        public Dictionary<SqlCheckpoint, SqlRelCPProvider.MyCheckPointStates> CPStatusOverrides
+        {
             get
             {
                 return cPStatusOverrides;
@@ -1263,7 +1264,7 @@ namespace AI_Note_Review
 
         public ObservableCollection<SqlCheckpoint> PassedCheckPoints
         {
-            get 
+            get
             {
                 return passedCheckPoints;
             }
@@ -1329,34 +1330,43 @@ namespace AI_Note_Review
             {
                 string sql = $"select Distinct ReviewDate from RelCPProvider r Where r.ProviderID = {ProviderID} order by r.ReviewDate;";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {                    
+                {
                     return new ObservableCollection<SqlVisitReview>(cnn.Query<SqlVisitReview>(sql).ToList());
                 }
             }
         }
 
         enum TagResult { Pass, Fail, FailNoCount, DropTag };
-        enum TagResult2 { Pass, Hide, Miss};
 
-        private TagResult2 CheckTagResultsNew(List<SqlTagRegEx> tmpTagRegExs)
+
+        private SqlTagRegEx.EnumResult CheckTagRegExs(List<SqlTagRegEx> tmpTagRegExs)
         {
-            TagResult2 CurrentResult = TagResult2.Hide;
-            foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
+
+            foreach (SqlTagRegEx TagRegEx in tmpTagRegExs) //cycle through the TagRegExs, usually one or two, fail or hide stops iteration, if continues returns pass.
             {
-                if (TagRegEx.RegExText.Contains("PCN")) //used to debug
+                if (TagRegEx.RegExText.Contains("ibuprofen")) //used to debug
                 {
                 }
+
+                //This boolean shortens the code
+                bool StopIfMissOrHide = TagRegEx.TagRegExMatchResult != SqlTagRegEx.EnumResult.Pass;
+
+                // check demographic limits and return result if met.
+                //If any TagRegEx fails due to demographics, the entire series fails
                 double age = GetAgeInYearsDouble();
-                if (age < TagRegEx.MinAge) return TagResult.DropTag;
-                if (age > TagRegEx.MaxAge) return TagResult.DropTag;
-                if (isMale && !TagRegEx.Male) return TagResult.DropTag;
-                if (!isMale && !TagRegEx.Female) return TagResult.DropTag;
+                if (age < TagRegEx.MinAge) return SqlTagRegEx.EnumResult.Hide;
+                if (age >= TagRegEx.MaxAge) return SqlTagRegEx.EnumResult.Hide;
+                if (isMale && !TagRegEx.Male) return SqlTagRegEx.EnumResult.Hide;
+                if (!isMale && !TagRegEx.Female) return SqlTagRegEx.EnumResult.Hide;
 
-                if (TagRegEx.TagRegExType == 6) //pass if yes, fail if no
+                //Process each of the tags, if any fail or hide then series stop, otherwise passes.
+                //Process Yes/No Tag
+                if (TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.Ask) //ask question... pass if yes, fail if no
                 {
-                    if (Properties.Settings.Default.AskYesNo)
+                    if (Properties.Settings.Default.AskYesNo) //If Bypass is on then assume answer was yes
                     {
-                        return TagRegEx.TagRegExMatchResult;
+                        if (StopIfMissOrHide) return TagRegEx.TagRegExMatchResult; //Match result is the result if a positive "yes" or "no" if set as Result (not "noResult") match is met
+                        continue;
                     }
                     else
                     {
@@ -1366,178 +1376,58 @@ namespace AI_Note_Review
                         ws.ShowDialog();
                         if (ws.YesNoResult == true)
                         {
-                            return TagResult.Pass;
+                            if (StopIfMissOrHide) return TagRegEx.TagRegExMatchResult; //if Yes return 1st Result option if it's fail or hide
+                        }
+                    }
+                }
+
+                //process all,none,any match condition
+                //Cycle through the list of terms and search through section of note if term is a match or not
+                bool AllTermsMatch = true;
+                bool NoTermsMatch = true;
+
+                string strTextToMatch = "";
+                if (NoteSectionText[TagRegEx.TargetSection] != null) strTextToMatch = NoteSectionText[TagRegEx.TargetSection].ToLower();
+                foreach (string strRegEx in TagRegEx.RegExText.Split(','))
+                {
+                    if (strRegEx.Trim() != "")
+                    {
+                        //This is original: i took the prefix out, not sure why it was there if (Regex.IsMatch(strTextToMatch, CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase))
+                        if (Regex.IsMatch(strTextToMatch, CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase)) // /i is lower case directive for regex
+                        {
+                            //Match is found!
+                            //ANY condition is met, so stop if miss or hide if that is the 1st action
+                            if (StopIfMissOrHide) if (TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.Any) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.
+                            NoTermsMatch = false;
+                            if (TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.Any) break; //condition met, no need to check rest
                         }
                         else
                         {
-                            return TagResult.Fail;
+                            AllTermsMatch = false;
                         }
                     }
                 }
+                //ALL condition met if all terms match
+                if (AllTermsMatch && StopIfMissOrHide && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.All) return TagRegEx.TagRegExMatchResult; //Contains All return 2nd Result because any clause not reached
+                //NONE condition met if no terms match
+                if (NoTermsMatch && StopIfMissOrHide && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.None) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.)
 
-                if (TagRegEx.TagRegExType == 7) //pass if no, fail if yes
+                if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.Any) continue;
+
+                if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.None) //none condition met, carry out pass
                 {
-                    if (Properties.Settings.Default.AskYesNo)
-                    {
-                        return TagResult.Pass;
-                    }
-                    else
-                    {
-                        WinShowRegExYesNo ws = new WinShowRegExYesNo();
-                        ws.tbQuestion.Text = TagRegEx.RegExText;
-                        ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
-                        ws.ShowDialog();
-                        if (ws.YesNoResult == true)
-                        {
-                            return TagResult.Fail;
-                        }
-                        else
-                        {
-                            return TagResult.Pass;
-                        }
-                    }
+
                 }
-
-
-                //1 any, 2 all, 3 None, 4 Ask
-
-
-                //1 pass, 2 Hide, 3 Miss
-
-                return TagResult.Pass; //default is pass
-        }
-
-        private TagResult CheckTagRegExs(List<SqlTagRegEx> tmpTagRegExs)
-        {
-/*
-1   Contains Any Pass
-2   Contains All Pass
-3   Contains None Pass
-4   Contains Any Hide
-5   Contains None Hide
-6   Pass if Yes
-7   Fail if Yes
-*/
-            foreach (SqlTagRegEx TagRegEx in tmpTagRegExs)
-            {
-                if (TagRegEx.RegExText.Contains("PCN"))
+                else
                 {
-                        
+                    if (TagRegEx.TagRegExMatchNoResult != SqlTagRegEx.EnumResult.Pass) return TagRegEx.TagRegExMatchNoResult;
                 }
-                double age = GetAgeInYearsDouble();
-                if (age < TagRegEx.MinAge)
-                {
-                    return TagResult.DropTag;
-                }
-                if (age > TagRegEx.MaxAge)
-                {
-                    return TagResult.DropTag;
-                }
-                if (isMale && !TagRegEx.Male) return TagResult.DropTag;
-
-                if (!isMale && !TagRegEx.Female) return TagResult.DropTag;
-
-                if (TagRegEx.TagRegExType == 6) //pass if yes, fail if no
-                {
-                    if (Properties.Settings.Default.AskYesNo)
-                    {
-                        return TagResult.Pass;
-                    }
-                    else
-                    {
-                        WinShowRegExYesNo ws = new WinShowRegExYesNo();
-                        ws.tbQuestion.Text = TagRegEx.RegExText;
-                        ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
-                        ws.ShowDialog();
-                        if (ws.YesNoResult == true)
-                        {
-                            return TagResult.Pass;
-                        }
-                        else
-                        {
-                            return TagResult.Fail;
-                        }
-                    }
-                }
-
-                if (TagRegEx.TagRegExType == 7) //pass if no, fail if yes
-                {
-                    if (Properties.Settings.Default.AskYesNo)
-                    {
-                        return TagResult.Pass;
-                    }
-                    else
-                    {
-                        WinShowRegExYesNo ws = new WinShowRegExYesNo();
-                        ws.tbQuestion.Text = TagRegEx.RegExText;
-                        ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
-                        ws.ShowDialog();
-                        if (ws.YesNoResult == true)
-                        {
-                            return TagResult.Fail;
-                        }
-                        else
-                        {
-                            return TagResult.Pass;
-                        }
-                    }
-                }
-
-                if (TagRegEx.TagRegExType == 1 || TagRegEx.TagRegExType == 4 || TagRegEx.TagRegExType == 5) //Any, if one match then include tag
-                {
-                    bool isMatch = false;
-                    foreach (string strRegEx in TagRegEx.RegExText.Split(','))
-                    {
-
-                        if (NoteSectionText[TagRegEx.TargetSection] != null)
-                            if (Regex.IsMatch(NoteSectionText[TagRegEx.TargetSection].ToLower(), CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase)) // /i is lower case directive for regex
-                            {
-                                isMatch = true;
-                            }
-                        if (isMatch == true && TagRegEx.TagRegExType == 4) return TagResult.FailNoCount; //Contains Any Hide - don't continue if type is "ANY NF" this is a stopper.
-                    }
-                    if (TagRegEx.TagRegExType == 4) return TagResult.Fail; //Contains Any Hide - don't continue if type is "ANY NF" this is a stopper.
-                    if (TagRegEx.TagRegExType == 5) //5   Contains None Hide
-                    {
-                      if (!isMatch)  return TagResult.FailNoCount; //Contains none hide condition met.
-                        if (isMatch) return TagResult.Fail;
-                    }
-                    if (TagRegEx.TagRegExType == 4 && !isMatch)
-                    {
-                        return TagResult.Pass;
-                    }
-                    if (!isMatch) return TagResult.Fail; //no conditions met for this one so all fail.
-                }
-
-                //todo: check the logic for the rest!
-
-                if (TagRegEx.TagRegExType == 2) //ALL, if one not match then include tag
-                {
-                    foreach (string strRegEx in TagRegEx.RegExText.Split(','))
-                    {
-                        if (NoteSectionText[TagRegEx.TargetSection] != null)
-                            if (!Regex.IsMatch(NoteSectionText[TagRegEx.TargetSection], CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase))
-                            {
-                                return TagResult.Fail; //any mismatch makes it false.
-                            }
-                    }
-                }
-
-                if (TagRegEx.TagRegExType == 3) //none
-                {
-                    foreach (string strRegEx in TagRegEx.RegExText.Split(','))
-                    {
-                        if (NoteSectionText[TagRegEx.TargetSection] != null)
-                            if (Regex.IsMatch(NoteSectionText[TagRegEx.TargetSection], CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase))
-                            {
-                                return TagResult.Fail; //any match makes it false
-                            }
-                    }
-                }
+                //ASK,ALL, and NONE conditions are note met, so the NoResult condition is the action
             }
 
-            return TagResult.Pass;
+            return SqlTagRegEx.EnumResult.Pass; //default is pass
         }
+
 
         public void GenerateReport(bool resetOverides = false)
         {
@@ -1557,45 +1447,47 @@ namespace AI_Note_Review
 
             foreach (SqlICD10Segment ns in ICD10Segments)
             {
-                    ns.IncludeSegment = true;
-                    if (!CF.CurrentDoc.HashTags.Contains("!HTNUrgency") && ns.ICD10SegmentID == 40) //if htnurgency is not present
-                    {
-                        ns.IncludeSegment = false;
-                    }
-                    if (ns.ICD10SegmentID == 72) //Adult rapid RR
-                    {
+                //default is to include
+                //ns.IncludeSegment = true;
+
+                if (!CF.CurrentDoc.HashTags.Contains("!HTNUrgency") && ns.ICD10SegmentID == 40) //if htnurgency is not present
+                {
+                    ns.IncludeSegment = false;
+                }
+                if (ns.ICD10SegmentID == 72) //Adult rapid RR
+                {
                     if (PtAgeYrs <= 17) ns.IncludeSegment = false; //do not include children in 72
                     if (!CF.CurrentDoc.HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
-                    }
-                    if (ns.ICD10SegmentID == 91) //Peds rapid RR
-                    {
+                }
+                if (ns.ICD10SegmentID == 91) //Peds rapid RR
+                {
                     if (PtAgeYrs >= 18) ns.IncludeSegment = false;
                     if (!CF.CurrentDoc.HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
-                    }
-                    if (!CF.CurrentDoc.HashTags.Contains("@Elderly") && ns.ICD10SegmentID == 75) //if htnurgency is not present
-                    {
-                        ns.IncludeSegment = false;
-                    }
-                    if (!CF.CurrentDoc.HashTags.Contains("@Child") && ns.ICD10SegmentID == 80) //if htnurgency is not present
-                    {
-                        ns.IncludeSegment = false;
-                    }
-                    if (!CF.CurrentDoc.HashTags.Contains("@Infant") && ns.ICD10SegmentID == 76) //if htnurgency is not present
-                    {
-                        ns.IncludeSegment = false;
-                    }
-                    if (!CF.CurrentDoc.HashTags.Contains("@pregnantcapable") && ns.ICD10SegmentID == 82) //if htnurgency is not present
-                    {
-                        ns.IncludeSegment = false;
-                    }
-                    if (!CF.CurrentDoc.HashTags.Contains("!HighFever") && ns.ICD10SegmentID == 73) //if htnurgency is not present
-                    {
-                        ns.IncludeSegment = false;
-                    }
-                    if (!CF.CurrentDoc.HashTags.Contains("!Tachycardia") && ns.ICD10SegmentID == 74) //if htnurgency is not present
-                    {
-                        ns.IncludeSegment = false;
-                    }
+                }
+                if (!CF.CurrentDoc.HashTags.Contains("@Elderly") && ns.ICD10SegmentID == 75) //if htnurgency is not present
+                {
+                    ns.IncludeSegment = false;
+                }
+                if (!CF.CurrentDoc.HashTags.Contains("@Child") && ns.ICD10SegmentID == 80) //if htnurgency is not present
+                {
+                    ns.IncludeSegment = false;
+                }
+                if (!CF.CurrentDoc.HashTags.Contains("@Infant") && ns.ICD10SegmentID == 76) //if htnurgency is not present
+                {
+                    ns.IncludeSegment = false;
+                }
+                if (!CF.CurrentDoc.HashTags.Contains("@pregnantcapable") && ns.ICD10SegmentID == 82) //if htnurgency is not present
+                {
+                    ns.IncludeSegment = false;
+                }
+                if (!CF.CurrentDoc.HashTags.Contains("!HighFever") && ns.ICD10SegmentID == 73) //if htnurgency is not present
+                {
+                    ns.IncludeSegment = false;
+                }
+                if (!CF.CurrentDoc.HashTags.Contains("!Tachycardia") && ns.ICD10SegmentID == 74) //if htnurgency is not present
+                {
+                    ns.IncludeSegment = false;
+                }
 
 
                 if (!ns.IncludeSegment) continue;
@@ -1633,18 +1525,18 @@ namespace AI_Note_Review
                     }
                     AlreadyAddedPoints.Add(cp.CheckPointID);
                     ///Console.WriteLine($"Now analyzing '{cp.CheckPointTitle}' checkpoint.");
-                    TagResult trTagResult = TagResult.Pass;
+                    SqlTagRegEx.EnumResult trTagResult = SqlTagRegEx.EnumResult.Pass;
                     if (cp.CheckPointTitle.Contains("Augmentin XR"))
                     {
 
                     }
                     foreach (SqlTag tagCurrentTag in cp.GetTags())
                     {
-                        TagResult trCurrentTagResult;
+                        SqlTagRegEx.EnumResult trCurrentTagResult;
                         List<SqlTagRegEx> tmpTagRegExs = tagCurrentTag.GetTagRegExs();
                         trCurrentTagResult = CheckTagRegExs(tmpTagRegExs);
 
-                        if (trCurrentTagResult == TagResult.Fail || trCurrentTagResult == TagResult.FailNoCount || trCurrentTagResult == TagResult.DropTag)
+                        if (trCurrentTagResult != SqlTagRegEx.EnumResult.Pass)
                         {
                             //tag fails, no match.
                             trTagResult = trCurrentTagResult;
@@ -1653,35 +1545,28 @@ namespace AI_Note_Review
                         documentTags.Add(tagCurrentTag.TagText);
                     }
 
-                    if (trTagResult == TagResult.DropTag) //do not add to any category if droptag result.
+                    switch (trTagResult)
                     {
-                        cp.IncludeCheckpoint = false;
-                        droppedCheckPoints.Add(cp);
-                    }
-                    else
-                    if (trTagResult == TagResult.Pass)
-                    {
-                                cp.IncludeCheckpoint = false;
-                                passedCheckPoints.Add(cp); //do not include passed for All diagnosis.
-                    }
-                    else
-                    {
-                        if (trTagResult == TagResult.FailNoCount)
-                        {
-                                cp.IncludeCheckpoint = false;
-                                irrelaventCheckPoints.Add(cp); //do not include irrelevant for All diagnosis.
-                        }
-                        else
-                        {
+                        case SqlTagRegEx.EnumResult.Pass:
+                            cp.IncludeCheckpoint = false;
+                            passedCheckPoints.Add(cp); //do not include passed for All diagnosis.
+                            break;
+                        case SqlTagRegEx.EnumResult.Hide:
+                            cp.IncludeCheckpoint = false;
+                            droppedCheckPoints.Add(cp);
+                            break;
+                        case SqlTagRegEx.EnumResult.Miss:
                             cp.IncludeCheckpoint = true;
                             missedCheckPoints.Add(cp);
-                        }
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
 
             //now re-order checkpoints by severity
-            passedCheckPoints = new  ObservableCollection< SqlCheckpoint >(passedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
+            passedCheckPoints = new ObservableCollection<SqlCheckpoint>(passedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
             missedCheckPoints = new ObservableCollection<SqlCheckpoint>(missedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
             irrelaventCheckPoints = new ObservableCollection<SqlCheckpoint>(irrelaventCheckPoints.OrderByDescending(c => c.ErrorSeverity));
             droppedCheckPoints = new ObservableCollection<SqlCheckpoint>(droppedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
@@ -1747,7 +1632,7 @@ namespace AI_Note_Review
             ReviewDate = DateTime.MinValue;
 
             Facility = "";
-            VisitDate = new DateTime(2020,1,1);
+            VisitDate = new DateTime(2020, 1, 1);
             Provider = "";
             ReasonForAppt = "";
             Allergies = "";
