@@ -18,6 +18,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock HorizontalAlignment="Center" Margin="10" FontSize="24" Style="{StaticResource MyTbStyle}" Text="{Binding CheckPointTitle}"></TextBlock>
         <Border Grid.Row="1" BorderBrush="White" BorderThickness="1">
@@ -39,12 +40,18 @@
                             Orientation="Horizontal"
                             Grid.Row="0"
                             Margin="0,0,0,0">
-                                    <TextBlock
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
                             FontSize="20"
                             Tag="{Binding}"
                             MouseDown="TextBlock_MouseDown"
                             Text="{Binding TagText, FallbackValue=#TagTitle}" 
                             Style="{StaticResource MyTbStyle}"></TextBlock>
+                                        <UserControl
+                            
+                            Content="{Binding TagCount, FallbackValue=(?)}" 
+                            ></UserControl>
+                                    </StackPanel>
                                     <Button 
                                 Margin="10,0,0,0"
                                 x:Name="btnRemoveTag" 
@@ -81,13 +88,19 @@
 
                                 <Button Grid.Row="3"
                                 Margin="10,0,0,20"
-                                Style="{StaticResource LinkButton}" Click="Button_Click">Add Search Term</Button>
+                                Style="{StaticResource LinkButton}"
+                                Command="{Binding Path=AddTagRegExCommand}"
+                                CommandParameter="{Binding}" >Add Search Term</Button>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
         </Border>
-        <Button Click="Button_Click_Done" Grid.Row="2" HorizontalAlignment="Center" Style="{StaticResource LinkButton}" FontSize="24">Done</Button>
+        <Button Grid.Row="2"
+                Style="{StaticResource LinkButton}"
+                Command="{Binding Path=AddTagCommand}"
+                CommandParameter="{Binding}"     Content="Add Tag" Margin="1,0,-1,0"           />
+        <Button Click="Button_Click_Done"  Grid.Row="3" HorizontalAlignment="Center" Style="{StaticResource LinkButton}" FontSize="24">Done</Button>
     </Grid>
 </Window>

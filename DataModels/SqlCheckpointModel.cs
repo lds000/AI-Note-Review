@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace AI_Note_Review
@@ -74,6 +75,32 @@ namespace AI_Note_Review
                 {
                     return cnn.Query<SqlTag>(sql, this).ToList();
                 }
+            }
+        }
+
+        public void AddTag(SqlTag tg)
+        {
+            string sql = "";
+            sql = $"INSERT INTO RelTagCheckPoint (TagID, CheckPointID) VALUES ({tg.TagID},{CheckPointID});";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
+            }
+            OnPropertyChanged("Tags");
+        }
+
+        private ICommand mAddTag;
+        public ICommand AddTagCommand
+        {
+            get
+            {
+                if (mAddTag == null)
+                    mAddTag = new TagAdder();
+                return mAddTag;
+            }
+            set
+            {
+                mAddTag = value;
             }
         }
 
@@ -308,5 +335,59 @@ namespace AI_Note_Review
             }
             return true;
         }
+    }
+    class TagAdder : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlCheckpoint CurrentCheckpoint = parameter as SqlCheckpoint;
+            if (CurrentCheckpoint == null) return;
+            string strSuggest = "#";
+            if (CurrentCheckpoint.CheckPointType == 1) strSuggest = "#Query";
+            if (CurrentCheckpoint.CheckPointType == 2) strSuggest = "#Exam";
+            if (CurrentCheckpoint.CheckPointType == 3) strSuggest = "#Lab";
+            if (CurrentCheckpoint.CheckPointType == 4) strSuggest = "#Imaging";
+            if (CurrentCheckpoint.CheckPointType == 5) strSuggest = "#Condition";
+            if (CurrentCheckpoint.CheckPointType == 6) strSuggest = "#CurrentMed";
+            if (CurrentCheckpoint.CheckPointType == 7) strSuggest = "#Edu";
+            if (CurrentCheckpoint.CheckPointType == 8) strSuggest = "#Exam";
+            if (CurrentCheckpoint.CheckPointType == 9) strSuggest = "#CurrentMed";
+            if (CurrentCheckpoint.CheckPointType == 10) strSuggest = "#Demographic";
+            if (CurrentCheckpoint.CheckPointType == 11) strSuggest = "#HPI";
+            if (CurrentCheckpoint.CheckPointType == 12) strSuggest = "#Vitals";
+            if (CurrentCheckpoint.CheckPointType == 13) strSuggest = "#Rx";
+            if (CurrentCheckpoint.CheckPointType == 14) strSuggest = "#Refer";
+            if (CurrentCheckpoint.CheckPointType == 15) strSuggest = "#BEERS";
+            //WinEnterText wet = new WinEnterText("Please enter a unique (not previously used) name for the new tag.", strSuggest, 200);
+            //wet.strExclusions = SqlLiteDataAccess.GetAllTags();
+            //wet.Owner = this;
+            //wet.ShowDialog();
+
+            WinAddTag wat = new WinAddTag();
+            wat.tbSearch.Text = strSuggest;
+            wat.ShowDialog();
+
+            if (wat.ReturnValue != null)
+            {
+                SqlTag tg = SqlLiteDataAccess.GetTags(wat.ReturnValue).FirstOrDefault();
+                if (tg == null) tg = new SqlTag(wat.ReturnValue);
+                CurrentCheckpoint.AddTag(tg);
+
+                //SqlTagRegEx srex = new SqlTagRegEx(tg.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
+            }
+        }
+        #endregion
     }
 }

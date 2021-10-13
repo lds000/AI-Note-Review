@@ -113,7 +113,7 @@
                 Padding="0" 
                 LostFocus="tblostfocus" 
                 Text="{Binding MinAge, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}">
-                
+
             </TextBox>
             <Label Style="{StaticResource MyLblStyle}">Max Age</Label>
             <TextBox
@@ -127,7 +127,8 @@
             <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="leFT"
                     Margin="0,5,0,0"
                     Style="{StaticResource LinkButton}" 
-                    Click="ButtonRemove_Click">Delete This Criterion</Button>
+                                Command="{Binding Path=DeleteTagRegExCommand}"
+                                CommandParameter="{Binding}">Delete This Criterion</Button>
         </Grid>
     </Grid>
 </UserControl>

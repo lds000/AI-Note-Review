@@ -9,11 +9,19 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace AI_Note_Review
 {
-    public class SqlTagRegEx
+    public class SqlTagRegEx : INotifyPropertyChanged
     {
+        // Declare the event
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
         private EnumMatch tagRegExMatchType;
         private EnumResult tagRegExMatchResult;
         private EnumResult tagRegExMatchNoResult;
@@ -22,6 +30,7 @@ namespace AI_Note_Review
         public int TagRegExID { get; set; }
         public int TargetTag { get; set; }
 
+        public SqlTag ParentTag { get; set; }
         public int TargetSection { get; set; }
 
         public string TargetSectionTitle
@@ -58,9 +67,25 @@ namespace AI_Note_Review
         public bool Male { get; set; }
         public bool Female { get; set; }
 
+        private ICommand mDeleteTagRegEx;
+        public ICommand DeleteTagRegExCommand
+        {
+            get
+            {
+                if (mDeleteTagRegEx == null)
+                    mDeleteTagRegEx = new DeleteTagRegEx();
+                return mDeleteTagRegEx;
+            }
+            set
+            {
+                mDeleteTagRegEx = value;
+            }
+        }
+
         public SqlTagRegEx()
         {
         }
+
 
         public SqlTagRegEx(int intTargetTag, string strRegExText, int intTargetSection, int iTagRegExType = 1, int iTagRegExMatchType = 0, int iTagRegExMatchResult = 0, double dMinAge = 0, double dMaxAge = 99, bool bMale = true, bool bFemale = true)
         {
@@ -105,5 +130,27 @@ namespace AI_Note_Review
             return true;
         }
     }
+    class DeleteTagRegEx : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlTagRegEx t = parameter as SqlTagRegEx;
+            t.ParentTag.RemoveTagRegEx(t);
+        }
+        #endregion
+    }
+
 }
 

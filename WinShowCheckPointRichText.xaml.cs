@@ -37,6 +37,7 @@ namespace AI_Note_Review
             //I need to implement something else here
         }
 
+
         private void UCTagRegEx_DeleteMe(object sender, EventArgs e)
         {
             ImChanged(this, EventArgs.Empty);
@@ -97,5 +98,17 @@ namespace AI_Note_Review
 
             }
         }
+
+        private void PressMe_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void PressMe_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            
+        }
     }
+
+
 }
