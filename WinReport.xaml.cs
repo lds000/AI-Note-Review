@@ -26,7 +26,7 @@ namespace AI_Note_Review
         public WinReport(bool GeneralCheckPointsOnly = false)
         {
             InitializeComponent();
-            CF.CurrentDoc.ICD10Segments = CF.CurrentDoc.GetSegments(GeneralCheckPointsOnly);
+            CF.CurrentDoc.ICD10Segments = CF.CurrentDoc.GetSegments(GeneralCheckPointsOnly); //load all pertinent and 'X' segments
             CF.CurrentDoc.GenerateReport(true);
             DataContext = CF.CurrentDoc;
         }
@@ -52,11 +52,13 @@ namespace AI_Note_Review
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             CF.SetWindowPosition(this);
+            CF.IsReviewWindowOpen = true;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             CF.SaveWindowPosition(this);
+            CF.IsReviewWindowOpen = false;
         }
 
         private void Button_Click_Recheck(object sender, RoutedEventArgs e)
@@ -326,6 +328,12 @@ namespace AI_Note_Review
             wet.ShowDialog();
 
             cp.CustomComment = wet.ReturnValue;
+        }
+
+        private void Button_ResetYesNo(object sender, RoutedEventArgs e)
+        {
+            CF.YesNoSqlRegExIndex.Clear();
+            CF.CurrentDoc.GenerateReport();
         }
     }
 

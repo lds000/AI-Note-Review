@@ -33,7 +33,10 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
         public static List<SqlICD10Segment> NoteICD10Segments = new List<SqlICD10Segment>();
         public static DocInfo CurrentDoc = new DocInfo();
         public static List<SqlCheckpoint> CheckPointList = new List<SqlCheckpoint>();
+        public static Dictionary<int, bool> YesNoSqlRegExIndex = new Dictionary<int, bool>();
         public static List<SqlTagRegExType> TagRegExTypes { get; set; }
+
+        public static bool IsReviewWindowOpen = false;
 
         public static List<SqlTagRegExMatchResults> TagRegExMatchResults
         {

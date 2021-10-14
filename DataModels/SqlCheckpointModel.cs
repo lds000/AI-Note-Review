@@ -73,7 +73,12 @@ namespace AI_Note_Review
                 string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID};";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    return cnn.Query<SqlTag>(sql, this).ToList();
+                    var tmpList = cnn.Query<SqlTag>(sql, this).ToList();
+                    foreach (SqlTag st in tmpList) 
+                    {
+                        st.ParentCheckPoint = this;
+                    }
+                    return tmpList;
                 }
             }
         }
@@ -103,6 +108,7 @@ namespace AI_Note_Review
                 mAddTag = value;
             }
         }
+
 
         public void DeleteImage(SqlCheckPointImage sci)
         {
@@ -246,7 +252,7 @@ namespace AI_Note_Review
             {
                 cnn.Execute(sql);
             }
-
+            OnPropertyChanged("Tags");
         }
 
         public string GetIndex()
@@ -270,7 +276,7 @@ namespace AI_Note_Review
             {
                 strReturn += $"<b>Comment: {CustomComment}</b><br>";
             }
-            if (Link != "")
+            if (Link != "" && Link != null)
             {
                 strReturn += $"<a href={Link}>Click here for reference.</a><br>";
             }
@@ -390,4 +396,5 @@ namespace AI_Note_Review
         }
         #endregion
     }
+
 }

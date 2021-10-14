@@ -241,7 +241,7 @@ namespace AI_Note_Review
             if (windowHeader.Contains("Patient Encounter Summary")) //Patient Encounter Summary
             {
                 int i = 0;
-
+                if (!CF.IsReviewWindowOpen) //do not load new patient if in a current review.
                 while (i < 20)
                 {
                     HookIE h = new HookIE(hwnd, 0);
@@ -402,6 +402,9 @@ namespace AI_Note_Review
                         case "Assessment:":
                             CF.CurrentDoc.Assessments += myString + Environment.NewLine;
                             break;
+                        case "Preventive Medicine:":
+                            CF.CurrentDoc.PreventiveMed += myString + Environment.NewLine;
+                            break;
                         case "Treatment:":
                             if (myString.StartsWith("         Start")) //may not always work, keep an eye on this.
                             {
@@ -419,7 +422,7 @@ namespace AI_Note_Review
                             CF.CurrentDoc.Treatment += myString + Environment.NewLine;
                             break;
                         case "Procedures:":
-                            CF.CurrentDoc.Treatment += myString + Environment.NewLine;
+                            CF.CurrentDoc.ProcedureNote += myString + Environment.NewLine;
                             break;
                         case "Diagnostic Imaging:":
                             CF.CurrentDoc.ImagesOrdered += myString + Environment.NewLine;
@@ -586,8 +589,9 @@ namespace AI_Note_Review
         public void processLockedt(HtmlDocument HDoc)
             {
 
+            CF.CurrentDoc.Clear();
 
-                if (HDoc.Body.InnerHtml.StartsWith("<LINK"))
+            if (HDoc.Body.InnerHtml.StartsWith("<LINK"))
                 {
                     processUnlocked(HDoc);
                     return;
@@ -787,6 +791,11 @@ namespace AI_Note_Review
                             {
                                 CF.CurrentDoc.VisitCodes = strInnerText;
                             }
+                            if (strCurrentHeading == "Preventive Medicine")
+                            {
+                                CF.CurrentDoc.PreventiveMed = strInnerText;
+                            }
+
                             if (strCurrentHeading == "Follow Up")
                                 {
                                 CF.CurrentDoc.FollowUp = strInnerText;
@@ -809,7 +818,12 @@ namespace AI_Note_Review
                                     CF.CurrentDoc.Assessments = strOut;
                                 }
 
-                                if (strCurrentHeading == "Treatment")
+                            if (strCurrentHeading.Trim() == "Procedures")
+                            {
+                                CF.CurrentDoc.ProcedureNote += strInnerText;
+                            }
+
+                            if (strCurrentHeading == "Treatment")
                                 {
                                     var result = strInnerText.Split(new[] { '\r', '\n' });
                                     List<string> medsStarted = new List<string>();
@@ -971,6 +985,21 @@ namespace AI_Note_Review
             WinProviderReviews wp = new WinProviderReviews();
             wp.Owner = this;
             wp.ShowDialog();
+        }
+
+        private void Label_MouseDown_1(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void ProviderLabel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            SqlProvider sp = SqlProvider.SqlGetProviderByID(CF.CurrentDoc.ProviderID);
+            WinEnterText wet = new WinEnterText($"Private notes for {sp.FullName}", sp.PersonalNotes);
+            wet.ShowDialog();
+            sp.PersonalNotes = wet.ReturnValue;
+            sp.SaveToDatabase();
+            
         }
     }
 

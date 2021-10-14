@@ -95,6 +95,8 @@ namespace AI_Note_Review
             NoteSectionText[17] = SurgHx;
             NoteSectionText[18] = HashTags;
             NoteSectionText[19] = CC;
+            NoteSectionText[20] = ProcedureNote;
+            NoteSectionText[21] = PreventiveMed;
 
         }
 
@@ -630,6 +632,33 @@ namespace AI_Note_Review
                 NotifyPropertyChanged();
             }
         }
+
+        public string ProcedureNote
+        {
+            get
+            {
+                return procedureNote;
+            }
+            set
+            {
+                procedureNote = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string PreventiveMed
+        {
+            get
+            {
+                return preventiveMed;
+            }
+            set
+            {
+                preventiveMed = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public string MedsStarted
         {
             get
@@ -1187,12 +1216,18 @@ namespace AI_Note_Review
         }
 
         #endregion
-
+        /// <summary>
+        /// Load all pertinent and ICD10 related segments
+        /// </summary>
+        /// <param name="GeneralCheckPointsOnly"></param>
+        /// <returns></returns>
         public ObservableCollection<SqlICD10Segment> GetSegments(bool GeneralCheckPointsOnly = false)
         {
             //get icd10 segments
 
             ObservableCollection<SqlICD10Segment> tmpICD10Segments = new ObservableCollection<SqlICD10Segment>();
+
+            if (!GeneralCheckPointsOnly) //do not check the ICD10s for general check
             foreach (string strICD10 in ICD10s)
             {
                 string strAlphaCode = strICD10.Substring(0, 1);
@@ -1217,6 +1252,7 @@ namespace AI_Note_Review
                 }
             }
 
+            //add all general sections
             foreach (SqlICD10Segment ns in CF.NoteICD10Segments)
             {
                 if (ns.icd10Chapter == "X")
@@ -1344,7 +1380,7 @@ namespace AI_Note_Review
 
             foreach (SqlTagRegEx TagRegEx in tmpTagRegExs) //cycle through the TagRegExs, usually one or two, fail or hide stops iteration, if continues returns pass.
             {
-                if (TagRegEx.RegExText.Contains("ibuprofen")) //used to debug
+                if (TagRegEx.RegExText.Contains("prolonged")) //used to debug
                 {
                 }
 
@@ -1370,13 +1406,36 @@ namespace AI_Note_Review
                     }
                     else
                     {
+                        bool yn = false;
+                        if (CF.YesNoSqlRegExIndex.ContainsKey(TagRegEx.TagRegExID))
+                        {
+                            yn = CF.YesNoSqlRegExIndex[TagRegEx.TagRegExID];
+                        }
+                        else
+                        { 
                         WinShowRegExYesNo ws = new WinShowRegExYesNo();
-                        ws.tbQuestion.Text = TagRegEx.RegExText;
-                        ws.tbContent.Text = NoteSectionText[TagRegEx.TargetSection];
+                        if (TagRegEx.RegExText.Contains('|'))
+                        {
+                            ws.tbQuestion.Text = TagRegEx.RegExText.Split('|')[1];
+                        }
+                        else
+                        {
+                            ws.tbQuestion.Text = TagRegEx.RegExText;
+                        }
+                        ws.DataContext = TagRegEx;
                         ws.ShowDialog();
-                        if (ws.YesNoResult == true)
+                        CF.YesNoSqlRegExIndex.Add(TagRegEx.TagRegExID, ws.YesNoResult);
+                            yn = ws.YesNoResult;
+                        }
+                        if (yn == true)
                         {
                             if (StopIfMissOrHide) return TagRegEx.TagRegExMatchResult; //if Yes return 1st Result option if it's fail or hide
+                            continue; //continue to next iteration bacause result is pass.
+                        }
+                        else
+                        {
+                            if (TagRegEx.TagRegExMatchNoResult != SqlTagRegEx.EnumResult.Pass) return TagRegEx.TagRegExMatchNoResult;
+                            continue;  //continue to next iteration bacause result is pass.
                         }
                     }
                 }
@@ -1408,9 +1467,16 @@ namespace AI_Note_Review
                     }
                 }
                 //ALL condition met if all terms match
-                if (AllTermsMatch && StopIfMissOrHide && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.All) return TagRegEx.TagRegExMatchResult; //Contains All return 2nd Result because any clause not reached
+                if (StopIfMissOrHide)
+                {
+                    if (AllTermsMatch && StopIfMissOrHide)
+                    {
+                        if (TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.All) return TagRegEx.TagRegExMatchResult; //Contains All return 2nd Result because any clause not reached
+                    }
+                    if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.None) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.)
+                    if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.Any) return TagRegEx.TagRegExMatchNoResult;
+                }
                 //NONE condition met if no terms match
-                if (NoTermsMatch && StopIfMissOrHide && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.None) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.)
 
                 if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.Any) continue;
 
@@ -1428,12 +1494,16 @@ namespace AI_Note_Review
             return SqlTagRegEx.EnumResult.Pass; //default is pass
         }
 
-
+        /// <summary>
+        /// clear note, clear checkpoints, check note
+        /// </summary>
+        /// <param name="resetOverides"></param>
         public void GenerateReport(bool resetOverides = false)
         {
             if (resetOverides)
             {
                 CPStatusOverrides.Clear();
+                CF.YesNoSqlRegExIndex.Clear();
             }
             documentTags.Clear();
             passedCheckPoints.Clear();
@@ -1441,11 +1511,13 @@ namespace AI_Note_Review
             irrelaventCheckPoints.Clear();
             droppedCheckPoints.Clear();
 
-            //todo put into database as relevant/irrelavent vs pass/fail
-            int[] relType = { 5, 6, 9, 10, 12 }; //this is a cheesy short term fix
-            List<int> AlreadyAddedPoints = new List<int>();
+            List<int> AlreadyAddedCheckPointIDs = new List<int>();
 
-            foreach (SqlICD10Segment ns in ICD10Segments)
+            foreach (SqlICD10Segment ns in ICD10Segments) //reset icd10segments
+            {
+                if (ns.ICD10SegmentID != 90) ns.IncludeSegment = true; //reset for all except EDtransfer, which is manually selected.
+            }
+                foreach (SqlICD10Segment ns in ICD10Segments)
             {
                 //default is to include
                 //ns.IncludeSegment = true;
@@ -1490,6 +1562,18 @@ namespace AI_Note_Review
                 }
 
 
+                if (ns.ICD10SegmentID == 92) //todo: find better way to see if procedure note included.
+                {
+                    if (CF.CurrentDoc.ProcedureNote == null)
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    else
+                    {
+                        if (CF.CurrentDoc.ProcedureNote.Length < 100) ns.IncludeSegment = false;
+                    }
+                }
+
                 if (!ns.IncludeSegment) continue;
                 //Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
                 foreach (SqlCheckpoint cp in ns.GetCheckPoints())
@@ -1516,14 +1600,14 @@ namespace AI_Note_Review
                                 irrelaventCheckPoints.Add(p.Key);
                                 p.Key.IncludeCheckpoint = false;
                             }
-                            AlreadyAddedPoints.Add(p.Key.CheckPointID);
+                            AlreadyAddedCheckPointIDs.Add(p.Key.CheckPointID);
                         }
                     }
-                    if (AlreadyAddedPoints.Contains(cp.CheckPointID)) //no need to double check
+                    if (AlreadyAddedCheckPointIDs.Contains(cp.CheckPointID)) //no need to double check
                     {
                         continue;
                     }
-                    AlreadyAddedPoints.Add(cp.CheckPointID);
+                    AlreadyAddedCheckPointIDs.Add(cp.CheckPointID);
                     ///Console.WriteLine($"Now analyzing '{cp.CheckPointTitle}' checkpoint.");
                     SqlTagRegEx.EnumResult trTagResult = SqlTagRegEx.EnumResult.Pass;
                     if (cp.CheckPointTitle.Contains("Augmentin XR"))
@@ -1641,6 +1725,8 @@ namespace AI_Note_Review
             CC = "";
             HPI = "";
             CurrentMeds = "";
+            ProcedureNote = "";
+            PreventiveMed = "";
             CurrentPrnMeds = "";
             ProblemList = "";
             ROS = "";
@@ -1695,6 +1781,8 @@ namespace AI_Note_Review
         private string generalHx;
         private string exam;
         private string treatment;
+        private string procedureNote;
+        private string preventiveMed;
         private string medsStarted;
         private string imagesOrdered;
         private string labsOrdered;

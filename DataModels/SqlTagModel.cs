@@ -28,6 +28,8 @@ namespace AI_Note_Review
         public int TagID { get; set; }
         public string TagText { get; set; }
 
+        public SqlCheckpoint ParentCheckPoint { get; set; }
+
         public TextBlock TagCount
         {
             get
@@ -84,6 +86,22 @@ namespace AI_Note_Review
                 mAddTagRegEx = value;
             }
         }
+
+        private ICommand mRemoveTag;
+        public ICommand RemoveTagCommand
+        {
+            get
+            {
+                if (mRemoveTag == null)
+                    mRemoveTag = new TagRemover();
+                return mRemoveTag;
+            }
+            set
+            {
+                mRemoveTag = value;
+            }
+        }
+
 
         public void AddSqlTagRegex(SqlTag st)
         {
@@ -176,6 +194,28 @@ namespace AI_Note_Review
         {
             SqlTag st = parameter as SqlTag;
             st.AddSqlTagRegex(st);
+        }
+        #endregion
+    }
+
+    class TagRemover : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlTag st = parameter as SqlTag;
+            st.ParentCheckPoint.RemoveTag(st);
         }
         #endregion
     }

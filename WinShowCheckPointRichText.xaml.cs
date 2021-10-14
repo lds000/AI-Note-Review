@@ -97,6 +97,12 @@ namespace AI_Note_Review
                 this.Close();
 
             }
+            if (e.Key == Key.Escape)
+            {
+                UpDownPressed = false;
+                this.Close();
+
+            }
         }
 
         private void PressMe_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -107,6 +113,11 @@ namespace AI_Note_Review
         private void PressMe_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+         //   UpDownPressed = false;
         }
     }
 

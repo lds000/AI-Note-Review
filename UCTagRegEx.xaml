@@ -128,7 +128,7 @@
                     Margin="0,5,0,0"
                     Style="{StaticResource LinkButton}" 
                                 Command="{Binding Path=DeleteTagRegExCommand}"
-                                CommandParameter="{Binding}">Delete This Criterion</Button>
+                                CommandParameter="{Binding}">Delete Search Pattern</Button>
         </Grid>
     </Grid>
 </UserControl>

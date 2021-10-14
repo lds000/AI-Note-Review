@@ -48,5 +48,10 @@ namespace AI_Note_Review
         {
             this.Close();
         }
+
+        private void cbYesNo_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.Save();
+        }
     }
 }

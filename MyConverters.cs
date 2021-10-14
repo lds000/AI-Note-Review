@@ -29,12 +29,35 @@ namespace AI_Note_Review
         {
             SqlTagRegEx s = value as SqlTagRegEx;
             string input = CF.CurrentDoc.NoteSectionText[s.TargetSection];
+            Brush HighlightColor = Brushes.Yellow;
+            switch (s.TagRegExMatchType)
+            {
+                case SqlTagRegEx.EnumMatch.Any:
+                    HighlightColor = Brushes.Yellow;
+                    break;
+                case SqlTagRegEx.EnumMatch.All:
+                    HighlightColor = Brushes.Green;
+                    break;
+                case SqlTagRegEx.EnumMatch.None:
+                    HighlightColor = Brushes.Red;
+                    break;
+                case SqlTagRegEx.EnumMatch.Ask:
+                    HighlightColor = Brushes.Yellow;
+                    break;
+                default:
+                    break;
+            }
             if (input != null)
             {
                 var textBlock = new TextBlock();
                 textBlock.TextWrapping = TextWrapping.Wrap;
+                string strSearchTerms = s.RegExText;
+                if (s.TagRegExMatchType == SqlTagRegEx.EnumMatch.Ask)
+                {
+                    strSearchTerms = strSearchTerms.Split('|')[0];
+                }
                 string escapedXml = input; // SecurityElement.Escape(input);
-                foreach (string strSearch in s.RegExText.Split(','))
+                foreach (string strSearch in strSearchTerms.Split(','))
                 {
                     List<string> replacedStr = new List<string>();
 // I took this out
@@ -57,7 +80,7 @@ namespace AI_Note_Review
                     //between |~S~| and |~E~| is highlighted
                     textBlock.Inlines.Add(new Run(escapedXml.Substring(escapedXml.IndexOf("|~s~|") + 5,
                                               escapedXml.IndexOf("|~e~|") - (escapedXml.IndexOf("|~s~|") + 5)))
-                    { FontWeight = FontWeights.Bold, Background = Brushes.Yellow, Foreground = Brushes.Black });
+                    { FontWeight = FontWeights.Bold, Background = HighlightColor, Foreground = Brushes.Black });
                     //the rest of the string (after the |~E~|)
                     escapedXml = escapedXml.Substring(escapedXml.IndexOf("|~e~|") + 5);
                 }

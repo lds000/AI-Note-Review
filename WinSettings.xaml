@@ -31,7 +31,7 @@
                     <DatePicker SelectedDateChanged="DatePicker_SelectedDateChanged" SelectedDate="{Binding Source={x:Static properties:Settings.Default}, Path=EndReviewDate, Mode=TwoWay}"></DatePicker>
                 </StackPanel>
                 <TextBlock Margin="5,0,10,0" Grid.Row="3" Grid.Column="0" Style="{StaticResource MyTbStyle}">Yes/No CheckPoints</TextBlock>
-                <CheckBox x:Name="cbYesNo" Checked="cbYesNo_Checked" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=AskYesNo, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" Style="{StaticResource MyCBStyle}">Do not ask yes / no pass questions.</CheckBox>
+                <CheckBox x:Name="cbYesNo" Checked="cbYesNo_Checked" Unchecked="cbYesNo_Unchecked" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=AskYesNo, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" Style="{StaticResource MyCBStyle}">Do not ask yes / no pass questions.</CheckBox>
             </Grid>
         </Border>
     </DockPanel>

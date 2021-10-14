@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         SizeToContent="Height"
+        Closing="Window_Closing"
         PreviewKeyDown="Window_PreviewKeyDown"
-        Title="WinShowCheckPointRichText" Height="450" Width="800">
+        Title="WinShowCheckPointRichText" Height="450" Width="1400">
     <Grid Background="Black">
         <Grid.Resources>
             <local:SqlTagRegExToString x:Key="mySqlTagRegExToString"/>
@@ -56,7 +57,10 @@
                                 Margin="10,0,0,0"
                                 x:Name="btnRemoveTag" 
                                 HorizontalAlignment="Right" VerticalAlignment="Center"
-                                Style="{StaticResource LinkButton}" Click="btnRemoveTag_Click" >Remove Tag</Button>
+                                Style="{StaticResource LinkButton}"
+                                        Command="{Binding Path=RemoveTagCommand}"
+                                        CommandParameter="{Binding}" 
+                                        >Remove Tag</Button>
                                 </StackPanel>
                                 <ItemsControl Margin="10,5,10,5" Grid.Row="1"  ItemsSource="{Binding TagRegExs}">
                                     <ItemsControl.ItemTemplate>

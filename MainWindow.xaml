@@ -47,7 +47,7 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <Label Grid.Row="0" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Provider, FallbackValue=Provider Name}" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
+                            <Label Grid.Row="0" Grid.ColumnSpan="2" Margin="0" Padding="0" MouseDown="ProviderLabel_MouseDown" Content="{Binding Provider, FallbackValue=Provider Name}" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
                             <Label Grid.Row="1" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Facility, FallbackValue=Clinic Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
                                 <Image Grid.Row="2" Grid.ColumnSpan="2" Visibility="{Binding ProviderSql.IsWestSidePod, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Source="Icons\westside.jpg" HorizontalAlignment="Center"></Image>
                             <Label Grid.Row="3" Grid.Column="0" Margin="0" Padding="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Left" FontSize="12">Visit Date:</Label>
@@ -122,7 +122,10 @@
                 <TabItem Header="Treatment">
                     <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Treatment}"></TextBox>
                 </TabItem>
-                <TabItem Header="Assessments">
+                    <TabItem Header="Procedure">
+                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding ProcedureNote}"></TextBox>
+                    </TabItem>
+                    <TabItem Header="Assessments">
                     <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Assessments}"></TextBox>
                 </TabItem>
                 <TabItem Header="FollowUp">
@@ -130,6 +133,9 @@
                 </TabItem>
                     <TabItem Header="Visit Codes">
                         <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding VisitCodes}"></TextBox>
+                    </TabItem>
+                    <TabItem Header="PrevMed">
+                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding PreventiveMed}"></TextBox>
                     </TabItem>
                     <TabItem Header="HTML">
                     <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding NoteHTML}"></TextBox>

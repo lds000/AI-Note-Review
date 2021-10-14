@@ -20,6 +20,8 @@ namespace AI_Note_Review
         public string FullName { get; set; }
         public bool IsWestSidePod { get; set; }
 
+        public string PersonalNotes { get; set; }
+
         public List<SqlMonthReviewSummary> ReviewsByMonth
         {
             get
@@ -78,10 +80,21 @@ namespace AI_Note_Review
         public static List<SqlProvider> GetMyPeeps()
         {
             string sql = "";
-            sql += $"Select * from Providers where IsWestSidePod == 'true' order by FullName;"; //this part is to get the ID of the newly created phrase
+            sql += $"Select * from Providers where IsWestSidePod == '1' order by FullName;"; //this part is to get the ID of the newly created phrase
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 return cnn.Query<SqlProvider>(sql).ToList();
+            }
+        }
+
+        public static SqlProvider SqlGetProviderByID(int iProviderID)
+        {
+            string sql = "";
+            sql += $"Select * from Providers where ProviderID = '{iProviderID}';"; //this part is to get the ID of the newly created phrase
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                SqlProvider p = cnn.QueryFirstOrDefault<SqlProvider>(sql);
+                return p;
             }
         }
 
@@ -114,8 +127,9 @@ namespace AI_Note_Review
         "Cert=@Cert, " +
         "ReviewInterval=@ReviewInterval, " +
         "HomeClinic=@HomeClinic, " +
-        "FullName=@FullName " +
-        "IsWestSidePod=@IsWestSidePod " +
+        "FullName=@FullName, " +
+        "IsWestSidePod=@IsWestSidePod, " +
+        "PersonalNotes=@PersonalNotes " +
         "WHERE ProviderID=@ProviderID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {

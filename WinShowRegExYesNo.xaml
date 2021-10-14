@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="WinShowRegExYesNo" Height="450" Width="800">
     <Grid Background="Black">
+        <Grid.Resources>
+            <local:SqlTagRegExToXamlConverter x:Key="mySqlTagRegExToXamlConverter"/>
+        </Grid.Resources>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -14,13 +18,19 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
         <Label Style="{StaticResource MyLblStyle}" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontSize="24">Please evaluate the following.</Label>
         <TextBlock Foreground="Red" x:Name="tbQuestion" Style="{StaticResource MyTbStyle}" Grid.ColumnSpan="2" Grid.Row="1" FontSize="20">This is the question.</TextBlock>
-        <Border BorderBrush="White" BorderThickness="2" Margin="5" Grid.ColumnSpan="2" Grid.Row="2" Padding="5" >
-            <TextBlock x:Name="tbContent" Style="{StaticResource MyTbStyle}" FontSize="16">This is the note content.</TextBlock>
+        <TextBox Style="{StaticResource MyTextBox}" Text="{Binding RegExText, Mode=TwoWay}" Grid.Row="2"></TextBox>
+        <Border BorderBrush="White" BorderThickness="2" Margin="5" Grid.ColumnSpan="2" Grid.Row="3" Padding="5" >
+            <ContentControl Margin="10"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Center"
+                                                    Content="{Binding Converter={StaticResource mySqlTagRegExToXamlConverter}}">
+            </ContentControl>
         </Border>
         <Button Margin="10" Grid.Row="4" FontSize="24" Click="clickYes">Yes</Button>
         <Button Margin="10" Grid.Row="4" Grid.Column="1" FontSize="24" Click="clickNo">No</Button>
