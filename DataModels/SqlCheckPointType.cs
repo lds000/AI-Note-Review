@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace AI_Note_Review
 {
-    public class CheckPointType
+    public class SqlCheckPointType
     {
-        public CheckPointType()
+        public SqlCheckPointType()
         {
 
         }

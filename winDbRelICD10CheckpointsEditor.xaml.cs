@@ -29,42 +29,8 @@ namespace AI_Note_Review
         public winDbRelICD10CheckpointsEditor()
         {
             InitializeComponent();
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                string sql = "Select * from CheckPointTypes;";
-                cbTypes.ItemsSource = cnn.Query(sql).ToList();
 
-                CF.UpdateNoteICD10Segments();
-                cbTargetICD10.ItemsSource = CF.NoteICD10Segments;
-
-                char charChapter = 'A';
-                double CodeStart = 0;
-                double CodeEnd = 0;
-                foreach (SqlICD10Segment ns in CF.NoteICD10Segments)
-                {
-                    ns.icd10Margin = new Thickness(0);
-                    if (charChapter == char.Parse(ns.icd10Chapter))
-                    {
-                        if ((ns.icd10CategoryStart >= CodeStart) && (ns.icd10CategoryEnd <= CodeEnd))
-                        {
-                            ns.icd10Margin = new Thickness(5, 0, 0, 0);
-                        }
-                        CodeStart = ns.icd10CategoryStart;
-                        CodeEnd = ns.icd10CategoryEnd;
-                        charChapter = char.Parse(ns.icd10Chapter);
-                    }
-                    else
-                    {
-                        charChapter = char.Parse(ns.icd10Chapter);
-                        CodeStart = 0;
-                        CodeEnd = 0;
-                    }
-                }
-            }
-            CF.UpdateNoteICD10Segments();
-            lbICD10.ItemsSource = CF.NoteICD10Segments;
-
-            cbTargetSection.ItemsSource = CF.NoteSections;
+            //spellcheck setup
             IList dictionaries = SpellCheck.GetCustomDictionaries(tbComment);
             dictionaries.Add(new Uri(@"pack://application:,,,/MedTerms.lex"));
             //I'm getting an error below
@@ -74,262 +40,12 @@ namespace AI_Note_Review
             }
             catch (Exception)
             {
-
-            }
-
-            sliderValueChanged = false;
-            slideSeverity.PreviewMouseUp += new MouseButtonEventHandler(slider_MouseUp);
-            slideSeverity.ValueChanged += slider_ValueChanged;
-
-        }
-
-        private void SlideSeverity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool sliderValueChanged { get; set; }
-
-        void slider_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            if (sliderValueChanged == true)
-            {
-                int tmpi = (int)slideSeverity.Value;
-                CurrentCheckpoint.ErrorSeverity = tmpi;
-                CurrentCheckpoint.SaveToDB();
-                sliderValueChanged = false;
-                e.Handled = true;
             }
         }
-
-        private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            sliderValueChanged = true;
-        }
-
 
         private void closeclick(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void lbICD10_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            RefreshICD10();
-        }
-
-        private void RefreshICD10()
-        {
-            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
-            if (seg != null)
-            {
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    string sql = $"Select * from CheckPointSummary where ICD10SegmentID == {seg.ICD10SegmentID}";
-                    try
-                    {
-                        lbCheckpoints.ItemsSource = cnn.Query(sql).ToList();
-                        lbCheckpoints.SelectedValuePath = "CheckPointID";
-                        CurrentCheckpoint = null;
-                        UpdateCurrentCheckPoint();
-                    }
-                    catch (Exception e2)
-                    {
-                        Console.WriteLine($"Error on saving variation data: {e2.Message}");
-                    }
-                }
-
-            }
-        }
-
-        private void lbCheckpoints_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
-            if (seg != null)
-            {
-                lbCheckpoints.ItemsSource = seg.GetCheckPoints();
-            }
-        }
-
-        private void lbCheckpoints_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (lbCheckpoints.SelectedValue == null)
-            {
-                Console.WriteLine("null value selected;");
-                return;
-            }
-           int selectedCheckPointID = int.Parse(lbCheckpoints.SelectedValue.ToString());
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                string sql = $"Select * from CheckPoints where CheckPointID == {selectedCheckPointID};";
-                    CurrentCheckpoint = cnn.QuerySingle<SqlCheckpoint>(sql);
-                    UpdateCurrentCheckPoint();
-            }
-        }
-
-        private void UpdateCurrentCheckPoint()
-        {
-
-            dpCheckpoint.DataContext = null;
-
-            if (CurrentCheckpoint == null) return;
-            dpCheckpoint.DataContext = CurrentCheckpoint;
-
-            //var watch = System.Diagnostics.Stopwatch.StartNew();
-            //watch.Stop();
-            //Console.WriteLine($"GroupPhraseModel RemovePhrase Execution Time: {watch.ElapsedMilliseconds} ms");
-
-            string strRtext = @"{\rtf1\ansi\ansicpg1252\uc1\htmautsp\deff2{\fonttbl{\f0\fcharset0 Times New Roman;}{\f2\fcharset0 Segoe UI;}}{\colortbl\red0\green0\blue0;\red255\green255\blue255;}\loch\hich\dbch\pard\plain\ltrpar\itap0{\lang1033\fs18\f2\cf0 \cf0\ql}}";
-            if (CurrentCheckpoint != null)
-            {
-                if (CurrentCheckpoint.RichText != null)
-                {
-                    strRtext = CurrentCheckpoint.RichText;
-                }
-            }
-            //this is not working. dang.
-            StrToRTB(strRtext, myRTB);
-            string str2 = RTBtoStr(myRTB);
-            StrToRTB(str2, myRTB);
-
-        }
-
-        private void B_Click(object sender, RoutedEventArgs e)
-        {
-            WinEnterText wet = new WinEnterText();
-
-            Button b = sender as Button;
-            SqlTag st = b.Tag as SqlTag;
-
-            SqlTagRegEx srex = new SqlTagRegEx(st.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
-            UpdateCurrentCheckPoint();
-        }
-
-        private StackPanel MakeUC(SqlTagRegEx strex) //I did this manually instead of UserControl to improve performance... not sure if it helped.
-        {
-            StackPanel spMain = new StackPanel();
-            StackPanel sp = new StackPanel();
-            spMain.Children.Add(sp);
-            sp.Orientation = Orientation.Horizontal;
-            sp.HorizontalAlignment = HorizontalAlignment.Center;
-            sp.DataContext = strex;
-
-            Grid g = new Grid();
-            
-            TextBox tbtitle = new TextBox();
-            tbtitle.Foreground = Brushes.White;
-            tbtitle.Background = Brushes.Black;
-            tbtitle.Text = strex.RegExText;
-            tbtitle.GotFocus += Tbtitle_GotFocus;
-            tbtitle.LostFocus += Tbtitle_LostFocus;
-            if (strex.RegExText == "Search Text") tbtitle.Foreground = Brushes.Gray;
-            tbtitle.Tag = strex;
-            spMain.Children.Add(tbtitle);
-
-            Image Img = new Image();
-            Img.Source = new BitmapImage(
-             new Uri(@"pack://application:,,,/Icons/edit_notes.png"));
-            Img.Width = 15;
-            Img.Tag = strex;
-            Img.MouseDown += Img_MouseDown;
-            sp.Children.Add(Img);
-
-            ComboBox cbTagRegExType = new ComboBox();
-            cbTagRegExType.Width = 60;
-            cbTagRegExType.DisplayMemberPath = "TagRegExTypeTitle";
-            cbTagRegExType.SelectedValuePath = "TagRegExTypeID";
-            Binding myBinding = new Binding("TagRegExType");
-            myBinding.Source = strex;
-            cbTagRegExType.SetBinding(ComboBox.SelectedValueProperty, myBinding);
-            cbTagRegExType.ItemsSource = CF.TagRegExTypes;
-            cbTagRegExType.SelectionChanged += CbTagRegExType_SelectionChanged;
-            cbTagRegExType.Tag = strex;
-            sp.Children.Add(cbTagRegExType);
-
-            ComboBox cbTargetSection = new ComboBox();
-            cbTargetSection.Width = 150;
-            cbTargetSection.DisplayMemberPath = "NoteSectionTitle";
-            cbTargetSection.SelectedValuePath = "SectionID";
-            Binding myBinding2 = new Binding("TargetSection");
-            myBinding2.Source = strex;
-            cbTargetSection.SetBinding(ComboBox.SelectedValueProperty, myBinding2);
-            cbTargetSection.ItemsSource = CF.NoteSections;
-            cbTargetSection.Tag = strex;
-            cbTargetSection.SelectionChanged += CbTargetSection_SelectionChanged;
-            sp.Children.Add(cbTargetSection);
-
-            Button b = new Button();
-            b.Style = (Style)Application.Current.Resources["LinkButton"];
-            b.Content = "Remove";
-            b.Margin = new Thickness(10, 0, 0, 0);
-            b.Tag = strex;
-            b.Click += bRemoveClick; ;
-            sp.Children.Add(b);
-
-
-            return spMain;
-        }
-
-        private void Img_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Image tmpImg = sender as Image;
-            SqlTagRegEx strex = tmpImg.Tag as SqlTagRegEx;
-            WinEnterText wet = new WinEnterText("Edit Regular Expression value", strex.RegExText);
-            wet.ShowDialog();
-            if (wet.ReturnValue != null)
-            {
-                strex.RegExText = wet.ReturnValue;
-                strex.SaveToDB();
-                UpdateCurrentCheckPoint();
-            }
-        }
-
-        private void Tbtitle_GotFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-            if (tb.Text == "Search Text") tb.Text = "";
-
-            tb.Foreground = Brushes.White;
-        }
-
-        private void bRemoveClick(object sender, RoutedEventArgs e)
-        {
-
-            Button b = sender as Button;
-            SqlTagRegEx strex = b.Tag as SqlTagRegEx;
-            strex.DeleteFromDB();
-            UpdateCurrentCheckPoint();
-        }
-
-        private void Tbtitle_LostFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-            if (tb == null) return;
-            SqlTagRegEx strex = tb.Tag as SqlTagRegEx;
-            if (strex == null) return;
-            strex.RegExText = tb.Text.Trim();
-            strex.SaveToDB();
-        }
-
-        private void CbTargetSection_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox cb = sender as ComboBox;
-            if (cb == null) return;
-            SqlTagRegEx strex = cb.Tag as SqlTagRegEx;
-            if (strex == null) return;
-            strex.TargetSection = int.Parse(cb.SelectedValue.ToString());
-            strex.SaveToDB();
-        }
-
-        private void CbTagRegExType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox cb = sender as ComboBox;
-            if (cb == null) return;
-            SqlTagRegEx strex = cb.Tag as SqlTagRegEx;
-            if (strex == null) return;
-            strex.TagRegExType = int.Parse(cb.SelectedValue.ToString());
-            strex.SaveToDB();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -340,60 +56,6 @@ namespace AI_Note_Review
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             CF.SaveWindowPosition(this);
-        }
-
-
-        private void cbTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            if (cbTypes.SelectedValue == null) return;
-            CurrentCheckpoint.CheckPointType = int.Parse(cbTypes.SelectedValue.ToString());
-            CurrentCheckpoint.SaveToDB();
-        }
-
-        private void cbTargetSection_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            if (cbTargetSection.SelectedValue == null) return;
-            CurrentCheckpoint.TargetSection = int.Parse(cbTargetSection.SelectedValue.ToString());
-            CurrentCheckpoint.SaveToDB();
-        }
-
-        private void cbTargetICD10_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            if (cbTargetICD10.SelectedValue == null) return;
-            CurrentCheckpoint.TargetICD10Segment = int.Parse(cbTargetICD10.SelectedValue.ToString());
-            CurrentCheckpoint.SaveToDB();
-        }
-
-        private void tbComment_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            CurrentCheckpoint.Comment = tbComment.Text;
-            CurrentCheckpoint.SaveToDB();
-        }
-
-        private void tbAction_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            CurrentCheckpoint.Action = tbAction.Text;
-            CurrentCheckpoint.SaveToDB();
-        }
-
-        private void tbLink_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            CurrentCheckpoint.Link = tbLink.Text;
-            CurrentCheckpoint.SaveToDB();
-        }
-
-        private void tbTitle_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            CurrentCheckpoint.CheckPointTitle = tbTitle.Text;
-            CurrentCheckpoint.SaveToDB();
-
         }
 
         private void AddCP(object sender, RoutedEventArgs e)
@@ -410,9 +72,7 @@ namespace AI_Note_Review
                 if (wet.ReturnValue.Trim() != "")
                 {
                     CurrentCheckpoint = new SqlCheckpoint(wet.ReturnValue, seg.ICD10SegmentID);
-                    UpdateCurrentCheckPoint();
                     int tmpID = CurrentCheckpoint.CheckPointID;
-                    RefreshICD10();
                     lbCheckpoints.SelectedValue = tmpID;
                     //CurrentCheckpoint.SaveToDB();
                 }
@@ -428,21 +88,12 @@ namespace AI_Note_Review
             if (CurrentCheckpoint.DeleteFromDB())
             {
                 dpCheckpoint.DataContext = null;
-                
-                RefreshICD10();
             }
         }
 
         private void myRTB_MouseLeave(object sender, MouseEventArgs e)
         {
             if (CurrentCheckpoint == null) return;
-        }
-
-        private void myRTB_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            CurrentCheckpoint.RichText = RTBtoStr(myRTB);
-            CurrentCheckpoint.SaveToDB();
         }
 
         private void StrToRTB(string strIn, RichTextBox rtb)
@@ -508,8 +159,6 @@ namespace AI_Note_Review
                     cnn.Execute(sql);
                 }
                 //SqlTagRegEx srex = new SqlTagRegEx(tg.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
-
-                UpdateCurrentCheckPoint();
             }
         }
 
@@ -546,9 +195,6 @@ namespace AI_Note_Review
                 WinEditSegment wes = new WinEditSegment(seg);
                 wes.Owner = this;
                 wes.ShowDialog();
-                lbICD10.ItemsSource = null;
-                CF.UpdateNoteICD10Segments();
-                lbICD10.ItemsSource = CF.NoteICD10Segments;
             }
         }
 
@@ -558,10 +204,7 @@ namespace AI_Note_Review
             WinEditSegment wes = new WinEditSegment(seg);
             wes.Owner = this;
             wes.ShowDialog();
-            lbICD10.ItemsSource = null;
-            CF.UpdateNoteICD10Segments();
-            cbTargetICD10.ItemsSource = CF.NoteICD10Segments;
-            lbICD10.ItemsSource = CF.NoteICD10Segments;
+            SqlICD10Segment.CalculateLeftOffsets();
         }
 
         private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -585,14 +228,12 @@ namespace AI_Note_Review
                     SqlCheckpoint cp = cnn.Query<SqlCheckpoint>(sql).FirstOrDefault();
                     cp.TargetICD10Segment = DestinationSeg.ICD10SegmentID;
                     cp.SaveToDB();
-                    RefreshICD10();
                 }
             }
         }
 
         private void UCTag1_AddMe(object sender, EventArgs e)
         {
-            UpdateCurrentCheckPoint();
         }
 
         private void slideSeverity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -609,10 +250,10 @@ namespace AI_Note_Review
                     string sql = $"Select * from CheckPoints where TargetICD10Segment == {seg.ICD10SegmentID}";
                     List<SqlCheckpoint> lcp = cnn.Query<SqlCheckpoint>(sql).ToList();
                     sql = "Select * from CheckPointTypes order by ItemOrder;";
-                    List<CheckPointType> lcpt = cnn.Query<CheckPointType>(sql).ToList();
+                    List<SqlCheckPointType> lcpt = cnn.Query<SqlCheckPointType>(sql).ToList();
 
                     string strSummary = "";
-                    foreach (CheckPointType cpt in lcpt)
+                    foreach (SqlCheckPointType cpt in lcpt)
                     {
                         string strTempOut = "";
                         foreach (SqlCheckpoint cp in lcp)
@@ -648,10 +289,10 @@ namespace AI_Note_Review
                     string sql = $"Select * from CheckPoints where TargetICD10Segment == {seg.ICD10SegmentID}";
                     List<SqlCheckpoint> lcp = cnn.Query<SqlCheckpoint>(sql).ToList();
                     sql = "Select * from CheckPointTypes order by ItemOrder;";
-                    List<CheckPointType> lcpt = cnn.Query<CheckPointType>(sql).ToList();
+                    List<SqlCheckPointType> lcpt = cnn.Query<SqlCheckPointType>(sql).ToList();
 
                     string strSummary = $"<h1>{seg.SegmentTitle}</h1><br>";
-                    foreach (CheckPointType cpt in lcpt)
+                    foreach (SqlCheckPointType cpt in lcpt)
                     {
                         string strTempOut = "<ol>";
                         foreach (SqlCheckpoint cp in lcp)
@@ -724,6 +365,14 @@ namespace AI_Note_Review
         private void btnLinkClick(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start(CurrentCheckpoint.Link);
+        }
+
+        private void UpdateCP(object sender, RoutedEventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            SqlCheckpoint cp = tb.DataContext as SqlCheckpoint;
+
+            cp.SaveToDB();
         }
     }
 

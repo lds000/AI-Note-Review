@@ -64,51 +64,7 @@ namespace AI_Note_Review
             dpCheckpoint.DataContext = null;
             if (CurrentCheckpoint == null) return;
             dpCheckpoint.DataContext = CurrentCheckpoint;
-            string strRtext = @"{\rtf1\ansi\ansicpg1252\uc1\htmautsp\deff2{\fonttbl{\f0\fcharset0 Times New Roman;}{\f2\fcharset0 Segoe UI;}}{\colortbl\red0\green0\blue0;\red255\green255\blue255;}\loch\hich\dbch\pard\plain\ltrpar\itap0{\lang1033\fs18\f2\cf0 \cf0\ql}}";
-            if (CurrentCheckpoint != null)
-            {
-                if (CurrentCheckpoint.RichText != null)
-                {
-                    strRtext = CurrentCheckpoint.RichText;
-                }
-            }
-            //this is not working. dang.
-            StrToRTB(strRtext, myRTB);
-            string str2 = RTBtoStr(myRTB);
-            StrToRTB(str2, myRTB);
 
-/*            
-            using (var d = Dispatcher.DisableProcessing())
-            {
-
-                spTags.Children.Clear();
-                foreach (SqlTag st in CurrentCheckpoint.GetTags())
-                {
-                    TextBlock tb = new TextBlock();
-                    tb.Foreground = Brushes.White;
-                    tb.Background = Brushes.Black;
-                    tb.FontSize = 16;
-                    tb.Text = st.TagText;
-                    spTags.Children.Add(tb);
-                    foreach (SqlTagRegEx strex in st.GetTagRegExs())
-                    {
-                        //spTags.Children.Add(MakeUC(strex));
-                        UCTagRegEx uctrex = new UCTagRegEx(strex);
-                        uctrex.DeleteMe += Uctrex_DeleteMe;
-                        spTags.Children.Add(uctrex);
-                    }
-
-                    Button b = new Button();
-                    b.Style = (Style)Application.Current.Resources["LinkButton"];
-                    b.Content = "Add Search Pattern";
-                    b.Margin = new Thickness(10, 0, 0, 0);
-                    b.Tag = st;
-                    b.Click += B_Click;
-                    spTags.Children.Add(b);
-
-                }
-            }
-  */      
         }
 
         private void Uctrex_DeleteMe(object sender, EventArgs e)
@@ -125,36 +81,6 @@ namespace AI_Note_Review
 
             SqlTagRegEx srex = new SqlTagRegEx(st.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
             UpdateCurrentCheckPoint();
-        }
-
-        private void myRTB_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            CurrentCheckpoint.RichText = RTBtoStr(myRTB);
-            CurrentCheckpoint.SaveToDB();
-        }
-
-        private void StrToRTB(string strIn, RichTextBox rtb)
-        {
-            byte[] byteArray = Encoding.ASCII.GetBytes(strIn);
-            using (MemoryStream ms = new MemoryStream(byteArray))
-            {
-                TextRange tr = new TextRange(rtb.Document.ContentStart, rtb.Document.ContentEnd);
-                tr.Load(ms, DataFormats.Rtf);
-            }
-        }
-
-        private string RTBtoStr(RichTextBox rtb)
-        {
-            string rtfText; //string to save to db
-            TextRange tr = new TextRange(rtb.Document.ContentStart, rtb.Document.ContentEnd);
-            using (MemoryStream ms = new MemoryStream())
-            {
-                tr.Save(ms, DataFormats.Rtf);
-                rtfText = Encoding.ASCII.GetString(ms.ToArray());
-            }
-            return rtfText;
-
         }
 
         private void CbTargetSection_SelectionChanged(object sender, SelectionChangedEventArgs e)

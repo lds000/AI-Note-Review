@@ -87,7 +87,7 @@ namespace AI_Note_Review
         }
 
 
-        public SqlTagRegEx(int intTargetTag, string strRegExText, int intTargetSection, int iTagRegExType = 1, int iTagRegExMatchType = 0, int iTagRegExMatchResult = 0, double dMinAge = 0, double dMaxAge = 99, bool bMale = true, bool bFemale = true)
+        public SqlTagRegEx(long intTargetTag, string strRegExText, long intTargetSection, long iTagRegExType = 1, long iTagRegExMatchType = 0, long iTagRegExMatchResult = 0, double dMinAge = 0, double dMaxAge = 99, bool bMale = true, bool bFemale = true)
         {
             strRegExText = strRegExText.Replace("'", "''"); //used to avoid errors in titles with ' character
             string sql = "";

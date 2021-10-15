@@ -18,8 +18,6 @@ namespace AI_Note_Review
 {
     public class SqlCheckpoint : INotifyPropertyChanged
     {
-        private bool includeCheckpoint = true;
-
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -27,8 +25,35 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+        SqlCheckpoint()
+        {
+
+        }
+
+
+        private bool includeCheckpoint = true;
+
         public int CheckPointID { get; set; }
-        public string CheckPointTitle { get; set; }
+        public string CheckPointTitle
+        {
+            get => checkPointTitle;
+
+            set
+            {
+                if (checkPointTitle != null)
+                {
+                    Console.WriteLine($"Update Title! to {value}");
+                    checkPointTitle = value; //set this now for the update to work.
+                    string sql = "UPDATE CheckPoints SET CheckPointTitle=@CheckPointTitle WHERE CheckPointID=@CheckPointID;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        cnn.Execute(sql, this);
+                    }
+                }
+                checkPointTitle = value;
+                OnPropertyChanged("CheckPointTitle");
+            }
+        }
 
 
         public bool IncludeCheckpoint
@@ -40,17 +65,155 @@ namespace AI_Note_Review
             set
             {
                 includeCheckpoint = value;
+                OnPropertyChanged("IncludeCheckpoint");
             }
         }
-        public int ErrorSeverity { get; set; }
-        public int CheckPointType { get; set; }
-        public int TargetSection { get; set; }
-        public string Comment { get; set; }
-        public string Action { get; set; }
-        public string Link { get; set; }
+        public int ErrorSeverity
+        {
+            get => errorSeverity;
+            set
+            {
+                if (errorSeverity != 0)
+                {
+                    Console.WriteLine($"Update ErrorSeverity type to: {value}");
+                    errorSeverity = value; //set this now for the update to work.
+                    string sql = "UPDATE CheckPoints SET ErrorSeverity=@ErrorSeverity WHERE CheckPointID=@CheckPointID;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        cnn.Execute(sql, this);
+                    }
+                }
+                errorSeverity = value;
+            }
+        }
+        public int CheckPointType
+        {
+            get => checkPointType;
+            set
+            {
+                if (checkPointType != 0)
+                {
+                    Console.WriteLine($"Update Checkpoint type to: {value}");
+                    checkPointType = value; //set this now for the update to work.
+                    string sql = "UPDATE CheckPoints SET CheckPointType=@CheckPointType WHERE CheckPointID=@CheckPointID;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        cnn.Execute(sql, this);
+                    }
+                }
+                checkPointType = value;
+                OnPropertyChanged("CheckPointType");
+                OnPropertyChanged("StrCheckPointType");
+            }
+        }
+
+        public List<SqlCheckPointType> ListCheckPointTypes
+        {
+            get
+            {
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = "Select * from CheckPointTypes;";
+                    return cnn.Query<SqlCheckPointType>(sql).ToList();
+                }
+            }
+
+        }
+
+        public string StrCheckPointType
+        {
+            get
+            {
+                string sql = "";
+                sql = $"Select Title from CheckPointTypes where CheckPointTypeID == {CheckPointType};";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.ExecuteScalar<string>(sql);
+                }
+            }
+
+        }
+        public int TargetSection
+        {
+            get => targetSection; set
+            {
+                if (targetSection != 0)
+                {
+                    Console.WriteLine($"Update TargetSection to: {value}");
+                    targetSection = value; //set this now for the update to work.
+                    string sql = "UPDATE CheckPoints SET TargetSection=@TargetSection WHERE CheckPointID=@CheckPointID;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        cnn.Execute(sql, this);
+                    }
+                }
+                targetSection = value;
+                OnPropertyChanged("TargetSection");
+            }
+        }
+        public string Comment
+        {
+            get => comment;
+            set
+            {
+                if (comment != null)
+                {
+                    Console.WriteLine($"Update Comment! to {value}");
+                    comment = value; //set this now for the update to work.
+                    string sql = "UPDATE CheckPoints SET Comment=@Comment WHERE CheckPointID=@CheckPointID;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        cnn.Execute(sql, this);
+                    }
+                }
+                comment = value;
+                OnPropertyChanged("Comment");
+            }
+        }
+        public string Action
+        {
+            get => action;
+            set
+            {
+                if (action != null)
+                {
+                    Console.WriteLine($"Update Action! to {value}");
+                    action = value; //set this now for the update to work.
+                    string sql = "UPDATE CheckPoints SET Action=@Action WHERE CheckPointID=@CheckPointID;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        cnn.Execute(sql, this);
+                    }
+                }
+                action = value;
+                OnPropertyChanged("Action");
+
+            }
+        }
+        public string Link
+        {
+            get => link;
+            set
+            {
+                if (link != null)
+                {
+                    Console.WriteLine($"Update Action! to {value}");
+                    link = value; //set this now for the update to work.
+                    string sql = "UPDATE CheckPoints SET Link=@Link WHERE CheckPointID=@CheckPointID;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        cnn.Execute(sql, this);
+                    }
+                }
+                link = value;
+                OnPropertyChanged("Link");
+
+            }
+        }
 
         private string customComment = "";
-        public string CustomComment {
+        public string CustomComment
+        {
             get
             {
                 return customComment;
@@ -61,10 +224,7 @@ namespace AI_Note_Review
                 OnPropertyChanged("CustomComment");
             }
         }
-        public int Expiration { get; set; }
-        public SqlCheckpoint()
-        {
-        }
+        public int Expiration { get; set; } //when ready to implement, do not set to zero, considered "null value" above
 
         public List<SqlTag> Tags
         {
@@ -74,7 +234,7 @@ namespace AI_Note_Review
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     var tmpList = cnn.Query<SqlTag>(sql, this).ToList();
-                    foreach (SqlTag st in tmpList) 
+                    foreach (SqlTag st in tmpList)
                     {
                         st.ParentCheckPoint = this;
                     }
@@ -95,6 +255,11 @@ namespace AI_Note_Review
         }
 
         private ICommand mAddTag;
+        private string checkPointTitle;
+        private int checkPointType;
+        private int targetSection;
+        private string comment;
+
         public ICommand AddTagCommand
         {
             get
@@ -106,6 +271,27 @@ namespace AI_Note_Review
             set
             {
                 mAddTag = value;
+            }
+        }
+
+        private string action;
+        private string link;
+        private int targetICD10Segment;
+        private int errorSeverity;
+        private List<SqlCheckPointType> listCheckPointTypes1;
+
+        private ICommand mUpdateCP;
+        public ICommand UdateCPCommand
+        {
+            get
+            {
+                if (mUpdateCP == null)
+                    mUpdateCP = new CPUpdater();
+                return mUpdateCP;
+            }
+            set
+            {
+                mUpdateCP = value;
             }
         }
 
@@ -148,11 +334,25 @@ namespace AI_Note_Review
         }
 
 
-        public string RichText { get; set; }
-        public int TargetICD10Segment { get; set; }
-
-
-
+        public int TargetICD10Segment
+        {
+            get => targetICD10Segment;
+            set
+            {
+                if (targetICD10Segment != 0)
+                {
+                    Console.WriteLine($"Update TargetICD10Segment to: {value}");
+                    targetICD10Segment = value; //set this now for the update to work.
+                    string sql = "UPDATE CheckPoints SET TargetICD10Segment=@TargetICD10Segment WHERE CheckPointID=@CheckPointID;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        cnn.Execute(sql, this);
+                    }
+                }
+                targetICD10Segment = value;
+                OnPropertyChanged("TargetICD10Segment");
+            }
+        }
 
         public SqlCheckpoint(string strCheckPointTitle, int iTargetICD10Segment)
         {
@@ -235,7 +435,7 @@ namespace AI_Note_Review
 
         }
 
-            public List<SqlTag> GetTags()
+        public List<SqlTag> GetTags()
         {
             string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID} order by RelTagCheckPointID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -270,7 +470,7 @@ namespace AI_Note_Review
         }
         public string GetReport()
         {
-            string strReturn = ""; 
+            string strReturn = "";
             strReturn += $"<li><dt><font size='+1'>{CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{ErrorSeverity}/10)</font></dt><dd><i>{Comment}</i></dd></li>" + Environment.NewLine;
             if (CustomComment != "")
             {
@@ -306,7 +506,6 @@ namespace AI_Note_Review
                     "TargetICD10Segment=@TargetICD10Segment, " +
                     "Comment=@Comment, " +
                     "Action=@Action, " +
-                    "RichText=@RichText, " +
                     "ErrorSeverity=@ErrorSeverity, " +
                     "Link=@Link, " +
                     "Expiration=@Expiration " +
@@ -393,6 +592,28 @@ namespace AI_Note_Review
 
                 //SqlTagRegEx srex = new SqlTagRegEx(tg.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
             }
+        }
+        #endregion
+    }
+
+    class CPUpdater : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlCheckpoint CP = parameter as SqlCheckpoint;
+            //CP.SaveToDB();
         }
         #endregion
     }

@@ -56,7 +56,6 @@
                         <TextBox Margin="5" x:Name="tbComment" Grid.Row="4" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Comment}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" LostFocus="tbComment_LostFocus"></TextBox>
 
                         <TextBlock Margin="5" Grid.Column="0" Grid.Row="5" Style="{StaticResource MyTbStyle}">Images:</TextBlock>
-                        <RichTextBox Margin="5" x:Name="myRTB" Grid.Column="1" Grid.Row="5" LostFocus="myRTB_LostFocus"></RichTextBox>
 
                         <TextBlock Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource MyTbStyle}">Action:</TextBlock>
                         <TextBox Margin="5" x:Name="tbAction" Grid.Row="6" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Action}" ToolTip="{Binding Path=Action}" LostFocus="tbAction_LostFocus"></TextBox>

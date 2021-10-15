@@ -180,22 +180,6 @@ namespace AI_Note_Review
             {
                 SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\llostod\source\repos\AI Note Review\NoteReviewDB.db";
             }
-
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                string sql = "Select * from NoteSections order by SectionOrder;";
-                CF.NoteSections = cnn.Query<SqlNoteSection>(sql).ToList();
-                sql = "Select * from CheckPoints;";
-                CF.CheckPointList = cnn.Query<SqlCheckpoint>(sql).ToList();
-                sql = "Select * from TagRegExTypes;";
-                CF.TagRegExTypes = cnn.Query<SqlTagRegExType>(sql).ToList();
-            }
-
-            CF.UpdateNoteICD10Segments();
-
-
-
-
         }
 
         /// <summary>

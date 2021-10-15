@@ -1,9 +1,11 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,7 +14,7 @@ using System.Windows.Forms;
 namespace AI_Note_Review
 {
 
-    static class GenericMethods
+    public static class GenericMethods
     {
         public static void CreateNewOrUpdateExisting<TKey, TValue>(
 this IDictionary<TKey, TValue> map, TKey key, TValue value)
@@ -22,25 +24,83 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
 
     }
 
-    public class CF
+    public class CF : INotifyPropertyChanged
     {
+        // Declare the event
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public CF()
+        {
+
+        }
+
         /// <summary>
         /// This prefix is used to match whole words and not parts of words
         /// </summary>
         //public static string strRegexPrefix = @"[ \-,.;\n\r\s^]";
         public static string strRegexPrefix = @"\b";
-        public static List<SqlNoteSection> NoteSections { get; set; }
-        public static List<SqlICD10Segment> NoteICD10Segments = new List<SqlICD10Segment>();
+        public static List<SqlNoteSection> NoteSections
+        {
+            get
+            {
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = "Select * from NoteSections order by SectionOrder;";
+                    return cnn.Query<SqlNoteSection>(sql).ToList();
+                }
+            }
+
+        }
+        public static List<SqlICD10Segment> NoteICD10Segments
+        {
+            get
+            {
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
+                    return cnn.Query<SqlICD10Segment>(sql).ToList();
+                }
+            }
+        }
+
         public static DocInfo CurrentDoc = new DocInfo();
-        public static List<SqlCheckpoint> CheckPointList = new List<SqlCheckpoint>();
+        public static List<SqlCheckpoint> CheckPointList
+        {
+            get
+            {
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = "Select * from CheckPoints;";
+                    return cnn.Query<SqlCheckpoint>(sql).ToList();
+                }
+            }
+        }
         public static Dictionary<int, bool> YesNoSqlRegExIndex = new Dictionary<int, bool>();
-        public static List<SqlTagRegExType> TagRegExTypes { get; set; }
+        public static List<SqlTagRegExType> TagRegExTypes {
+            get 
+            {
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = "Select * from TagRegExTypes;";
+                    return cnn.Query<SqlTagRegExType>(sql).ToList();
+                }
+            }
+            }
 
         public static bool IsReviewWindowOpen = false;
+        private static List<SqlNoteSection> noteSections;
+        private static List<SqlICD10Segment> noteICD10Segments;
+        private static List<SqlCheckpoint> checkPointList;
+        private static List<SqlTagRegExType> tagRegExTypes;
 
         public static List<SqlTagRegExMatchResults> TagRegExMatchResults
         {
-            get {
+            get
+            {
                 string sql = "Select * from TagRegExMatchResults;";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
@@ -63,80 +123,6 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
             }
         }
 
-
-        public static void UpdateNoteICD10Segments()
-        {
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
-                NoteICD10Segments = cnn.Query<SqlICD10Segment>(sql).ToList();
-            }
-            char charChapter = 'A';
-            double CodeStart = 0;
-            double CodeEnd = 0;
-            foreach (SqlICD10Segment ns in CF.NoteICD10Segments)
-            {
-                ns.icd10Margin = new Thickness(0);
-                if (charChapter == char.Parse(ns.icd10Chapter))
-                {
-                    if ((ns.icd10CategoryStart >= CodeStart) && (ns.icd10CategoryEnd <= CodeEnd))
-                    {
-                        ns.icd10Margin = new Thickness(10, 0, 0, 0);
-                    }
-                    else
-                    {
-                        CodeStart = ns.icd10CategoryStart;
-                        CodeEnd = ns.icd10CategoryEnd;
-                        charChapter = char.Parse(ns.icd10Chapter);
-                    }
-                }
-                else
-                {
-                    charChapter = char.Parse(ns.icd10Chapter);
-                    CodeStart = 0;
-                    CodeEnd = 0;
-                }
-
-                /*
-                 * 
-                 *             if (PtAgeYrs > 65) HashTags += "@Elderly, ";
-            if (PtSex.StartsWith("M")) HashTags += "@Male, ";
-            if (PtSex.StartsWith("F")) HashTags += "@Female, ";
-            if (PtAgeYrs < 4) HashTags += "@Child, ";
-            if (PtAgeYrs < 2) HashTags += "@Infant, ";
-            if (IsHTNUrgency) HashTags += "!HTNUrgency, ";
-            if (isO2Abnormal) HashTags += "!Hypoxic, ";
-            if (IsPregCapable) HashTags += "@pregnantcapable, ";
-            if (PtAgeYrs >= 13) HashTags += "@sexuallyActiveAge, ";
-            if (PtAgeYrs >= 16) HashTags += "@DrinkingAge, ";
-            if (PtAgeYrs >= 2) HashTags += "@SpeakingAge, ";
-            if (PtAgeYrs < 1) HashTags += "@Age<1, ";
-            if (PtAgeYrs < 2) HashTags += "@Age<2, ";
-            if (PtAgeYrs < 4) HashTags += "@Age<4, ";
-            if (GetAgeInDays()<183) HashTags += "@Age<6mo, ";
-
-36	X	99	99	All Diagnosis
-40	X	1	1	Hypertensive Urgency
-72	X	2	2	Rapid Respiratory Rate
-73	X	3	3	High Fever
-74	X	4	4	Tachycardia
-75	X	5	5	Elderly
-76	X	6	6	Infant
-80	X	7	7	Children
-81	X	8	8	Interactions
-82	X	9	9	Possible Pregnant State
-83	X	10	10	Lab Considerations
-84	X	11	11	Imaging Considerations
-85	X	12	12	Referral Considerations
-90	X	13	13	ED Transfer
-                 */
-
-                if (ns.ICD10SegmentID == 90) //ed transfer, never include
-                {
-                    ns.IncludeSegment = false;
-                }
-            }
-        }
 
         public static string CurrentDocToHTML()
         {
@@ -199,7 +185,7 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
             foreach (SqlCheckpoint cp in (from c in CF.CurrentDoc.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
                 tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
-                if (cp.CustomComment!="")
+                if (cp.CustomComment != "")
                 {
                     tmpCheck += $"<br><b>Note: {cp.CustomComment}</b><br>";
                 }
@@ -249,7 +235,7 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
             strReport += "<p id='footnote'>* Total Score = (Total of Score Weights missed) / ((Total of Score Weights missed)+(Total of Score Weights passed)) * 2 + 8</p><br>";
             strReport += "** Score Weight = An assigned weight of the importance of the checkpoint.<br>";
             strReport += "</body></html>";
-           
+
             //System.Windows.Clipboard.SetText(strReport);
             //ClipboardHelper.CopyToClipboard(strReport, "");
             return strReport;
@@ -257,27 +243,27 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
 
         public static void SetWindowPosition(Window _Window)
         {
-                WindowPosition wp = SqlLiteDataAccess.GetWindowPosition(_Window.Title);
-                if (wp == null)
-                {
-                    wp = new WindowPosition(_Window.Title, (int)_Window.Top, (int)_Window.Left);
-                    wp.SaveToDB();
-                    return;
-                }
+            WindowPosition wp = SqlLiteDataAccess.GetWindowPosition(_Window.Title);
+            if (wp == null)
+            {
+                wp = new WindowPosition(_Window.Title, (int)_Window.Top, (int)_Window.Left);
+                wp.SaveToDB();
+                return;
+            }
 
-                double dblTop = wp.WindowPositionTop;
-                double dblLeft = wp.WindowPositionLeft;
+            double dblTop = wp.WindowPositionTop;
+            double dblLeft = wp.WindowPositionLeft;
 
-                //if (dblTop < 0) dblTop = 0; //do this if you don't have two screens.
-                //if (dblLeft < 0) dblLeft = 0;
+            //if (dblTop < 0) dblTop = 0; //do this if you don't have two screens.
+            //if (dblLeft < 0) dblLeft = 0;
 
-            if (!IsOnScreen((int)dblLeft, (int) dblTop))
+            if (!IsOnScreen((int)dblLeft, (int)dblTop))
             {
                 dblTop = 0;
                 dblLeft = 0;
             }
             _Window.Top = dblTop;
-                _Window.Left = dblLeft;
+            _Window.Left = dblLeft;
         }
 
         public static bool IsOnScreen(int iLeft, int iTop)
@@ -297,21 +283,21 @@ this IDictionary<TKey, TValue> map, TKey key, TValue value)
         }
         public static void SaveWindowPosition(Window _Window)
         {
-                WindowPosition wp = SqlLiteDataAccess.GetWindowPosition(_Window.Title);
-                if (wp == null)
-                {
-                    return;
-                }
+            WindowPosition wp = SqlLiteDataAccess.GetWindowPosition(_Window.Title);
+            if (wp == null)
+            {
+                return;
+            }
 
-                double dblTop = wp.WindowPositionTop;
-                double dblLeft = wp.WindowPositionLeft;
+            double dblTop = wp.WindowPositionTop;
+            double dblLeft = wp.WindowPositionLeft;
 
-                if ((_Window.Top != dblTop) || (_Window.Left != dblLeft))
-                {
-                    wp.WindowPositionTop = (int)_Window.Top;
-                    wp.WindowPositionLeft = (int)_Window.Left;
-                    wp.SaveToDB();
-                }
+            if ((_Window.Top != dblTop) || (_Window.Left != dblLeft))
+            {
+                wp.WindowPositionTop = (int)_Window.Top;
+                wp.WindowPositionLeft = (int)_Window.Left;
+                wp.SaveToDB();
+            }
         }
 
 
