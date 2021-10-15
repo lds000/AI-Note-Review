@@ -47,7 +47,6 @@ namespace AI_Note_Review
             }
 
         private bool includeSegment = true;
-        private ObservableCollection<SqlCheckpoint> checkpoints;
         private string icd10Chapter1;
 
         public bool IncludeSegment
@@ -111,21 +110,13 @@ namespace AI_Note_Review
 
         public void AddCheckPoint(SqlCheckpoint cp)
         {
-            string sql = "";
+            strng sql = "";
             sql = $"INSERT OR IGNORE INTO relICD10SegmentsCheckPoints (ICD10SegmentID, CheckPointID) VALUES({ICD10SegmentID}, {cp.CheckPointID});";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 cnn.Execute(sql);
             }
-        }
-        public List<SqlCheckpoint> GetCheckPoints()
-        {
-            string sql = $"Select * from CheckPoints where TargetICD10Segment = {ICD10SegmentID};";
-
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                return cnn.Query<SqlCheckpoint>(sql).ToList();
-            }
+            OnPropertyChanged("Checkpoints");
         }
 
         private ICommand mAddCP;
@@ -134,7 +125,7 @@ namespace AI_Note_Review
             get
             {
                 if (mAddCP == null)
-                    mAddCP = new CPUpdater();
+                    mAddCP = new CPAdder();
                 return mAddCP;
             }
             set

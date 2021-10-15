@@ -1576,7 +1576,7 @@ namespace AI_Note_Review
 
                 if (!ns.IncludeSegment) continue;
                 //Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
-                foreach (SqlCheckpoint cp in ns.GetCheckPoints())
+                foreach (SqlCheckpoint cp in ns.Checkpoints)
                 {
                     foreach (var p in CF.CurrentDoc.CPStatusOverrides)
                     {

@@ -58,31 +58,6 @@ namespace AI_Note_Review
             CF.SaveWindowPosition(this);
         }
 
-        private void AddCP(object sender, RoutedEventArgs e)
-        {
-            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
-            if (seg != null)
-            {
-
-                WinEnterText wet = new WinEnterText("Please input new title.");
-                wet.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                wet.Owner = this;
-                wet.ShowDialog();
-                if (wet.ReturnValue == null) return;
-                if (wet.ReturnValue.Trim() != "")
-                {
-                    CurrentCheckpoint = new SqlCheckpoint(wet.ReturnValue, seg.ICD10SegmentID);
-                    int tmpID = CurrentCheckpoint.CheckPointID;
-                    lbCheckpoints.SelectedValue = tmpID;
-                    //CurrentCheckpoint.SaveToDB();
-                }
-            }
-            else
-            {
-                MessageBox.Show("Select an ICD10 segment 1st");
-            }
-        }
-
         private void deleteCP(object sender, RoutedEventArgs e)
         {
             if (CurrentCheckpoint.DeleteFromDB())

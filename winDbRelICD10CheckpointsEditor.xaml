@@ -74,8 +74,8 @@
             </DockPanel>
             <DockPanel Grid.Column="1">
                 <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">Selected Checkpoints</Label>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                    <Button Command="{Binding Path=AddCPCommand}"  CommandParameter="{Binding ElementName=lbICD10, Path=SelectedValue}" Style="{StaticResource LinkButton}" Margin="3" Click="AddCP">Add CheckPoint</Button>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" DataContext="{Binding ElementName=lbICD10, Path=SelectedValue}">
+                    <Button Command="{Binding Path=AddCPCommand}"  CommandParameter="{Binding}" Style="{StaticResource LinkButton}" Margin="3">Add CheckPoint</Button>
                     <Button Margin="10,3,0,3" Style="{StaticResource LinkButton}" Click="CPSummaryClick">Summary to Clipboard</Button>
                 </StackPanel>
                 <Grid DataContext="{Binding ElementName=lbICD10, Path=SelectedValue}">
