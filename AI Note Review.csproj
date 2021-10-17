@@ -71,24 +71,31 @@
     </ApplicationDefinition>
     <Compile Include="CF.cs" />
     <Compile Include="ClipboardClass.cs" />
-    <Compile Include="DataModels\SqlCheckPointImagesModel.cs" />
-    <Compile Include="DataModels\SqlCheckpointModel.cs" />
-    <Compile Include="DataModels\SqlCheckPointType.cs" />
-    <Compile Include="DataModels\SqlCurrentReviewsSummary.cs" />
-    <Compile Include="DataModels\SqlICD10SegmentModel.cs" />
-    <Compile Include="DataModels\SqlLightDataAccess.cs" />
-    <Compile Include="DataModels\SqlMonthReviewSummary.cs" />
-    <Compile Include="DataModels\SqlNoteSectionModel.cs" />
-    <Compile Include="DataModels\SqlProvider.cs" />
-    <Compile Include="DataModels\SqlRelCPProviderModel.cs" />
-    <Compile Include="DataModels\SqlrelICD10SegmentsCheckPoints.cs" />
-    <Compile Include="DataModels\SqlTagModel.cs" />
-    <Compile Include="DataModels\SqlTagRegExMatchResultsModel.cs" />
-    <Compile Include="DataModels\SqlTagRegExMatchTypeModel.cs" />
-    <Compile Include="DataModels\SqlTagRegExModel.cs" />
-    <Compile Include="DataModels\SqlTagRegExTypeModel.cs" />
-    <Compile Include="DataModels\SqlVisitReviewModel.cs" />
-    <Compile Include="DataModels\WindowPositionModel.cs" />
+    <Compile Include="DataAccessViewModels\SqlICD10SegmentViewModel.cs" />
+    <Compile Include="Models\BiMonthlyReview.cs" />
+    <Compile Include="Models\Document.cs" />
+    <Compile Include="Models\Patient.cs" />
+    <Compile Include="Models\Provider.cs" />
+    <Compile Include="Models\Report.cs" />
+    <Compile Include="DataAccessLayer\SqlCheckPointImages.cs" />
+    <Compile Include="DataAccessLayer\SqlCheckpoint.cs" />
+    <Compile Include="DataAccessLayer\SqlCheckPointType.cs" />
+    <Compile Include="DataAccessLayer\SqlCurrentReviewsSummary.cs" />
+    <Compile Include="DataAccessLayer\SqlICD10Segment.cs" />
+    <Compile Include="DataAccessLayer\SqlLightDataAccess.cs" />
+    <Compile Include="DataAccessLayer\SqlMonthReviewSummary.cs" />
+    <Compile Include="DataAccessLayer\SqlNoteSection.cs" />
+    <Compile Include="DataAccessLayer\SqlProvider.cs" />
+    <Compile Include="DataAccessLayer\SqlRelCPProvider.cs" />
+    <Compile Include="DataAccessLayer\SqlrelICD10SegmentsCheckPoints.cs" />
+    <Compile Include="DataAccessLayer\SqlTag.cs" />
+    <Compile Include="DataAccessLayer\SqlTagRegExMatchResults.cs" />
+    <Compile Include="DataAccessLayer\SqlTagRegExMatchType.cs" />
+    <Compile Include="DataAccessLayer\SqlTagRegEx.cs" />
+    <Compile Include="DataAccessLayer\SqlTagRegExType.cs" />
+    <Compile Include="DataAccessLayer\SqlVisitReview.cs" />
+    <Compile Include="Models\WestSidePod.cs" />
+    <Compile Include="Models\WindowPosition.cs" />
     <Compile Include="MyConverters.cs" />
     <Compile Include="UCPatientConsole.xaml.cs">
       <DependentUpon>UCPatientConsole.xaml</DependentUpon>
@@ -102,6 +109,13 @@
     <Compile Include="UCTagRegEx.xaml.cs">
       <DependentUpon>UCTagRegEx.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\BiMonthlyReviewViewModel.cs" />
+    <Compile Include="ViewModels\DocumentViewModel.cs" />
+    <Compile Include="ViewModels\PatientViewModel.cs" />
+    <Compile Include="ViewModels\ProviderViewModel.cs" />
+    <Compile Include="ViewModels\ReportViewModel.cs" />
+    <Compile Include="DataAccessViewModels\SqlCheckpointViewModel.cs" />
+    <Compile Include="ViewModels\WestSidePodViewModel.cs" />
     <Compile Include="WebBrowserHelper.cs" />
     <Compile Include="WinAddTag.xaml.cs">
       <DependentUpon>WinAddTag.xaml</DependentUpon>
@@ -150,7 +164,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DocInfo.cs" />
     <Compile Include="HookIE.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -286,6 +299,9 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />

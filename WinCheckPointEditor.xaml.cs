@@ -43,7 +43,7 @@ namespace AI_Note_Review
                 sql = "Select * from ICD10Segments  order by icd10Chapter, icd10CategoryStart;";
                 cbTargetICD10.ItemsSource = cnn.Query(sql).ToList();
             }
-            cbTargetSection.ItemsSource = CF.NoteSections;
+            cbTargetSection.ItemsSource = SqlNoteSection.NoteSections;
             IList dictionaries = SpellCheck.GetCustomDictionaries(tbComment);
             dictionaries.Add(new Uri(@"pack://application:,,,/MedTerms.lex"));
             //I'm getting an error below

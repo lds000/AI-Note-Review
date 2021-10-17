@@ -25,7 +25,7 @@ namespace AI_Note_Review
         public WinCommittReport()
         {
             InitializeComponent();
-            DataContext = CF.CurrentDoc;
+            DataContext = CF.ClinicNote;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -40,8 +40,10 @@ namespace AI_Note_Review
 
         private void BtnGetIndexClick(object sender, RoutedEventArgs e)
         {
+            //tackle this later.... I hope you survived to this point
+            /*
             string sqlCheck = $"Select * from(Select distinct CheckPointID rel from RelCPPRovider where " +
-                $"ReviewDate = '{CF.CurrentDoc.ReviewDate.ToString("yyyy-MM-dd")}') " +
+                $"ReviewDate = '{CF.R.ReviewDate.ToString("yyyy-MM-dd")}') " +
                 $"inner join CheckPoints cp on rel = cp.CheckPointID " +
                 $"order by cp.TargetSection, cp.ErrorSeverity desc;";
 
@@ -52,12 +54,12 @@ namespace AI_Note_Review
             }
 
             string strOut = "Index for relevant checkpoints." + Environment.NewLine;
-            foreach (SqlCheckpoint cp in cplist)
+            foreach (SqlCheckpointViewModel cp in cplist)
             {
                 strOut += cp.GetIndex();
             }
             Clipboard.SetText(strOut);
-
+            */
         }
 
     }

@@ -22,7 +22,7 @@ namespace AI_Note_Review
         public WinGetReviewDate()
         {
             InitializeComponent();
-            DataContext = CF.CurrentDoc;
+            DataContext = CF.ClinicNote;
         }
 
         public DateTime SelectedDate { get; set; }

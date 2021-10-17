@@ -28,7 +28,7 @@ namespace AI_Note_Review
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             SqlTagRegEx s = value as SqlTagRegEx;
-            string input = CF.CurrentDoc.NoteSectionText[s.TargetSection];
+            string input = CF.ClinicNote.NoteSectionText[s.TargetSection];
             Brush HighlightColor = Brushes.Yellow;
             switch (s.TagRegExMatchType)
             {
@@ -110,7 +110,7 @@ namespace AI_Note_Review
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             SqlTagRegEx s = value as SqlTagRegEx;
-            string str = CF.CurrentDoc.NoteSectionText[s.TargetSection];
+            string str = CF.ClinicNote.NoteSectionText[s.TargetSection];
             return str;
         }
 
@@ -152,7 +152,7 @@ namespace AI_Note_Review
         {
             if (value == null)
                 return "N/A";
-            var ns = (from c in CF.NoteSections where c.SectionID == (int)value select c).FirstOrDefault();
+            var ns = (from c in SqlNoteSection.NoteSections where c.SectionID == (int)value select c).FirstOrDefault();
             return $" ({ns.NoteSectionShortTitle})";
         }
 
@@ -214,24 +214,24 @@ namespace AI_Note_Review
             char charChapter = 'A';
             double CodeStart = 0;
             double CodeEnd = 0;
-            foreach (SqlICD10Segment ns in CF.NoteICD10Segments)
+            foreach (SqlICD10SegmentViewModel ns in SqlICD10SegmentViewModel.NoteICD10Segments)
             {
-                if (charChapter == char.Parse(ns.icd10Chapter))
+                if (charChapter == char.Parse(ns.SqlICD10Segment.icd10Chapter))
                 {
-                    if ((ns.icd10CategoryStart >= CodeStart) && (ns.icd10CategoryEnd <= CodeEnd))
+                    if ((ns.SqlICD10Segment.icd10CategoryStart >= CodeStart) && (ns.SqlICD10Segment.icd10CategoryEnd <= CodeEnd))
                     {
-                        if (ns.ICD10SegmentID == (int)value)
+                        if (ns.SqlICD10Segment.ICD10SegmentID == (int)value)
                         {
                             return new Thickness(5, 0, 0, 0);
                         }
                     }
-                    CodeStart = ns.icd10CategoryStart;
-                    CodeEnd = ns.icd10CategoryEnd;
-                    charChapter = char.Parse(ns.icd10Chapter);
+                    CodeStart = ns.SqlICD10Segment.icd10CategoryStart;
+                    CodeEnd = ns.SqlICD10Segment.icd10CategoryEnd;
+                    charChapter = char.Parse(ns.SqlICD10Segment.icd10Chapter);
                 }
                 else
                 {
-                    charChapter = char.Parse(ns.icd10Chapter);
+                    charChapter = char.Parse(ns.SqlICD10Segment.icd10Chapter);
                     CodeStart = 0;
                     CodeEnd = 0;
                 }
@@ -302,11 +302,11 @@ namespace AI_Note_Review
                 if (Char.ToLower(ch) == 'x') break; //if placeholder character, then stop.
             }
             double icd10numeric = double.Parse(str);
-            foreach (SqlICD10Segment ns in CF.NoteICD10Segments)
+            foreach (SqlICD10SegmentViewModel ns in SqlICD10SegmentViewModel.NoteICD10Segments)
             {
-                if (strAlphaCode == ns.icd10Chapter)
+                if (strAlphaCode == ns.SqlICD10Segment.icd10Chapter)
                 {
-                    if (icd10numeric >= ns.icd10CategoryStart && icd10numeric <= ns.icd10CategoryEnd) _ICD10Segments.Add(ns.SegmentTitle);
+                    if (icd10numeric >= ns.SqlICD10Segment.icd10CategoryStart && icd10numeric <= ns.SqlICD10Segment.icd10CategoryEnd) _ICD10Segments.Add(ns.SqlICD10Segment.SegmentTitle);
                 }
             }
             if (_ICD10Segments.Count == 0 )

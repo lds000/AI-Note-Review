@@ -157,13 +157,5 @@ namespace AI_Note_Review
             return true;
         }
 
-        public void AddCheckPoint(SqlCheckpoint cp, DateTime dtReviewDate)
-        {
-            string sql = $"INSERT INTO RelCPPRovider (ProviderID,CheckPointID,PtID,HomeClinic,ReviewInterval,IsWestSidePod) VALUES ({ProviderID},{cp.CheckPointID},{CF.CurrentDoc.PtID},'{dtReviewDate}','{CF.CurrentDoc.VisitDate}',{IsWestSidePod});";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql);
-            }
-        }
     }
 }

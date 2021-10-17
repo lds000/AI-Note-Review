@@ -56,7 +56,9 @@
                 <Button Click="Button_Click"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Close</Button>
                 <Button Margin="20,0,0,0" Click="Button_CopyReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Report</Button>
                 <Button Margin="20,0,0,0" Click="Button_CopyIndexClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Index</Button>
-                <Button Margin="20,0,0,0" Click="Button_CommittReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Commit Review</Button>
+                <Button Margin="20,0,0,0"
+                        Command="{Binding ReportViewModel.CommitMyReport}" CommandParameter="{Binding ReportViewModel}"
+                        Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Commit Review</Button>
                 <Button Margin="20,0,0,0" Click="Button_CheckpointAuditClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Checkpoint Audit</Button>
                 <Button Margin="20,0,0,0" Click="Button_ResetYesNo"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Reset Yes/No Answers</Button>
             </StackPanel>
@@ -92,7 +94,8 @@
 
                     <DockPanel Grid.Row="0" Grid.Column="1">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Missed Checkpoints</Label>
-                        <ListBox x:Name="lbFail" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" ItemsSource="{Binding  MissedCheckPoints}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
+                        <ListBox x:Name="lbFail" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" 
+                                 ItemsSource="{Binding  MissedCheckPoints}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
 
                         </ListBox>
                     </DockPanel>

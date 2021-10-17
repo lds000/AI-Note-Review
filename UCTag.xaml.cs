@@ -26,8 +26,8 @@ namespace AI_Note_Review
         public UCTag()
         {
             InitializeComponent();
-            cbTargetSection.ItemsSource = CF.NoteSections;
-            cbTagRegExType.ItemsSource = CF.TagRegExTypes;
+            cbTargetSection.ItemsSource = SqlNoteSection.NoteSections;
+            cbTagRegExType.ItemsSource = ReportViewModel.TagRegExTypes;
         }
 
         private void cbTargetSection_SelectionChanged(object sender, SelectionChangedEventArgs e)

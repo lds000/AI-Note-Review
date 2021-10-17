@@ -14,6 +14,8 @@
             <local:ICD10Margin x:Key="ICD10Margin"/>
             <local:ImageConverter x:Key="ImageConverter"/>
             <local:CF x:Key="cf"/>
+            <local:SqlICD10SegmentViewModel x:Key="SqlICD10SegmentViewModel"/>
+            <local:SqlNoteSection x:Key="SqlNoteSection"/>
             <DataTemplate x:Key="myCheckPointImageTemplate">
                 <Grid>
                     <Grid.ContextMenu>
@@ -40,7 +42,7 @@
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
                     <Button Click="AddGroupClick" Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
                 </StackPanel>
-                <ListBox x:Name="lbICD10" ItemsSource="{Binding Source={StaticResource cf}, Path=NoteICD10Segments}" Style="{StaticResource MyListBox}">
+                <ListBox x:Name="lbICD10" ItemsSource="{Binding Path=NoteICD10Segments}" Style="{StaticResource MyListBox}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Drop="ListBox_Drop" AllowDrop="True" >
@@ -55,13 +57,13 @@
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                    <TextBlock Grid.Column="1" Margin="{Binding Icd10Margin}" Padding="0" Text="{Binding Path=icd10Chapter}" />
-                                    <TextBlock Margin="0" Padding="0" Text="{Binding Path=icd10CategoryStart}"/>
+                                    <TextBlock Grid.Column="1" Margin="{Binding Icd10Margin}" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10Chapter}" />
+                                    <TextBlock Margin="0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryStart}"/>
                                     <TextBlock Margin="0" Padding="0" Text="-"/>
-                                    <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=icd10CategoryEnd}"/>
+                                    <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryEnd}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                    <TextBlock Grid.Column="1" DockPanel.Dock="Top" Text="{Binding Path=SegmentTitle}" ToolTip="{Binding Path=SegmentComment}"/>
+                                    <TextBlock Grid.Column="1" DockPanel.Dock="Top" Text="{Binding Path=SqlICD10Segment.SegmentTitle}" ToolTip="{Binding Path=SqlICD10Segment.SegmentComment}"/>
                                     <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
                                     <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding CheckPointCount}"></TextBlock>
                                     <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
@@ -87,10 +89,10 @@
                     <ListBox x:Name="lbCheckpoints" ItemsSource="{Binding Checkpoints}" Style="{StaticResource MyListBox}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}" PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown">
-                                    <TextBlock Margin="0,0,0,0" Padding="0,0,0,0" Grid.Column="1" Text="{Binding Path=CheckPointTitle}" ToolTip="{Binding Path=Comment}"/>
+                                <StackPanel Orientation="Horizontal" Tag="{Binding Path=SqlCheckpoint.CheckPointID}" PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown">
+                                    <TextBlock Margin="0,0,0,0" Padding="0,0,0,0" Grid.Column="1" Text="{Binding Path=SqlCheckpoint.CheckPointTitle}" ToolTip="{Binding Path=SqlCheckpoint.Comment}"/>
                                     <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
-                                    <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding Path=StrCheckPointType}" ToolTip="{Binding Path=Comment}"/>
+                                    <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding Path=StrCheckPointType}" ToolTip="{Binding Path=SqlCheckpoint.Comment}"/>
                                     <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
                                 </StackPanel>
                             </DataTemplate>
@@ -98,15 +100,15 @@
                     </ListBox>
                 </Grid>
             </DockPanel>
-            <DockPanel Grid.Column="2" >
+            <DockPanel Grid.Column="2" DataContext="{Binding ElementName=lbCheckpoints, Path=SelectedValue}">
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Label Style="{StaticResource MyLblStyle}">Checkpoint:</Label>
-                    <Label  Style="{StaticResource MyLblStyle}" Content="{Binding Path=CheckPointTitle, FallbackValue=CheckPointTitle}"></Label>
+                    <Label  Style="{StaticResource MyLblStyle}" Content="{Binding Path=SqlCheckpoint.CheckPointTitle, FallbackValue=CheckPointTitle}"></Label>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
                     <Button Style="{StaticResource LinkButton}" Margin="3" Click="deleteCP">Delete CheckPoint</Button>
                 </StackPanel>
-                <Grid Margin="5" DataContext="{Binding ElementName=lbCheckpoints, Path=SelectedValue}">
+                <Grid Margin="5" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
@@ -123,18 +125,27 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="0" Style="{StaticResource MyTbStyle}">Title:</TextBlock>
-                    <TextBox Margin="5" x:Name="tbTitle" Grid.Column="1" Grid.Row="0" Text="{Binding Path=CheckPointTitle}" Style="{StaticResource MyTextBox}">
+                    <TextBox Margin="5" x:Name="tbTitle" Grid.Column="1" Grid.Row="0" Text="{Binding Path=SqlCheckpoint.CheckPointTitle}" Style="{StaticResource MyTextBox}">
                     </TextBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="1" Style="{StaticResource MyTbStyle}">Type:</TextBlock>
                     <ComboBox Margin="5,2,5,2" Name="cbTypes" DisplayMemberPath="Title" ItemsSource="{Binding ListCheckPointTypes}"
-                          SelectedValuePath="CheckPointTypeID" SelectedValue="{Binding CheckPointType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1"/>
+                          SelectedValuePath="CheckPointTypeID" SelectedValue="{Binding SqlCheckpoint.CheckPointType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1"/>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="2" Style="{StaticResource MyTbStyle}">Section:</TextBlock>
-                    <ComboBox Margin="5,2,5,2" ItemsSource="{Binding Source={StaticResource cf}, Path=NoteSections}"  Grid.Column="1" Grid.Row="2" Name="cbTargetSection" DisplayMemberPath="NoteSectionTitle" SelectedValuePath="SectionID" SelectedValue="{Binding TargetSection}"></ComboBox>
+                    <ComboBox Margin="5,2,5,2" ItemsSource="{Binding Source={StaticResource SqlNoteSection}, Path=NoteSections}"  
+                              Grid.Column="1" Grid.Row="2" Name="cbTargetSection" 
+                              DisplayMemberPath="NoteSectionTitle" 
+                              SelectedValuePath="SectionID" 
+                              SelectedValue="{Binding SqlCheckpoint.TargetSection}"></ComboBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="3" Style="{StaticResource MyTbStyle}">ICD10:</TextBlock>
-                    <ComboBox Margin="5,2,5,2" ItemsSource="{Binding Source={StaticResource cf}, Path=NoteICD10Segments}"  Grid.Column="1" Grid.Row="3" Name="cbTargetICD10" DisplayMemberPath="SegmentTitle" SelectedValuePath="ICD10SegmentID" SelectedValue="{Binding TargetICD10Segment}"></ComboBox>
+                    <ComboBox Margin="5,2,5,2" 
+                              ItemsSource="{Binding Source={StaticResource SqlICD10SegmentViewModel}, Path=NoteICD10Segments}"  
+                              Grid.Column="1" Grid.Row="3" Name="cbTargetICD10" 
+                              DisplayMemberPath="SqlICD10Segment.SegmentTitle" 
+                              SelectedValuePath="SqlICD10Segment.ICD10SegmentID" 
+                              SelectedValue="{Binding SqlCheckpoint.TargetICD10Segment}"></ComboBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="4" Style="{StaticResource MyTbStyle}">Severity:</TextBlock>
 
@@ -144,7 +155,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Slider Margin="5"  Name="slideSeverity"
-                            Value="{Binding ErrorSeverity, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                            Value="{Binding SqlCheckpoint.ErrorSeverity, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
                             Minimum="0" Maximum="10"
                             TickFrequency="1" 
                             IsSnapToTickEnabled="True" 
@@ -158,7 +169,7 @@
                     </Grid>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="5" Style="{StaticResource MyTbStyle}">Text:</TextBlock>
-                    <TextBox Margin="5" x:Name="tbComment" Grid.Row="5" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Comment}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" SpellCheck.IsEnabled="True">
+                    <TextBox Margin="5" x:Name="tbComment" Grid.Row="5" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=SqlCheckpoint.Comment}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" SpellCheck.IsEnabled="True">
                         <SpellCheck.CustomDictionaries>
                             <sys:Uri>pack://application:,,,/MedTerms.lex</sys:Uri>
                         </SpellCheck.CustomDictionaries>

@@ -11,9 +11,11 @@ namespace AI_Note_Review
 {
     public class SqlCheckPointType
     {
+        /// <summary>
+        /// Type of checkpoint, ie History Red Flag, Exam Red Flag, indicated imaging.
+        /// </summary>
         public SqlCheckPointType()
         {
-
         }
         public int CheckPointTypeID { get; set; }
         public int ItemOrder { get; set; }

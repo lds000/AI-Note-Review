@@ -22,9 +22,9 @@
                 </Grid.ColumnDefinitions>
                 <Border BorderBrush="White" BorderThickness="1">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
-                        <Label VerticalAlignment="Center" Margin="0" Padding="0" Foreground="White" FontSize="20" Content="{Binding Path=PtName, FallbackValue=-}"></Label>
+                        <Label VerticalAlignment="Center" Margin="0" Padding="0" Foreground="White" FontSize="20" Content="{Binding Path=Patient.PtName, FallbackValue=-}"></Label>
                         <Label VerticalAlignment="Top" Margin="10,0,0,0" Padding="0" Foreground="White" FontSize="18">(</Label>
-                        <Label VerticalAlignment="Top" Margin="0" Padding="0" Foreground="White" FontSize="18" Content="{Binding Path=AgeStr, FallbackValue=-}"></Label>
+                        <Label VerticalAlignment="Top" Margin="0" Padding="0" Foreground="White" FontSize="18" Content="{Binding Path=Patient.AgeStr, FallbackValue=-}"></Label>
                         <Label VerticalAlignment="Top" Margin="0" Padding="0" Foreground="White" FontSize="18">)</Label>
                     </StackPanel>
                 </Border>
@@ -41,45 +41,54 @@
                     <Border BorderBrush="White" BorderThickness="1">
                         <Grid Width="105">
                             <Label Foreground="Gray" Margin="2,0,0,0" Padding="0">BP</Label>
-                            <Label Foreground="{Binding Path=BPColor, FallbackValue=Blue, TargetNullValue=White}"  Padding="0" Margin="0,0,55,0" FontSize="20" HorizontalAlignment="Right" Content="{Binding Path=VitalsSystolic, FallbackValue=-}"></Label>
-                            <Label Foreground="{Binding Path=BPColor, FallbackValue=Blue, TargetNullValue=White}" Padding="0" Margin="0,2,45,0" FontSize="25" HorizontalAlignment="Right">/</Label>
-                            <Label Foreground="{Binding Path=BPColor, FallbackValue=Blue, TargetNullValue=White}" Padding="0" Margin="60,10,0,0" FontSize="20" HorizontalAlignment="Left" Content="{Binding Path=VitalsDiastolic, FallbackValue=-}"></Label>
+                            <Label Foreground="{Binding Path=Patient.BPColor, FallbackValue=Blue, TargetNullValue=White}"  Padding="0" Margin="0,0,55,0" FontSize="20" HorizontalAlignment="Right" Content="{Binding Path=Patient.VitalsSystolic, FallbackValue=-}"></Label>
+                            <Label Foreground="{Binding Path=Patient.BPColor, FallbackValue=Blue, TargetNullValue=White}" Padding="0" Margin="0,2,45,0" FontSize="25" HorizontalAlignment="Right">/</Label>
+                            <Label Foreground="{Binding Path=Patient.BPColor, FallbackValue=Blue, TargetNullValue=White}" Padding="0" Margin="60,10,0,0" FontSize="20" HorizontalAlignment="Left" Content="{Binding Path=Patient.VitalsDiastolic, FallbackValue=-}"></Label>
                         </Grid>
                     </Border>
                     <Border  Grid.Column="1" BorderBrush="White" BorderThickness="1">
                         <Grid>
                             <Label Foreground="Gray" Padding="3,0,0,0">HR</Label>
-                            <Label Foreground="{Binding Path=HRColor, FallbackValue=Blue, TargetNullValue=White}" Margin="10,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Content="{Binding Path=VitalsHR, FallbackValue=-}"></Label>
+                            <Label Foreground="{Binding Path=Patient.HRColor, FallbackValue=Blue, TargetNullValue=White}" Margin="10,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Content="{Binding Path=Patient.VitalsHR, FallbackValue=-}"></Label>
                         </Grid>
                     </Border>
                     <Border Grid.Column="2" BorderBrush="White" BorderThickness="1">
                         <Grid >
                             <Label Foreground="Gray" Padding="3,0,0,0">RR</Label>
-                            <Label Foreground="{Binding Path=RRColor, FallbackValue=Blue, TargetNullValue=White}" Margin="0,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Content="{Binding Path=VitalsRR, FallbackValue=-}"></Label>
+                            <Label Foreground="{Binding Path=Patient.RRColor, FallbackValue=Blue, TargetNullValue=White}" 
+                                   Margin="0,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Content="{Binding Path=Patient.VitalsRR, FallbackValue=-}"></Label>
                         </Grid>
                     </Border>
                     <Border Grid.Column="3" BorderBrush="White" BorderThickness="1">
                         <Grid>
                             <Label Foreground="Gray" Padding="3,0,0,0">O2</Label>
-                            <Label Foreground="{Binding Path=O2Color, FallbackValue=Blue, TargetNullValue=White}" Margin="0,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Content="{Binding Path=VitalsO2, FallbackValue=-}"></Label>
+                            <Label Foreground="{Binding Path=Patient.O2Color, FallbackValue=Blue, TargetNullValue=White}" 
+                                   Margin="0,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                   FontSize="24" Content="{Binding Path=Patient.VitalsO2, FallbackValue=-}"></Label>
                         </Grid>
                     </Border>
                     <Border Grid.Column="4" BorderBrush="White" BorderThickness="1">
                         <Grid>
                             <Label Foreground="Gray" Padding="5,0,0,0">T</Label>
-                            <Label Foreground="{Binding Path=TempColor, FallbackValue=Blue, TargetNullValue=White}" Margin="10,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Content="{Binding Path=VitalsTemp, FallbackValue=-}"></Label>
+                            <Label Foreground="{Binding Path=Patient.TempColor, FallbackValue=Blue, TargetNullValue=White}"
+                                   Margin="10,0,0,0" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" 
+                                   Content="{Binding Path=Patient.VitalsTemp, FallbackValue=-}"></Label>
                         </Grid>
                     </Border>
                     <Border Grid.Column="5" BorderBrush="White" BorderThickness="1">
                         <Grid>
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <StackPanel Orientation="Horizontal">
-                                    <Label Foreground="{Binding Path=WtColor, FallbackValue=Blue, TargetNullValue=White}" Margin="10,0,0,0" Padding="0" FontSize="16" Content="{Binding Path=VitalsWt, FallbackValue=-}"></Label>
-                                    <Label Foreground="{Binding Path=WtColor, FallbackValue=Blue, TargetNullValue=White}" Margin="2,0,0,0" Padding="0" FontSize="16">lbs</Label>
+                                    <Label Foreground="{Binding Path=Patient.WtColor, FallbackValue=Blue, TargetNullValue=White}"
+                                           Margin="10,0,0,0" Padding="0" FontSize="16" Content="{Binding Path=Patient.VitalsWt, FallbackValue=-}"></Label>
+                                    <Label Foreground="{Binding Path=Patient.WtColor, FallbackValue=Blue, TargetNullValue=White}" 
+                                           Margin="2,0,0,0" Padding="0" FontSize="16">lbs</Label>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <Label Foreground="{Binding Path=WtColor, FallbackValue=Blue, TargetNullValue=White}" Margin="10,0,0,0" Padding="0" FontSize="16" Content="{Binding Path=WtKg, FallbackValue=-}"></Label>
-                                    <Label Foreground="{Binding Path=WtColor, FallbackValue=Blue, TargetNullValue=White}" Margin="2,0,0,0" Padding="0" FontSize="16">kg</Label>
+                                    <Label Foreground="{Binding Path=Patient.WtColor, FallbackValue=Blue, TargetNullValue=White}" 
+                                           Margin="10,0,0,0" Padding="0" FontSize="16" Content="{Binding Path=Patient.WtKg, FallbackValue=-}"></Label>
+                                    <Label Foreground="{Binding Path=Patient.WtColor, FallbackValue=Blue, TargetNullValue=White}" 
+                                           Margin="2,0,0,0" Padding="0" FontSize="16">kg</Label>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
@@ -93,9 +102,9 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Viewbox HorizontalAlignment="Left">
-                        <Label Foreground="White" Content="{Binding Path=CC, FallbackValue=-}"></Label>
+                        <Label Foreground="White" Content="{Binding Path=Document.CC, FallbackValue=-}"></Label>
                     </Viewbox>
-                    <TextBlock MaxWidth="200" TextWrapping="WrapWithOverflow" Text="{Binding HashTags}" Grid.Column="1" Style="{StaticResource MyTbStyle}"></TextBlock>
+                    <TextBlock MaxWidth="200" TextWrapping="WrapWithOverflow" Text="{Binding Document.HashTags}" Grid.Column="1" Style="{StaticResource MyTbStyle}"></TextBlock>
                 </Grid>
             </Border>
 

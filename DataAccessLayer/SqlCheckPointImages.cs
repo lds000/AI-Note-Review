@@ -47,9 +47,14 @@ namespace AI_Note_Review
             }
 
         }
+
+        /// <summary>
+        /// Delete an image from the database. Todo: Is this correct? Could possibly lead to checkpoints with no image if this image is shared between two checkpoints.
+        /// </summary>
+        /// <returns></returns>
         public bool DeleteFromDB()
         {
-            MessageBoxResult mr = MessageBox.Show("Are you sure you want to remove this expression? This is permenant and will delete all content.", "Confirm Delete", MessageBoxButton.YesNo);
+            MessageBoxResult mr = MessageBox.Show("Are you sure you want to remove this image? This is permenant and will delete all content.", "Confirm Delete", MessageBoxButton.YesNo);
             if (mr != MessageBoxResult.Yes)
             {
                 return false;

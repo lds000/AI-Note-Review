@@ -29,7 +29,7 @@ namespace AI_Note_Review
         public winDbRelICD10CheckpointsEditor()
         {
             InitializeComponent();
-
+            #region SetDictionary
             //spellcheck setup
             IList dictionaries = SpellCheck.GetCustomDictionaries(tbComment);
             dictionaries.Add(new Uri(@"pack://application:,,,/MedTerms.lex"));
@@ -41,6 +41,9 @@ namespace AI_Note_Review
             catch (Exception)
             {
             }
+            #endregion  
+
+            lbICD10.DataContext = new SqlICD10SegmentViewModel();
         }
 
         private void closeclick(object sender, RoutedEventArgs e)
@@ -71,6 +74,7 @@ namespace AI_Note_Review
             if (CurrentCheckpoint == null) return;
         }
 
+        /*
         private void StrToRTB(string strIn, RichTextBox rtb)
          {
             byte[] byteArray = Encoding.ASCII.GetBytes(strIn);
@@ -93,6 +97,7 @@ namespace AI_Note_Review
             return rtfText;
 
         }
+        */
 
         private void AddTag(object sender, RoutedEventArgs e)
         {
@@ -179,7 +184,7 @@ namespace AI_Note_Review
             WinEditSegment wes = new WinEditSegment(seg);
             wes.Owner = this;
             wes.ShowDialog();
-            SqlICD10Segment.CalculateLeftOffsets();
+            SqlICD10SegmentViewModel.CalculateLeftOffsets();
         }
 
         private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -261,26 +266,23 @@ namespace AI_Note_Review
             {
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    string sql = $"Select * from CheckPoints where TargetICD10Segment == {seg.ICD10SegmentID}";
-                    List<SqlCheckpoint> lcp = cnn.Query<SqlCheckpoint>(sql).ToList();
-                    sql = "Select * from CheckPointTypes order by ItemOrder;";
-                    List<SqlCheckPointType> lcpt = cnn.Query<SqlCheckPointType>(sql).ToList();
-
+                    List<SqlCheckpointViewModel> lcp = SqlCheckpointViewModel.GetCPFromSegment(seg.ICD10SegmentID);
+                    List<SqlCheckPointType> lcpt = SqlCheckpointViewModel.CheckPointTypes();
                     string strSummary = $"<h1>{seg.SegmentTitle}</h1><br>";
                     foreach (SqlCheckPointType cpt in lcpt)
                     {
                         string strTempOut = "<ol>";
-                        foreach (SqlCheckpoint cp in lcp)
+                        foreach (SqlCheckpointViewModel cp in lcp)
                         {
-                            if (cp.CheckPointType == cpt.CheckPointTypeID)
+                            if (cp.SqlCheckpoint.CheckPointType == cpt.CheckPointTypeID)
                             {
-                                strTempOut += $"<li><dl><dt><font size='+1'>{cp.CheckPointTitle}</font>" + Environment.NewLine;
-                                if (cp.Comment != null)
+                                strTempOut += $"<li><dl><dt><font size='+1'>{cp.SqlCheckpoint.CheckPointTitle}</font>" + Environment.NewLine;
+                                if (cp.SqlCheckpoint.Comment != null)
                                 {
-                                    strTempOut += $"<dd><i>{cp.Comment.Replace(Environment.NewLine, "<br>")}</i>" + Environment.NewLine;
-                                    if (cp.Link != null)
+                                    strTempOut += $"<dd><i>{cp.SqlCheckpoint.Comment.Replace(Environment.NewLine, "<br>")}</i>" + Environment.NewLine;
+                                    if (cp.SqlCheckpoint.Link != null)
                                     {
-                                        strTempOut += $"<br><a href='{cp.Link}'>[Link to source]</a>";
+                                        strTempOut += $"<br><a href='{cp.SqlCheckpoint.Link}'>[Link to source]</a>";
                                     }
                                     if (cp.Images.Count > 0)
                                     {
@@ -325,7 +327,8 @@ namespace AI_Note_Review
         private void ButtonImage_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentCheckpoint == null) return;
-            CurrentCheckpoint.AddImageFromClipBoard();
+            SqlCheckpointViewModel cpvm = new SqlCheckpointViewModel(CurrentCheckpoint);
+            cpvm.AddImageFromClipBoard();
 
 
         }
@@ -334,7 +337,8 @@ namespace AI_Note_Review
         {
             MenuItem mi = sender as MenuItem;
             SqlCheckPointImage sc = mi.DataContext as SqlCheckPointImage;
-            CurrentCheckpoint.DeleteImage(sc);
+            SqlCheckpointViewModel cpvm = new SqlCheckpointViewModel(CurrentCheckpoint);
+            cpvm.DeleteImage(sc);
         }
 
         private void btnLinkClick(object sender, RoutedEventArgs e)
