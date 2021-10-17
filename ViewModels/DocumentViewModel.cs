@@ -28,26 +28,33 @@ namespace AI_Note_Review
 
         private Document document;
         private Patient patient;
-        private Report report;
         private SqlProvider sqlProvider;
+        private PatientViewModel patientViewModel;
 
-        public DocumentViewModel(Patient _patient)
+        public DocumentViewModel(PatientViewModel pvm, SqlProvider _SqlProvider)
         {
-            document = new Document();
-            patient = _patient;
-            report = new Report();
-            sqlProvider = SqlProvider.SqlGetProviderByFullName(document.Provider);
+            document = SampleDocument; //New Document() called under this.
+            patient = pvm.SamplePatient;
+            sqlProvider = _SqlProvider;
+            SetUpNote(); //todo: might be better way of implementing this.
         }
 
         public DocumentViewModel()
         {
-            patient = new PatientViewModel().SamplePatient;
-            document = SampleDocument;
-            report = new Report(); //second time
-            sqlProvider = SqlProvider.SqlGetProviderByFullName(document.Provider);
-            OnPropertyChanged("Document");
-            OnPropertyChanged("Patient");
+            document = SampleDocument; //New Document() called under this.
+            patientViewModel = new PatientViewModel();
+            patient = patientViewModel.SamplePatient;
+            sqlProvider = new SqlProvider();
         }
+
+        public  PatientViewModel PatientViewModel
+        {
+            get
+            {
+                return patientViewModel;
+            }
+        }
+
         public Document Document
         {
             get {
@@ -63,13 +70,6 @@ namespace AI_Note_Review
             }
         }
 
-        public Report Report
-        {
-            get
-            {
-                return report;
-            }
-        }
         public SqlProvider SqlProvider
             {
             get
@@ -103,9 +103,6 @@ namespace AI_Note_Review
 
                 document.CurrentMeds = "ibuprofen, Tylenol, prednisone";
                 document.Exam = "AO, NAD PERRL\nNormal OP\nCTA bilat\nRRR no murmurs\nS NTND NABS, no guarding, no rebound\nNo edema";
-
-                SetUpNote(); //todo: might be better way of implementing this.
-
                 return document;
             }
         }

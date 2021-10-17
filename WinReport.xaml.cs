@@ -164,13 +164,11 @@ namespace AI_Note_Review
         {
             MenuItem i = sender as MenuItem;
             SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
-            SqlCheckpointViewModel cpvm = new SqlCheckpointViewModel(cp);
-
-            WinEnterText wet = new WinEnterText($"Add/Edit Comment: {cpvm.SqlCheckpoint.CheckPointTitle}", cpvm.CustomComment);
+            WinEnterText wet = new WinEnterText($"Add/Edit Comment: {cp.CheckPointTitle}", cp.CustomComment);
             wet.Owner = this;
             wet.ShowDialog();
 
-            cpvm.CustomComment = wet.ReturnValue;
+            cp.CustomComment = wet.ReturnValue;
         }
 
         private void Button_ResetYesNo(object sender, RoutedEventArgs e)

@@ -34,10 +34,11 @@ namespace AI_Note_Review
 
         #endregion
 
+        Patient patient;
         public Patient()
         {
-
         }
+
         #region Patient Demographics
         public string PtName
         {

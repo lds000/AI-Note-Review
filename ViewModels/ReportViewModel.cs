@@ -27,9 +27,12 @@ namespace AI_Note_Review
         }
 
         private Report report;
-        private Document document;
+        private DocumentViewModel documentViewModel;
         private Patient patient;
-        private SqlProvider provider;
+        private SqlProvider sqlProvider;
+        private Document document;
+        private PatientViewModel patientViewModel;
+
         public Report Report
         {
             get 
@@ -38,11 +41,51 @@ namespace AI_Note_Review
             }
         }
 
+        public Document Document
+        {
+            get
+            {
+                return document;
+            }
+        }
+
+        public DocumentViewModel DocumentViewModel
+        {
+            get
+            {
+                return documentViewModel;
+            }
+        }
+
+        public SqlProvider SqlProvider
+        {
+            get
+            {
+                return sqlProvider;
+            }
+        }
+
+        public Patient Patient
+        {
+            get
+            {
+                return patient;
+            }
+        }
+
+        public PatientViewModel PatientViewModel
+        {
+            get
+            {
+                return patientViewModel;
+            }
+        }
+
         public ReportViewModel(DocumentViewModel dvm)
         {
             patient = dvm.Patient;
             document = dvm.Document;
-            report = dvm.Report;
+            report = new Report();
             GenerateReport(); //first time
         }
 
@@ -772,7 +815,7 @@ namespace AI_Note_Review
 
         public void AddCheckPoint(SqlCheckpoint cp, DateTime dtReviewDate)
         {
-            string sql = $"INSERT INTO RelCPPRovider (ProviderID,CheckPointID,PtID,HomeClinic,ReviewInterval,IsWestSidePod) VALUES ({document.ProviderID},{cp.CheckPointID},{patient.PtID},'{dtReviewDate}','{document.VisitDate}',{provider.IsWestSidePod});";
+            string sql = $"INSERT INTO RelCPPRovider (ProviderID,CheckPointID,PtID,HomeClinic,ReviewInterval,IsWestSidePod) VALUES ({document.ProviderID},{cp.CheckPointID},{patient.PtID},'{dtReviewDate}','{document.VisitDate}',{sqlProvider.IsWestSidePod});";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 cnn.Execute(sql);

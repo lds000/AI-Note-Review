@@ -15,8 +15,14 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    class ProviderViewModel
+    class ProviderViewModel : INotifyPropertyChanged
     {
+        // Declare the event
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
         private Provider provider;
 
         public Provider Provider

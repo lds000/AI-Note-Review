@@ -44,7 +44,7 @@ namespace AI_Note_Review
         private void btnRemoveTag_Click(object sender, RoutedEventArgs e)
         {
             Button b = sender as Button;
-            SqlCheckpointViewModel cp = DataContext as SqlCheckpointViewModel;
+            SqlCheckpoint cp = DataContext as SqlCheckpoint;
             SqlTag st = b.DataContext as SqlTag;
             cp.RemoveTag(st);
             AddMe(this, EventArgs.Empty);

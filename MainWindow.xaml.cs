@@ -42,12 +42,11 @@ namespace AI_Note_Review
         {
             ProgramInit();
             //This is just for compiler purposes
-            CF.CurrentPatient = new PatientViewModel().SamplePatient;
-            CF.ClinicNote = (new DocumentViewModel(CF.CurrentPatient)).SampleDocument;
+            //CF.CurrentPatient = new PatientViewModel().SamplePatient;
+            //CF.ClinicNote = (new DocumentViewModel(CF.CurrentPatient)).SampleDocument;
             InitializeComponent();
             DocumentViewModel dvm = new DocumentViewModel();
             this.DataContext = dvm;
-        
         }
 
         #region Monitor active Window

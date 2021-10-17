@@ -215,8 +215,7 @@ namespace AI_Note_Review
         public void Execute(object parameter)
         {
             SqlTag st = parameter as SqlTag;
-            SqlCheckpointViewModel vm = new SqlCheckpointViewModel(st.ParentCheckPoint);
-            vm.RemoveTag(st);
+            st.ParentCheckPoint.RemoveTag(st);
         }
         #endregion
     }

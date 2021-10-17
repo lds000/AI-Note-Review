@@ -33,7 +33,6 @@ namespace AI_Note_Review
 
         public SqlCheckpointViewModel()
         {
-            sqlCheckpoint = new SqlCheckpoint();
         }
 
         public SqlCheckpointViewModel(SqlCheckpoint cp)
@@ -41,114 +40,9 @@ namespace AI_Note_Review
             sqlCheckpoint = cp;
         }
 
-        public SqlCheckpointViewModel(int cpID)
-        {
-                string sql = $"Select * from CheckPoints WHERE CheckPointID={cpID};";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                sqlCheckpoint = cnn.QueryFirstOrDefault<SqlCheckpoint>(sql);
-                }
-        }
-
-
         public SqlCheckpoint SqlCheckpoint
         {
             get { return sqlCheckpoint; }
-        }
-
-        private bool includeCheckpoint = true;
-        /// <summary>
-        /// bool indicating if checkpoint is included in report
-        /// </summary>
-        public bool IncludeCheckpoint
-        {
-            get
-            {
-                return includeCheckpoint;
-            }
-            set
-            {
-                includeCheckpoint = value;
-                OnPropertyChanged("IncludeCheckpoint");
-            }
-        }
-
-        public List<SqlCheckPointType> ListCheckPointTypes
-        {
-            get
-            {
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    string sql = "Select * from CheckPointTypes;";
-                    return cnn.Query<SqlCheckPointType>(sql).ToList();
-                }
-            }
-
-        }
-
-        /// <summary>
-        /// Returns a string representation of the (int) checkpoint type
-        /// </summary>
-        public string StrCheckPointType
-        {
-            get
-            {
-                string sql = "";
-                sql = $"Select Title from CheckPointTypes where CheckPointTypeID == {sqlCheckpoint.CheckPointType};";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    return cnn.ExecuteScalar<string>(sql);
-                }
-            }
-
-        }
-
-        private string customComment = "";
-        /// <summary>
-        /// Used to hold additional comments at the time of the review specific to the review / patient / provider, etc...
-        /// </summary>
-        public string CustomComment
-        {
-            get
-            {
-                return customComment;
-            }
-            set
-            {
-                customComment = value;
-                OnPropertyChanged("CustomComment");
-            }
-        }
-
-        /// <summary>
-        /// Get the tags associated with the checkpoint
-        /// </summary>
-        public List<SqlTag> Tags
-        {
-            get
-            {
-                string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {sqlCheckpoint.CheckPointID};";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    var tmpList = cnn.Query<SqlTag>(sql, this).ToList();
-                    foreach (SqlTag st in tmpList)
-                    {
-                        st.ParentCheckPoint = sqlCheckpoint;
-                    }
-                    return tmpList;
-                }
-            }
-        }
-
-        public void AddTag(SqlTag tg)
-        {
-            string sql = "";
-            sql = $"INSERT INTO RelTagCheckPoint (TagID, CheckPointID) VALUES ({tg.TagID},{sqlCheckpoint.CheckPointID});";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql);
-            }
-            OnPropertyChanged("Tags");
         }
 
         private ICommand mUpdateCP;
@@ -167,43 +61,6 @@ namespace AI_Note_Review
         }
 
 
-        public void DeleteImage(SqlCheckPointImage sci)
-        {
-            sci.DeleteFromDB();
-            OnPropertyChanged("Images");
-        }
-
-        public void AddImageFromClipBoard()
-        {
-            BitmapSource bs = Clipboard.GetImage();
-            if (bs == null) return;
-            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bs));
-            encoder.QualityLevel = 100;
-            // byte[] bit = new byte[0];
-            using (MemoryStream stream = new MemoryStream())
-            {
-                encoder.Frames.Add(BitmapFrame.Create(bs));
-                encoder.Save(stream);
-                byte[] bit = stream.ToArray();
-                stream.Close();
-            }
-            new SqlCheckPointImage(sqlCheckpoint.CheckPointID, bs);
-            OnPropertyChanged("Images");
-        }
-
-        public ObservableCollection<SqlCheckPointImage> Images
-        {
-            get
-            {
-                string sql = $"select * from CheckPointImages where CheckPointID = @CheckPointID;";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    return new ObservableCollection<SqlCheckPointImage>(cnn.Query<SqlCheckPointImage>(sql, this.sqlCheckpoint).ToList());
-                }
-            }
-        }
-
         public static List<SqlCheckPointType> CheckPointTypes()
         {
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -215,49 +72,6 @@ namespace AI_Note_Review
         }
 
 
-    public static List<SqlCheckpointViewModel> GetCPFromSegment(int SegmentID)
-        {
-            string sql = $"Select * from CheckPoints where TargetICD10Segment == {SegmentID}";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                List<SqlCheckpoint> lcp = cnn.Query<SqlCheckpoint>(sql).ToList();
-                List<SqlCheckpointViewModel> lcpvm = new List<SqlCheckpointViewModel>();
-                foreach (SqlCheckpoint cp in lcp)
-                {
-                    lcpvm.Add(new SqlCheckpointViewModel(cp));
-                }
-                return lcpvm;
-            }
-
-        }
-
-
-
-
-
-        public void RemoveTag(SqlTag st)
-        {
-            string sql = $"Delete From RelTagCheckPoint where CheckPointID = {sqlCheckpoint.CheckPointID} AND TagID = {st.TagID};";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql);
-            }
-            OnPropertyChanged("Tags");
-        }
-
-        public string GetIndex()
-        {
-            string strReturn = "";
-            strReturn += $"CheckPoint: '{sqlCheckpoint.CheckPointTitle}'" + Environment.NewLine;
-            //strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
-            strReturn += $"\tRecommended Remediation: {sqlCheckpoint.Action}" + Environment.NewLine;
-            strReturn += $"\tExplanation: {sqlCheckpoint.Comment}" + Environment.NewLine;
-            if (sqlCheckpoint.Link != "")
-                strReturn += $"\tLink: {sqlCheckpoint.Link}" + Environment.NewLine;
-            strReturn += Environment.NewLine;
-            strReturn += Environment.NewLine;
-            return strReturn;
-        }
     }
 
     class TagAdder : ICommand
@@ -277,7 +91,6 @@ namespace AI_Note_Review
         public void Execute(object parameter)
         {
             SqlCheckpoint CurrentCheckpoint = parameter as SqlCheckpoint;
-            SqlCheckpointViewModel vm = new SqlCheckpointViewModel(CurrentCheckpoint);
             if (CurrentCheckpoint == null) return;
             string strSuggest = "#";
             if (CurrentCheckpoint.CheckPointType == 1) strSuggest = "#Query";
@@ -308,7 +121,7 @@ namespace AI_Note_Review
             {
                 SqlTag tg = SqlLiteDataAccess.GetTags(wat.ReturnValue).FirstOrDefault();
                 if (tg == null) tg = new SqlTag(wat.ReturnValue);
-                vm.AddTag(tg);
+                CurrentCheckpoint.AddTag(tg);
 
                 //SqlTagRegEx srex = new SqlTagRegEx(tg.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
             }

@@ -47,9 +47,8 @@ namespace AI_Note_Review
         {
             Button b = sender as Button;
             SqlCheckpoint cp = DataContext as SqlCheckpoint;
-            SqlCheckpointViewModel cpvm = new SqlCheckpointViewModel(cp);
             SqlTag st = b.DataContext as SqlTag;
-            cpvm.RemoveTag(st);
+            cp.RemoveTag(st);
             ImChanged(this, EventArgs.Empty);
 
         }

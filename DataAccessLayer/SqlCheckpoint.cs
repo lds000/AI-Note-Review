@@ -42,16 +42,6 @@ namespace AI_Note_Review
         {
         }
 
-        public static SqlCheckpoint GetSqlCheckpoint(int cpID)
-        {
-            string sql = $"Select * from CheckPoints WHERE CheckPointID={cpID};";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                return cnn.QueryFirstOrDefault<SqlCheckpoint>(sql);
-            }
-        }
-
-
         public int CheckPointID { get; set; } //ID is readonly
         public string CheckPointTitle
         {
@@ -197,17 +187,35 @@ namespace AI_Note_Review
             }
         }
 
+        /// <summary>
+        /// A boolean indicating if the checkpoint will be included in the report.  This is true by default for all missed checkpoint, false for for all passed check point. It is not saved in the database.
+        /// </summary>
         public bool IncludeCheckpoint
         {
             get; set;
         }
 
+        /// <summary>
+        /// A personal comment added to a checkpoint that is saved in the database under the commit (not checkpoint model).
+        /// </summary>
         public string CustomComment { get; set; }
 
         /// <summary>
-        /// A value of how long to have the checkpoint sleep between misses
+        /// A value of how long to have the checkpoint sleep between misses. Not implemented as of 10/17/2021
         /// </summary>
         public int Expiration { get; set; } //when ready to implement, do not set to zero, considered "null value" above
+
+
+        public static SqlCheckpoint GetSqlCheckpoint(int cpID)
+        {
+            string sql = $"Select * from CheckPoints WHERE CheckPointID={cpID};";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                return cnn.QueryFirstOrDefault<SqlCheckpoint>(sql);
+            }
+        }
+
+
 
         /// <summary>
         /// The ICD10 segment this checkpoint is associated with, each checkpoint has only one segment, this is so I don't accidently change information between checkpoints and segments and give wrong information
@@ -231,10 +239,6 @@ namespace AI_Note_Review
                 OnPropertyChanged("TargetICD10Segment");
             }
         }
-
-
-
-        
 
         public void SaveToDB()
         {
@@ -282,6 +286,96 @@ namespace AI_Note_Review
             }
             return true;
         }
+
+        /// <summary>
+        /// Get the tags associated with the checkpoint
+        /// </summary>
+        public List<SqlTag> Tags
+        {
+            get
+            {
+                string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID};";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    var tmpList = cnn.Query<SqlTag>(sql, this).ToList();
+                    foreach (SqlTag st in tmpList)
+                    {
+                        st.ParentCheckPoint = this;
+                    }
+                    return tmpList;
+                }
+            }
+        }
+
+        public void AddTag(SqlTag tg)
+        {
+            string sql = "";
+            sql = $"INSERT INTO RelTagCheckPoint (TagID, CheckPointID) VALUES ({tg.TagID},{CheckPointID});";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
+            }
+            OnPropertyChanged("Tags");
+        }
+
+        public void RemoveTag(SqlTag st)
+        {
+            string sql = $"Delete From RelTagCheckPoint where CheckPointID = {CheckPointID} AND TagID = {st.TagID};";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
+            }
+            OnPropertyChanged("Tags");
+        }
+
+        public void DeleteImage(SqlCheckPointImage sci)
+        {
+            sci.DeleteFromDB();
+            OnPropertyChanged("Images");
+        }
+
+        public void AddImageFromClipBoard()
+        {
+            BitmapSource bs = Clipboard.GetImage();
+            if (bs == null) return;
+            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bs));
+            encoder.QualityLevel = 100;
+            // byte[] bit = new byte[0];
+            using (MemoryStream stream = new MemoryStream())
+            {
+                encoder.Frames.Add(BitmapFrame.Create(bs));
+                encoder.Save(stream);
+                byte[] bit = stream.ToArray();
+                stream.Close();
+            }
+            new SqlCheckPointImage(CheckPointID, bs);
+            OnPropertyChanged("Images");
+        }
+
+        public ObservableCollection<SqlCheckPointImage> Images
+        {
+            get
+            {
+                string sql = $"select * from CheckPointImages where CheckPointID = @CheckPointID;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return new ObservableCollection<SqlCheckPointImage>(cnn.Query<SqlCheckPointImage>(sql, this).ToList());
+                }
+            }
+        }
+
+        public static List<SqlCheckpoint> GetCPFromSegment(int SegmentID)
+        {
+            string sql = $"Select * from CheckPoints where TargetICD10Segment == {SegmentID}";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                return cnn.Query<SqlCheckpoint>(sql).ToList();
+            }
+
+        }
+
+
 
         /// <summary>
         /// Create a sql checkpoint given the title and targetsegment. Use clues from the title to suggest type and section the checkpoint belongs to.

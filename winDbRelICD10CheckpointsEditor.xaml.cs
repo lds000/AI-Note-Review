@@ -266,23 +266,23 @@ namespace AI_Note_Review
             {
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    List<SqlCheckpointViewModel> lcp = SqlCheckpointViewModel.GetCPFromSegment(seg.ICD10SegmentID);
+                    List<SqlCheckpoint> lcp = SqlCheckpoint.GetCPFromSegment(seg.ICD10SegmentID);
                     List<SqlCheckPointType> lcpt = SqlCheckpointViewModel.CheckPointTypes();
                     string strSummary = $"<h1>{seg.SegmentTitle}</h1><br>";
                     foreach (SqlCheckPointType cpt in lcpt)
                     {
                         string strTempOut = "<ol>";
-                        foreach (SqlCheckpointViewModel cp in lcp)
+                        foreach (SqlCheckpoint cp in lcp)
                         {
-                            if (cp.SqlCheckpoint.CheckPointType == cpt.CheckPointTypeID)
+                            if (cp.CheckPointType == cpt.CheckPointTypeID)
                             {
-                                strTempOut += $"<li><dl><dt><font size='+1'>{cp.SqlCheckpoint.CheckPointTitle}</font>" + Environment.NewLine;
-                                if (cp.SqlCheckpoint.Comment != null)
+                                strTempOut += $"<li><dl><dt><font size='+1'>{cp.CheckPointTitle}</font>" + Environment.NewLine;
+                                if (cp.Comment != null)
                                 {
-                                    strTempOut += $"<dd><i>{cp.SqlCheckpoint.Comment.Replace(Environment.NewLine, "<br>")}</i>" + Environment.NewLine;
-                                    if (cp.SqlCheckpoint.Link != null)
+                                    strTempOut += $"<dd><i>{cp.Comment.Replace(Environment.NewLine, "<br>")}</i>" + Environment.NewLine;
+                                    if (cp.Link != null)
                                     {
-                                        strTempOut += $"<br><a href='{cp.SqlCheckpoint.Link}'>[Link to source]</a>";
+                                        strTempOut += $"<br><a href='{cp.Link}'>[Link to source]</a>";
                                     }
                                     if (cp.Images.Count > 0)
                                     {
@@ -327,18 +327,17 @@ namespace AI_Note_Review
         private void ButtonImage_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentCheckpoint == null) return;
-            SqlCheckpointViewModel cpvm = new SqlCheckpointViewModel(CurrentCheckpoint);
-            cpvm.AddImageFromClipBoard();
+            CurrentCheckpoint.AddImageFromClipBoard();
 
 
         }
 
         private void DeleteImage(object sender, RoutedEventArgs e)
         {
+            if (CurrentCheckpoint == null) return;
             MenuItem mi = sender as MenuItem;
             SqlCheckPointImage sc = mi.DataContext as SqlCheckPointImage;
-            SqlCheckpointViewModel cpvm = new SqlCheckpointViewModel(CurrentCheckpoint);
-            cpvm.DeleteImage(sc);
+            CurrentCheckpoint.DeleteImage(sc);
         }
 
         private void btnLinkClick(object sender, RoutedEventArgs e)
