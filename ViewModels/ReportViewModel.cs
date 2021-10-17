@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -31,14 +32,18 @@ namespace AI_Note_Review
         private SqlProvider provider;
         public Report Report
         {
-            get { return report; }
+            get 
+            { 
+                return report; 
+            }
         }
 
-        public ReportViewModel(Document _document, Patient _patient)
+        public ReportViewModel(DocumentViewModel dvm)
         {
-            report = new Report();
-            document = _document;
-            patient = _patient;
+            patient = dvm.Patient;
+            document = dvm.Document;
+            report = dvm.Report;
+            GenerateReport(); //first time
         }
 
         public Report SampleReport
@@ -46,6 +51,7 @@ namespace AI_Note_Review
             get
             {
                 report.ReviewDate = DateTime.Now;
+                GenerateReport();
                 return report;
             }
         }
@@ -114,11 +120,16 @@ namespace AI_Note_Review
             }
         }
 
+
         enum TagResult { Pass, Fail, FailNoCount, DropTag };
 
+        /// <summary>
+        /// Run the SqlTagRegExes of a tag and return as result, this is the brains of the whole operation.
+        /// </summary>
+        /// <param name="tmpTagRegExs"></param>
+        /// <returns></returns>
         private SqlTagRegEx.EnumResult CheckTagRegExs(List<SqlTagRegEx> tmpTagRegExs)
         {
-
             foreach (SqlTagRegEx TagRegEx in tmpTagRegExs) //cycle through the TagRegExs, usually one or two, fail or hide stops iteration, if continues returns pass.
             {
                 if (TagRegEx.RegExText.Contains("prolonged")) //used to debug
@@ -241,6 +252,11 @@ namespace AI_Note_Review
         /// <param name="resetOverides"></param>
         public void GenerateReport(bool resetOverides = false)
         {
+            Stopwatch stopwatch = new Stopwatch();
+
+            int tmpC = 0;
+            stopwatch.Start();
+
             if (resetOverides)
             {
                 report.CPStatusOverrides.Clear();
@@ -262,6 +278,7 @@ namespace AI_Note_Review
                 //default is to include
                 //ns.IncludeSegment = true;
 
+                #region Assign Include segments
                 if (!document.HashTags.Contains("!HTNUrgency") && ns.SqlICD10Segment.ICD10SegmentID == 40) //if htnurgency is not present
                 {
                     ns.SqlICD10Segment.IncludeSegment = false;
@@ -300,8 +317,6 @@ namespace AI_Note_Review
                 {
                     ns.SqlICD10Segment.IncludeSegment = false;
                 }
-
-
                 if (ns.SqlICD10Segment.ICD10SegmentID == 92) //todo: find better way to see if procedure note included.
                 {
                     if (document.ProcedureNote == null)
@@ -314,13 +329,16 @@ namespace AI_Note_Review
                     }
                 }
 
+                #endregion
+
                 if (!ns.SqlICD10Segment.IncludeSegment) continue;
                 //Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
-                foreach (SqlCheckpointViewModel cp in ns.Checkpoints)
+
+                foreach (SqlCheckpoint cp in ns.Checkpoints)
                 {
                     foreach (var p in report.CPStatusOverrides)
                     {
-                        if (p.Key.SqlCheckpoint.CheckPointID == cp.SqlCheckpoint.CheckPointID)
+                        if (p.Key.CheckPointID == cp.CheckPointID)
                         {
                             report.MissedCheckPoints.Remove(p.Key);
                             report.PassedCheckPoints.Remove(p.Key);
@@ -334,17 +352,17 @@ namespace AI_Note_Review
                                 report.PassedCheckPoints.Add(p.Key);
                                 p.Key.IncludeCheckpoint = false;
                             }
-                            AlreadyAddedCheckPointIDs.Add(p.Key.SqlCheckpoint.CheckPointID);
+                            AlreadyAddedCheckPointIDs.Add(p.Key.CheckPointID);
                         }
                     }
-                    if (AlreadyAddedCheckPointIDs.Contains(cp.SqlCheckpoint.CheckPointID)) //no need to double check
+                    if (AlreadyAddedCheckPointIDs.Contains(cp.CheckPointID)) //no need to double check
                     {
                         continue;
                     }
-                    AlreadyAddedCheckPointIDs.Add(cp.SqlCheckpoint.CheckPointID);
+                    AlreadyAddedCheckPointIDs.Add(cp.CheckPointID);
                     ///Console.WriteLine($"Now analyzing '{cp.CheckPointTitle}' checkpoint.");
                     SqlTagRegEx.EnumResult trTagResult = SqlTagRegEx.EnumResult.Pass;
-                    if (cp.SqlCheckpoint.CheckPointTitle.Contains("Augmentin XR"))
+                    if (cp.CheckPointTitle.Contains("Augmentin XR"))
                     {
 
                     }
@@ -384,9 +402,12 @@ namespace AI_Note_Review
             }
 
             //now re-order checkpoints by severity
-            report.PassedCheckPoints = new ObservableCollection<SqlCheckpointViewModel>(report.PassedCheckPoints.OrderByDescending(c => c.SqlCheckpoint.ErrorSeverity));
-            report.MissedCheckPoints = new ObservableCollection<SqlCheckpointViewModel>(report.MissedCheckPoints.OrderByDescending(c => c.SqlCheckpoint.ErrorSeverity));
-            report.DroppedCheckPoints = new ObservableCollection<SqlCheckpointViewModel>(report.DroppedCheckPoints.OrderByDescending(c => c.SqlCheckpoint.ErrorSeverity));
+            report.PassedCheckPoints = new ObservableCollection<SqlCheckpoint>(report.PassedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
+            report.MissedCheckPoints = new ObservableCollection<SqlCheckpoint>(report.MissedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
+            report.DroppedCheckPoints = new ObservableCollection<SqlCheckpoint>(report.DroppedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
+            stopwatch.Stop();
+            Console.WriteLine("Elapsed Time is {0} ms", stopwatch.ElapsedMilliseconds);
+            Console.WriteLine(tmpC);
         }
 
         /// <summary>
@@ -399,13 +420,13 @@ namespace AI_Note_Review
             double[] MissedScores = new double[] { 0, 0, 0, 0 };
             double[] Totals = new double[] { 0, 0, 0, 0 };
             double[] Scores = new double[] { 0, 0, 0, 0 };
-            foreach (SqlCheckpointViewModel cp in (from c in report.PassedCheckPoints orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
-                PassedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.SqlCheckpoint.TargetSection).ScoreSection] += cp.SqlCheckpoint.ErrorSeverity;
+                PassedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
-            foreach (SqlCheckpointViewModel cp in (from c in report.MissedCheckPoints orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
             {
-                MissedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.SqlCheckpoint.TargetSection).ScoreSection] += cp.SqlCheckpoint.ErrorSeverity;
+                MissedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
 
             for (int i = 0; i <= 3; i++)
@@ -451,9 +472,9 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointViewModel cp in (from c in report.PassedCheckPoints orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
-                tmpCheck += $"<li><font size='+1'>{cp.SqlCheckpoint.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.SqlCheckpoint.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
+                tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
                 if (cp.CustomComment != "")
                 {
                     tmpCheck += $"<br><b>Note: {cp.CustomComment}</b><br>";
@@ -467,10 +488,10 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointViewModel cp in (from c in report.MissedCheckPoints where c.SqlCheckpoint.ErrorSeverity > 0 orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
-                    tmpCheck += cp.GetReport(document,patient);
+                    tmpCheck += GetReport(cp,document,patient);
             }
             if (tmpCheck != "")
             {
@@ -480,10 +501,10 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointViewModel cp in (from c in report.MissedCheckPoints where c.SqlCheckpoint.ErrorSeverity == 0 orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
-                    tmpCheck += cp.GetReport(document,patient);
+                    tmpCheck += GetReport(cp,document,patient);
             }
             if (tmpCheck != "")
             {
@@ -510,19 +531,48 @@ namespace AI_Note_Review
             return strReport;
         }
 
+        public string GetReport(SqlCheckpoint sqlCheckpoint, Document doc, Patient pt)
+        {
+            string strReturn = "";
+            strReturn += $"<li><dt><font size='+1'>{sqlCheckpoint.CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{sqlCheckpoint.ErrorSeverity}/10)</font></dt><dd><i>{sqlCheckpoint.Comment}</i></dd></li>" + Environment.NewLine;
+            if (sqlCheckpoint.CustomComment != "")
+            {
+                strReturn += $"<b>Comment: {sqlCheckpoint.CustomComment}</b><br>";
+            }
+            if (sqlCheckpoint.Link != "" && sqlCheckpoint.Link != null)
+            {
+                strReturn += $"<a href={sqlCheckpoint.Link}>Click here for reference.</a><br>";
+            }
+            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Feedback on review of {pt.PtID} on {doc.VisitDate.ToShortDateString()}. (Ref:{pt.PtID}|{doc.VisitDate.ToShortDateString()}|{sqlCheckpoint.CheckPointID})'>Feedback</a>";
+            /*
+            strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
+            strReturn += $"\tRecommended Remediation: {Action}" + Environment.NewLine;
+            strReturn += $"\tExplanation: {Comment}" + Environment.NewLine;
+            if (Link != "")
+            strReturn += $"\tLink: {Link}" + Environment.NewLine;
+            strReturn += Environment.NewLine;
+            strReturn += Environment.NewLine;
+            */
+
+            //HPi, exam, Dx, Rx
+
+            return strReturn;
+        }
+
+
         private void CopyReportClick(object sender, RoutedEventArgs e)
         {
             double[] PassedScores = new double[] { 0, 0, 0, 0 };
             double[] MissedScores = new double[] { 0, 0, 0, 0 };
             double[] Totals = new double[] { 0, 0, 0, 0 };
             double[] Scores = new double[] { 0, 0, 0, 0 };
-            foreach (SqlCheckpointViewModel cp in (from c in report.PassedCheckPoints orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
-                PassedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.SqlCheckpoint.TargetSection).ScoreSection] += cp.SqlCheckpoint.ErrorSeverity;
+                PassedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
-            foreach (SqlCheckpointViewModel cp in (from c in report.MissedCheckPoints orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
             {
-                MissedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.SqlCheckpoint.TargetSection).ScoreSection] += cp.SqlCheckpoint.ErrorSeverity;
+                MissedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
 
             for (int i = 0; i <= 3; i++)
@@ -568,9 +618,9 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointViewModel cp in (from c in report.PassedCheckPoints orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
-                tmpCheck += $"<li><font size='+1'>{cp.SqlCheckpoint.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.SqlCheckpoint.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
+                tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
             }
             if (tmpCheck != "")
             {
@@ -580,10 +630,10 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointViewModel cp in (from c in report.MissedCheckPoints where c.SqlCheckpoint.ErrorSeverity > 0 orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
-                    tmpCheck += cp.GetReport(document,patient);
+                    tmpCheck += GetReport(cp, document, patient);
             }
             if (tmpCheck != "")
             {
@@ -593,10 +643,10 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointViewModel cp in (from c in report.MissedCheckPoints where c.SqlCheckpoint.ErrorSeverity == 0 orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
-                    tmpCheck += cp.GetReport(document,patient);
+                    tmpCheck += GetReport(cp,document,patient);
             }
             if (tmpCheck != "")
             {
@@ -649,24 +699,34 @@ namespace AI_Note_Review
 
             report.ReviewDate = DateTime.Now;
 
-            foreach (SqlCheckpointViewModel cp in (from c in report.MissedCheckPoints orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
             {
-                cp.Commit(document, patient, report, SqlRelCPProvider.MyCheckPointStates.Fail);
+                Commit(cp,document, patient, report, SqlRelCPProvider.MyCheckPointStates.Fail);
             }
 
-            foreach (SqlCheckpointViewModel cp in (from c in report.PassedCheckPoints orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
-                cp.Commit(document, patient, report, SqlRelCPProvider.MyCheckPointStates.Pass);
+                Commit(cp, document, patient, report, SqlRelCPProvider.MyCheckPointStates.Pass);
             }
-            foreach (SqlCheckpointViewModel cp in (from c in report.IrrelaventCP orderby c.SqlCheckpoint.ErrorSeverity descending select c))
+            foreach (SqlCheckpoint cp in (from c in report.IrrelaventCP orderby c.ErrorSeverity descending select c))
             {
-                cp.Commit(document, patient, report, SqlRelCPProvider.MyCheckPointStates.Irrelevant);
+                Commit(cp,document, patient, report, SqlRelCPProvider.MyCheckPointStates.Irrelevant);
             }
 
             MessageBox.Show($"{document.ProviderSql.CurrentReviewCount}/10 reports committed.");
         }
 
-       
+
+        public void Commit(SqlCheckpoint sqlCheckpoint, Document doc, Patient pt, Report rpt, SqlRelCPProvider.MyCheckPointStates cpState)
+        {
+            if (sqlCheckpoint.CustomComment == null) sqlCheckpoint.CustomComment = "";
+            string sql = $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({doc.ProviderID}, {sqlCheckpoint.CheckPointID}, {pt.PtID}, '{rpt.ReviewDate.ToString("yyyy-MM-dd")}', '{doc.VisitDate.ToString("yyyy-MM-dd")}', {(int)cpState}, '{sqlCheckpoint.CustomComment}');";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
+            }
+
+        }
 
         public string CheckPointsSummary
         {
@@ -687,7 +747,7 @@ namespace AI_Note_Review
                 string strReturn = "";
                 foreach (SqlRelCPProvider r in rlist)
                 {
-                    SqlCheckpointViewModel cp = new SqlCheckpointViewModel(r.CheckPointID);
+                    SqlCheckpoint cp = SqlCheckpoint.GetSqlCheckpoint(r.CheckPointID);
                     if (r.Comment != "")
                     {
                         cp.CustomComment = r.Comment;

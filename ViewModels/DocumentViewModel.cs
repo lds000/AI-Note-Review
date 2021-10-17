@@ -28,14 +28,14 @@ namespace AI_Note_Review
 
         private Document document;
         private Patient patient;
-        private ReportViewModel reportViewModel;
+        private Report report;
         private SqlProvider sqlProvider;
 
         public DocumentViewModel(Patient _patient)
         {
             document = new Document();
             patient = _patient;
-            reportViewModel = new ReportViewModel(document, patient);
+            report = new Report();
             sqlProvider = SqlProvider.SqlGetProviderByFullName(document.Provider);
         }
 
@@ -43,7 +43,7 @@ namespace AI_Note_Review
         {
             patient = new PatientViewModel().SamplePatient;
             document = SampleDocument;
-            reportViewModel = new ReportViewModel(document, patient);
+            report = new Report(); //second time
             sqlProvider = SqlProvider.SqlGetProviderByFullName(document.Provider);
             OnPropertyChanged("Document");
             OnPropertyChanged("Patient");
@@ -63,14 +63,13 @@ namespace AI_Note_Review
             }
         }
 
-        public ReportViewModel ReportViewModel
+        public Report Report
         {
             get
             {
-                return reportViewModel;
+                return report;
             }
         }
-
         public SqlProvider SqlProvider
             {
             get

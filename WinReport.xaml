@@ -95,8 +95,7 @@
                     <DockPanel Grid.Row="0" Grid.Column="1">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Missed Checkpoints</Label>
                         <ListBox x:Name="lbFail" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" 
-                                 ItemsSource="{Binding  MissedCheckPoints}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
-
+                                 ItemsSource="{Binding Report.MissedCheckPoints}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
                         </ListBox>
                     </DockPanel>
                     <DockPanel Grid.Row="1" Grid.Column="1">

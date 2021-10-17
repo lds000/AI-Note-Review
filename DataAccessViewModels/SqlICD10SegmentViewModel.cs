@@ -43,20 +43,14 @@ namespace AI_Note_Review
             } 
         }
 
-        public List<SqlCheckpointViewModel> Checkpoints
+        public List<SqlCheckpoint> Checkpoints
         {
             get
             {
                 string sql = $"Select * from CheckPoints where TargetICD10Segment = {sqlICD10Segment.ICD10SegmentID};";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    List<SqlCheckpointViewModel> scvm = new List<SqlCheckpointViewModel>();
-                    var tmpCPs = cnn.Query<SqlCheckpoint>(sql).ToList();
-                    foreach (SqlCheckpoint cp in tmpCPs)
-                    {
-                        scvm.Add(new SqlCheckpointViewModel(cp));
-                    }
-                    return scvm;
+                    return cnn.Query<SqlCheckpoint>(sql).ToList();
                 }
             }
         }

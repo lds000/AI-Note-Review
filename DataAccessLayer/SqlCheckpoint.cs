@@ -42,6 +42,16 @@ namespace AI_Note_Review
         {
         }
 
+        public static SqlCheckpoint GetSqlCheckpoint(int cpID)
+        {
+            string sql = $"Select * from CheckPoints WHERE CheckPointID={cpID};";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                return cnn.QueryFirstOrDefault<SqlCheckpoint>(sql);
+            }
+        }
+
+
         public int CheckPointID { get; set; } //ID is readonly
         public string CheckPointTitle
         {
@@ -187,6 +197,13 @@ namespace AI_Note_Review
             }
         }
 
+        public bool IncludeCheckpoint
+        {
+            get; set;
+        }
+
+        public string CustomComment { get; set; }
+
         /// <summary>
         /// A value of how long to have the checkpoint sleep between misses
         /// </summary>
@@ -237,6 +254,16 @@ namespace AI_Note_Review
             {
                 cnn.Execute(sql, this);
             }
+        }
+
+        public List<SqlTag> GetTags()
+        {
+            string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID} order by RelTagCheckPointID;";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                return cnn.Query<SqlTag>(sql, this).ToList();
+            }
+
         }
 
 

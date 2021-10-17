@@ -44,7 +44,6 @@ namespace AI_Note_Review
             //This is just for compiler purposes
             CF.CurrentPatient = new PatientViewModel().SamplePatient;
             CF.ClinicNote = (new DocumentViewModel(CF.CurrentPatient)).SampleDocument;
-            CF.NoteReview = new ReportViewModel(CF.ClinicNote, CF.CurrentPatient).Report;
             InitializeComponent();
             DocumentViewModel dvm = new DocumentViewModel();
             this.DataContext = dvm;

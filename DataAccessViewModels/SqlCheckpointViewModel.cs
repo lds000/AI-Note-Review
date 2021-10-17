@@ -233,26 +233,7 @@ namespace AI_Note_Review
 
 
 
-        public void Commit(Document doc, Patient pt, Report rpt, SqlRelCPProvider.MyCheckPointStates cpState)
-        {
-            if (CustomComment == null) CustomComment = "";
-            string sql = $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({doc.ProviderID}, {sqlCheckpoint.CheckPointID}, {pt.PtID}, '{rpt.ReviewDate.ToString("yyyy-MM-dd")}', '{doc.VisitDate.ToString("yyyy-MM-dd")}', {(int)cpState}, '{CustomComment}');";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql);
-            }
 
-        }
-
-        public List<SqlTag> GetTags()
-        {
-            string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {sqlCheckpoint.CheckPointID} order by RelTagCheckPointID;";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                return cnn.Query<SqlTag>(sql, this).ToList();
-            }
-
-        }
 
         public void RemoveTag(SqlTag st)
         {
@@ -275,33 +256,6 @@ namespace AI_Note_Review
                 strReturn += $"\tLink: {sqlCheckpoint.Link}" + Environment.NewLine;
             strReturn += Environment.NewLine;
             strReturn += Environment.NewLine;
-            return strReturn;
-        }
-        public string GetReport(Document doc, Patient pt)
-        {
-            string strReturn = "";
-            strReturn += $"<li><dt><font size='+1'>{sqlCheckpoint.CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{sqlCheckpoint.ErrorSeverity}/10)</font></dt><dd><i>{sqlCheckpoint.Comment}</i></dd></li>" + Environment.NewLine;
-            if (CustomComment != "")
-            {
-                strReturn += $"<b>Comment: {CustomComment}</b><br>";
-            }
-            if (sqlCheckpoint.Link != "" && sqlCheckpoint.Link != null)
-            {
-                strReturn += $"<a href={sqlCheckpoint.Link}>Click here for reference.</a><br>";
-            }
-            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Feedback on review of {pt.PtID} on {doc.VisitDate.ToShortDateString()}. (Ref:{pt.PtID}|{doc.VisitDate.ToShortDateString()}|{sqlCheckpoint.CheckPointID})'>Feedback</a>";
-            /*
-            strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
-            strReturn += $"\tRecommended Remediation: {Action}" + Environment.NewLine;
-            strReturn += $"\tExplanation: {Comment}" + Environment.NewLine;
-            if (Link != "")
-            strReturn += $"\tLink: {Link}" + Environment.NewLine;
-            strReturn += Environment.NewLine;
-            strReturn += Environment.NewLine;
-            */
-
-            //HPi, exam, Dx, Rx
-
             return strReturn;
         }
     }

@@ -509,7 +509,7 @@ namespace AI_Note_Review
         private string labsOrdered;
         private string assessments;
         private string followUp;
-        private string hashTags;
+        private string hashTags = "";
         private string surgHx;
         private string famHx;
         private int vitalsSystolic;

@@ -34,9 +34,9 @@ namespace AI_Note_Review
         public WinReport(DocumentViewModel dvm, bool GeneralCheckPointsOnly = false)
         {
             InitializeComponent();
-            DataContext = dvm;
+            ReportViewModel rvm = new ReportViewModel(dvm);
+            DataContext = rvm;
         }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
