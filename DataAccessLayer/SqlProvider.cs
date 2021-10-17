@@ -1,16 +1,29 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 namespace AI_Note_Review
 {
-    public class SqlProvider
+    public class SqlProvider : INotifyPropertyChanged
     {
+        // Declare the event
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+    
         public int ProviderID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -36,7 +49,7 @@ namespace AI_Note_Review
 
         }
 
-        public List<SqlCurrentReviewsSummary> CurrentReviewsSummary
+        public List<SqlDocumentReviewSummary> CurrentReviewsSummary
         {
             get
             {
@@ -44,7 +57,7 @@ namespace AI_Note_Review
                 sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{Properties.Settings.Default.StartReviewDate.ToString("yyyy-MM-dd")}' and '{Properties.Settings.Default.EndReviewDate.ToString("yyyy-MM-dd")}';";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    return cnn.Query<SqlCurrentReviewsSummary>(sql).ToList();
+                    return cnn.Query<SqlDocumentReviewSummary>(sql).ToList();
                 }
             }
         }
@@ -77,15 +90,7 @@ namespace AI_Note_Review
                 }
         }
 
-        public static List<SqlProvider> GetMyPeeps()
-        {
-            string sql = "";
-            sql += $"Select * from Providers where IsWestSidePod == '1' order by FullName;"; //this part is to get the ID of the newly created phrase
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                return cnn.Query<SqlProvider>(sql).ToList();
-            }
-        }
+
 
         public static SqlProvider SqlGetProviderByID(int iProviderID)
         {

@@ -32,8 +32,8 @@
                     <MenuItem Header="Settings" Click="OpenSettings">
                     </MenuItem>
                 </Menu>
-            <local:UC_PatientConsole x:Name="UCPtConsole" DockPanel.Dock="Top"></local:UC_PatientConsole>
-            <Border BorderBrush="White" DockPanel.Dock="Left">
+                <local:UC_PatientConsole x:Name="UCPtConsole" DockPanel.Dock="Top"></local:UC_PatientConsole>
+                <Border BorderBrush="White" DockPanel.Dock="Left">
                 <DockPanel>
                     <Border BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" Padding="3" Margin="3">
                         <Grid>
@@ -80,7 +80,7 @@
                         Style="{StaticResource LinkButton}" FontSize="20">Check!</Button>
                 <Button Margin="100,0,0,0" VerticalAlignment="Center" Click="CheckNoteX" Style="{StaticResource LinkButton}" FontSize="20">Check X Only</Button>
                 </StackPanel>
-            <TabControl x:Name="tcNote">
+                <TabControl x:Name="tcNote">
                 <TabItem Foreground="Black" Header="CC">
                     <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CC}"></TextBox>
                 </TabItem>

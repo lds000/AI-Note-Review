@@ -27,7 +27,7 @@ namespace AI_Note_Review
 
         public PatientViewModel()
         {
-            patient = new Patient();
+            patient = SamplePatient;
         }
 
         public Patient Patient

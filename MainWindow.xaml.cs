@@ -37,7 +37,7 @@ namespace AI_Note_Review
     public partial class MainWindow : Window
     {
         string strApikey = "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";
-
+        ReportViewModel reportViewModel;
         public MainWindow()
         {
             ProgramInit();
@@ -45,8 +45,8 @@ namespace AI_Note_Review
             //CF.CurrentPatient = new PatientViewModel().SamplePatient;
             //CF.ClinicNote = (new DocumentViewModel(CF.CurrentPatient)).SampleDocument;
             InitializeComponent();
-            DocumentViewModel dvm = new DocumentViewModel();
-            this.DataContext = dvm;
+            reportViewModel = new ReportViewModel();
+            this.DataContext = reportViewModel;
         }
 
         #region Monitor active Window
@@ -271,7 +271,7 @@ namespace AI_Note_Review
 
         private void Reviews_Click(object sender, RoutedEventArgs e)
         {
-            WinProviderReviews wp = new WinProviderReviews();
+            WinProviderReviews wp = new WinProviderReviews(reportViewModel);
             wp.Owner = this;
             wp.ShowDialog();
         }

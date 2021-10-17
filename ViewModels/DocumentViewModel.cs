@@ -39,12 +39,12 @@ namespace AI_Note_Review
             SetUpNote(); //todo: might be better way of implementing this.
         }
 
-        public DocumentViewModel()
+        public DocumentViewModel(SqlProvider prov, PatientViewModel pvm)
         {
+            sqlProvider = prov;
+            patientViewModel = pvm;
+            patient = pvm.SamplePatient;
             document = SampleDocument; //New Document() called under this.
-            patientViewModel = new PatientViewModel();
-            patient = patientViewModel.SamplePatient;
-            sqlProvider = new SqlProvider();
         }
 
         public  PatientViewModel PatientViewModel
@@ -936,8 +936,8 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            DocumentViewModel dvm = parameter as DocumentViewModel;
-            WinReport wp = new WinReport(dvm);
+            ReportViewModel rvm = parameter as ReportViewModel;
+            WinReport wp = new WinReport(rvm);
             wp.ShowDialog();
         }
         #endregion

@@ -27,7 +27,7 @@ namespace AI_Note_Review
         {
             InitializeComponent();
             cbTargetSection.ItemsSource = SqlNoteSection.NoteSections;
-            cbTagRegExType.ItemsSource = ReportViewModel.TagRegExTypes;
+            cbTagRegExType.ItemsSource = SqlTagRegExMatchResults.TagRegExTypes;
         }
 
         private void cbTargetSection_SelectionChanged(object sender, SelectionChangedEventArgs e)

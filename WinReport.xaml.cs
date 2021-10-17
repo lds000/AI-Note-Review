@@ -31,10 +31,9 @@ namespace AI_Note_Review
          //   DataContext = document;
         }
 
-        public WinReport(DocumentViewModel dvm, bool GeneralCheckPointsOnly = false)
+        public WinReport(ReportViewModel rvm, bool GeneralCheckPointsOnly = false)
         {
             InitializeComponent();
-            ReportViewModel rvm = new ReportViewModel(dvm);
             DataContext = rvm;
         }
         private void Button_Click(object sender, RoutedEventArgs e)

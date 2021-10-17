@@ -30,7 +30,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="White" BorderThickness="1" Margin="5">
-                <ListBox Style="{StaticResource MyListBox}" x:Name="lbProviders" ItemsSource="{Binding}">
+                <ListBox Style="{StaticResource MyListBox}" x:Name="lbProviders" SelectedValue="{Binding SqlProvider}"  ItemsSource="{Binding MyPeeps}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel x:Name="spTemplate" Orientation="Horizontal">
@@ -44,7 +44,7 @@
                 </ListBox>
             </Border>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="1">
-                <ListBox x:Name="lbMonthReview" Grid.Row="1" Style="{StaticResource MyListBox}" ItemsSource="{Binding SelectedItem.CurrentReviewsSummary, ElementName=lbProviders}">
+                <ListBox x:Name="lbMonthReview" Grid.Row="1" Style="{StaticResource MyListBox}" ItemsSource="{Binding ElementName=lbProviders, Path=SelectedValue.CurrentReviewsSummary}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -56,7 +56,7 @@
                 </ListBox>
             </Border>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="3">
-                <WebBrowser local:WebBrowserHelper.Body="{Binding SelectedItem.CheckPointsSummary, ElementName=lbMonthReview}">
+                <WebBrowser local:WebBrowserHelper.Body="{Binding ElementName=lbMonthReview, Path=SelectedItem.ReviewHTML}">
                     
                 </WebBrowser>
             </Border>

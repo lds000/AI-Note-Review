@@ -80,7 +80,7 @@
     <Compile Include="DataAccessLayer\SqlCheckPointImages.cs" />
     <Compile Include="DataAccessLayer\SqlCheckpoint.cs" />
     <Compile Include="DataAccessLayer\SqlCheckPointType.cs" />
-    <Compile Include="DataAccessLayer\SqlCurrentReviewsSummary.cs" />
+    <Compile Include="DataAccessLayer\SqlDocumentReviewSummary.cs" />
     <Compile Include="DataAccessLayer\SqlICD10Segment.cs" />
     <Compile Include="DataAccessLayer\SqlLightDataAccess.cs" />
     <Compile Include="DataAccessLayer\SqlMonthReviewSummary.cs" />

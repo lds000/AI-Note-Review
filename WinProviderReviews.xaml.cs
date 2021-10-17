@@ -19,10 +19,10 @@ namespace AI_Note_Review
     /// </summary>
     public partial class WinProviderReviews : Window
     {
-        public WinProviderReviews()
+        public WinProviderReviews(ReportViewModel rvm)
         {
             InitializeComponent();
-            lbProviders.DataContext = SqlProvider.GetMyPeeps();
+            lbProviders.DataContext = rvm;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -53,7 +53,6 @@ namespace AI_Note_Review
             {
                 reviewDate = value;
                 NotifyPropertyChanged();
-                NotifyPropertyChanged("ReviewDateStr");
             }
         }
 
