@@ -31,20 +31,13 @@ namespace AI_Note_Review
         private SqlProvider sqlProvider;
         private PatientViewModel patientViewModel;
 
-        public DocumentViewModel(PatientViewModel pvm, SqlProvider _SqlProvider)
-        {
-            document = SampleDocument; //New Document() called under this.
-            patient = pvm.SamplePatient;
-            sqlProvider = _SqlProvider;
-            SetUpNote(); //todo: might be better way of implementing this.
-        }
-
         public DocumentViewModel(SqlProvider prov, PatientViewModel pvm)
         {
             sqlProvider = prov;
             patientViewModel = pvm;
             patient = pvm.SamplePatient;
             document = SampleDocument; //New Document() called under this.
+            SetUpNote(); //todo: might be better way of implementing this.
         }
 
         public  PatientViewModel PatientViewModel
@@ -206,6 +199,19 @@ namespace AI_Note_Review
            Document.ICD10s.Clear();
         }
 
+        private ObservableCollection<SqlICD10SegmentViewModel> iCD10Segments;
+        public ObservableCollection<SqlICD10SegmentViewModel> ICD10Segments
+        {
+            get 
+            {
+                return iCD10Segments;
+            }
+            set
+            {
+                iCD10Segments = value;
+            }
+        }
+
         /// <summary>
         /// Load all pertinent and ICD10 related segments
         /// </summary>
@@ -256,6 +262,7 @@ namespace AI_Note_Review
             //if (isHRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(74)); //pull in HTNUrgencySegment
 
             //tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(36)); //add general segment that applies to all visits.
+            ICD10Segments = tmpICD10Segments;
             return tmpICD10Segments;
         }
 
@@ -263,7 +270,7 @@ namespace AI_Note_Review
             "Family History:", "Social History:", "ROS:", "Vitals:", "Examination:", "Assessment:","Treatment:","Procedures:","Immunizations:","Therapeutic Injections:","Diagnostic Imaging:",
             "Lab Reports:","Next Appointment:","Visit Code:","Procedure Codes:","Images:", "Objective:","Procedure Orders:","Preventive Medicine:","Billing Information:","Plan:"};
 
-
+        #region Process EcwContent
         public void processLockedt(HtmlDocument HDoc)
         {
 
@@ -902,10 +909,12 @@ namespace AI_Note_Review
             parseVitalsString(strVitals);
 
         }
+        #endregion
 
         private ICommand mShowReport;
         public ICommand ShowReport
         {
+            #region Command Def
             get
             {
                 if (mShowReport == null)
@@ -916,6 +925,7 @@ namespace AI_Note_Review
             {
                 mShowReport = value;
             }
+            #endregion
         }
 
     }

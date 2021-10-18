@@ -14,21 +14,18 @@ namespace AI_Note_Review
     {
         public DateTime VisitDate { get; set; }
         public int PtID { get; set; }
+        Report rpt = new Report();
 
         public string ReviewHTML
         {
             get
             {
+
                 return "test";
             }
         }
 
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string VisitCheckPointReportHTML
+        public string CheckPointsSummary
         {
             get
             {
@@ -39,11 +36,10 @@ namespace AI_Note_Review
                     rlist = cnn.Query<SqlRelCPProvider>(sql).ToList();
                 }
 
-                Report report = new Report();
-                report.MissedCheckPoints.Clear();
-                report.DroppedCheckPoints.Clear();
-                report.IrrelaventCP.Clear();
-                report.PassedCheckPoints.Clear();
+                rpt.MissedCheckPoints.Clear();
+                rpt.DroppedCheckPoints.Clear();
+                rpt.IrrelaventCP.Clear();
+                rpt.PassedCheckPoints.Clear();
                 string strReturn = "";
                 foreach (SqlRelCPProvider r in rlist)
                 {
@@ -54,26 +50,27 @@ namespace AI_Note_Review
                     }
                     if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Pass)
                     {
-                        report.PassedCheckPoints.Add(cp);
+                        rpt.PassedCheckPoints.Add(cp);
                     }
                     if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Fail)
                     {
-                        report.MissedCheckPoints.Add(cp);
+                        rpt.MissedCheckPoints.Add(cp);
                     }
                     if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Irrelevant)
                     {
-                        report.IrrelaventCP.Add(cp);
+                        rpt.IrrelaventCP.Add(cp);
                     }
                 }
+
                 double[] PassedScores = new double[] { 0, 0, 0, 0 };
                 double[] MissedScores = new double[] { 0, 0, 0, 0 };
                 double[] Totals = new double[] { 0, 0, 0, 0 };
                 double[] Scores = new double[] { 0, 0, 0, 0 };
-                foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpoint cp in (from c in rpt.PassedCheckPoints orderby c.ErrorSeverity descending select c))
                 {
                     PassedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
                 }
-                foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpoint cp in (from c in rpt.MissedCheckPoints orderby c.ErrorSeverity descending select c))
                 {
                     MissedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
                 }
@@ -108,11 +105,14 @@ namespace AI_Note_Review
 
                 strReport += $"Scores: HPI <b>{HPI_Score.ToString("0.##")}</b> Exam <b>{Exam_Score.ToString("0.##")}</b> Dx <b>{Dx_Score.ToString("0.##")}</b> Treatment <b>{Rx_Score.ToString("0.##")}</b> <a href='#footnote'>Total Score<sup>*</sup></a> <b>{Total_Score.ToString("0.##")}</b><br><hr>";
 
-                foreach (var seg in document.ICD10Segments)
-                {
-                    if (seg.IncludeSegment)
-                        tmpCheck += $"<li><font size='+1'>{seg.SegmentTitle}</font></li>" + Environment.NewLine;
-                }
+                /*
+                    foreach (var seg in document.ICD10Segments)
+                    {
+                        if (seg.IncludeSegment)
+                            tmpCheck += $"<li><font size='+1'>{seg.SegmentTitle}</font></li>" + Environment.NewLine;
+                    }
+                    */
+
                 if (tmpCheck != "")
                 {
                     strReport += $"<font size='+3'>Relevant ICD10 and Review Topic Segments</font><br><dl><ul>";
@@ -121,7 +121,7 @@ namespace AI_Note_Review
                 }
 
                 tmpCheck = "";
-                foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpoint cp in (from c in rpt.PassedCheckPoints orderby c.ErrorSeverity descending select c))
                 {
                     tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
                     if (cp.CustomComment != "")
@@ -137,10 +137,10 @@ namespace AI_Note_Review
                 }
 
                 tmpCheck = "";
-                foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpoint cp in (from c in rpt.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
                 {
                     if (cp.IncludeCheckpoint)
-                        tmpCheck += GetReport(cp, document, patient);
+                        tmpCheck += GetReport(cp);
                 }
                 if (tmpCheck != "")
                 {
@@ -150,10 +150,10 @@ namespace AI_Note_Review
                 }
 
                 tmpCheck = "";
-                foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpoint cp in (from c in rpt.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
                 {
                     if (cp.IncludeCheckpoint)
-                        tmpCheck += GetReport(cp, document, patient);
+                        tmpCheck += GetReport(cp);
                 }
                 if (tmpCheck != "")
                 {
@@ -178,17 +178,39 @@ namespace AI_Note_Review
                 //System.Windows.Clipboard.SetText(strReport);
                 //ClipboardHelper.CopyToClipboard(strReport, "");
                 return strReport;
-
             }
-
-            /// <summary>
-            /// Return a string of HTML code representing the current document report
-            /// </summary>
-            /// <returns></returns>
-
-
         }
+
+        public string GetReport(SqlCheckpoint sqlCheckpoint)
+        {
+            string strReturn = "";
+            strReturn += $"<li><dt><font size='+1'>{sqlCheckpoint.CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{sqlCheckpoint.ErrorSeverity}/10)</font></dt><dd><i>{sqlCheckpoint.Comment}</i></dd></li>" + Environment.NewLine;
+            if (sqlCheckpoint.CustomComment != "")
+            {
+                strReturn += $"<b>Comment: {sqlCheckpoint.CustomComment}</b><br>";
+            }
+            if (sqlCheckpoint.Link != "" && sqlCheckpoint.Link != null)
+            {
+                strReturn += $"<a href={sqlCheckpoint.Link}>Click here for reference.</a><br>";
+            }
+            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Feedback on review of {PtID} on {VisitDate.ToShortDateString()}. (Ref:{PtID}|{VisitDate.ToShortDateString()}|{sqlCheckpoint.CheckPointID})'>Feedback</a>";
+            /*
+            strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
+            strReturn += $"\tRecommended Remediation: {Action}" + Environment.NewLine;
+            strReturn += $"\tExplanation: {Comment}" + Environment.NewLine;
+            if (Link != "")
+            strReturn += $"\tLink: {Link}" + Environment.NewLine;
+            strReturn += Environment.NewLine;
+            strReturn += Environment.NewLine;
+            */
+
+            //HPi, exam, Dx, Rx
+
+            return strReturn;
+        }
+
+    }
 }
 
 
-}
+

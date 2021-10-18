@@ -276,11 +276,11 @@ namespace AI_Note_Review
 
             List<int> AlreadyAddedCheckPointIDs = new List<int>();
 
-            foreach (SqlICD10SegmentViewModel ns in SqlICD10SegmentViewModel.NoteICD10Segments) //reset icd10segments
+            foreach (SqlICD10SegmentViewModel ns in documentViewModel.GetSegments()) //reset icd10segments
             {
                 if (ns.SqlICD10Segment.ICD10SegmentID != 90) ns.SqlICD10Segment.IncludeSegment = true; //reset for all except EDtransfer, which is manually selected.
             }
-            foreach (SqlICD10SegmentViewModel ns in SqlICD10SegmentViewModel.NoteICD10Segments)
+            foreach (SqlICD10SegmentViewModel ns in documentViewModel.GetSegments())
             {
                 //default is to include
                 //ns.IncludeSegment = true;
