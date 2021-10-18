@@ -78,7 +78,7 @@ namespace AI_Note_Review
 
         /// <summary>
         /// A list of all SqlICD10Segments
-        /// </summary>
+        /// </summary>Celica9
         public static List<SqlICD10SegmentViewModel> NoteICD10Segments
         {
             get
