@@ -28,9 +28,9 @@ namespace AI_Note_Review
 
         //key entities
         private ReportM report;
-        private DocumentVM documentViewModel;
+        private DocumentVM documentVM;
         private DocumentM document;
-        private PatientVM patientViewModel;
+        private PatientVM patientVM;
         private PatientM patient;
         private SqlProvider sqlProvider;
 
@@ -38,10 +38,10 @@ namespace AI_Note_Review
         {
             report = new ReportM();
             sqlProvider = new SqlProvider(); //Change provider for report
-            patientViewModel = new PatientVM();
-            patient = patientViewModel.Patient;
-            documentViewModel = new DocumentVM(sqlProvider, patientViewModel);
-            document = documentViewModel.Document;
+            patientVM = new PatientVM();
+            patient = patientVM.Patient;
+            documentVM = new DocumentVM(sqlProvider, patientVM);
+            document = documentVM.Document;
             GenerateReport(); //first time
         }
 
@@ -62,11 +62,11 @@ namespace AI_Note_Review
             }
         }
 
-        public DocumentVM DocumentViewModel
+        public DocumentVM DocumentVM
         {
             get
             {
-                return documentViewModel;
+                return documentVM;
             }
         }
 
@@ -90,11 +90,11 @@ namespace AI_Note_Review
             }
         }
 
-        public PatientVM PatientViewModel
+        public PatientVM PatientVM
         {
             get
             {
-                return patientViewModel;
+                return patientVM;
             }
         }
 
@@ -266,11 +266,11 @@ namespace AI_Note_Review
 
             List<int> AlreadyAddedCheckPointIDs = new List<int>();
 
-            foreach (SqlICD10SegmentViewModel ns in documentViewModel.GetSegments()) //reset icd10segments
+            foreach (SqlICD10SegmentVM ns in documentVM.GetSegments()) //reset icd10segments
             {
                 if (ns.SqlICD10Segment.ICD10SegmentID != 90) ns.SqlICD10Segment.IncludeSegment = true; //reset for all except EDtransfer, which is manually selected.
             }
-            foreach (SqlICD10SegmentViewModel ns in documentViewModel.GetSegments())
+            foreach (SqlICD10SegmentVM ns in documentVM.GetSegments())
             {
                 //default is to include
                 //ns.IncludeSegment = true;
@@ -331,7 +331,7 @@ namespace AI_Note_Review
                 if (!ns.SqlICD10Segment.IncludeSegment) continue;
                 //Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
 
-                foreach (SqlCheckpoint cp in ns.Checkpoints)
+                foreach (SqlCheckpointVM cp in ns.Checkpoints)
                 {
                     foreach (var p in report.CPStatusOverrides)
                     {
@@ -399,16 +399,16 @@ namespace AI_Note_Review
             }
 
             //now re-order checkpoints by severity
-            report.PassedCheckPoints = new ObservableCollection<SqlCheckpoint>(report.PassedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
-            report.MissedCheckPoints = new ObservableCollection<SqlCheckpoint>(report.MissedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
-            report.DroppedCheckPoints = new ObservableCollection<SqlCheckpoint>(report.DroppedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
+            report.PassedCheckPoints = new ObservableCollection<SqlCheckpointVM>(report.PassedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
+            report.MissedCheckPoints = new ObservableCollection<SqlCheckpointVM>(report.MissedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
+            report.DroppedCheckPoints = new ObservableCollection<SqlCheckpointVM>(report.DroppedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
             stopwatch.Stop();
             Console.WriteLine("Elapsed Time is {0} ms", stopwatch.ElapsedMilliseconds);
             Console.WriteLine(tmpC);
         }
 
 
-        public string GetReport(SqlCheckpoint sqlCheckpoint, DocumentM doc, PatientM pt)
+        public string GetReport(SqlCheckpointVM sqlCheckpoint, DocumentM doc, PatientM pt)
         {
             string strReturn = "";
             strReturn += $"<li><dt><font size='+1'>{sqlCheckpoint.CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{sqlCheckpoint.ErrorSeverity}/10)</font></dt><dd><i>{sqlCheckpoint.Comment}</i></dd></li>" + Environment.NewLine;
@@ -443,11 +443,11 @@ namespace AI_Note_Review
             double[] MissedScores = new double[] { 0, 0, 0, 0 };
             double[] Totals = new double[] { 0, 0, 0, 0 };
             double[] Scores = new double[] { 0, 0, 0, 0 };
-            foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
                 PassedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
-            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
             {
                 MissedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
@@ -495,7 +495,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
                 tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
             }
@@ -507,7 +507,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
                     tmpCheck += GetReport(cp, document, patient);
@@ -520,7 +520,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
                     tmpCheck += GetReport(cp,document,patient);
@@ -576,16 +576,16 @@ namespace AI_Note_Review
 
             report.ReviewDate = DateTime.Now;
 
-            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
             {
                 Commit(cp,document, patient, report, SqlRelCPProvider.MyCheckPointStates.Fail);
             }
 
-            foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
                 Commit(cp, document, patient, report, SqlRelCPProvider.MyCheckPointStates.Pass);
             }
-            foreach (SqlCheckpoint cp in (from c in report.IrrelaventCP orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.IrrelaventCP orderby c.ErrorSeverity descending select c))
             {
                 Commit(cp,document, patient, report, SqlRelCPProvider.MyCheckPointStates.Irrelevant);
             }
@@ -594,7 +594,7 @@ namespace AI_Note_Review
         }
 
 
-        public void Commit(SqlCheckpoint sqlCheckpoint, DocumentM doc, PatientM pt, ReportM rpt, SqlRelCPProvider.MyCheckPointStates cpState)
+        public void Commit(SqlCheckpointVM sqlCheckpoint, DocumentM doc, PatientM pt, ReportM rpt, SqlRelCPProvider.MyCheckPointStates cpState)
         {
             if (sqlCheckpoint.CustomComment == null) sqlCheckpoint.CustomComment = "";
             string sql = $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({doc.ProviderID}, {sqlCheckpoint.CheckPointID}, {pt.PtID}, '{rpt.ReviewDate.ToString("yyyy-MM-dd")}', '{doc.VisitDate.ToString("yyyy-MM-dd")}', {(int)cpState}, '{sqlCheckpoint.CustomComment}');";
@@ -627,7 +627,7 @@ namespace AI_Note_Review
                 string strReturn = "";
                 foreach (SqlRelCPProvider r in rlist)
                 {
-                    SqlCheckpoint cp = SqlCheckpoint.GetSqlCheckpoint(r.CheckPointID);
+                    SqlCheckpointVM cp = new SqlCheckpointVM(r.CheckPointID);
                     if (r.Comment != "")
                     {
                         cp.CustomComment = r.Comment;
@@ -660,11 +660,11 @@ namespace AI_Note_Review
             double[] MissedScores = new double[] { 0, 0, 0, 0 };
             double[] Totals = new double[] { 0, 0, 0, 0 };
             double[] Scores = new double[] { 0, 0, 0, 0 };
-            foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
                 PassedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
-            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
             {
                 MissedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
@@ -712,7 +712,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
             {
                 tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
                 if (cp.CustomComment != "")
@@ -728,7 +728,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
                     tmpCheck += GetReport(cp, document, patient);
@@ -741,7 +741,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
                     tmpCheck += GetReport(cp, document, patient);
@@ -772,7 +772,7 @@ namespace AI_Note_Review
         }
 
 
-        public void AddCheckPoint(SqlCheckpoint cp, DateTime dtReviewDate)
+        public void AddCheckPoint(SqlCheckpointM cp, DateTime dtReviewDate)
         {
             string sql = $"INSERT INTO RelCPPRovider (ProviderID,CheckPointID,PtID,HomeClinic,ReviewInterval,IsWestSidePod) VALUES ({document.ProviderID},{cp.CheckPointID},{patient.PtID},'{dtReviewDate}','{document.VisitDate}',{sqlProvider.IsWestSidePod});";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))

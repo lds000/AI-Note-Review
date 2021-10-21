@@ -23,6 +23,20 @@ namespace AI_Note_Review
     /// </summary>
     public partial class VisitReportV : Window
     {
+
+        #region window position save/recall functions
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            CF.SetWindowPosition(this);
+            CF.IsReviewWindowOpen = true;
+        }
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            CF.SaveWindowPosition(this);
+            CF.IsReviewWindowOpen = false;
+        }
+        #endregion
+
         public VisitReportV(bool GeneralCheckPointsOnly = false)
         {
             InitializeComponent();
@@ -44,24 +58,11 @@ namespace AI_Note_Review
         private void lbFail_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ListBox lb = sender as ListBox;
-            SqlCheckpoint cp = (SqlCheckpoint) lb.SelectedItem;
+            SqlCheckpointM cp = (SqlCheckpointM) lb.SelectedItem;
             WinCheckPointEditor wce = new WinCheckPointEditor(cp);
             wce.Owner = this;
             wce.ShowDialog();
         }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            CF.SetWindowPosition(this);
-            CF.IsReviewWindowOpen = true;
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            CF.SaveWindowPosition(this);
-            CF.IsReviewWindowOpen = false;
-        }
-
         private void Button_Click_Recheck(object sender, RoutedEventArgs e)
         {
             //document.GenerateReport();
@@ -126,7 +127,7 @@ namespace AI_Note_Review
             {
                 WinShowCheckPointRichText scp = new WinShowCheckPointRichText();
                 ListBoxItem lbi = FocusManager.GetFocusedElement(this) as ListBoxItem;
-                SqlCheckpoint cp = lbi.DataContext as SqlCheckpoint;
+                SqlCheckpointM cp = lbi.DataContext as SqlCheckpointM;
                 scp.DataContext = cp;
                 scp.Owner = this;
                 //scp.ImChanged += Scp_AddMe;
@@ -138,7 +139,7 @@ namespace AI_Note_Review
         private void MovePassedCP(object sender, RoutedEventArgs e)
         {
             MenuItem i = sender as MenuItem;
-            SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
+            SqlCheckpointM cp = i.DataContext as SqlCheckpointM;
             //document.CPStatusOverrides.CreateNewOrUpdateExisting(cp, SqlRelCPProvider.MyCheckPointStates.Pass);
             //document.GenerateReport();
         }
@@ -146,7 +147,7 @@ namespace AI_Note_Review
         private void MoveMissedCP(object sender, RoutedEventArgs e)
         {
             MenuItem i = sender as MenuItem;
-            SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
+            SqlCheckpointM cp = i.DataContext as SqlCheckpointM;
             //document.CPStatusOverrides.CreateNewOrUpdateExisting(cp, SqlRelCPProvider.MyCheckPointStates.Fail);
             //document.GenerateReport();
         }
@@ -154,7 +155,7 @@ namespace AI_Note_Review
         private void DropCP(object sender, RoutedEventArgs e)
         {
             MenuItem i = sender as MenuItem;
-            SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
+            SqlCheckpointM cp = i.DataContext as SqlCheckpointM;
             //document.CPStatusOverrides.CreateNewOrUpdateExisting(cp, SqlRelCPProvider.MyCheckPointStates.Irrelevant);
             //document.GenerateReport();
         }
@@ -162,7 +163,7 @@ namespace AI_Note_Review
         private void AddCommentCP(object sender, RoutedEventArgs e)
         {
             MenuItem i = sender as MenuItem;
-            SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
+            SqlCheckpointVM cp = i.DataContext as SqlCheckpointVM;
             WinEnterText wet = new WinEnterText($"Add/Edit Comment: {cp.CheckPointTitle}", cp.CustomComment);
             wet.Owner = this;
             wet.ShowDialog();

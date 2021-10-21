@@ -66,7 +66,7 @@ namespace AI_Note_Review
         /// <summary>
         /// int CheckpointID, int CPstatus
         /// </summary>
-        public Dictionary<SqlCheckpoint, SqlRelCPProvider.MyCheckPointStates> CPStatusOverrides
+        public Dictionary<SqlCheckpointVM, SqlRelCPProvider.MyCheckPointStates> CPStatusOverrides
         {
             get
             {
@@ -90,7 +90,7 @@ namespace AI_Note_Review
             }
         }
 
-        public ObservableCollection<SqlCheckpoint> DroppedCheckPoints
+        public ObservableCollection<SqlCheckpointVM> DroppedCheckPoints
         {
             get
             {
@@ -105,7 +105,7 @@ namespace AI_Note_Review
 
 
 
-        public ObservableCollection<SqlCheckpoint> PassedCheckPoints
+        public ObservableCollection<SqlCheckpointVM> PassedCheckPoints
         {
             get
             {
@@ -117,7 +117,7 @@ namespace AI_Note_Review
                 NotifyPropertyChanged();
             }
         }
-        public ObservableCollection<SqlCheckpoint> MissedCheckPoints
+        public ObservableCollection<SqlCheckpointVM> MissedCheckPoints
         {
             get
             {
@@ -129,7 +129,7 @@ namespace AI_Note_Review
                 NotifyPropertyChanged();
             }
         }
-        public ObservableCollection<SqlCheckpoint> IrrelaventCP
+        public ObservableCollection<SqlCheckpointVM> IrrelaventCP
         {
             get
             {
@@ -144,12 +144,12 @@ namespace AI_Note_Review
         #endregion
 
         private ObservableCollection<string> documentTags = new ObservableCollection<string>();
-        private ObservableCollection<SqlCheckpoint> irrelaventCheckPoints = new ObservableCollection<SqlCheckpoint>();
-        private ObservableCollection<SqlCheckpoint> missedCheckPoints = new ObservableCollection<SqlCheckpoint>();
-        private ObservableCollection<SqlCheckpoint> relevantCheckPoints = new ObservableCollection<SqlCheckpoint>();
-        private ObservableCollection<SqlCheckpoint> passedCheckPoints = new ObservableCollection<SqlCheckpoint>();
-        private ObservableCollection<SqlCheckpoint> droppedCheckPoints = new ObservableCollection<SqlCheckpoint>();
-        private Dictionary<SqlCheckpoint, SqlRelCPProvider.MyCheckPointStates> cPStatusOverrides = new Dictionary<SqlCheckpoint, SqlRelCPProvider.MyCheckPointStates>();
+        private ObservableCollection<SqlCheckpointVM> irrelaventCheckPoints = new ObservableCollection<SqlCheckpointVM>();
+        private ObservableCollection<SqlCheckpointVM> missedCheckPoints = new ObservableCollection<SqlCheckpointVM>();
+        private ObservableCollection<SqlCheckpointVM> relevantCheckPoints = new ObservableCollection<SqlCheckpointVM>();
+        private ObservableCollection<SqlCheckpointVM> passedCheckPoints = new ObservableCollection<SqlCheckpointVM>();
+        private ObservableCollection<SqlCheckpointVM> droppedCheckPoints = new ObservableCollection<SqlCheckpointVM>();
+        private Dictionary<SqlCheckpointVM, SqlRelCPProvider.MyCheckPointStates> cPStatusOverrides = new Dictionary<SqlCheckpointVM, SqlRelCPProvider.MyCheckPointStates>();
 
     }
 }

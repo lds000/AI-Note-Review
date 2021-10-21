@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace AI_Note_Review
@@ -23,19 +24,19 @@ namespace AI_Note_Review
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        private BiMonthlyReviewM biMonthlyReviewModel;
+        private BiMonthlyReviewM biMonthlyReviewM;
         private SqlProvider sqlProvider;
 
-        public BiMonthlyReviewM BiMonthlyReviewModel
+        public BiMonthlyReviewM BiMonthlyReviewM
         {
             get {
-                return biMonthlyReviewModel;
+                return biMonthlyReviewM;
             }
         }
 
         public BiMonthlyReviewVM()
         {
-            biMonthlyReviewModel = new BiMonthlyReviewM();
+            biMonthlyReviewM = new BiMonthlyReviewM();
         }
 
 
@@ -51,6 +52,45 @@ namespace AI_Note_Review
             }
         }
 
-
+        private ICommand mShowBiMonthlyReport;
+        public ICommand ShowBiMonthlyReport
+        {
+            #region Command Def
+            get
+            {
+                if (mShowBiMonthlyReport == null)
+                    mShowBiMonthlyReport = new ShowBiMonthlyReport();
+                return mShowBiMonthlyReport;
+            }
+            set
+            {
+                mShowBiMonthlyReport = value;
+            }
+            #endregion
+        }
     }
+
+    class ShowBiMonthlyReport : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            BiMonthlyReviewVM rvm = parameter as BiMonthlyReviewVM;
+            BiMonthlyReviewV wp = new BiMonthlyReviewV(rvm);
+            wp.ShowDialog();
+        }
+        #endregion
+    }
+
 }

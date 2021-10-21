@@ -36,19 +36,18 @@ namespace AI_Note_Review
     /// </summary>
     public partial class MainWindow : Window
     {
-        string strApikey = "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";
-        ReportVM reportViewModel;
-        BiMonthlyReviewVM biMonthlyReviewViewModel;
+        //string strApikey = "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"; //for AI
+
+        ReportVM reportVM;
+        BiMonthlyReviewVM biMonthlyReviewVM;
         public MainWindow()
         {
             ProgramInit();
-            //This is just for compiler purposes
-            //CF.CurrentPatient = new PatientVM().SamplePatient;
-            //CF.ClinicNote = (new DocumentVM(CF.CurrentPatient)).SampleDocument;
             InitializeComponent();
-            reportViewModel = new ReportVM();
-            biMonthlyReviewViewModel = new BiMonthlyReviewVM();
-            this.DataContext = reportViewModel;
+            reportVM = new ReportVM();
+            biMonthlyReviewVM = new BiMonthlyReviewVM();
+            this.DataContext = reportVM;
+            biMonthReviewMI.DataContext = biMonthlyReviewVM;
         }
 
         #region Monitor active Window
@@ -147,6 +146,7 @@ namespace AI_Note_Review
             }
         }
 
+        #region window functions
         /// <summary>
         /// Monitors windows as the focus is changed.
         /// </summary>
@@ -187,7 +187,7 @@ namespace AI_Note_Review
             }
 
             //load patient.
-            if (windowHeader.Contains("PatientM Encounter Summary")) //PatientM Encounter Summary
+            if (windowHeader.Contains("Patient Encounter Summary")) //PatientM Encounter Summary
             {
                 int i = 0;
                 if (!CF.IsReviewWindowOpen) //do not load new patient if in a current review.
@@ -200,8 +200,8 @@ namespace AI_Note_Review
                             if (h.EcwHTMLDocument.Body != null)
                                 if (h.EcwHTMLDocument.Body.InnerHtml != null)
                                 {
-                                    //processLockedt(h.EcwHTMLDocument);
-                                    //if (document.PtName != "") break;
+                                    reportVM.DocumentVM.processLockedt(h.EcwHTMLDocument);
+                                    if (reportVM.Patient.PtName != "") break;
                                 }
                     }
                     Thread.Sleep(200);
@@ -209,227 +209,35 @@ namespace AI_Note_Review
                 }
             }
         }
-
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             CF.SetWindowPosition(this);
         }
-
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             CF.SaveWindowPosition(this);
         }
-
-        private void CheckNote(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void CheckNoteX(object sender, RoutedEventArgs e)
-        {
-            VisitReportV wp = new VisitReportV(true);
-            wp.ShowDialog();
-        }
+        #endregion
 
         private void EditCP(object sender, RoutedEventArgs e)
         {
-            winDbRelICD10CheckpointsEditor w = new winDbRelICD10CheckpointsEditor();
+            CheckPointEditorV w = new CheckPointEditorV();
             w.Owner = this;
             w.Show();
         }
-
-
-        private void Button_ClickReviewDate(object sender, RoutedEventArgs e)
-        {
-            WinGetReviewDate wr = new WinGetReviewDate();
-            wr.Owner = this;
-            wr.ShowDialog();
-            //if (wr.SelectedDate > DateTime.MinValue)
-            //document.ReviewDate = wr.SelectedDate;
-        }
-
-        private void Button_ReportsReviewClick(object sender, RoutedEventArgs e)
-        {
-            WinCommittReport wcr = new WinCommittReport();
-            wcr.Owner = this;
-            wcr.ShowDialog();
-        }
-
         private void OpenSettings(object sender, RoutedEventArgs e)
         {
             WinSettings ws = new WinSettings();
             ws.Owner = this;
             ws.ShowDialog();
         }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void Reviews_Click(object sender, RoutedEventArgs e)
         {
-            BiMonthlyReviewV wp = new BiMonthlyReviewV(biMonthlyReviewViewModel);
-            wp.Owner = this;
-            wp.ShowDialog();
-        }
 
-        private void Label_MouseDown_1(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void ProviderLabel_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            //SqlProvider sp = SqlProvider.SqlGetProviderByID(document.ProviderID);
-            //WinEnterText wet = new WinEnterText($"Private notes for {sp.FullName}", sp.PersonalNotes);
-            //wet.ShowDialog();
-            //sp.PersonalNotes = wet.ReturnValue;
-            //sp.SaveToDatabase();
-            
-        }
-    }
-
-    public static class ExtensionMethods
-    {
-        public static string TrimEnd(this string input, string suffixToRemove, StringComparison comparisonType = StringComparison.CurrentCulture)
-        {
-            if (suffixToRemove != null && input.EndsWith(suffixToRemove, comparisonType))
-            {
-                return input.Substring(0, input.Length - suffixToRemove.Length);
-            }
-
-            return input;
-        }
-
-        public static bool RegexContains(this string input, string strRegEx)
-        {
-            RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace;
-            return Regex.IsMatch(input, strRegEx, options);
-        }
-
-
-
-        public static string ParseHistory(this string strInput)
-        {
-            char[] delimiterChars = { ' ', ',', '.', ':', '\t' };
-
-            string strHPI = strInput;
-            strHPI = strHPI.Replace("has not had", "hasnothad");
-            strHPI = strHPI.Replace("has had", "hashad");
-            strHPI = strHPI.Replace("not have", "nothave");
-
-            string[] strNegMarker = { "denies", "no history of", "no hx of", "does not have", "didn't have","nothave", "hasnothad", "reports", "admits" };
-            string[] strPosMarker = { "complain", "c/o", "endorses","indicates","hashad", "presents", "presented", "presenting", "has been", "states", "does have" };
-            string[] words = strHPI.Split(delimiterChars);
-            System.Console.WriteLine($"{words.Length} words in text:");
-            string strCompare = "";
-            Queue<string> strStack = new Queue<string>();
-            string strPosNeg = "Intro";
-            string strLastCompareResult = "";
-            string strResult = "";
-            foreach (var word in words)
-            {
-                if (word == "") continue;
-                strCompare += " " + word.ToLower();
-                strStack.Enqueue(word);
-
-                bool strContainsPos = false;
-                foreach (string str in strPosMarker)
-                {
-                    if (strCompare.Contains(str))
-                    {
-                        strContainsPos = true;
-                        strResult = str;
-                        break;
-                    }
-                }
-                if (strContainsPos)
-                {
-                    string strOutput = "";
-                    while (strStack.Count > 0)
-                    {
-                        strOutput += strStack.Dequeue() + " ";
-                    }
-                    strOutput = strOutput.Trim();
-                    strOutput = strOutput.Replace(strResult, "");
-                    System.Console.WriteLine($"{strPosNeg}- <{strLastCompareResult}>  {strOutput}");
-                    strLastCompareResult = strResult;
-                    strPosNeg = "Pos";
-                    strCompare = "";
-                }
-
-                bool strContainsNeg = false;
-                foreach (string str in strNegMarker)
-                {
-                    if (strCompare.Contains(str))
-                    {
-                        strContainsNeg = true;
-                        strResult = str;
-                        break;
-                    }
-                }
-                if (strContainsNeg)
-                {
-                    string strOutput = "";
-                    while (strStack.Count > 0)
-                    {
-                        strOutput += strStack.Dequeue() + " ";
-                    }
-                    strOutput = strOutput.Trim();
-                    strOutput = strOutput.Replace(strResult, "");
-                    System.Console.WriteLine($"{strPosNeg}- <{strLastCompareResult}>  {strOutput}");
-                    strLastCompareResult = strResult;
-                    strPosNeg = "Neg";
-                    strCompare = "";
-                }
-            }
-            string strOutputFinal = "";
-            while (strStack.Count > 0)
-            {
-                strOutputFinal += strStack.Dequeue() + " ";
-            }
-            strOutputFinal = strOutputFinal.Trim();
-            if (strResult!="")
-            strOutputFinal = strOutputFinal.Replace(strResult, "");
-            System.Console.WriteLine($"{strPosNeg}- <{strLastCompareResult}>  {strOutputFinal}");
-
-            return strHPI;
-        }
-    }
-
-    public class DateTimeHandler : SqlMapper.TypeHandler<DateTimeOffset>
-    {
-        private readonly TimeZoneInfo databaseTimeZone = TimeZoneInfo.Local;
-        public static readonly DateTimeHandler Default = new DateTimeHandler();
-
-        public DateTimeHandler()
-        {
-
-        }
-
-        public override DateTimeOffset Parse(object value)
-        {
-            DateTime storedDateTime;
-            if (value == null)
-                storedDateTime = DateTime.MinValue;
-            else
-                storedDateTime = (DateTime)value;
-
-            if (storedDateTime.ToUniversalTime() <= DateTimeOffset.MinValue.UtcDateTime)
-                return DateTimeOffset.MinValue;
-            else
-                return new DateTimeOffset(storedDateTime, databaseTimeZone.BaseUtcOffset);
-        }
-
-        public override void SetValue(IDbDataParameter parameter, DateTimeOffset value)
-        {
-            DateTime paramVal = value.ToOffset(this.databaseTimeZone.BaseUtcOffset).DateTime;
-            parameter.Value = paramVal;
         }
     }
 }

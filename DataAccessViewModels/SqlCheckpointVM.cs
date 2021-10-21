@@ -1,0 +1,260 @@
+﻿using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SQLite;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
+
+
+namespace AI_Note_Review
+{
+    /*
+* Great example I found online.
+class PersonModel {
+public string Name { get; set; }
+}
+
+class PersonViewModel {
+private PersonModel Person { get; set;}
+public string Name { get { return this.Person.Name; } }
+public bool IsSelected { get; set; } // example of state exposed by view model
+
+public PersonViewModel(PersonModel person) {
+    this.Person = person;
+}
+}
+*/
+    public class SqlCheckpointVM : INotifyPropertyChanged
+    {
+        // Declare the event
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        public SqlCheckpointVM()
+        {
+        }
+
+        public SqlCheckpointVM(SqlCheckpointM cp)
+        {
+            this.SqlCheckpoint = cp;
+        }
+
+        public SqlCheckpointVM(string strCheckPointTitle, int iTargetICD10Segment)
+        {
+            this.SqlCheckpoint = new SqlCheckpointM(strCheckPointTitle, iTargetICD10Segment);
+        }
+
+        public SqlCheckpointVM(int cpID)
+        {
+            string sql = $"Select * from CheckPoints WHERE CheckPointID={cpID};";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                this.SqlCheckpoint = cnn.QueryFirstOrDefault<SqlCheckpointM>(sql);
+            }
+        }
+
+
+        public SqlCheckpointM SqlCheckpoint { get; set; }
+        public int CheckPointID { get { return this.SqlCheckpoint.CheckPointID; } }
+        public string CheckPointTitle { get { return this.SqlCheckpoint.CheckPointTitle; } set { this.SqlCheckpoint.CheckPointTitle = value; } }
+        public int CheckPointType { get { return this.SqlCheckpoint.CheckPointType; } set { this.SqlCheckpoint.CheckPointType = value; } }
+        public string Comment { get { return this.SqlCheckpoint.Comment; } set { this.SqlCheckpoint.Comment = value; } }
+        public int ErrorSeverity { get { return this.SqlCheckpoint.ErrorSeverity; } set { this.SqlCheckpoint.ErrorSeverity = value; } }
+        public int TargetSection { get { return this.SqlCheckpoint.TargetSection; } set { this.SqlCheckpoint.TargetSection = value; } }
+        public int TargetICD10Segment { get { return this.SqlCheckpoint.TargetICD10Segment; } set { this.SqlCheckpoint.TargetICD10Segment = value; } }
+        public string Action { get { return this.SqlCheckpoint.Action; } set { this.SqlCheckpoint.Action = value; } }
+        public string Link { get { return this.SqlCheckpoint.Link; } set { this.SqlCheckpoint.Link = value; } }
+        public int Expiration { get { return this.SqlCheckpoint.Expiration; } set { this.SqlCheckpoint.Expiration = value; } }
+
+        public void SaveToDB()
+        {
+            this.SqlCheckpoint.SaveToDB();
+        }
+        public void DeleteFromDB()
+        {
+            this.SqlCheckpoint.DeleteFromDB();
+        }
+        public void DeleteImage(SqlCheckPointImage sci)
+        {
+            this.SqlCheckpoint.DeleteImage(sci);
+        }
+        public void AddImageFromClipBoard()
+        {
+            this.SqlCheckpoint.AddImageFromClipBoard();
+        }
+        public void AddTag(SqlTag tg)
+        {
+            this.SqlCheckpoint.AddTag(tg);
+        }
+        public void RemoveTag(SqlTag st)
+        {
+            this.SqlCheckpoint.RemoveTag(st);
+        }
+
+        public List<SqlTag> GetTags()
+        {
+            return this.SqlCheckpoint.GetTags();
+        }
+
+        /// <summary>
+        /// A boolean indicating if the checkpoint will be included in the report.  This is true by default for all missed checkpoint, false for for all passed check point. It is not saved in the database.
+        /// </summary>
+        public bool IncludeCheckpoint
+        {
+            get; set;
+        }
+
+
+        public static List<SqlCheckpointM> GetCPsFromSegment(int SegmentID)
+        {
+            string sql = $"Select * from CheckPoints where TargetICD10Segment == {SegmentID}";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                return cnn.Query<SqlCheckpointM>(sql).ToList();
+            }
+
+        }
+
+
+        /// <summary>
+        /// A personal comment added to a checkpoint that is saved in the database under the commit (not checkpoint model).
+        /// </summary>
+        public string CustomComment { get; set; }
+
+        public static List<SqlCheckPointType> CheckPointTypes()
+        {
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                string sql = "Select * from CheckPointTypes order by ItemOrder;";
+                return cnn.Query<SqlCheckPointType>(sql).ToList();
+            }
+
+        }
+
+
+        #region Update Command
+
+        private ICommand mUpdateCP;
+        public ICommand UdateCPCommand
+        {
+            get
+            {
+                if (mUpdateCP == null)
+                    mUpdateCP = new CPUpdater();
+                return mUpdateCP;
+            }
+            set
+            {
+                mUpdateCP = value;
+            }
+        }
+#endregion
+
+
+    }
+
+    class TagAdder : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlCheckpointM CurrentCheckpoint = parameter as SqlCheckpointM;
+            if (CurrentCheckpoint == null) return;
+            string strSuggest = "#";
+            if (CurrentCheckpoint.CheckPointType == 1) strSuggest = "#Query";
+            if (CurrentCheckpoint.CheckPointType == 2) strSuggest = "#Exam";
+            if (CurrentCheckpoint.CheckPointType == 3) strSuggest = "#Lab";
+            if (CurrentCheckpoint.CheckPointType == 4) strSuggest = "#Imaging";
+            if (CurrentCheckpoint.CheckPointType == 5) strSuggest = "#Condition";
+            if (CurrentCheckpoint.CheckPointType == 6) strSuggest = "#CurrentMed";
+            if (CurrentCheckpoint.CheckPointType == 7) strSuggest = "#Edu";
+            if (CurrentCheckpoint.CheckPointType == 8) strSuggest = "#Exam";
+            if (CurrentCheckpoint.CheckPointType == 9) strSuggest = "#CurrentMed";
+            if (CurrentCheckpoint.CheckPointType == 10) strSuggest = "#Demographic";
+            if (CurrentCheckpoint.CheckPointType == 11) strSuggest = "#HPI";
+            if (CurrentCheckpoint.CheckPointType == 12) strSuggest = "#Vitals";
+            if (CurrentCheckpoint.CheckPointType == 13) strSuggest = "#Rx";
+            if (CurrentCheckpoint.CheckPointType == 14) strSuggest = "#Refer";
+            if (CurrentCheckpoint.CheckPointType == 15) strSuggest = "#BEERS";
+            //WinEnterText wet = new WinEnterText("Please enter a unique (not previously used) name for the new tag.", strSuggest, 200);
+            //wet.strExclusions = SqlLiteDataAccess.GetAllTags();
+            //wet.Owner = this;
+            //wet.ShowDialog();
+
+            WinAddTag wat = new WinAddTag();
+            wat.tbSearch.Text = strSuggest;
+            wat.ShowDialog();
+
+            if (wat.ReturnValue != null)
+            {
+                SqlTag tg = SqlLiteDataAccess.GetTags(wat.ReturnValue).FirstOrDefault();
+                if (tg == null) tg = new SqlTag(wat.ReturnValue);
+                CurrentCheckpoint.AddTag(tg);
+
+                //SqlTagRegEx srex = new SqlTagRegEx(tg.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
+            }
+        }
+        #endregion
+
+        private ICommand mAddTag;
+        public ICommand AddTagCommand
+        {
+            get
+            {
+                if (mAddTag == null)
+                    mAddTag = new TagAdder();
+                return mAddTag;
+            }
+            set
+            {
+                mAddTag = value;
+            }
+        }
+
+
+    }
+
+    class CPUpdater : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlCheckpointM CP = parameter as SqlCheckpointM;
+            //CP.SaveToDB();
+        }
+        #endregion
+    }
+}

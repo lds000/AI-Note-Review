@@ -20,13 +20,13 @@ using System.Windows.Shapes;
 namespace AI_Note_Review
 {
     /// <summary>
-    /// Interaction logic for winDbRelICD10CheckpointsEditor.xaml
+    /// Interaction logic for CheckPointEditorV.xaml
     /// </summary>
-    public partial class winDbRelICD10CheckpointsEditor : Window
+    public partial class CheckPointEditorV : Window
     {
 
-        SqlCheckpoint CurrentCheckpoint;
-        public winDbRelICD10CheckpointsEditor()
+        SqlCheckpointM CurrentCheckpoint;
+        public CheckPointEditorV()
         {
             InitializeComponent();
             #region SetDictionary
@@ -43,7 +43,7 @@ namespace AI_Note_Review
             }
             #endregion  
 
-            lbICD10.DataContext = new SqlICD10SegmentViewModel();
+            lbICD10.DataContext = new SqlICD10SegmentVM();
         }
 
         private void closeclick(object sender, RoutedEventArgs e)
@@ -184,7 +184,7 @@ namespace AI_Note_Review
             WinEditSegment wes = new WinEditSegment(seg);
             wes.Owner = this;
             wes.ShowDialog();
-            SqlICD10SegmentViewModel.CalculateLeftOffsets();
+            SqlICD10SegmentVM.CalculateLeftOffsets();
         }
 
         private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -205,7 +205,7 @@ namespace AI_Note_Review
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     string sql = $"Select * from CheckPoints where CheckPointID = {cpID};";
-                    SqlCheckpoint cp = cnn.Query<SqlCheckpoint>(sql).FirstOrDefault();
+                    SqlCheckpointM cp = cnn.Query<SqlCheckpointM>(sql).FirstOrDefault();
                     cp.TargetICD10Segment = DestinationSeg.ICD10SegmentID;
                     cp.SaveToDB();
                 }
@@ -228,7 +228,7 @@ namespace AI_Note_Review
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     string sql = $"Select * from CheckPoints where TargetICD10Segment == {seg.ICD10SegmentID}";
-                    List<SqlCheckpoint> lcp = cnn.Query<SqlCheckpoint>(sql).ToList();
+                    List<SqlCheckpointM> lcp = cnn.Query<SqlCheckpointM>(sql).ToList();
                     sql = "Select * from CheckPointTypes order by ItemOrder;";
                     List<SqlCheckPointType> lcpt = cnn.Query<SqlCheckPointType>(sql).ToList();
 
@@ -236,7 +236,7 @@ namespace AI_Note_Review
                     foreach (SqlCheckPointType cpt in lcpt)
                     {
                         string strTempOut = "";
-                        foreach (SqlCheckpoint cp in lcp)
+                        foreach (SqlCheckpointM cp in lcp)
                         {
                             if (cp.CheckPointType == cpt.CheckPointTypeID)
                             {
@@ -266,13 +266,13 @@ namespace AI_Note_Review
             {
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    List<SqlCheckpoint> lcp = SqlCheckpoint.GetCPFromSegment(seg.ICD10SegmentID);
-                    List<SqlCheckPointType> lcpt = SqlCheckpointViewModel.CheckPointTypes();
+                    List<SqlCheckpointM> lcp = SqlCheckpointVM.GetCPsFromSegment(seg.ICD10SegmentID);
+                    List<SqlCheckPointType> lcpt = SqlCheckpointVM.CheckPointTypes();
                     string strSummary = $"<h1>{seg.SegmentTitle}</h1><br>";
                     foreach (SqlCheckPointType cpt in lcpt)
                     {
                         string strTempOut = "<ol>";
-                        foreach (SqlCheckpoint cp in lcp)
+                        foreach (SqlCheckpointM cp in lcp)
                         {
                             if (cp.CheckPointType == cpt.CheckPointTypeID)
                             {
@@ -348,7 +348,7 @@ namespace AI_Note_Review
         private void UpdateCP(object sender, RoutedEventArgs e)
         {
             TextBox tb = sender as TextBox;
-            SqlCheckpoint cp = tb.DataContext as SqlCheckpoint;
+            SqlCheckpointM cp = tb.DataContext as SqlCheckpointM;
 
             cp.SaveToDB();
         }

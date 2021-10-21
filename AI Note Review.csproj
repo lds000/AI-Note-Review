@@ -78,7 +78,7 @@
     <Compile Include="Models\ProviderM.cs" />
     <Compile Include="Models\ReportM.cs" />
     <Compile Include="DataAccessLayer\SqlCheckPointImages.cs" />
-    <Compile Include="DataAccessLayer\SqlCheckpoint.cs" />
+    <Compile Include="DataAccessLayer\SqlCheckpointM.cs" />
     <Compile Include="DataAccessLayer\SqlCheckPointType.cs" />
     <Compile Include="DataAccessLayer\SqlDocumentReviewSummaryM.cs" />
     <Compile Include="DataAccessLayer\SqlICD10Segment.cs" />
@@ -97,16 +97,13 @@
     <Compile Include="Models\WestSidePodM.cs" />
     <Compile Include="Models\WindowPosition.cs" />
     <Compile Include="Converters\MyConverters.cs" />
-    <Compile Include="UCPatientConsole.xaml.cs">
+    <Compile Include="UserControls\UCPatientConsole.xaml.cs">
       <DependentUpon>UCPatientConsole.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UCTag.xaml.cs">
-      <DependentUpon>UCTag.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UCTag1.xaml.cs">
+    <Compile Include="UserControls\UCTag1.xaml.cs">
       <DependentUpon>UCTag1.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UCTagRegEx.xaml.cs">
+    <Compile Include="UserControls\UCTagRegEx.xaml.cs">
       <DependentUpon>UCTagRegEx.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\BiMonthlyReviewVM.cs" />
@@ -114,32 +111,29 @@
     <Compile Include="ViewModels\PatientVM.cs" />
     <Compile Include="ViewModels\ProviderVM.cs" />
     <Compile Include="ViewModels\ReportVM.cs" />
-    <Compile Include="DataAccessViewModels\SqlCheckpointViewModel.cs" />
+    <Compile Include="DataAccessViewModels\SqlCheckpointVM.cs" />
     <Compile Include="ViewModels\VisitReportVM.cs" />
     <Compile Include="ViewModels\WestSidePodVM.cs" />
-    <Compile Include="WebBrowserHelper.cs" />
-    <Compile Include="WinAddTag.xaml.cs">
+    <Compile Include="Helper Classes\WebBrowserHelper.cs" />
+    <Compile Include="Dialog Windows\WinAddTag.xaml.cs">
       <DependentUpon>WinAddTag.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinCheckPointEditor.xaml.cs">
+    <Compile Include="Dialog Windows\WinCheckPointEditor.xaml.cs">
       <DependentUpon>WinCheckPointEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinCommittReport.xaml.cs">
-      <DependentUpon>WinCommittReport.xaml</DependentUpon>
+    <Compile Include="Views\CheckPointEditorV.xaml.cs">
+      <DependentUpon>CheckPointEditorV.xaml</DependentUpon>
     </Compile>
-    <Compile Include="winDbRelICD10CheckpointsEditor.xaml.cs">
-      <DependentUpon>winDbRelICD10CheckpointsEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WinEditSegment.xaml.cs">
+    <Compile Include="Dialog Windows\WinEditSegment.xaml.cs">
       <DependentUpon>WinEditSegment.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinEnterText.xaml.cs">
+    <Compile Include="Dialog Windows\WinEnterText.xaml.cs">
       <DependentUpon>WinEnterText.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinGetReviewDate.xaml.cs">
+    <Compile Include="Dialog Windows\WinGetReviewDate.xaml.cs">
       <DependentUpon>WinGetReviewDate.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinPreviewHTML.xaml.cs">
+    <Compile Include="Dialog Windows\WinPreviewHTML.xaml.cs">
       <DependentUpon>WinPreviewHTML.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\BiMonthlyReviewV.xaml.cs">
@@ -148,13 +142,13 @@
     <Compile Include="Views\VisitReportV.xaml.cs">
       <DependentUpon>VisitReportV.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinSettings.xaml.cs">
+    <Compile Include="Dialog Windows\WinSettings.xaml.cs">
       <DependentUpon>WinSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinShowCheckPointRichText.xaml.cs">
+    <Compile Include="Dialog Windows\WinShowCheckPointRichText.xaml.cs">
       <DependentUpon>WinShowCheckPointRichText.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinShowRegExYesNo.xaml.cs">
+    <Compile Include="Dialog Windows\WinShowRegExYesNo.xaml.cs">
       <DependentUpon>WinShowRegExYesNo.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
@@ -170,51 +164,43 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UCPatientConsole.xaml">
+    <Page Include="UserControls\UCPatientConsole.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UCTag.xaml">
+    <Page Include="UserControls\UCTag1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UCTag1.xaml">
+    <Page Include="UserControls\UCTagRegEx.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UCTagRegEx.xaml">
+    <Page Include="Dialog Windows\WinAddTag.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WinAddTag.xaml">
+    <Page Include="Dialog Windows\WinCheckPointEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WinCheckPointEditor.xaml">
+    <Page Include="Views\CheckPointEditorV.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WinCommittReport.xaml">
+    <Page Include="Dialog Windows\WinEditSegment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="winDbRelICD10CheckpointsEditor.xaml">
+    <Page Include="Dialog Windows\WinEnterText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WinEditSegment.xaml">
+    <Page Include="Dialog Windows\WinGetReviewDate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WinEnterText.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WinGetReviewDate.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WinPreviewHTML.xaml">
+    <Page Include="Dialog Windows\WinPreviewHTML.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -226,15 +212,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WinSettings.xaml">
+    <Page Include="Dialog Windows\WinSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WinShowCheckPointRichText.xaml">
+    <Page Include="Dialog Windows\WinShowCheckPointRichText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WinShowRegExYesNo.xaml">
+    <Page Include="Dialog Windows\WinShowRegExYesNo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -253,7 +239,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Resource Include="Todo.txt" />
+    <Resource Include="Documentation\Todo.txt" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -275,9 +261,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="TextFile1.txt" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="stdole">

@@ -29,5 +29,17 @@ namespace AI_Note_Review
         {
             this.Close();
         }
+
+
+        #region window position save/recall functions
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            CF.SetWindowPosition(this);
+        }
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            CF.SaveWindowPosition(this);
+        }
+        #endregion
     }
 }

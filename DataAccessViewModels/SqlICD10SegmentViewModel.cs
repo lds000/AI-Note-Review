@@ -13,7 +13,7 @@ using System.Windows;
 using System.Windows.Input;
 namespace AI_Note_Review
 {
-    public class SqlICD10SegmentViewModel : INotifyPropertyChanged
+    public class SqlICD10SegmentVM : INotifyPropertyChanged
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -24,12 +24,12 @@ namespace AI_Note_Review
 
         private SqlICD10Segment sqlICD10Segment;
 
-        public SqlICD10SegmentViewModel()
+        public SqlICD10SegmentVM()
         {
             sqlICD10Segment = new SqlICD10Segment();
         }
 
-        public SqlICD10SegmentViewModel(SqlICD10Segment sc)
+        public SqlICD10SegmentVM(SqlICD10Segment sc)
         {
             sqlICD10Segment = sc;
         }
@@ -43,14 +43,20 @@ namespace AI_Note_Review
             } 
         }
 
-        public List<SqlCheckpoint> Checkpoints
+        public ObservableCollection<SqlCheckpointVM> Checkpoints
         {
             get
             {
                 string sql = $"Select * from CheckPoints where TargetICD10Segment = {sqlICD10Segment.ICD10SegmentID};";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    return cnn.Query<SqlCheckpoint>(sql).ToList();
+                    var tmpList = cnn.Query<SqlCheckpointM>(sql).ToList();
+                    ObservableCollection<SqlCheckpointVM> tmpCol = new ObservableCollection<SqlCheckpointVM>();
+                    foreach (var item in tmpList)
+                    {
+                        tmpCol.Add(new SqlCheckpointVM(item));
+                    }
+                    return tmpCol;
                 }
             }
         }
@@ -79,7 +85,7 @@ namespace AI_Note_Review
         /// <summary>
         /// A list of all SqlICD10Segments
         /// </summary>Celica9
-        public static List<SqlICD10SegmentViewModel> NoteICD10Segments
+        public static List<SqlICD10SegmentVM> NoteICD10Segments
         {
             get
             {
@@ -87,10 +93,10 @@ namespace AI_Note_Review
                 {
                     string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
                     var l = cnn.Query<SqlICD10Segment>(sql).ToList();
-                    List<SqlICD10SegmentViewModel> lvm = new List<SqlICD10SegmentViewModel>();
+                    List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
                     foreach (SqlICD10Segment s in l)
                     {
-                        SqlICD10SegmentViewModel scvm = new SqlICD10SegmentViewModel(s);
+                        SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
                         lvm.Add(scvm);
                     }
                     return lvm;
@@ -99,7 +105,7 @@ namespace AI_Note_Review
         }
 
 
-        public void AddCheckPoint(SqlCheckpoint cp)
+        public void AddCheckPoint(SqlCheckpointM cp)
         {
             MessageBox.Show("not implemented");
             return;
@@ -137,7 +143,7 @@ namespace AI_Note_Review
             double CodeEnd = 0;
             string strSql = "";
             int iOffset = 0;
-            foreach (SqlICD10SegmentViewModel ns in NoteICD10Segments)
+            foreach (SqlICD10SegmentVM ns in NoteICD10Segments)
             {
                 iOffset = 0;
                 if (charChapter == char.Parse(ns.SqlICD10Segment.icd10Chapter))
@@ -186,14 +192,14 @@ namespace AI_Note_Review
         public void Execute(object parameter)
         {
             SqlICD10Segment s = parameter as SqlICD10Segment;
-            SqlICD10SegmentViewModel sivm = new SqlICD10SegmentViewModel(s);
+            SqlICD10SegmentVM sivm = new SqlICD10SegmentVM(s);
             WinEnterText wet = new WinEnterText("Please input new title.");
             wet.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             wet.ShowDialog();
             if (wet.ReturnValue == null) return;
             if (wet.ReturnValue.Trim() != "")
             {
-                sivm.AddCheckPoint(new SqlCheckpoint(wet.ReturnValue, s.ICD10SegmentID));
+                sivm.AddCheckPoint(new SqlCheckpointM(wet.ReturnValue, s.ICD10SegmentID));
             }
         }
         #endregion

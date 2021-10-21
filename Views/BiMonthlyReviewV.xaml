@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
                 xmlns:properties="clr-namespace:AI_Note_Review.Properties"
-
+        Loaded="Window_Loaded"
+        Closing="Window_Closing"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         Title="BiMonthlyReviewView" Height="450" Width="1000">
@@ -30,7 +31,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="White" BorderThickness="1" Margin="5">
-                <ListBox Style="{StaticResource MyListBox}" x:Name="lbProviders" SelectedValue="{Binding SelectedProviderForBiMonthlyReview}"  ItemsSource="{Binding BiMonthlyReviewModel.MyPeeps}">
+                <ListBox Style="{StaticResource MyListBox}" x:Name="lbProviders" SelectedValue="{Binding SelectedProviderForBiMonthlyReview}"  ItemsSource="{Binding BiMonthlyReviewM.MyPeeps}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel x:Name="spTemplate" Orientation="Horizontal">

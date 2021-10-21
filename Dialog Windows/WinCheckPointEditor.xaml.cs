@@ -25,13 +25,13 @@ namespace AI_Note_Review
     public partial class WinCheckPointEditor : Window
     {
 
-        public SqlCheckpoint CurrentCheckpoint;
+        public SqlCheckpointM CurrentCheckpoint;
 
         public WinCheckPointEditor()
         {
             InitializeComponent();
         }
-        public WinCheckPointEditor(SqlCheckpoint cp)
+        public WinCheckPointEditor(SqlCheckpointM cp)
         {
             InitializeComponent();
             CurrentCheckpoint = cp;

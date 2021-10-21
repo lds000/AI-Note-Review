@@ -16,7 +16,24 @@ using System.Windows.Media.Imaging;
 
 namespace AI_Note_Review
 {
-    public class SqlCheckpoint : INotifyPropertyChanged
+
+    /*
+ * Great example I found online.
+ class PersonModel {
+    public string Name { get; set; }
+  }
+
+class PersonViewModel {
+    private PersonModel Person { get; set;}
+    public string Name { get { return this.Person.Name; } }
+    public bool IsSelected { get; set; } // example of state exposed by view model
+
+    public PersonViewModel(PersonModel person) {
+        this.Person = person;
+    }
+}
+*/
+    public class SqlCheckpointM : INotifyPropertyChanged
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -35,12 +52,15 @@ namespace AI_Note_Review
         private int errorSeverity;
 
 
+
+
         /// <summary>
         /// not sure if this is correct for MVVM, but required for Dapper - a parameterless constructor
         /// </summary>
-        public SqlCheckpoint()
+        public SqlCheckpointM()
         {
         }
+
 
         public int CheckPointID { get; set; } //ID is readonly
         public string CheckPointTitle
@@ -187,35 +207,13 @@ namespace AI_Note_Review
             }
         }
 
-        /// <summary>
-        /// A boolean indicating if the checkpoint will be included in the report.  This is true by default for all missed checkpoint, false for for all passed check point. It is not saved in the database.
-        /// </summary>
-        public bool IncludeCheckpoint
-        {
-            get; set;
-        }
 
-        /// <summary>
-        /// A personal comment added to a checkpoint that is saved in the database under the commit (not checkpoint model).
-        /// </summary>
-        public string CustomComment { get; set; }
+
 
         /// <summary>
         /// A value of how long to have the checkpoint sleep between misses. Not implemented as of 10/17/2021
         /// </summary>
         public int Expiration { get; set; } //when ready to implement, do not set to zero, considered "null value" above
-
-
-        public static SqlCheckpoint GetSqlCheckpoint(int cpID)
-        {
-            string sql = $"Select * from CheckPoints WHERE CheckPointID={cpID};";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                return cnn.QueryFirstOrDefault<SqlCheckpoint>(sql);
-            }
-        }
-
-
 
         /// <summary>
         /// The ICD10 segment this checkpoint is associated with, each checkpoint has only one segment, this is so I don't accidently change information between checkpoints and segments and give wrong information
@@ -365,24 +363,13 @@ namespace AI_Note_Review
             }
         }
 
-        public static List<SqlCheckpoint> GetCPFromSegment(int SegmentID)
-        {
-            string sql = $"Select * from CheckPoints where TargetICD10Segment == {SegmentID}";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                return cnn.Query<SqlCheckpoint>(sql).ToList();
-            }
-
-        }
-
-
 
         /// <summary>
         /// Create a sql checkpoint given the title and targetsegment. Use clues from the title to suggest type and section the checkpoint belongs to.
         /// </summary>
         /// <param name="strCheckPointTitle"></param>
         /// <param name="iTargetICD10Segment"></param>
-        public SqlCheckpoint(string strCheckPointTitle, int iTargetICD10Segment)
+        public SqlCheckpointM(string strCheckPointTitle, int iTargetICD10Segment)
         {
             strCheckPointTitle = strCheckPointTitle.Replace("'", "''"); //used to avoid errors in titles with ' character
             string sql = "";
@@ -443,7 +430,7 @@ namespace AI_Note_Review
             sql += $"Select * from CheckPoints where CheckPointTitle = '{strCheckPointTitle}' AND TargetICD10Segment = {iTargetICD10Segment};"; //this part is to get the ID of the newly created phrase
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                SqlCheckpoint p = cnn.QueryFirstOrDefault<SqlCheckpoint>(sql);
+                SqlCheckpointM p = cnn.QueryFirstOrDefault<SqlCheckpointM>(sql);
                 CheckPointID = p.CheckPointID;
                 TargetICD10Segment = p.TargetICD10Segment;
                 TargetSection = p.TargetSection;

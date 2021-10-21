@@ -35,7 +35,7 @@ namespace AI_Note_Review
                 string strReturn = "";
                 foreach (SqlRelCPProvider r in rlist)
                 {
-                    SqlCheckpoint cp = SqlCheckpoint.GetSqlCheckpoint(r.CheckPointID);
+                    SqlCheckpointVM cp = new SqlCheckpointVM(r.CheckPointID);
                     cp.IncludeCheckpoint = true; //This is added last minute.
                     if (r.Comment != "")
                     {
@@ -59,11 +59,11 @@ namespace AI_Note_Review
                 double[] MissedScores = new double[] { 0, 0, 0, 0 };
                 double[] Totals = new double[] { 0, 0, 0, 0 };
                 double[] Scores = new double[] { 0, 0, 0, 0 };
-                foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
                 {
                     PassedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
                 }
-                foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
                 {
                     MissedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
                 }
@@ -114,7 +114,7 @@ namespace AI_Note_Review
                 }
 
                 tmpCheck = "";
-                foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
                 {
                     tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
                     if (cp.CustomComment != "" && cp.CustomComment != null)
@@ -130,7 +130,7 @@ namespace AI_Note_Review
                 }
 
                 tmpCheck = "";
-                foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
                 {
                     if (cp.IncludeCheckpoint)
                         tmpCheck += GetReport(cp);
@@ -143,7 +143,7 @@ namespace AI_Note_Review
                 }
 
                 tmpCheck = "";
-                foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
                 {
                     if (cp.IncludeCheckpoint)
                         tmpCheck += GetReport(cp);
@@ -174,7 +174,7 @@ namespace AI_Note_Review
             }
         }
 
-        public string GetReport(SqlCheckpoint sqlCheckpoint)
+        public string GetReport(SqlCheckpointVM sqlCheckpoint)
         {
             string strReturn = "";
             strReturn += $"<li><dt><font size='+1'>{sqlCheckpoint.CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{sqlCheckpoint.ErrorSeverity}/10)</font></dt><dd><i>{sqlCheckpoint.Comment}</i></dd></li>" + Environment.NewLine;

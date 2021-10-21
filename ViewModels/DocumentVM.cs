@@ -29,22 +29,22 @@ namespace AI_Note_Review
         private DocumentM document;
         private PatientM patient;
         private SqlProvider sqlProvider;
-        private PatientVM patientViewModel;
+        private PatientVM patientVM;
 
         public DocumentVM(SqlProvider prov, PatientVM pvm)
         {
             sqlProvider = prov;
-            patientViewModel = pvm;
+            patientVM = pvm;
             patient = pvm.SamplePatient;
             document = SampleDocument; //New DocumentM() called under this.
             SetUpNote(); //todo: might be better way of implementing this.
         }
 
-        public  PatientVM PatientViewModel
+        public  PatientVM PatientVM
         {
             get
             {
-                return patientViewModel;
+                return patientVM;
             }
         }
 
@@ -199,8 +199,8 @@ namespace AI_Note_Review
            Document.ICD10s.Clear();
         }
 
-        private ObservableCollection<SqlICD10SegmentViewModel> iCD10Segments;
-        public ObservableCollection<SqlICD10SegmentViewModel> ICD10Segments
+        private ObservableCollection<SqlICD10SegmentVM> iCD10Segments;
+        public ObservableCollection<SqlICD10SegmentVM> ICD10Segments
         {
             get 
             {
@@ -217,10 +217,10 @@ namespace AI_Note_Review
         /// </summary>
         /// <param name="GeneralCheckPointsOnly"></param>
         /// <returns></returns>
-        public ObservableCollection<SqlICD10SegmentViewModel> GetSegments(bool GeneralCheckPointsOnly = false)
+        public ObservableCollection<SqlICD10SegmentVM> GetSegments(bool GeneralCheckPointsOnly = false)
         {
             //get icd10 segments
-            ObservableCollection<SqlICD10SegmentViewModel> tmpICD10Segments = new ObservableCollection<SqlICD10SegmentViewModel>();
+            ObservableCollection<SqlICD10SegmentVM> tmpICD10Segments = new ObservableCollection<SqlICD10SegmentVM>();
 
             if (!GeneralCheckPointsOnly) //do not check the ICD10s for general check
                 foreach (string strICD10 in Document.ICD10s)
@@ -235,7 +235,7 @@ namespace AI_Note_Review
                     }
                     double icd10numeric = double.Parse(str);
 
-                    foreach (SqlICD10SegmentViewModel ns in SqlICD10SegmentViewModel.NoteICD10Segments)
+                    foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
                     {
                         if (strAlphaCode == ns.SqlICD10Segment.icd10Chapter)
                         {
@@ -248,7 +248,7 @@ namespace AI_Note_Review
                 }
 
             //add all general sections
-            foreach (SqlICD10SegmentViewModel ns in SqlICD10SegmentViewModel.NoteICD10Segments)
+            foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
             {
                 if (ns.SqlICD10Segment.icd10Chapter == "X")
                 {
@@ -928,6 +928,23 @@ namespace AI_Note_Review
             #endregion
         }
 
+
+        private ICommand mShowReportGen;
+        public ICommand ShowReportGen
+        {
+            #region Command Def
+            get
+            {
+                if (mShowReportGen == null)
+                    mShowReportGen = new ShowReport();
+                return mShowReportGen;
+            }
+            set
+            {
+                mShowReportGen = value;
+            }
+            #endregion
+        }
     }
 
     class ShowReport : ICommand
@@ -952,5 +969,28 @@ namespace AI_Note_Review
         }
         #endregion
     }
-        
+
+    class ShowReportGen : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            ReportVM rvm = parameter as ReportVM;
+            VisitReportV wp = new VisitReportV(rvm, true);
+            wp.ShowDialog();
+        }
+        #endregion
+    }
+
 }

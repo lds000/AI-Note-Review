@@ -17,9 +17,10 @@
         <DockPanel>
                 <Menu DockPanel.Dock="Top">
                     <MenuItem Header="Program">
-                        <MenuItem Header="Exit" ToolTip="Show the reviews for the selected provider and selected review date." Click="Button_ReportsReviewClick"></MenuItem>
+                        <MenuItem Header="Exit" ToolTip="Show the reviews for the selected provider and selected review date."></MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Reviews" Click="Reviews_Click">
+                    <MenuItem Name="biMonthReviewMI" Header="Reviews" Command="{Binding Path=ShowBiMonthlyReport}"
+                                CommandParameter="{Binding}" >
                     </MenuItem>
                     <MenuItem Header="Checkpoint">
                         <MenuItem Header="Edit Checkpoints" ToolTip="Edit Checkpoint data." Click="EditCP"></MenuItem>
@@ -75,10 +76,11 @@
                 <Button  Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
                 <Button Margin="100,0,0,0" 
                         VerticalAlignment="Center" 
-                        Command="{Binding Path=DocumentViewModel.ShowReport}"
+                        Command="{Binding Path=DocumentVM.ShowReport}"
                                 CommandParameter="{Binding}" 
                         Style="{StaticResource LinkButton}" FontSize="20">Check!</Button>
-                <Button Margin="100,0,0,0" VerticalAlignment="Center" Click="CheckNoteX" Style="{StaticResource LinkButton}" FontSize="20">Check X Only</Button>
+                    <Button Margin="100,0,0,0" VerticalAlignment="Center"  Command="{Binding Path=DocumentVM.ShowReportGen}"
+                                CommandParameter="{Binding}"  Style="{StaticResource LinkButton}" FontSize="20">Check X Only</Button>
                 </StackPanel>
                 <TabControl x:Name="tcNote">
                 <TabItem Foreground="Black" Header="CC">

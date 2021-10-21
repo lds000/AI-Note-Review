@@ -28,7 +28,7 @@ namespace AI_Note_Review
         public int TagID { get; set; }
         public string TagText { get; set; }
 
-        public SqlCheckpoint ParentCheckPoint { get; set; }
+        public SqlCheckpointM ParentCheckPoint { get; set; }
 
         public TextBlock TagCount
         {

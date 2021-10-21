@@ -150,12 +150,12 @@ namespace AI_Note_Review
             return new List<DateTime>();
         }
 
-        public List<SqlCheckpoint> GetCheckPoints(DateTime ReviewDate)
+        public List<SqlCheckpointM> GetCheckPoints(DateTime ReviewDate)
         {
-            return new List<SqlCheckpoint>();
+            return new List<SqlCheckpointM>();
         }
 
-        public bool IsCheckPointExpired(SqlCheckpoint cp)
+        public bool IsCheckPointExpired(SqlCheckpointM cp)
         {
             return true;
         }

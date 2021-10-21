@@ -15,14 +15,14 @@ namespace AI_Note_Review
         public DateTime VisitDate { get; set; }
         public DateTime ReviewDate { get; set; }
 
-        public List<SqlCheckpoint> RelatedCheckPoints
+        public List<SqlCheckpointM> RelatedCheckPoints
         {
             get 
             {
                 string sql = $"select * from CheckPoints cp inner join RelCPPRovider relcp on relcp.CheckPointID = cp.CheckPointID where relcp.VisitDate = '{VisitDate.ToString("yyyy-MM-dd")}' and PtID = {PtID}";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    return cnn.Query<SqlCheckpoint>(sql).ToList();
+                    return cnn.Query<SqlCheckpointM>(sql).ToList();
                 }
             }
         }

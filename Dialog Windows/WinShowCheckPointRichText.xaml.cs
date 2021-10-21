@@ -30,7 +30,7 @@ namespace AI_Note_Review
         {
             //WinEnterText wet = new WinEnterText();
             Button b = sender as Button;
-            SqlCheckpoint cp = DataContext as SqlCheckpoint;
+            SqlCheckpointM cp = DataContext as SqlCheckpointM;
             SqlTag st = b.DataContext as SqlTag;
             SqlTagRegEx srex = new SqlTagRegEx(st.TagID, "Search Text", cp.TargetSection, 1);
             //ImChanged(this, EventArgs.Empty);
@@ -46,7 +46,7 @@ namespace AI_Note_Review
         private void btnRemoveTag_Click(object sender, RoutedEventArgs e)
         {
             Button b = sender as Button;
-            SqlCheckpoint cp = DataContext as SqlCheckpoint;
+            SqlCheckpointM cp = DataContext as SqlCheckpointM;
             SqlTag st = b.DataContext as SqlTag;
             cp.RemoveTag(st);
             ImChanged(this, EventArgs.Empty);

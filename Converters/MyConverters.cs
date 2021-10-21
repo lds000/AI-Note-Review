@@ -214,7 +214,7 @@ namespace AI_Note_Review
             char charChapter = 'A';
             double CodeStart = 0;
             double CodeEnd = 0;
-            foreach (SqlICD10SegmentViewModel ns in SqlICD10SegmentViewModel.NoteICD10Segments)
+            foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
             {
                 if (charChapter == char.Parse(ns.SqlICD10Segment.icd10Chapter))
                 {
@@ -302,7 +302,7 @@ namespace AI_Note_Review
                 if (Char.ToLower(ch) == 'x') break; //if placeholder character, then stop.
             }
             double icd10numeric = double.Parse(str);
-            foreach (SqlICD10SegmentViewModel ns in SqlICD10SegmentViewModel.NoteICD10Segments)
+            foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
             {
                 if (strAlphaCode == ns.SqlICD10Segment.icd10Chapter)
                 {
