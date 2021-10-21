@@ -15,14 +15,26 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class BiMonthlyReviewViewModel
+    public class BiMonthlyReviewM : INotifyPropertyChanged
     {
-        private BiMonthlyReview biMonthlyReview;
-        
 
-        public BiMonthlyReview BiMonthlyReview
+        #region inotify
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // This method is called by the Set accessor of each property.  
+        // The CallerMemberName attribute that is applied to the optional propertyName  
+        // parameter causes the property name of the caller to be substituted as an argument.  
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
-            get { return biMonthlyReview; }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            //Console.WriteLine($"iNotify property {propertyName}");
+        }
+
+        #endregion
+        public BiMonthlyReviewM()
+        {
+
         }
 
         /// <summary>
@@ -42,6 +54,22 @@ namespace AI_Note_Review
         }
 
         /// <summary>
+        /// Get a list of providers for the west side pod
+        /// </summary>
+        public static List<SqlProvider> MyPeeps
+        {
+            get
+            {
+                string sql = "";
+                sql += $"Select * from Providers where IsWestSidePod == '1' order by FullName;"; //this part is to get the ID of the newly created phrase
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.Query<SqlProvider>(sql).ToList();
+                }
+            }
+        }
+
+        /// <summary>
         /// Get BiMonth Reviews for specific provider
         /// </summary>
         public ObservableCollection<SqlVisitReview> ReviewDates
@@ -55,6 +83,7 @@ namespace AI_Note_Review
                 }
             }
         }
+
 
     }
 }

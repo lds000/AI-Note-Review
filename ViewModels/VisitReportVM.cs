@@ -2,44 +2,82 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 
-namespace AI_Note_Review
+namespace AI_Note_Review.ViewModels
 {
-    public class SqlDocumentReviewSummary
+    /// <summary>
+    /// Chart Reviews (after commit)
+    /// </summary>
+    class VisitReportVM
     {
-        public DateTime VisitDate { get; set; }
-        public int PtID { get; set; }
-        Report rpt = new Report();
+        // Declare the event
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        private SqlProvider sqlProvider;
+        private ReportM report;
+        private SqlDocumentReviewSummaryM sqlDocumentReviewSummary;
 
-        public string ReviewHTML
+
+        private VisitReportVM reviewViewModel;
+        public VisitReportVM()
+        {
+        }
+
+        public SqlDocumentReviewSummaryM SqlDocumentReviewSummary
         {
             get
             {
-
-                return "test";
+                return sqlDocumentReviewSummary;
+            }
+            set
+            {
+                sqlDocumentReviewSummary = new SqlDocumentReviewSummaryM();
             }
         }
+
+        public ReportM Report
+        {
+            get
+            {
+                return report;
+            }
+            set
+            {
+                report = new ReportM();
+            }
+        }
+
 
         public string CheckPointsSummary
         {
             get
             {
                 List<SqlRelCPProvider> rlist;
-                string sql = $"Select * from RelCPPRovider where PtID={PtID} and VisitDate='{VisitDate.ToString("yyyy-MM-dd")}';";
+                string sql = $"Select * from RelCPPRovider where PtID={sqlDocumentReviewSummary.PtID} and VisitDate='{sqlDocumentReviewSummary.VisitDate.ToString("yyyy-MM-dd")}';";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     rlist = cnn.Query<SqlRelCPProvider>(sql).ToList();
                 }
 
-                rpt.MissedCheckPoints.Clear();
-                rpt.DroppedCheckPoints.Clear();
-                rpt.IrrelaventCP.Clear();
-                rpt.PassedCheckPoints.Clear();
+                report.MissedCheckPoints.Clear();
+                report.DroppedCheckPoints.Clear();
+                report.IrrelaventCP.Clear();
+                report.PassedCheckPoints.Clear();
                 string strReturn = "";
                 foreach (SqlRelCPProvider r in rlist)
                 {
@@ -50,15 +88,15 @@ namespace AI_Note_Review
                     }
                     if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Pass)
                     {
-                        rpt.PassedCheckPoints.Add(cp);
+                        report.PassedCheckPoints.Add(cp);
                     }
                     if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Fail)
                     {
-                        rpt.MissedCheckPoints.Add(cp);
+                        report.MissedCheckPoints.Add(cp);
                     }
                     if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Irrelevant)
                     {
-                        rpt.IrrelaventCP.Add(cp);
+                        report.IrrelaventCP.Add(cp);
                     }
                 }
 
@@ -66,11 +104,11 @@ namespace AI_Note_Review
                 double[] MissedScores = new double[] { 0, 0, 0, 0 };
                 double[] Totals = new double[] { 0, 0, 0, 0 };
                 double[] Scores = new double[] { 0, 0, 0, 0 };
-                foreach (SqlCheckpoint cp in (from c in rpt.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
                 {
                     PassedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
                 }
-                foreach (SqlCheckpoint cp in (from c in rpt.MissedCheckPoints orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
                 {
                     MissedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
                 }
@@ -99,8 +137,8 @@ namespace AI_Note_Review
 
                 string tmpCheck = "";
                 string strReport = @"<!DOCTYPE html><html><head></head><body>";
-                strReport += $"<font size='+3'>Patient ID {PtID}</font><br>"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
-                strReport += $"<font size='+1'>Date: {VisitDate.ToShortDateString()}</font><br>";
+                strReport += $"<font size='+3'>PatientM ID {sqlDocumentReviewSummary.PtID}</font><br>"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
+                strReport += $"<font size='+1'>Date: {sqlDocumentReviewSummary.VisitDate.ToShortDateString()}</font><br>";
                 strReport += Environment.NewLine;
 
                 strReport += $"Scores: HPI <b>{HPI_Score.ToString("0.##")}</b> Exam <b>{Exam_Score.ToString("0.##")}</b> Dx <b>{Dx_Score.ToString("0.##")}</b> Treatment <b>{Rx_Score.ToString("0.##")}</b> <a href='#footnote'>Total Score<sup>*</sup></a> <b>{Total_Score.ToString("0.##")}</b><br><hr>";
@@ -121,7 +159,7 @@ namespace AI_Note_Review
                 }
 
                 tmpCheck = "";
-                foreach (SqlCheckpoint cp in (from c in rpt.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpoint cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
                 {
                     tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
                     if (cp.CustomComment != "")
@@ -137,7 +175,7 @@ namespace AI_Note_Review
                 }
 
                 tmpCheck = "";
-                foreach (SqlCheckpoint cp in (from c in rpt.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
                 {
                     if (cp.IncludeCheckpoint)
                         tmpCheck += GetReport(cp);
@@ -150,7 +188,7 @@ namespace AI_Note_Review
                 }
 
                 tmpCheck = "";
-                foreach (SqlCheckpoint cp in (from c in rpt.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
+                foreach (SqlCheckpoint cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
                 {
                     if (cp.IncludeCheckpoint)
                         tmpCheck += GetReport(cp);
@@ -193,7 +231,7 @@ namespace AI_Note_Review
             {
                 strReturn += $"<a href={sqlCheckpoint.Link}>Click here for reference.</a><br>";
             }
-            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Feedback on review of {PtID} on {VisitDate.ToShortDateString()}. (Ref:{PtID}|{VisitDate.ToShortDateString()}|{sqlCheckpoint.CheckPointID})'>Feedback</a>";
+            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Feedback on review of {sqlDocumentReviewSummary.PtID} on {sqlDocumentReviewSummary.VisitDate.ToShortDateString()}. (Ref:{sqlDocumentReviewSummary.PtID}|{sqlDocumentReviewSummary.VisitDate.ToShortDateString()}|{sqlCheckpoint.CheckPointID})'>Feedback</a>";
             /*
             strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
             strReturn += $"\tRecommended Remediation: {Action}" + Environment.NewLine;
@@ -209,8 +247,6 @@ namespace AI_Note_Review
             return strReturn;
         }
 
+
     }
 }
-
-
-

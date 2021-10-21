@@ -12,15 +12,22 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+
 namespace AI_Note_Review
 {
-    public class WestSidePodViewModel
+    class ProviderVM : INotifyPropertyChanged
     {
-        private WestSidePod westSidePod;
-
-        public WestSidePod WestSidePod
+        // Declare the event
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
-            get { return westSidePod; }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        private ProviderM provider;
+
+        public ProviderM Provider
+        {
+            get { return provider; }
         }
 
     }

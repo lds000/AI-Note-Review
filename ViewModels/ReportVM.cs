@@ -17,7 +17,7 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class ReportViewModel : INotifyPropertyChanged
+    public class ReportVM : INotifyPropertyChanged
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -26,14 +26,26 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private Report report;
-        private DocumentViewModel documentViewModel;
-        private Patient patient;
+        //key entities
+        private ReportM report;
+        private DocumentVM documentViewModel;
+        private DocumentM document;
+        private PatientVM patientViewModel;
+        private PatientM patient;
         private SqlProvider sqlProvider;
-        private Document document;
-        private PatientViewModel patientViewModel;
 
-        public Report Report
+        public ReportVM()
+        {
+            report = new ReportM();
+            sqlProvider = new SqlProvider(); //Change provider for report
+            patientViewModel = new PatientVM();
+            patient = patientViewModel.Patient;
+            documentViewModel = new DocumentVM(sqlProvider, patientViewModel);
+            document = documentViewModel.Document;
+            GenerateReport(); //first time
+        }
+
+        public ReportM Report
         {
             get 
             { 
@@ -41,18 +53,8 @@ namespace AI_Note_Review
             }
         }
 
-        public ReportViewModel()
-        {
-            report = new Report();
-            sqlProvider = new SqlProvider();
-            patientViewModel = new PatientViewModel();
-            patient = patientViewModel.Patient;
-            documentViewModel = new DocumentViewModel(sqlProvider, patientViewModel);
-            document = documentViewModel.Document;
-            GenerateReport(); //first time
-        }
 
-        public Document Document
+        public DocumentM Document
         {
             get
             {
@@ -60,7 +62,7 @@ namespace AI_Note_Review
             }
         }
 
-        public DocumentViewModel DocumentViewModel
+        public DocumentVM DocumentViewModel
         {
             get
             {
@@ -80,7 +82,7 @@ namespace AI_Note_Review
             }
         }
 
-        public Patient Patient
+        public PatientM Patient
         {
             get
             {
@@ -88,7 +90,7 @@ namespace AI_Note_Review
             }
         }
 
-        public PatientViewModel PatientViewModel
+        public PatientVM PatientViewModel
         {
             get
             {
@@ -97,7 +99,7 @@ namespace AI_Note_Review
         }
 
 
-        public Report SampleReport
+        public ReportM SampleReport
         {
             get
             {
@@ -240,18 +242,6 @@ namespace AI_Note_Review
             return SqlTagRegEx.EnumResult.Pass; //default is pass
         }
 
-        public static List<SqlProvider> MyPeeps
-        {
-            get
-            {
-                string sql = "";
-                sql += $"Select * from Providers where IsWestSidePod == '1' order by FullName;"; //this part is to get the ID of the newly created phrase
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    return cnn.Query<SqlProvider>(sql).ToList();
-                }
-            }
-        }
 
         /// <summary>
         /// clear note, clear checkpoints, check note
@@ -418,7 +408,7 @@ namespace AI_Note_Review
         }
 
 
-        public string GetReport(SqlCheckpoint sqlCheckpoint, Document doc, Patient pt)
+        public string GetReport(SqlCheckpoint sqlCheckpoint, DocumentM doc, PatientM pt)
         {
             string strReturn = "";
             strReturn += $"<li><dt><font size='+1'>{sqlCheckpoint.CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{sqlCheckpoint.ErrorSeverity}/10)</font></dt><dd><i>{sqlCheckpoint.Comment}</i></dd></li>" + Environment.NewLine;
@@ -486,7 +476,7 @@ namespace AI_Note_Review
 
             string tmpCheck = "";
             string strReport = @"<!DOCTYPE html><html><head></head><body>";
-            strReport += $"<font size='+3'>Patient ID {patient.PtID}</font><br>"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
+            strReport += $"<font size='+3'>PatientM ID {patient.PtID}</font><br>"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
             strReport += $"<font size='+1'>Date: {document.VisitDate.ToShortDateString()}</font><br>";
             strReport += Environment.NewLine;
 
@@ -604,7 +594,7 @@ namespace AI_Note_Review
         }
 
 
-        public void Commit(SqlCheckpoint sqlCheckpoint, Document doc, Patient pt, Report rpt, SqlRelCPProvider.MyCheckPointStates cpState)
+        public void Commit(SqlCheckpoint sqlCheckpoint, DocumentM doc, PatientM pt, ReportM rpt, SqlRelCPProvider.MyCheckPointStates cpState)
         {
             if (sqlCheckpoint.CustomComment == null) sqlCheckpoint.CustomComment = "";
             string sql = $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({doc.ProviderID}, {sqlCheckpoint.CheckPointID}, {pt.PtID}, '{rpt.ReviewDate.ToString("yyyy-MM-dd")}', '{doc.VisitDate.ToString("yyyy-MM-dd")}', {(int)cpState}, '{sqlCheckpoint.CustomComment}');";
@@ -703,7 +693,7 @@ namespace AI_Note_Review
 
             string tmpCheck = "";
             string strReport = @"<!DOCTYPE html><html><head></head><body>";
-            strReport += $"<font size='+3'>Patient ID {patient.PtID}</font><br>"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
+            strReport += $"<font size='+3'>PatientM ID {patient.PtID}</font><br>"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
             strReport += $"<font size='+1'>Date: {document.VisitDate.ToShortDateString()}</font><br>";
             strReport += Environment.NewLine;
 
@@ -824,7 +814,7 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            ReportViewModel rvm = parameter as ReportViewModel;
+            ReportVM rvm = parameter as ReportVM;
             rvm.CommitReport();
         }
         #endregion

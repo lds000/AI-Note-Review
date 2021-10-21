@@ -1,4 +1,4 @@
-﻿<Window x:Class="AI_Note_Review.WinProviderReviews"
+﻿<Window x:Class="AI_Note_Review.BiMonthlyReviewV"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +8,7 @@
 
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="WinProviderReviews" Height="450" Width="1000">
+        Title="BiMonthlyReviewView" Height="450" Width="1000">
     <DockPanel Background="Black">
         <DockPanel.Resources>
             <local:ChartCountToBrushConverter x:Key="ChartCountToBrushConverter"/>
@@ -30,7 +30,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="White" BorderThickness="1" Margin="5">
-                <ListBox Style="{StaticResource MyListBox}" x:Name="lbProviders" SelectedValue="{Binding SqlProvider}"  ItemsSource="{Binding MyPeeps}">
+                <ListBox Style="{StaticResource MyListBox}" x:Name="lbProviders" SelectedValue="{Binding SelectedProviderForBiMonthlyReview}"  ItemsSource="{Binding BiMonthlyReviewModel.MyPeeps}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel x:Name="spTemplate" Orientation="Horizontal">
@@ -44,7 +44,8 @@
                 </ListBox>
             </Border>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="1">
-                <ListBox x:Name="lbMonthReview" Grid.Row="1" Style="{StaticResource MyListBox}" ItemsSource="{Binding ElementName=lbProviders, Path=SelectedValue.CurrentReviewsSummary}">
+                <!-- Contains a list of SqlDocumentReviewSummaryVM -->
+                <ListBox x:Name="lbMonthReview" Grid.Row="1" Style="{StaticResource MyListBox}" ItemsSource="{Binding ElementName=lbProviders, Path=SelectedValue.SqlDocumentReviewsSummaryProperty}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -56,7 +57,7 @@
                 </ListBox>
             </Border>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="3">
-                <WebBrowser local:WebBrowserHelper.Body="{Binding ElementName=lbMonthReview, Path=SelectedItem.CheckPointsSummary}">
+                <WebBrowser local:WebBrowserHelper.Body="{Binding ElementName=lbMonthReview, Path=SelectedItem.CheckPointsSummaryHTML}">
                     
                 </WebBrowser>
             </Border>

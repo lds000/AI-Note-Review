@@ -15,7 +15,7 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class Document : INotifyPropertyChanged
+    public class DocumentM : INotifyPropertyChanged
     {
 
         #region inotify
@@ -33,7 +33,7 @@ namespace AI_Note_Review
 
         #endregion
 
-        public Document()
+        public DocumentM()
         {
 
         }

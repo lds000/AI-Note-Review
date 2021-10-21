@@ -72,15 +72,15 @@
     <Compile Include="CF.cs" />
     <Compile Include="ClipboardClass.cs" />
     <Compile Include="DataAccessViewModels\SqlICD10SegmentViewModel.cs" />
-    <Compile Include="Models\BiMonthlyReview.cs" />
-    <Compile Include="Models\Document.cs" />
-    <Compile Include="Models\Patient.cs" />
-    <Compile Include="Models\Provider.cs" />
-    <Compile Include="Models\Report.cs" />
+    <Compile Include="Models\BiMonthlyReviewM.cs" />
+    <Compile Include="Models\DocumentM.cs" />
+    <Compile Include="Models\PatientM.cs" />
+    <Compile Include="Models\ProviderM.cs" />
+    <Compile Include="Models\ReportM.cs" />
     <Compile Include="DataAccessLayer\SqlCheckPointImages.cs" />
     <Compile Include="DataAccessLayer\SqlCheckpoint.cs" />
     <Compile Include="DataAccessLayer\SqlCheckPointType.cs" />
-    <Compile Include="DataAccessLayer\SqlDocumentReviewSummary.cs" />
+    <Compile Include="DataAccessLayer\SqlDocumentReviewSummaryM.cs" />
     <Compile Include="DataAccessLayer\SqlICD10Segment.cs" />
     <Compile Include="DataAccessLayer\SqlLightDataAccess.cs" />
     <Compile Include="DataAccessLayer\SqlMonthReviewSummary.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="DataAccessLayer\SqlTagRegEx.cs" />
     <Compile Include="DataAccessLayer\SqlTagRegExType.cs" />
     <Compile Include="DataAccessLayer\SqlVisitReview.cs" />
-    <Compile Include="Models\WestSidePod.cs" />
+    <Compile Include="Models\WestSidePodM.cs" />
     <Compile Include="Models\WindowPosition.cs" />
     <Compile Include="MyConverters.cs" />
     <Compile Include="UCPatientConsole.xaml.cs">
@@ -109,13 +109,14 @@
     <Compile Include="UCTagRegEx.xaml.cs">
       <DependentUpon>UCTagRegEx.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\BiMonthlyReviewViewModel.cs" />
-    <Compile Include="ViewModels\DocumentViewModel.cs" />
-    <Compile Include="ViewModels\PatientViewModel.cs" />
-    <Compile Include="ViewModels\ProviderViewModel.cs" />
-    <Compile Include="ViewModels\ReportViewModel.cs" />
+    <Compile Include="ViewModels\BiMonthlyReviewVM.cs" />
+    <Compile Include="ViewModels\DocumentVM.cs" />
+    <Compile Include="ViewModels\PatientVM.cs" />
+    <Compile Include="ViewModels\ProviderVM.cs" />
+    <Compile Include="ViewModels\ReportVM.cs" />
     <Compile Include="DataAccessViewModels\SqlCheckpointViewModel.cs" />
-    <Compile Include="ViewModels\WestSidePodViewModel.cs" />
+    <Compile Include="ViewModels\VisitReportVM.cs" />
+    <Compile Include="ViewModels\WestSidePodVM.cs" />
     <Compile Include="WebBrowserHelper.cs" />
     <Compile Include="WinAddTag.xaml.cs">
       <DependentUpon>WinAddTag.xaml</DependentUpon>
@@ -141,11 +142,11 @@
     <Compile Include="WinPreviewHTML.xaml.cs">
       <DependentUpon>WinPreviewHTML.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinProviderReviews.xaml.cs">
-      <DependentUpon>WinProviderReviews.xaml</DependentUpon>
+    <Compile Include="Views\BiMonthlyReviewV.xaml.cs">
+      <DependentUpon>BiMonthlyReviewV.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinReport.xaml.cs">
-      <DependentUpon>WinReport.xaml</DependentUpon>
+    <Compile Include="Views\VisitReportV.xaml.cs">
+      <DependentUpon>VisitReportV.xaml</DependentUpon>
     </Compile>
     <Compile Include="WinSettings.xaml.cs">
       <DependentUpon>WinSettings.xaml</DependentUpon>
@@ -217,11 +218,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WinProviderReviews.xaml">
+    <Page Include="Views\BiMonthlyReviewV.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WinReport.xaml">
+    <Page Include="Views\VisitReportV.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -301,9 +302,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

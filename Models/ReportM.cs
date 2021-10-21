@@ -15,7 +15,10 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class Report : INotifyPropertyChanged
+    /// 
+    /// Code behind for report xaml
+    /// </summary>
+    public class ReportM : INotifyPropertyChanged
     {
 
         #region inotify
@@ -32,13 +35,13 @@ namespace AI_Note_Review
         }
 
         #endregion
-        private Document document;
-        public Report(Document tmpDoc)
+        private DocumentM document;
+        public ReportM(DocumentM tmpDoc)
         {
             document = tmpDoc;
         }
 
-        public Report()
+        public ReportM()
         {
 
         }

@@ -39,9 +39,9 @@ namespace AI_Note_Review
         /// </summary>
         //public static string strRegexPrefix = @"[ \-,.;\n\r\s^]";
         public static string strRegexPrefix = @"\b";
-        public static Patient CurrentPatient;
-        public static Document ClinicNote;
-        public static Report NoteReview;
+        public static PatientM CurrentPatient;
+        public static DocumentM ClinicNote;
+        public static ReportM NoteReview;
 
         public static List<SqlCheckpoint> CheckPointList
         {

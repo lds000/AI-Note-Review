@@ -21,9 +21,9 @@ namespace AI_Note_Review
     /// <summary>
     /// Interaction logic for WinReport.xaml
     /// </summary>
-    public partial class WinReport : Window
+    public partial class VisitReportV : Window
     {
-        public WinReport(bool GeneralCheckPointsOnly = false)
+        public VisitReportV(bool GeneralCheckPointsOnly = false)
         {
             InitializeComponent();
          //   document.ICD10Segments = document.GetSegments(GeneralCheckPointsOnly); //load all pertinent and 'X' segments
@@ -31,7 +31,7 @@ namespace AI_Note_Review
          //   DataContext = document;
         }
 
-        public WinReport(ReportViewModel rvm, bool GeneralCheckPointsOnly = false)
+        public VisitReportV(ReportVM rvm, bool GeneralCheckPointsOnly = false)
         {
             InitializeComponent();
             DataContext = rvm;

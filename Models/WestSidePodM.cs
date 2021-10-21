@@ -15,7 +15,7 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class BiMonthlyReview : INotifyPropertyChanged
+    public class WestSidePodM : INotifyPropertyChanged
     {
 
         #region inotify
@@ -32,9 +32,22 @@ namespace AI_Note_Review
         }
 
         #endregion
-        public BiMonthlyReview()
+
+        public WestSidePodM()
         {
 
         }
+        public ObservableCollection<SqlProvider> AllProviders
+        {
+            get
+            {
+                string sql = $"Select * from Providers where FullName != '' order by FullName;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return new ObservableCollection<SqlProvider>(cnn.Query<SqlProvider>(sql).ToList());
+                }
+            }
+        }
+
     }
 }

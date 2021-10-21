@@ -37,15 +37,17 @@ namespace AI_Note_Review
     public partial class MainWindow : Window
     {
         string strApikey = "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";
-        ReportViewModel reportViewModel;
+        ReportVM reportViewModel;
+        BiMonthlyReviewVM biMonthlyReviewViewModel;
         public MainWindow()
         {
             ProgramInit();
             //This is just for compiler purposes
-            //CF.CurrentPatient = new PatientViewModel().SamplePatient;
-            //CF.ClinicNote = (new DocumentViewModel(CF.CurrentPatient)).SampleDocument;
+            //CF.CurrentPatient = new PatientVM().SamplePatient;
+            //CF.ClinicNote = (new DocumentVM(CF.CurrentPatient)).SampleDocument;
             InitializeComponent();
-            reportViewModel = new ReportViewModel();
+            reportViewModel = new ReportVM();
+            biMonthlyReviewViewModel = new BiMonthlyReviewVM();
             this.DataContext = reportViewModel;
         }
 
@@ -185,7 +187,7 @@ namespace AI_Note_Review
             }
 
             //load patient.
-            if (windowHeader.Contains("Patient Encounter Summary")) //Patient Encounter Summary
+            if (windowHeader.Contains("PatientM Encounter Summary")) //PatientM Encounter Summary
             {
                 int i = 0;
                 if (!CF.IsReviewWindowOpen) //do not load new patient if in a current review.
@@ -229,7 +231,7 @@ namespace AI_Note_Review
 
         private void CheckNoteX(object sender, RoutedEventArgs e)
         {
-            WinReport wp = new WinReport(true);
+            VisitReportV wp = new VisitReportV(true);
             wp.ShowDialog();
         }
 
@@ -271,7 +273,7 @@ namespace AI_Note_Review
 
         private void Reviews_Click(object sender, RoutedEventArgs e)
         {
-            WinProviderReviews wp = new WinProviderReviews(reportViewModel);
+            BiMonthlyReviewV wp = new BiMonthlyReviewV(biMonthlyReviewViewModel);
             wp.Owner = this;
             wp.ShowDialog();
         }

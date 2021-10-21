@@ -15,7 +15,7 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class PatientViewModel : INotifyPropertyChanged
+    public class PatientVM : INotifyPropertyChanged
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -23,14 +23,14 @@ namespace AI_Note_Review
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        private Patient patient;
+        private PatientM patient;
 
-        public PatientViewModel()
+        public PatientVM()
         {
             patient = SamplePatient;
         }
 
-        public Patient Patient
+        public PatientM Patient
         {
             get {
                 return patient; 
@@ -40,11 +40,11 @@ namespace AI_Note_Review
         /// <summary>
         /// patient for testing purposes
         /// </summary>
-        public Patient SamplePatient
+        public PatientM SamplePatient
         {
             get
             {
-                patient = new Patient();
+                patient = new PatientM();
                 //sample note - hidden with ctrl M H
                 patient.PtName = "Mark Smith";
                 patient.PtID = "618084";

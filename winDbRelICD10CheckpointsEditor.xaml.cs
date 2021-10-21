@@ -80,7 +80,7 @@ namespace AI_Note_Review
             byte[] byteArray = Encoding.ASCII.GetBytes(strIn);
             using (MemoryStream ms = new MemoryStream(byteArray))
             {
-                TextRange tr = new TextRange(rtb.Document.ContentStart, rtb.Document.ContentEnd);
+                TextRange tr = new TextRange(rtb.DocumentM.ContentStart, rtb.DocumentM.ContentEnd);
                 tr.Load(ms, DataFormats.Rtf);
             }
         }
@@ -88,7 +88,7 @@ namespace AI_Note_Review
         private string RTBtoStr(RichTextBox rtb)
         {
             string rtfText; //string to save to db
-            TextRange tr = new TextRange(rtb.Document.ContentStart, rtb.Document.ContentEnd);
+            TextRange tr = new TextRange(rtb.DocumentM.ContentStart, rtb.DocumentM.ContentEnd);
             using (MemoryStream ms = new MemoryStream())
             {
                 tr.Save(ms, DataFormats.Rtf);

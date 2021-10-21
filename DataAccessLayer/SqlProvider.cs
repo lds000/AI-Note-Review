@@ -49,7 +49,10 @@ namespace AI_Note_Review
 
         }
 
-        public List<SqlDocumentReviewSummary> CurrentReviewsSummary
+        /// <summary>
+        /// Populates a class containing PtID and Dates for a time period (usually two months)
+        /// </summary>
+        public ObservableCollection<SqlDocumentReviewSummaryM> SqlDocumentReviewsSummaryProperty
         {
             get
             {
@@ -57,7 +60,7 @@ namespace AI_Note_Review
                 sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{Properties.Settings.Default.StartReviewDate.ToString("yyyy-MM-dd")}' and '{Properties.Settings.Default.EndReviewDate.ToString("yyyy-MM-dd")}';";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    return cnn.Query<SqlDocumentReviewSummary>(sql).ToList();
+                    return new ObservableCollection<SqlDocumentReviewSummaryM>(cnn.Query<SqlDocumentReviewSummaryM>(sql).ToList());
                 }
             }
         }

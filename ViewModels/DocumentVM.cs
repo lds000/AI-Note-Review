@@ -17,7 +17,7 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class DocumentViewModel : INotifyPropertyChanged
+    public class DocumentVM : INotifyPropertyChanged
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -26,21 +26,21 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private Document document;
-        private Patient patient;
+        private DocumentM document;
+        private PatientM patient;
         private SqlProvider sqlProvider;
-        private PatientViewModel patientViewModel;
+        private PatientVM patientViewModel;
 
-        public DocumentViewModel(SqlProvider prov, PatientViewModel pvm)
+        public DocumentVM(SqlProvider prov, PatientVM pvm)
         {
             sqlProvider = prov;
             patientViewModel = pvm;
             patient = pvm.SamplePatient;
-            document = SampleDocument; //New Document() called under this.
+            document = SampleDocument; //New DocumentM() called under this.
             SetUpNote(); //todo: might be better way of implementing this.
         }
 
-        public  PatientViewModel PatientViewModel
+        public  PatientVM PatientViewModel
         {
             get
             {
@@ -48,14 +48,14 @@ namespace AI_Note_Review
             }
         }
 
-        public Document Document
+        public DocumentM Document
         {
             get {
                 return document;
             }
         }
 
-        public Patient Patient
+        public PatientM Patient
         {
             get
             {
@@ -74,11 +74,11 @@ namespace AI_Note_Review
         /// <summary>
         /// return a sample document for testing
         /// </summary>
-        public Document SampleDocument
+        public DocumentM SampleDocument
         {
             get
             {
-                document = new Document();
+                document = new DocumentM();
                 document.Provider = "Devin Hansen";
                 document.ProviderID = 1;
                 document.VisitDate = new DateTime(2021, 7, 14);
@@ -92,7 +92,7 @@ namespace AI_Note_Review
                     "He denies diarrhea or constipation.  He states he cannot tolerate a full meal due to the pain.  " +
                     "Mark has tried OTC medications.  He denies chest pain.  He denies blood in the vomit. Thus far he has tried ibuprofen and tylenol";
 
-                document.HPI = "Dalton Anthony Ware is a 26 y.o. male who presents with a chief complaint of rash, blisters. Patient presents to the ER today with rash, lesions in the mouth, nose and eye on the left.He indicates that about 2 - 3 weeks ago he felt like he got a cold / sinus infection.He was taking multiple medications for this including NSAID, mucinex, spray in the nose to help with this.Didn't have a cough, didn't have a fever.  Had some chest discomfort that he felt was due to some chest congestion that seems to have resolved.Never had any n / v / d.He has not had any pain with urination, but indicates that his urine smells funny like he has had asparagus, but he has not. On Tuesday felt like he was getting a canker sore on the left side of the lip and by the next day was getting larger.He now has very large sores on the left, bilateral cheeks and under the tongue, also feels like something in the throat as well.He has some pain and irritation up in the nose on the left side, feels some crusting there.He has had purulent drainage from the left eye as well over the last couple of days and some generalized irritation.He has not been able to eat / drink much over the last couple of days due to the oral discomfort.He did use a new toothpaste once prior to this all starting, no longer using, this was thought to be part of the cause.  He denies any current n / v / d.He was told that might be SJS and he then looked at the scrotum today and feels like it might be more red than normal, but again, no pain with urination.No fever or chills.  He was never tested for COVID during the URI type illness that he had prior.He does currently complain of headache and pressure behind the eyes as well. No oral sex, patient states ever.Neither have ever had STI otherwise. Patients partner is 7 months pregnant at this point as well.He has never had acold sore, but does get canker sores occasionally.";
+                document.HPI = "Dalton Anthony Ware is a 26 y.o. male who presents with a chief complaint of rash, blisters. PatientM presents to the ER today with rash, lesions in the mouth, nose and eye on the left.He indicates that about 2 - 3 weeks ago he felt like he got a cold / sinus infection.He was taking multiple medications for this including NSAID, mucinex, spray in the nose to help with this.Didn't have a cough, didn't have a fever.  Had some chest discomfort that he felt was due to some chest congestion that seems to have resolved.Never had any n / v / d.He has not had any pain with urination, but indicates that his urine smells funny like he has had asparagus, but he has not. On Tuesday felt like he was getting a canker sore on the left side of the lip and by the next day was getting larger.He now has very large sores on the left, bilateral cheeks and under the tongue, also feels like something in the throat as well.He has some pain and irritation up in the nose on the left side, feels some crusting there.He has had purulent drainage from the left eye as well over the last couple of days and some generalized irritation.He has not been able to eat / drink much over the last couple of days due to the oral discomfort.He did use a new toothpaste once prior to this all starting, no longer using, this was thought to be part of the cause.  He denies any current n / v / d.He was told that might be SJS and he then looked at the scrotum today and feels like it might be more red than normal, but again, no pain with urination.No fever or chills.  He was never tested for COVID during the URI type illness that he had prior.He does currently complain of headache and pressure behind the eyes as well. No oral sex, patient states ever.Neither have ever had STI otherwise. Patients partner is 7 months pregnant at this point as well.He has never had acold sore, but does get canker sores occasionally.";
 
                 document.CurrentMeds = "ibuprofen, Tylenol, prednisone";
                 document.Exam = "AO, NAD PERRL\nNormal OP\nCTA bilat\nRRR no murmurs\nS NTND NABS, no guarding, no rebound\nNo edema";
@@ -136,7 +136,7 @@ namespace AI_Note_Review
             if (patient.GetAgeInDays() <= 90 && patient.VitalsTemp > 100.4)
             {
                 //MessageBoxResult mr = MessageBox.Show($"This patient is {patient.GetAgeInDays()} days old and has a fever of {patient.VitalsTemp}.  Was the patient sent to an ED or appropriate workup performed?", "Infant Fever", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                //if (mr == MessageBoxResult.No) Document.HashTags += "#NeonteNotSentToED";
+                //if (mr == MessageBoxResult.No) DocumentM.HashTags += "#NeonteNotSentToED";
             }
             Document.HashTags = Document.HashTags.TrimEnd().TrimEnd(',');
             Document.NoteSectionText[0] = $"{patient.PtAgeYrs} Sex{patient.PtSex}"; //Demographics 
@@ -731,9 +731,9 @@ namespace AI_Note_Review
             Clear();
             foreach (var myString in strNote.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
-                if (myString.StartsWith("Patient:") && myString.Contains("DOB:"))
+                if (myString.StartsWith("PatientM:") && myString.Contains("DOB:"))
                 {
-                    string strPtInfo = myString.Replace("Patient:", "");
+                    string strPtInfo = myString.Replace("PatientM:", "");
                     strPtInfo = strPtInfo.Replace("DOB:", "|");
                     strPtInfo = strPtInfo.Replace("Age:", "|");
                     strPtInfo = strPtInfo.Replace("Sex:", "|");
@@ -744,10 +744,10 @@ namespace AI_Note_Review
                 }
 
 
-                if (myString.StartsWith("Encounter Date:") && myString.Contains("Provider:"))
+                if (myString.StartsWith("Encounter Date:") && myString.Contains("ProviderM:"))
                 {
                     string strPtInfo = myString.Replace("Encounter Date:", "");
-                    strPtInfo = strPtInfo.Replace("Provider:", "|");
+                    strPtInfo = strPtInfo.Replace("ProviderM:", "|");
                     document.VisitDate = DateTime.Parse(strPtInfo.Split('|')[0].Trim());
                     document.Provider = strPtInfo.Split('|')[1].Trim();
                 }
@@ -946,8 +946,8 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            ReportViewModel rvm = parameter as ReportViewModel;
-            WinReport wp = new WinReport(rvm);
+            ReportVM rvm = parameter as ReportVM;
+            VisitReportV wp = new VisitReportV(rvm);
             wp.ShowDialog();
         }
         #endregion

@@ -17,12 +17,12 @@ namespace AI_Note_Review
     /// <summary>
     /// Interaction logic for WinProviderReviews.xaml
     /// </summary>
-    public partial class WinProviderReviews : Window
+    public partial class BiMonthlyReviewV : Window
     {
-        public WinProviderReviews(ReportViewModel rvm)
+        public BiMonthlyReviewV(BiMonthlyReviewVM bmrvm)
         {
             InitializeComponent();
-            lbProviders.DataContext = rvm;
+            lbProviders.DataContext = bmrvm;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

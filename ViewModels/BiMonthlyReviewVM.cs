@@ -15,7 +15,7 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    class ProviderViewModel : INotifyPropertyChanged
+    public class BiMonthlyReviewVM : INotifyPropertyChanged
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -23,12 +23,34 @@ namespace AI_Note_Review
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        private Provider provider;
+        private BiMonthlyReviewM biMonthlyReviewModel;
+        private SqlProvider sqlProvider;
 
-        public Provider Provider
+        public BiMonthlyReviewM BiMonthlyReviewModel
         {
-            get { return provider; }
+            get {
+                return biMonthlyReviewModel;
+            }
         }
+
+        public BiMonthlyReviewVM()
+        {
+            biMonthlyReviewModel = new BiMonthlyReviewM();
+        }
+
+
+        public SqlProvider SelectedProviderForBiMonthlyReview
+        {
+            get
+            {
+                return sqlProvider;
+            }
+            set
+            {
+                sqlProvider = value;
+            }
+        }
+
 
     }
 }
