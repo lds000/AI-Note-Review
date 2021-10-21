@@ -69,8 +69,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CF.cs" />
-    <Compile Include="ClipboardClass.cs" />
+    <Compile Include="Helper Classes\CF.cs" />
+    <Compile Include="Helper Classes\ClipboardClass.cs" />
     <Compile Include="DataAccessViewModels\SqlICD10SegmentViewModel.cs" />
     <Compile Include="Models\BiMonthlyReviewM.cs" />
     <Compile Include="Models\DocumentM.cs" />
@@ -96,7 +96,7 @@
     <Compile Include="DataAccessLayer\SqlVisitReview.cs" />
     <Compile Include="Models\WestSidePodM.cs" />
     <Compile Include="Models\WindowPosition.cs" />
-    <Compile Include="MyConverters.cs" />
+    <Compile Include="Converters\MyConverters.cs" />
     <Compile Include="UCPatientConsole.xaml.cs">
       <DependentUpon>UCPatientConsole.xaml</DependentUpon>
     </Compile>
@@ -165,7 +165,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="HookIE.cs" />
+    <Compile Include="Helper Classes\HookIE.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -280,9 +280,6 @@
     <Resource Include="TextFile1.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="XMLFile1.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="stdole">
       <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -302,7 +299,9 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
