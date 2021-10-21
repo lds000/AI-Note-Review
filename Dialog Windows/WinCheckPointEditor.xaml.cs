@@ -77,9 +77,9 @@ namespace AI_Note_Review
             WinEnterText wet = new WinEnterText();
 
             Button b = sender as Button;
-            SqlTag st = b.Tag as SqlTag;
+            SqlTagVM st = b.Tag as SqlTagVM;
 
-            SqlTagRegEx srex = new SqlTagRegEx(st.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
+            SqlTagRegExVM srex = new SqlTagRegExVM(st.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
             UpdateCurrentCheckPoint();
         }
 
@@ -87,7 +87,7 @@ namespace AI_Note_Review
         {
             ComboBox cb = sender as ComboBox;
             if (cb == null) return;
-            SqlTagRegEx strex = cb.Tag as SqlTagRegEx;
+            SqlTagRegExVM strex = cb.Tag as SqlTagRegExVM;
             if (strex == null) return;
             strex.TargetSection = int.Parse(cb.SelectedValue.ToString());
             strex.SaveToDB();
@@ -103,7 +103,7 @@ namespace AI_Note_Review
         {
             ComboBox cb = sender as ComboBox;
             if (cb == null) return;
-            SqlTagRegEx strex = cb.Tag as SqlTagRegEx;
+            SqlTagRegExVM strex = cb.Tag as SqlTagRegExVM;
             if (strex == null) return;
             strex.TagRegExType = int.Parse(cb.SelectedValue.ToString());
             strex.SaveToDB();
@@ -120,7 +120,7 @@ namespace AI_Note_Review
         {
 
             Button b = sender as Button;
-            SqlTagRegEx strex = b.Tag as SqlTagRegEx;
+            SqlTagRegExVM strex = b.Tag as SqlTagRegExVM;
             strex.DeleteFromDB();
             UpdateCurrentCheckPoint();
         }
@@ -129,7 +129,7 @@ namespace AI_Note_Review
         {
             TextBox tb = sender as TextBox;
             if (tb == null) return;
-            SqlTagRegEx strex = tb.Tag as SqlTagRegEx;
+            SqlTagRegExVM strex = tb.Tag as SqlTagRegExVM;
             if (strex == null) return;
             strex.RegExText = tb.Text.Trim();
             strex.SaveToDB();
@@ -138,7 +138,7 @@ namespace AI_Note_Review
         private void Img_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Image tmpImg = sender as Image;
-            SqlTagRegEx strex = tmpImg.Tag as SqlTagRegEx;
+            SqlTagRegExVM strex = tmpImg.Tag as SqlTagRegExVM;
             WinEnterText wet = new WinEnterText("Edit Regular Expression value", strex.RegExText);
             wet.Owner = this;
             wet.ShowDialog();
@@ -239,8 +239,8 @@ namespace AI_Note_Review
 
             if (wat.ReturnValue != null)
             {
-                SqlTag tg = SqlLiteDataAccess.GetTags(wat.ReturnValue).FirstOrDefault();
-                if (tg == null) tg = new SqlTag(wat.ReturnValue);
+                SqlTagVM tg = SqlLiteDataAccess.GetTags(wat.ReturnValue).FirstOrDefault();
+                if (tg == null) tg = new SqlTagVM(wat.ReturnValue);
                 string sql = "";
                 sql = $"INSERT INTO RelTagCheckPoint (TagID, CheckPointID) VALUES ({tg.TagID},{CurrentCheckpoint.CheckPointID});";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))

@@ -130,8 +130,8 @@ namespace AI_Note_Review
 
             if (wat.ReturnValue != null)
             {
-                SqlTag tg = SqlLiteDataAccess.GetTags(wat.ReturnValue).FirstOrDefault();
-                if (tg == null) tg = new SqlTag(wat.ReturnValue);
+                SqlTagVM tg = SqlLiteDataAccess.GetTags(wat.ReturnValue).FirstOrDefault();
+                if (tg == null) tg = new SqlTagVM(wat.ReturnValue);
                 string sql = "";
                 sql = $"INSERT INTO RelTagCheckPoint (TagID, CheckPointID) VALUES ({tg.TagID},{CurrentCheckpoint.CheckPointID});";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -266,8 +266,9 @@ namespace AI_Note_Review
             {
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    List<SqlCheckpointM> lcp = SqlCheckpointVM.GetCPsFromSegment(seg.ICD10SegmentID);
-                    List<SqlCheckPointType> lcpt = SqlCheckpointVM.CheckPointTypes();
+                    SqlCheckpointVM cpvm = new SqlCheckpointVM();
+                    List<SqlCheckpointM> lcp = cpvm.GetCPsFromSegment(seg.ICD10SegmentID);
+                    List<SqlCheckPointType> lcpt = cpvm.CheckPointTypes;
                     string strSummary = $"<h1>{seg.SegmentTitle}</h1><br>";
                     foreach (SqlCheckPointType cpt in lcpt)
                     {

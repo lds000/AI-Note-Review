@@ -124,28 +124,28 @@ namespace AI_Note_Review
         /// </summary>
         /// <param name="tmpTagRegExs"></param>
         /// <returns></returns>
-        private SqlTagRegEx.EnumResult CheckTagRegExs(List<SqlTagRegEx> tmpTagRegExs)
+        private SqlTagRegExM.EnumResult CheckTagRegExs(List<SqlTagRegExVM> tmpTagRegExs)
         {
-            foreach (SqlTagRegEx TagRegEx in tmpTagRegExs) //cycle through the TagRegExs, usually one or two, fail or hide stops iteration, if continues returns pass.
+            foreach (SqlTagRegExVM TagRegEx in tmpTagRegExs) //cycle through the TagRegExs, usually one or two, fail or hide stops iteration, if continues returns pass.
             {
                 if (TagRegEx.RegExText.Contains("prolonged")) //used to debug
                 {
                 }
 
                 //This boolean shortens the code
-                bool StopIfMissOrHide = TagRegEx.TagRegExMatchResult != SqlTagRegEx.EnumResult.Pass;
+                bool StopIfMissOrHide = TagRegEx.TagRegExMatchResult != SqlTagRegExM.EnumResult.Pass;
 
                 // check demographic limits and return result if met.
                 //If any TagRegEx fails due to demographics, the entire series fails
                 double age = patient.GetAgeInYearsDouble();
-                if (age < TagRegEx.MinAge) return SqlTagRegEx.EnumResult.Hide;
-                if (age >= TagRegEx.MaxAge) return SqlTagRegEx.EnumResult.Hide;
-                if (patient.isMale && !TagRegEx.Male) return SqlTagRegEx.EnumResult.Hide;
-                if (!patient.isMale && !TagRegEx.Female) return SqlTagRegEx.EnumResult.Hide;
+                if (age < TagRegEx.MinAge) return SqlTagRegExM.EnumResult.Hide;
+                if (age >= TagRegEx.MaxAge) return SqlTagRegExM.EnumResult.Hide;
+                if (patient.isMale && !TagRegEx.Male) return SqlTagRegExM.EnumResult.Hide;
+                if (!patient.isMale && !TagRegEx.Female) return SqlTagRegExM.EnumResult.Hide;
 
                 //Process each of the tags, if any fail or hide then series stop, otherwise passes.
                 //Process Yes/No Tag
-                if (TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.Ask) //ask question... pass if yes, fail if no
+                if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Ask) //ask question... pass if yes, fail if no
                 {
                     if (Properties.Settings.Default.AskYesNo) //If Bypass is on then assume answer was yes
                     {
@@ -182,7 +182,7 @@ namespace AI_Note_Review
                         }
                         else
                         {
-                            if (TagRegEx.TagRegExMatchNoResult != SqlTagRegEx.EnumResult.Pass) return TagRegEx.TagRegExMatchNoResult;
+                            if (TagRegEx.TagRegExMatchNoResult != SqlTagRegExM.EnumResult.Pass) return TagRegEx.TagRegExMatchNoResult;
                             continue;  //continue to next iteration bacause result is pass.
                         }
                     }
@@ -204,9 +204,9 @@ namespace AI_Note_Review
                         {
                             //Match is found!
                             //ANY condition is met, so stop if miss or hide if that is the 1st action
-                            if (StopIfMissOrHide) if (TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.Any) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.
+                            if (StopIfMissOrHide) if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.
                             NoTermsMatch = false;
-                            if (TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.Any) break; //condition met, no need to check rest
+                            if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) break; //condition met, no need to check rest
                         }
                         else
                         {
@@ -219,27 +219,27 @@ namespace AI_Note_Review
                 {
                     if (AllTermsMatch && StopIfMissOrHide)
                     {
-                        if (TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.All) return TagRegEx.TagRegExMatchResult; //Contains All return 2nd Result because any clause not reached
+                        if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.All) return TagRegEx.TagRegExMatchResult; //Contains All return 2nd Result because any clause not reached
                     }
-                    if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.None) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.)
-                    if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.Any) return TagRegEx.TagRegExMatchNoResult;
+                    if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.None) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.)
+                    if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) return TagRegEx.TagRegExMatchNoResult;
                 }
                 //NONE condition met if no terms match
 
-                if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.Any) continue;
+                if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) continue;
 
-                if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegEx.EnumMatch.None) //none condition met, carry out pass
+                if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.None) //none condition met, carry out pass
                 {
 
                 }
                 else
                 {
-                    if (TagRegEx.TagRegExMatchNoResult != SqlTagRegEx.EnumResult.Pass) return TagRegEx.TagRegExMatchNoResult;
+                    if (TagRegEx.TagRegExMatchNoResult != SqlTagRegExM.EnumResult.Pass) return TagRegEx.TagRegExMatchNoResult;
                 }
                 //ASK,ALL, and NONE conditions are note met, so the NoResult condition is the action
             }
 
-            return SqlTagRegEx.EnumResult.Pass; //default is pass
+            return SqlTagRegExM.EnumResult.Pass; //default is pass
         }
 
 
@@ -358,18 +358,18 @@ namespace AI_Note_Review
                     }
                     AlreadyAddedCheckPointIDs.Add(cp.CheckPointID);
                     ///Console.WriteLine($"Now analyzing '{cp.CheckPointTitle}' checkpoint.");
-                    SqlTagRegEx.EnumResult trTagResult = SqlTagRegEx.EnumResult.Pass;
+                    SqlTagRegExM.EnumResult trTagResult = SqlTagRegExM.EnumResult.Pass;
                     if (cp.CheckPointTitle.Contains("Augmentin XR"))
                     {
 
                     }
-                    foreach (SqlTag tagCurrentTag in cp.GetTags())
+                    foreach (SqlTagVM tagCurrentTag in cp.GetTags())
                     {
-                        SqlTagRegEx.EnumResult trCurrentTagResult;
-                        List<SqlTagRegEx> tmpTagRegExs = tagCurrentTag.GetTagRegExs();
+                        SqlTagRegExM.EnumResult trCurrentTagResult;
+                        List<SqlTagRegExVM> tmpTagRegExs = tagCurrentTag.GetTagRegExs();
                         trCurrentTagResult = CheckTagRegExs(tmpTagRegExs);
 
-                        if (trCurrentTagResult != SqlTagRegEx.EnumResult.Pass)
+                        if (trCurrentTagResult != SqlTagRegExM.EnumResult.Pass)
                         {
                             //tag fails, no match.
                             trTagResult = trCurrentTagResult;
@@ -380,15 +380,15 @@ namespace AI_Note_Review
 
                     switch (trTagResult)
                     {
-                        case SqlTagRegEx.EnumResult.Pass:
+                        case SqlTagRegExM.EnumResult.Pass:
                             cp.IncludeCheckpoint = false;
                             report.PassedCheckPoints.Add(cp); //do not include passed for All diagnosis.
                             break;
-                        case SqlTagRegEx.EnumResult.Hide:
+                        case SqlTagRegExM.EnumResult.Hide:
                             cp.IncludeCheckpoint = false;
                             report.DroppedCheckPoints.Add(cp);
                             break;
-                        case SqlTagRegEx.EnumResult.Miss:
+                        case SqlTagRegExM.EnumResult.Miss:
                             cp.IncludeCheckpoint = true;
                             report.MissedCheckPoints.Add(cp);
                             break;
@@ -408,19 +408,19 @@ namespace AI_Note_Review
         }
 
 
-        public string GetReport(SqlCheckpointVM sqlCheckpoint, DocumentM doc, PatientM pt)
+        public string GetReport(SqlCheckpointVM sqlCheckpointVM, DocumentM doc, PatientM pt)
         {
             string strReturn = "";
-            strReturn += $"<li><dt><font size='+1'>{sqlCheckpoint.CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{sqlCheckpoint.ErrorSeverity}/10)</font></dt><dd><i>{sqlCheckpoint.Comment}</i></dd></li>" + Environment.NewLine;
-            if (sqlCheckpoint.CustomComment != "")
+            strReturn += $"<li><dt><font size='+1'>{sqlCheckpointVM.CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{sqlCheckpointVM.ErrorSeverity}/10)</font></dt><dd><i>{sqlCheckpointVM.Comment}</i></dd></li>" + Environment.NewLine;
+            if (sqlCheckpointVM.CustomComment != "")
             {
-                strReturn += $"<b>Comment: {sqlCheckpoint.CustomComment}</b><br>";
+                strReturn += $"<b>Comment: {sqlCheckpointVM.CustomComment}</b><br>";
             }
-            if (sqlCheckpoint.Link != "" && sqlCheckpoint.Link != null)
+            if (sqlCheckpointVM.Link != "" && sqlCheckpointVM.Link != null)
             {
-                strReturn += $"<a href={sqlCheckpoint.Link}>Click here for reference.</a><br>";
+                strReturn += $"<a href={sqlCheckpointVM.Link}>Click here for reference.</a><br>";
             }
-            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Feedback on review of {pt.PtID} on {doc.VisitDate.ToShortDateString()}. (Ref:{pt.PtID}|{doc.VisitDate.ToShortDateString()}|{sqlCheckpoint.CheckPointID})'>Feedback</a>";
+            strReturn += $"<a href='mailto:Lloyd.Stolworthy@PrimaryHealth.com?subject=Feedback on review of {pt.PtID} on {doc.VisitDate.ToShortDateString()}. (Ref:{pt.PtID}|{doc.VisitDate.ToShortDateString()}|{sqlCheckpointVM.CheckPointID})'>Feedback</a>";
             /*
             strReturn += $"\tSignificance {ErrorSeverity}/10." + Environment.NewLine;
             strReturn += $"\tRecommended Remediation: {Action}" + Environment.NewLine;

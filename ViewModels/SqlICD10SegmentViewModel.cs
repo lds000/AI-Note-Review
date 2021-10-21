@@ -34,7 +34,6 @@ namespace AI_Note_Review
             sqlICD10Segment = sc;
         }
 
-
         public SqlICD10Segment SqlICD10Segment
             {
             get

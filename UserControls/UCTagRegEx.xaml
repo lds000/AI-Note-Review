@@ -11,6 +11,7 @@
     <Grid Margin="0,0,10,10">
         <Grid.Resources>
             <local:CF x:Key="myCF"></local:CF>
+            <local:EnumDescriptionConverter x:Key="enumDescriptionConverter"></local:EnumDescriptionConverter>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -40,36 +41,30 @@
                 </Grid.ColumnDefinitions>
                 <ComboBox
               x:Name="cbTagRexExMatchType"
-                      ItemsSource="{Binding Source={StaticResource myCF}, Path=TagRegExMatchTypes}"
+                      ItemsSource="{Binding MyMatchTypeValues}"
                       Grid.Column="0"
-                      SelectedValue="{Binding iTagRegExMatchType}"
-                      SelectionChanged="cbTagRexExMatchType_SelectionChanged"
-                      DisplayMemberPath="TypeTitle"
-                      SelectedValuePath="TypeID"
-                ></ComboBox>
+                      SelectedValue="{Binding TagRegExMatchType}"
+                      SelectionChanged="{Binding SaveTagRegEx}"
+                        
+                >
+                </ComboBox>
                 <ComboBox
               x:Name="cbTagRexExMatchResult"
-                      ItemsSource="{Binding Source={StaticResource myCF}, Path=TagRegExMatchResults}"
+                      ItemsSource="{Binding MyResultTypeValues}"
                       Grid.Column="1"
-                      SelectedValue="{Binding iTagRegExMatchResult}"
-                      SelectionChanged="cbTagRexExMatchResult_SelectionChanged"
-                      DisplayMemberPath="ResultTitle"
-                      SelectedValuePath="ResultID"
+                      SelectedValue="{Binding TagRegExMatchResult}"
                 ></ComboBox>
                 <ComboBox
               x:Name="cbTagRexExMatchNoResult"
-                      ItemsSource="{Binding Source={StaticResource myCF}, Path=TagRegExMatchResults}"
+                      ItemsSource="{Binding MyResultTypeValues}"
                       Grid.Column="2"
-                      SelectedValue="{Binding iTagRegExMatchNoResult}"
-                      SelectionChanged="cbTagRexExMatchNoResult_SelectionChanged"
-                      DisplayMemberPath="ResultTitle"
-                      SelectedValuePath="ResultID"
+                      SelectedValue="{Binding TagRegExMatchNoResult}"
                 ></ComboBox>
             </Grid>
             <ComboBox 
                 Margin="2" 
                 Name="cbTargetSection" 
-                ItemsSource="{Binding Source={StaticResource myCF}, Path=NoteSections}"
+                ItemsSource="{Binding NoteSections}"
                 Grid.Column="1" 
                 SelectedValue="{Binding TargetSection}"
                 SelectionChanged="CbTargetSection_SelectionChanged" 

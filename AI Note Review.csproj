@@ -37,6 +37,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>packages\CommonServiceLocator.2.0.2\lib\net47\CommonServiceLocator.dll</HintPath>
+    </Reference>
     <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Dapper.2.0.90\lib\net461\Dapper.dll</HintPath>
     </Reference>
@@ -69,9 +72,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModels\SqlTagVM.cs" />
     <Compile Include="Helper Classes\CF.cs" />
     <Compile Include="Helper Classes\ClipboardClass.cs" />
-    <Compile Include="DataAccessViewModels\SqlICD10SegmentViewModel.cs" />
+    <Compile Include="ViewModels\SqlICD10SegmentViewModel.cs" />
     <Compile Include="Models\BiMonthlyReviewM.cs" />
     <Compile Include="Models\DocumentM.cs" />
     <Compile Include="Models\PatientM.cs" />
@@ -88,10 +92,10 @@
     <Compile Include="DataAccessLayer\SqlProvider.cs" />
     <Compile Include="DataAccessLayer\SqlRelCPProvider.cs" />
     <Compile Include="DataAccessLayer\SqlrelICD10SegmentsCheckPoints.cs" />
-    <Compile Include="DataAccessLayer\SqlTag.cs" />
+    <Compile Include="DataAccessLayer\SqlTagM.cs" />
     <Compile Include="DataAccessLayer\SqlTagRegExMatchResults.cs" />
     <Compile Include="DataAccessLayer\SqlTagRegExMatchType.cs" />
-    <Compile Include="DataAccessLayer\SqlTagRegEx.cs" />
+    <Compile Include="DataAccessLayer\SqlTagRegExM.cs" />
     <Compile Include="DataAccessLayer\SqlTagRegExType.cs" />
     <Compile Include="DataAccessLayer\SqlVisitReview.cs" />
     <Compile Include="Models\WestSidePodM.cs" />
@@ -111,7 +115,8 @@
     <Compile Include="ViewModels\PatientVM.cs" />
     <Compile Include="ViewModels\ProviderVM.cs" />
     <Compile Include="ViewModels\ReportVM.cs" />
-    <Compile Include="DataAccessViewModels\SqlCheckpointVM.cs" />
+    <Compile Include="ViewModels\SqlCheckpointVM.cs" />
+    <Compile Include="ViewModels\SqlTagRegExVM.cs" />
     <Compile Include="ViewModels\VisitReportVM.cs" />
     <Compile Include="ViewModels\WestSidePodVM.cs" />
     <Compile Include="Helper Classes\WebBrowserHelper.cs" />
@@ -284,6 +289,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="ViewModel\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />

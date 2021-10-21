@@ -29,7 +29,7 @@ namespace AI_Note_Review
         {
             if (tbSearch.Text.Length >= 2)
             {
-                List<SqlTag> taglist = SqlLiteDataAccess.GetTags(tbSearch.Text);
+                List<SqlTagVM> taglist = SqlLiteDataAccess.GetTags(tbSearch.Text);
                 if (taglist.Count == 0)
                 {
                     lbTags.Visibility = Visibility.Collapsed;

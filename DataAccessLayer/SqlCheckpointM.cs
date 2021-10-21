@@ -258,17 +258,6 @@ class PersonViewModel {
             }
         }
 
-        public List<SqlTag> GetTags()
-        {
-            string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID} order by RelTagCheckPointID;";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                return cnn.Query<SqlTag>(sql, this).ToList();
-            }
-
-        }
-
-
         public bool DeleteFromDB()
         {
             MessageBoxResult mr = MessageBox.Show("Are you sure you want to remove this diagnosis? This is permenant and will delete all content.", "Confirm Delete", MessageBoxButton.YesNo);
@@ -285,46 +274,6 @@ class PersonViewModel {
             return true;
         }
 
-        /// <summary>
-        /// Get the tags associated with the checkpoint
-        /// </summary>
-        public List<SqlTag> Tags
-        {
-            get
-            {
-                string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID};";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    var tmpList = cnn.Query<SqlTag>(sql, this).ToList();
-                    foreach (SqlTag st in tmpList)
-                    {
-                        st.ParentCheckPoint = this;
-                    }
-                    return tmpList;
-                }
-            }
-        }
-
-        public void AddTag(SqlTag tg)
-        {
-            string sql = "";
-            sql = $"INSERT INTO RelTagCheckPoint (TagID, CheckPointID) VALUES ({tg.TagID},{CheckPointID});";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql);
-            }
-            OnPropertyChanged("Tags");
-        }
-
-        public void RemoveTag(SqlTag st)
-        {
-            string sql = $"Delete From RelTagCheckPoint where CheckPointID = {CheckPointID} AND TagID = {st.TagID};";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql);
-            }
-            OnPropertyChanged("Tags");
-        }
 
         public void DeleteImage(SqlCheckPointImage sci)
         {

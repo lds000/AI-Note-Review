@@ -1,10 +1,12 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -22,26 +24,58 @@ namespace AI_Note_Review
     {
     }
 
+    public class EnumDescriptionConverter : IValueConverter
+    {
+        private string GetEnumDescription(Enum enumObj)
+        {
+            FieldInfo fieldInfo = enumObj.GetType().GetField(enumObj.ToString());
+
+            object[] attribArray = fieldInfo.GetCustomAttributes(false);
+
+            if (attribArray.Length == 0)
+            {
+                return enumObj.ToString();
+            }
+            else
+            {
+                DescriptionAttribute attrib = attribArray[0] as DescriptionAttribute;
+                return attrib.Description;
+            }
+        }
+
+        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Enum myEnum = (Enum)value;
+            string description = GetEnumDescription(myEnum);
+            return description;
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return string.Empty;
+        }
+    }
+
     class SqlTagRegExToXamlConverter : IValueConverter
     {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            SqlTagRegEx s = value as SqlTagRegEx;
+            SqlTagRegExVM s = value as SqlTagRegExVM;
             string input = CF.ClinicNote.NoteSectionText[s.TargetSection];
             Brush HighlightColor = Brushes.Yellow;
             switch (s.TagRegExMatchType)
             {
-                case SqlTagRegEx.EnumMatch.Any:
+                case SqlTagRegExM.EnumMatch.Any:
                     HighlightColor = Brushes.Yellow;
                     break;
-                case SqlTagRegEx.EnumMatch.All:
+                case SqlTagRegExM.EnumMatch.All:
                     HighlightColor = Brushes.Green;
                     break;
-                case SqlTagRegEx.EnumMatch.None:
+                case SqlTagRegExM.EnumMatch.None:
                     HighlightColor = Brushes.Red;
                     break;
-                case SqlTagRegEx.EnumMatch.Ask:
+                case SqlTagRegExM.EnumMatch.Ask:
                     HighlightColor = Brushes.Yellow;
                     break;
                 default:
@@ -52,7 +86,7 @@ namespace AI_Note_Review
                 var textBlock = new TextBlock();
                 textBlock.TextWrapping = TextWrapping.Wrap;
                 string strSearchTerms = s.RegExText;
-                if (s.TagRegExMatchType == SqlTagRegEx.EnumMatch.Ask)
+                if (s.TagRegExMatchType == SqlTagRegExM.EnumMatch.Ask)
                 {
                     strSearchTerms = strSearchTerms.Split('|')[0];
                 }
@@ -104,12 +138,12 @@ namespace AI_Note_Review
 
     }
 
-    [ValueConversion(typeof(SqlTagRegEx), typeof(string))]
+    [ValueConversion(typeof(SqlTagRegExVM), typeof(string))]
     public class SqlTagRegExToString : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            SqlTagRegEx s = value as SqlTagRegEx;
+            SqlTagRegExVM s = value as SqlTagRegExVM;
             string str = CF.ClinicNote.NoteSectionText[s.TargetSection];
             return str;
         }

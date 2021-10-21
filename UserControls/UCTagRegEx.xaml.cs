@@ -34,7 +34,7 @@ namespace AI_Note_Review
             wet.ShowDialog();
             if (wet.ReturnValue != null)
             {
-                SqlTagRegEx ParentTagRegEx = DataContext as SqlTagRegEx;
+                SqlTagRegExM ParentTagRegEx = DataContext as SqlTagRegExM;
                 ParentTagRegEx.RegExText = wet.ReturnValue;
                 tbRegExSearchTerms.Text = wet.ReturnValue;
                 ParentTagRegEx.SaveToDB();
@@ -50,7 +50,7 @@ namespace AI_Note_Review
         private void SaveData()
         {
             if (!this.IsLoaded) return;
-            SqlTagRegEx ParentTagRegEx = DataContext as SqlTagRegEx;
+            SqlTagRegExM ParentTagRegEx = DataContext as SqlTagRegExM;
             double tmpOut;
             ParentTagRegEx.MinAge = double.Parse(tbMinAge.Text);
             ParentTagRegEx.MaxAge = double.Parse(tbMaxAge.Text);
@@ -59,7 +59,7 @@ namespace AI_Note_Review
 
         private void ButtonRemove_Click(object sender, RoutedEventArgs e)
         {
-            SqlTagRegEx ParentTagRegEx = DataContext as SqlTagRegEx;
+            SqlTagRegExM ParentTagRegEx = DataContext as SqlTagRegExM;
             ParentTagRegEx.DeleteFromDB();
             DeleteMe(this, EventArgs.Empty);
         }
@@ -116,7 +116,7 @@ namespace AI_Note_Review
 
         private void cbTagRexExMatchType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SaveData();
+            //SaveData();
         }
 
         private void cbTagRexExMatchNoResult_SelectionChanged(object sender, SelectionChangedEventArgs e)

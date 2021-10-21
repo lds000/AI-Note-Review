@@ -31,8 +31,8 @@ namespace AI_Note_Review
             //WinEnterText wet = new WinEnterText();
             Button b = sender as Button;
             SqlCheckpointM cp = DataContext as SqlCheckpointM;
-            SqlTag st = b.DataContext as SqlTag;
-            SqlTagRegEx srex = new SqlTagRegEx(st.TagID, "Search Text", cp.TargetSection, 1);
+            SqlTagVM st = b.DataContext as SqlTagVM;
+            SqlTagRegExVM srex = new SqlTagRegExVM(st.TagID, "Search Text", cp.TargetSection, 1);
             //ImChanged(this, EventArgs.Empty);
             //I need to implement something else here
         }
@@ -46,8 +46,8 @@ namespace AI_Note_Review
         private void btnRemoveTag_Click(object sender, RoutedEventArgs e)
         {
             Button b = sender as Button;
-            SqlCheckpointM cp = DataContext as SqlCheckpointM;
-            SqlTag st = b.DataContext as SqlTag;
+            SqlCheckpointVM cp = DataContext as SqlCheckpointVM;
+            SqlTagVM st = b.DataContext as SqlTagVM;
             cp.RemoveTag(st);
             ImChanged(this, EventArgs.Empty);
 
@@ -56,7 +56,7 @@ namespace AI_Note_Review
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
             TextBlock tb = sender as TextBlock;
-            SqlTag st = tb.DataContext as SqlTag;
+            SqlTagVM st = tb.DataContext as SqlTagVM;
             WinEnterText wet = new WinEnterText("Edit Title", st.TagText);
             wet.ShowDialog();
             if (wet.ReturnValue != null)

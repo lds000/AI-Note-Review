@@ -15,7 +15,24 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class SqlTag: INotifyPropertyChanged
+
+    /*
+ * Great example I found online.
+ class PersonModel {
+    public string Name { get; set; }
+  }
+
+class PersonViewModel {
+    private PersonModel Person { get; set;}
+    public string Name { get { return this.Person.Name; } }
+    public bool IsSelected { get; set; } // example of state exposed by view model
+
+    public PersonViewModel(PersonModel person) {
+        this.Person = person;
+    }
+}
+*/
+    public class SqlTagVM : INotifyPropertyChanged
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -24,11 +41,52 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        // Declare the event
-        public int TagID { get; set; }
-        public string TagText { get; set; }
+        public SqlTagVM(string strTagText)
+        {
+            strTagText = strTagText.Replace("'", "''"); //used to avoid errors in titles with ' character
+            string sql = "";
+            sql = $"INSERT INTO Tags (TagText) VALUES ('{strTagText}');";
+            sql += $"Select * from Tags where TagText = '{strTagText}';"; //this part is to get the ID of the newly created phrase
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                this.SqlTag = cnn.QueryFirstOrDefault<SqlTagM>(sql);
+            }
+        }
 
-        public SqlCheckpointM ParentCheckPoint { get; set; }
+        public SqlTagVM(SqlTagM st)
+        {
+            this.SqlTag = st;
+        }
+
+        public SqlTagVM()
+        {
+            this.SqlTag = new SqlTagM();
+        }
+
+        private SqlTagM SqlTag { get; set; }
+        public int TagID { get { return this.SqlTag.TagID; } set { this.SqlTag.TagID = value; } }
+        public string TagText { get { return this.SqlTag.TagText; } set { this.SqlTag.TagText = value;} }
+
+
+
+        public void RemoveTagRegEx(SqlTagRegExVM str) {this.SqlTag.RemoveTagRegEx(str); }
+        public void SaveToDB() { this.SaveToDB(); }
+        public void DeleteFromDB() { this.DeleteFromDB(); }
+
+        public List<SqlTagRegExVM> GetTagRegExs()
+        {
+            string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                return cnn.Query<SqlTagRegExVM>(sql).ToList();
+            }
+
+        }
+
+        /// <summary>
+        /// not persisted in data, for VM only
+        /// </summary>
+        public SqlCheckpointVM ParentCheckPoint { get; set; }
 
         public TextBlock TagCount
         {
@@ -53,25 +111,23 @@ namespace AI_Note_Review
             }
 
         }
-
-        public List<SqlTagRegEx> TagRegExs
+        public List<SqlTagRegExVM> TagRegExs
         {
             get
             {
                 string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    List<SqlTagRegEx> tmpList = cnn.Query<SqlTagRegEx>(sql, this).ToList();
-                    foreach (SqlTagRegEx st in tmpList)
-                    {
-                        st.ParentTag = this;
-                    }
-                    return tmpList;
+                    var tmpreturn = cnn.Query<SqlTagRegExVM>(sql, this).ToList();
+                        return tmpreturn;
                 }
             }
 
         }
 
+
+
+        #region Add/Remove TagRegEx Command
         private ICommand mAddTagRegEx;
         public ICommand AddTagRegExCommand
         {
@@ -101,79 +157,9 @@ namespace AI_Note_Review
                 mRemoveTag = value;
             }
         }
+        #endregion
 
 
-        public void AddSqlTagRegex(SqlTag st)
-        {
-            SqlTagRegEx srex = new SqlTagRegEx(st.TagID, "Search Text", 1, 1);
-            OnPropertyChanged("TagRegExs");
-           
-        }
-        public SqlTag()
-        {
-        }
-
-        public SqlTag(string strTagText)
-        {
-            strTagText = strTagText.Replace("'", "''"); //used to avoid errors in titles with ' character
-            string sql = "";
-            sql = $"INSERT INTO Tags (TagText) VALUES ('{strTagText}');";
-            sql += $"Select * from Tags where TagText = '{strTagText}';"; //this part is to get the ID of the newly created phrase
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                SqlTag p = cnn.QueryFirstOrDefault<SqlTag>(sql);
-                TagID = p.TagID;
-                TagText = p.TagText;
-            }
-        }
-
-        public void RemoveTagRegEx(SqlTagRegEx str)
-        {
-            string sql = $"Delete from TagRegEx WHERE TagRegExID={str.TagRegExID};";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql);
-            }
-            OnPropertyChanged("TagRegExs");
-        }
-
-        public List<SqlTagRegEx> GetTagRegExs()
-        {
-            string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                return cnn.Query<SqlTagRegEx>(sql, this).ToList();
-            }
-
-        }
-
-        public void SaveToDB()
-        {
-            string sql = "UPDATE Tags SET " +
-                    "TagID=@TagID, " +
-                    "TagText=@TagText " +
-                    "WHERE TagID=@TagID;";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql, this);
-            }
-        }
-
-        public bool DeleteFromDB()
-        {
-            MessageBoxResult mr = MessageBox.Show("Are you sure you want to remove this expression? This is permenant and will delete all content.", "Confirm Delete", MessageBoxButton.YesNo);
-            if (mr != MessageBoxResult.Yes)
-            {
-                return false;
-            }
-
-            string sql = "Delete from Tags TagID Tags=@TagID;";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql, this);
-            }
-            return true;
-        }
     }
 
     class TagRegExAdder : ICommand
@@ -192,8 +178,8 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            SqlTag st = parameter as SqlTag;
-            st.AddSqlTagRegex(st);
+            SqlTagVM st = parameter as SqlTagVM;
+            //st.AddSqlTagRegex(st); not sure what this does, so I commented it out.
         }
         #endregion
     }
@@ -214,11 +200,9 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            SqlTag st = parameter as SqlTag;
+            SqlTagVM st = parameter as SqlTagVM;
             st.ParentCheckPoint.RemoveTag(st);
         }
         #endregion
     }
-
 }
-

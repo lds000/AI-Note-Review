@@ -66,7 +66,7 @@ public PersonViewModel(PersonModel person) {
 
 
         public SqlCheckpointM SqlCheckpoint { get; set; }
-        public int CheckPointID { get { return this.SqlCheckpoint.CheckPointID; } }
+        public int CheckPointID { get { return this.SqlCheckpoint.CheckPointID; } set { this.SqlCheckpoint.CheckPointID = value; } }
         public string CheckPointTitle { get { return this.SqlCheckpoint.CheckPointTitle; } set { this.SqlCheckpoint.CheckPointTitle = value; } }
         public int CheckPointType { get { return this.SqlCheckpoint.CheckPointType; } set { this.SqlCheckpoint.CheckPointType = value; } }
         public string Comment { get { return this.SqlCheckpoint.Comment; } set { this.SqlCheckpoint.Comment = value; } }
@@ -76,7 +76,15 @@ public PersonViewModel(PersonModel person) {
         public string Action { get { return this.SqlCheckpoint.Action; } set { this.SqlCheckpoint.Action = value; } }
         public string Link { get { return this.SqlCheckpoint.Link; } set { this.SqlCheckpoint.Link = value; } }
         public int Expiration { get { return this.SqlCheckpoint.Expiration; } set { this.SqlCheckpoint.Expiration = value; } }
+        public ObservableCollection<SqlCheckPointImage> Images        {            get            {                return this.SqlCheckpoint.Images;            }        }
 
+        public string StrCheckPointType
+        {
+            get
+            {
+                return (from c in CheckPointTypes where c.CheckPointTypeID == CheckPointType select c).FirstOrDefault().Title;
+            }
+        }
         public void SaveToDB()
         {
             this.SqlCheckpoint.SaveToDB();
@@ -93,18 +101,55 @@ public PersonViewModel(PersonModel person) {
         {
             this.SqlCheckpoint.AddImageFromClipBoard();
         }
-        public void AddTag(SqlTag tg)
+        /// <summary>
+        /// Get the tags associated with the checkpoint
+        /// </summary>
+        public List<SqlTagVM> Tags
         {
-            this.SqlCheckpoint.AddTag(tg);
-        }
-        public void RemoveTag(SqlTag st)
-        {
-            this.SqlCheckpoint.RemoveTag(st);
+            get
+            {
+                string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID};";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    var tmpList = cnn.Query<SqlTagVM>(sql, this).ToList();
+                    foreach (SqlTagVM st in tmpList)
+                    {
+                        st.ParentCheckPoint = this;
+                    }
+                    return tmpList;
+                }
+            }
         }
 
-        public List<SqlTag> GetTags()
+        public List<SqlTagVM> GetTags()
         {
-            return this.SqlCheckpoint.GetTags();
+            string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID} order by RelTagCheckPointID;";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                return cnn.Query<SqlTagVM>(sql, this).ToList();
+            }
+        }
+
+
+        public void AddTag(SqlTagVM tg)
+        {
+            string sql = "";
+            sql = $"INSERT INTO RelTagCheckPoint (TagID, CheckPointID) VALUES ({tg.TagID},{CheckPointID});";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
+            }
+            OnPropertyChanged("Tags");
+        }
+
+        public void RemoveTag(SqlTagVM st)
+        {
+            string sql = $"Delete From RelTagCheckPoint where CheckPointID = {CheckPointID} AND TagID = {st.TagID};";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
+            }
+            OnPropertyChanged("Tags");
         }
 
         /// <summary>
@@ -116,7 +161,7 @@ public PersonViewModel(PersonModel person) {
         }
 
 
-        public static List<SqlCheckpointM> GetCPsFromSegment(int SegmentID)
+        public List<SqlCheckpointM> GetCPsFromSegment(int SegmentID)
         {
             string sql = $"Select * from CheckPoints where TargetICD10Segment == {SegmentID}";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -132,12 +177,15 @@ public PersonViewModel(PersonModel person) {
         /// </summary>
         public string CustomComment { get; set; }
 
-        public static List<SqlCheckPointType> CheckPointTypes()
+        public List<SqlCheckPointType> CheckPointTypes
         {
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            get
             {
-                string sql = "Select * from CheckPointTypes order by ItemOrder;";
-                return cnn.Query<SqlCheckPointType>(sql).ToList();
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = "Select * from CheckPointTypes order by ItemOrder;";
+                    return cnn.Query<SqlCheckPointType>(sql).ToList();
+                }
             }
 
         }
@@ -180,7 +228,7 @@ public PersonViewModel(PersonModel person) {
 
         public void Execute(object parameter)
         {
-            SqlCheckpointM CurrentCheckpoint = parameter as SqlCheckpointM;
+            SqlCheckpointVM CurrentCheckpoint = parameter as SqlCheckpointVM;
             if (CurrentCheckpoint == null) return;
             string strSuggest = "#";
             if (CurrentCheckpoint.CheckPointType == 1) strSuggest = "#Query";
@@ -209,8 +257,8 @@ public PersonViewModel(PersonModel person) {
 
             if (wat.ReturnValue != null)
             {
-                SqlTag tg = SqlLiteDataAccess.GetTags(wat.ReturnValue).FirstOrDefault();
-                if (tg == null) tg = new SqlTag(wat.ReturnValue);
+                SqlTagVM tg = SqlLiteDataAccess.GetTags(wat.ReturnValue).FirstOrDefault();
+                if (tg == null) tg = new SqlTagVM(wat.ReturnValue);
                 CurrentCheckpoint.AddTag(tg);
 
                 //SqlTagRegEx srex = new SqlTagRegEx(tg.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
