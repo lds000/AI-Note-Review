@@ -83,30 +83,12 @@ namespace AI_Note_Review
             UpdateCurrentCheckPoint();
         }
 
-        private void CbTargetSection_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox cb = sender as ComboBox;
-            if (cb == null) return;
-            SqlTagRegExVM strex = cb.Tag as SqlTagRegExVM;
-            if (strex == null) return;
-            strex.TargetSection = int.Parse(cb.SelectedValue.ToString());
-            strex.SaveToDB();
-        }
         private void cbTargetSection_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CurrentCheckpoint == null) return;
             if (cbTargetSection.SelectedValue == null) return;
             CurrentCheckpoint.TargetSection = int.Parse(cbTargetSection.SelectedValue.ToString());
             CurrentCheckpoint.SaveToDB();
-        }
-        private void CbTagRegExType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox cb = sender as ComboBox;
-            if (cb == null) return;
-            SqlTagRegExVM strex = cb.Tag as SqlTagRegExVM;
-            if (strex == null) return;
-            strex.TagRegExType = int.Parse(cb.SelectedValue.ToString());
-            strex.SaveToDB();
         }
         private void Tbtitle_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -125,15 +107,6 @@ namespace AI_Note_Review
             UpdateCurrentCheckPoint();
         }
 
-        private void Tbtitle_LostFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-            if (tb == null) return;
-            SqlTagRegExVM strex = tb.Tag as SqlTagRegExVM;
-            if (strex == null) return;
-            strex.RegExText = tb.Text.Trim();
-            strex.SaveToDB();
-        }
 
         private void Img_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -145,7 +118,7 @@ namespace AI_Note_Review
             if (wet.ReturnValue != null)
             {
                 strex.RegExText = wet.ReturnValue;
-                strex.SaveToDB();
+                //strex.SaveToDB();
                 UpdateCurrentCheckPoint();
             }
         }

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:AI_Note_Review"
              Loaded="UserControl_Loaded"
              MinWidth="400"
@@ -44,22 +45,36 @@
                       ItemsSource="{Binding MyMatchTypeValues}"
                       Grid.Column="0"
                       SelectedValue="{Binding TagRegExMatchType}"
-                      SelectionChanged="{Binding SaveTagRegEx}"
-                        
-                >
+                    >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding SaveTagRegExCommand}" CommandParameter="{Binding}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </ComboBox>
                 <ComboBox
               x:Name="cbTagRexExMatchResult"
                       ItemsSource="{Binding MyResultTypeValues}"
                       Grid.Column="1"
                       SelectedValue="{Binding TagRegExMatchResult}"
-                ></ComboBox>
-                <ComboBox
-              x:Name="cbTagRexExMatchNoResult"
+                >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding SaveTagRegExCommand}" CommandParameter="{Binding}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                </ComboBox>
+                <ComboBox x:Name="cbTagRexExMatchNoResult"
                       ItemsSource="{Binding MyResultTypeValues}"
                       Grid.Column="2"
                       SelectedValue="{Binding TagRegExMatchNoResult}"
-                ></ComboBox>
+                >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding SaveTagRegExCommand}" CommandParameter="{Binding}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
             </Grid>
             <ComboBox 
                 Margin="2" 
@@ -67,11 +82,17 @@
                 ItemsSource="{Binding NoteSections}"
                 Grid.Column="1" 
                 SelectedValue="{Binding TargetSection}"
-                SelectionChanged="CbTargetSection_SelectionChanged" 
                 DisplayMemberPath="NoteSectionTitle" 
-                SelectedValuePath="SectionID"></ComboBox>
+                SelectedValuePath="SectionID">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding SaveTagRegExCommand}" CommandParameter="{Binding}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+            </ComboBox>
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="2">
-                <TextBlock Margin="10,0,5,0" Style="{StaticResource MyTbStyle}" DataContext="{Binding ElementName=cbTagRexExMatchType, Path=SelectedItem}" Text="{Binding TypeDescription, FallbackValue=If this}"></TextBlock>
+                <TextBlock Margin="10,0,5,0" Style="{StaticResource MyTbStyle}" Text="{Binding TagRegExMatchTypeDescription, FallbackValue=If this}"></TextBlock>
                 <TextBlock Margin="0,0,0,0" Style="{StaticResource MyTbStyle}" DataContext="{Binding ElementName=cbTagRexExMatchResult, Path=SelectedItem}" Text="{Binding ResultDescription, FallbackValue=Then that}"></TextBlock>
                 <TextBlock Margin="5,0,5,0" Style="{StaticResource MyTbStyle}">Otherwise</TextBlock>
                 <TextBlock Margin="0,0,0,0" Style="{StaticResource MyTbStyle}" DataContext="{Binding ElementName=cbTagRexExMatchNoResult, Path=SelectedItem}" Text="{Binding ResultDescription, FallbackValue=Then else}"></TextBlock>
@@ -91,7 +112,14 @@
                      Text="{Binding RegExText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      x:Name="tbRegExSearchTerms" 
                      Style="{StaticResource MyTextBox}" 
-                     LostKeyboardFocus="tbTitle_LostFocus"></TextBox>
+                     >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="LostKeyboardFocus">
+                        <i:InvokeCommandAction Command="{Binding SaveTagRegExCommand}" CommandParameter="{Binding}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+            </TextBox>
             <Image ToolTip="Expand search term to a larger text box." Grid.Column="1" Tag="{Binding}" Source="/Icons/edit_notes.png" Width="15" MouseDown="Image_MouseDown" />
         </Grid>
         <TextBlock Grid.Row="4" Margin="5,0,0,0" Style="{StaticResource MyTbStyle}" FontSize="16">Demographics</TextBlock>
@@ -106,17 +134,41 @@
                 Grid.Column="0" 
                 FontSize="10" 
                 Padding="0" 
-                LostFocus="tblostfocus" 
                 Text="{Binding MinAge, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="LostKeyboardFocus">
+                        <i:InvokeCommandAction Command="{Binding SaveTagRegExCommand}" CommandParameter="{Binding}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
 
             </TextBox>
             <Label Style="{StaticResource MyLblStyle}">Max Age</Label>
             <TextBox
                 x:Name="tbMaxAge"
-                Margin="2.5,0,5,0" VerticalAlignment="Center" Width="30" PreviewTextInput="TextBox_PreviewTextInput" Grid.Column="1" FontSize="10" Padding="0" LostKeyboardFocus="tblostfocus" Text="{Binding MaxAge, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}"></TextBox>
+                Margin="2.5,0,5,0" VerticalAlignment="Center" Width="30"
+                PreviewTextInput="TextBox_PreviewTextInput" Grid.Column="1" FontSize="10" Padding="0"
+                Text="{Binding MaxAge, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="LostKeyboardFocus">
+                        <i:InvokeCommandAction Command="{Binding SaveTagRegExCommand}" CommandParameter="{Binding}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
             <Label Style="{StaticResource MyLblStyle}">Sex:</Label>
-            <CheckBox Foreground="White" Grid.Column="2" VerticalAlignment="Center" FontSize="10" Margin="0" LostFocus="cblostfocus" Padding="0" IsChecked="{Binding Male, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">M</CheckBox>
-            <CheckBox Foreground="White" Grid.Column="3" VerticalAlignment="Center" FontSize="10" Margin="0" LostFocus="cblostfocus" Padding="0" IsChecked="{Binding Female, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">F</CheckBox>
+            <CheckBox Content="M" Foreground="White" Grid.Column="2" VerticalAlignment="Center" FontSize="10" Margin="0" Padding="0" IsChecked="{Binding Male, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="LostFocus">
+                        <i:InvokeCommandAction Command="{Binding SaveTagRegExCommand}" CommandParameter="{Binding}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </CheckBox>
+            <CheckBox Content="F" Foreground="White" Grid.Column="3" VerticalAlignment="Center" FontSize="10" Margin="0" Padding="0" IsChecked="{Binding Female, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="LostFocus">
+                        <i:InvokeCommandAction Command="{Binding SaveTagRegExCommand}" CommandParameter="{Binding}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </CheckBox>
         </StackPanel>
         <Grid Grid.Row="5" HorizontalAlignment="Right">
             <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="leFT"

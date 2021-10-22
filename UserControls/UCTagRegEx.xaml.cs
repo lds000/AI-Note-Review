@@ -41,22 +41,6 @@ namespace AI_Note_Review
             }
         }
 
-
-        private void tbTitle_LostFocus(object sender, RoutedEventArgs e)
-        {
-            SaveData();
-        }
-
-        private void SaveData()
-        {
-            if (!this.IsLoaded) return;
-            SqlTagRegExM ParentTagRegEx = DataContext as SqlTagRegExM;
-            double tmpOut;
-            ParentTagRegEx.MinAge = double.Parse(tbMinAge.Text);
-            ParentTagRegEx.MaxAge = double.Parse(tbMaxAge.Text);
-            ParentTagRegEx.SaveToDB();
-        }
-
         private void ButtonRemove_Click(object sender, RoutedEventArgs e)
         {
             SqlTagRegExM ParentTagRegEx = DataContext as SqlTagRegExM;
@@ -64,26 +48,6 @@ namespace AI_Note_Review
             DeleteMe(this, EventArgs.Empty);
         }
 
-
-        private void ComboBoxTagRegExType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SaveData();
-        }
-
-        private void CbTargetSection_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SaveData();
-        }
-
-        private void tblostfocus(object sender, RoutedEventArgs e)
-        {
-            SaveData();
-        }
-
-        private void cblostfocus(object sender, RoutedEventArgs e)
-        {
-            SaveData();
-        }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -104,24 +68,6 @@ namespace AI_Note_Review
                     e.Handled = true;
         }
 
-        private void Btn_UpdateClick(object sender, RoutedEventArgs e)
-        {
-            SaveData();
-        }
 
-        private void cbTagRexExMatchResult_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SaveData();
-        }
-
-        private void cbTagRexExMatchType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //SaveData();
-        }
-
-        private void cbTagRexExMatchNoResult_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SaveData();
-        }
     }
 }

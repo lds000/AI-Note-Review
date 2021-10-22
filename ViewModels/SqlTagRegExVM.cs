@@ -86,8 +86,16 @@ public PersonViewModel(PersonModel person) {
             set
             {
                 this.SqlTagRegEx.TagRegExMatchType = value;
-                SaveToDB();
                 OnPropertyChanged("TagRegExMatchType");
+                OnPropertyChanged("TagRegExMatchTypeDescription");
+            }
+        }
+
+        public string TagRegExMatchTypeDescription
+        {
+            get
+            {
+                return "sql select from types";
             }
         }
 
@@ -106,7 +114,6 @@ public PersonViewModel(PersonModel person) {
             set
             {
                 this.SqlTagRegEx.TagRegExMatchResult = value;
-                SaveToDB();
                 OnPropertyChanged("TagRegExMatchType");
             }
         }
@@ -117,7 +124,6 @@ public PersonViewModel(PersonModel person) {
             set
             {
                 this.SqlTagRegEx.TagRegExMatchNoResult = value;
-                SaveToDB();
                 OnPropertyChanged("TagRegExMatchType");
             }
         }
@@ -135,7 +141,7 @@ public PersonViewModel(PersonModel person) {
         }
         public void SaveToDB()
         {
-            //SqlTagRegEx.SaveToDB();
+            SqlTagRegEx.SaveToDB();
         }
 
         public bool DeleteFromDB()
