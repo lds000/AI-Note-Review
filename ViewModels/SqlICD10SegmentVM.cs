@@ -81,6 +81,13 @@ namespace AI_Note_Review
         {
             OnPropertyChanged("SqlICD10Segment");
         }
+
+        public void AddSegment()
+        {
+            OnPropertyChanged("NoteICD10Segments");
+            CalculateLeftOffsets();
+            OnPropertyChanged("NoteICD10Segments");
+        }
             
         public ObservableCollection<SqlCheckpointVM> Checkpoints
         {
@@ -192,7 +199,7 @@ namespace AI_Note_Review
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 cnn.Execute(strSql);
-            }
+            }            
         }
 
         private ICommand mAddCP;
@@ -222,6 +229,21 @@ namespace AI_Note_Review
             set
             {
                 mEditSegment = value;
+            }
+        }
+
+        private ICommand mAddSegment;
+        public ICommand AddSegmentCommand
+        {
+            get
+            {
+                if (mAddSegment == null)
+                    mAddSegment = new SegmentAdder();
+                return mAddSegment;
+            }
+            set
+            {
+                mAddSegment = value;
             }
         }
 
@@ -287,5 +309,28 @@ namespace AI_Note_Review
     }
 
 
+    class SegmentAdder : ICommand
+    {
+        #region ICommand Members  
 
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlICD10SegmentVM sivm = parameter as SqlICD10SegmentVM;
+            SqlICD10SegmentVM seg = new SqlICD10SegmentVM("Enter Segment Title");
+            WinEditSegment wes = new WinEditSegment(seg);
+            wes.ShowDialog();
+            seg.AddSegment();
+        }
+        #endregion
+    }
 }

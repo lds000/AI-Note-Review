@@ -40,12 +40,12 @@
             <DockPanel>
                 <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">ICD-10</Label>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                    <Button Click="AddGroupClick" Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
+                    <Button Command="{Binding AddSegmentCommand}" Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
                 </StackPanel>
                 <ListBox x:Name="lbICD10" ItemsSource="{Binding Path=NoteICD10Segments}" Style="{StaticResource MyListBox}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Drop="ListBox_Drop" AllowDrop="True" >
+                            <Grid >
                                 <Grid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Edit" Command="{Binding EditSegmentCommand}" CommandParameter="{Binding}"/>
@@ -116,7 +116,7 @@
                                             </MenuItem>
                                         </ContextMenu>
                                     </Border.ContextMenu>
-                                    <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}" PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown">
+                                    <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
                                     <TextBlock Margin="0,0,0,0" Padding="0,0,0,0" Grid.Column="1" Text="{Binding Path=CheckPointTitle}" ToolTip="{Binding Path=Comment}"/>
                                     <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
                                     <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding Path=StrCheckPointType}" ToolTip="{Binding Path=Comment}"/>

@@ -43,7 +43,7 @@ namespace AI_Note_Review
             }
             #endregion  
 
-            lbICD10.DataContext = new SqlICD10SegmentVM();
+            DataContext = new SqlICD10SegmentVM();
         }
 
         private void closeclick(object sender, RoutedEventArgs e)
@@ -61,43 +61,6 @@ namespace AI_Note_Review
             CF.SaveWindowPosition(this);
         }
 
-        private void MenuItemEditSegment_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void AddGroupClick(object sender, RoutedEventArgs e)
-        {
-            SqlICD10SegmentVM seg = new SqlICD10SegmentVM("Enter Segment Title");
-            WinEditSegment wes = new WinEditSegment(seg);
-            wes.Owner = this;
-            wes.ShowDialog();
-            SqlICD10SegmentVM.CalculateLeftOffsets();
-        }
-
-        private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            StackPanel parent = (StackPanel)sender;
-            int cpID = int.Parse(parent.Tag.ToString());
-            //This next statement is really slowing down the operation
-            //DragDrop.DoDragDrop(parent, cpID, DragDropEffects.Move);
-        }
-        private void ListBox_Drop(object sender, DragEventArgs e)
-        {
-            SqlICD10SegmentM CurrentSeg = lbICD10.SelectedItem as SqlICD10SegmentM;
-            if (CurrentSeg != null)
-            {
-                Grid g = (Grid)sender;
-                SqlICD10SegmentM DestinationSeg = g.DataContext as SqlICD10SegmentM;
-                int cpID = (int)e.Data.GetData(typeof(int));
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    string sql = $"Select * from CheckPoints where CheckPointID = {cpID};";
-                    SqlCheckpointM cp = cnn.Query<SqlCheckpointM>(sql).FirstOrDefault();
-                    cp.TargetICD10Segment = DestinationSeg.ICD10SegmentID;
-                    cp.SaveToDB();
-                }
-            }
-        }
 
         private void CPSummaryClick(object sender, RoutedEventArgs e)
         {
