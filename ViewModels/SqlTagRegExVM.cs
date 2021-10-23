@@ -95,7 +95,36 @@ public PersonViewModel(PersonModel person) {
         {
             get
             {
-                return "sql select from types";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = $"Select TypeDescription from TagRegExMatchTypes where TypeID = {TagRegExType};";
+                    return cnn.ExecuteScalar<string>(sql);
+                }
+            }
+        }
+
+        //Text="{Binding TagRegExMatchResultDescription, FallbackValue=Then that}"
+        public string TagRegExMatchResultDescription
+        {
+            get
+            {
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = $"Select ResultDescription from TagRegExMatchResults where ResultID = {(int)TagRegExMatchResult};";
+                    return cnn.ExecuteScalar<string>(sql);
+                }
+            }
+        }
+
+        public string TagRegExMatchNoResultDescription
+        {
+            get
+            {
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = $"Select ResultDescription from TagRegExMatchResults where ResultID = {(int)TagRegExMatchNoResult};";
+                    return cnn.ExecuteScalar<string>(sql);
+                }
             }
         }
 

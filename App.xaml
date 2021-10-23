@@ -82,6 +82,12 @@
                         Property="Foreground"
                         Value="Red" />
                 </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Foreground" Value="Gray"/>
+                    </Trigger>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Foreground" Value="Green"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
 

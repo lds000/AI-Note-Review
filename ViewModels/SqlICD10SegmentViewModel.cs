@@ -34,6 +34,8 @@ namespace AI_Note_Review
             sqlICD10Segment = sc;
         }
 
+        public int ICD10SegmentID { get { return sqlICD10Segment.ICD10SegmentID; } set { sqlICD10Segment.ICD10SegmentID = value; } }
+
         public SqlICD10Segment SqlICD10Segment
             {
             get
@@ -53,11 +55,16 @@ namespace AI_Note_Review
                     ObservableCollection<SqlCheckpointVM> tmpCol = new ObservableCollection<SqlCheckpointVM>();
                     foreach (var item in tmpList)
                     {
-                        tmpCol.Add(new SqlCheckpointVM(item));
+                        tmpCol.Add(new SqlCheckpointVM(item, this));
                     }
                     return tmpCol;
                 }
             }
+        }
+
+        public void UpdateCheckPoints()
+        {
+            OnPropertyChanged("Checkpoints");
         }
 
         public int CheckPointCount
@@ -106,31 +113,9 @@ namespace AI_Note_Review
 
         public void AddCheckPoint(SqlCheckpointM cp)
         {
-            MessageBox.Show("not implemented");
-            return;
-            string sql = "";
-            sql = $"INSERT OR IGNORE INTO relICD10SegmentsCheckPoints (ICD10SegmentID, CheckPointID) VALUES({sqlICD10Segment.ICD10SegmentID}, {cp.CheckPointID});";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql);
-            }
             OnPropertyChanged("Checkpoints");
         }
 
-        private ICommand mAddCP;
-        public ICommand AddCPCommand
-        {
-            get
-            {
-                if (mAddCP == null)
-                    mAddCP = new CPAdder();
-                return mAddCP;
-            }
-            set
-            {
-                mAddCP = value;
-            }
-        }
 
         /// <summary>
         /// Calculate the indent amount for each ICD10 segment and save it to the database.
@@ -172,6 +157,22 @@ namespace AI_Note_Review
             }
         }
 
+        private ICommand mAddCP;
+        public ICommand AddCPCommand
+        {
+            get
+            {
+                if (mAddCP == null)
+                    mAddCP = new CPAdder();
+                return mAddCP;
+            }
+            set
+            {
+                mAddCP = value;
+            }
+        }
+
+
     }
 
     class CPAdder : ICommand
@@ -180,7 +181,8 @@ namespace AI_Note_Review
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            SqlICD10SegmentVM sivm = parameter as SqlICD10SegmentVM;
+            return sivm != null;
         }
         public event EventHandler CanExecuteChanged
         {
@@ -190,19 +192,19 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            SqlICD10Segment s = parameter as SqlICD10Segment;
-            SqlICD10SegmentVM sivm = new SqlICD10SegmentVM(s);
+            SqlICD10SegmentVM sivm = parameter as SqlICD10SegmentVM;
             WinEnterText wet = new WinEnterText("Please input new title.");
             wet.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             wet.ShowDialog();
             if (wet.ReturnValue == null) return;
             if (wet.ReturnValue.Trim() != "")
             {
-                sivm.AddCheckPoint(new SqlCheckpointM(wet.ReturnValue, s.ICD10SegmentID));
+                sivm.AddCheckPoint(new SqlCheckpointM(wet.ReturnValue, sivm.ICD10SegmentID));
             }
         }
         #endregion
     }
+
 
 
 }

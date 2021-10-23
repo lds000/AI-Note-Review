@@ -267,13 +267,13 @@ namespace AI_Note_Review
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     SqlCheckpointVM cpvm = new SqlCheckpointVM();
-                    List<SqlCheckpointM> lcp = cpvm.GetCPsFromSegment(seg.ICD10SegmentID);
+                    List<SqlCheckpointVM> lcp = cpvm.GetCPsFromSegment(seg.ICD10SegmentID);
                     List<SqlCheckPointType> lcpt = cpvm.CheckPointTypes;
                     string strSummary = $"<h1>{seg.SegmentTitle}</h1><br>";
                     foreach (SqlCheckPointType cpt in lcpt)
                     {
                         string strTempOut = "<ol>";
-                        foreach (SqlCheckpointM cp in lcp)
+                        foreach (SqlCheckpointVM cp in lcp)
                         {
                             if (cp.CheckPointType == cpt.CheckPointTypeID)
                             {
@@ -331,14 +331,6 @@ namespace AI_Note_Review
             CurrentCheckpoint.AddImageFromClipBoard();
 
 
-        }
-
-        private void DeleteImage(object sender, RoutedEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            MenuItem mi = sender as MenuItem;
-            SqlCheckPointImage sc = mi.DataContext as SqlCheckPointImage;
-            CurrentCheckpoint.DeleteImage(sc);
         }
 
         private void btnLinkClick(object sender, RoutedEventArgs e)
