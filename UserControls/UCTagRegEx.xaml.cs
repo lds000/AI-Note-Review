@@ -20,7 +20,6 @@ namespace AI_Note_Review
     /// </summary>
     public partial class UCTagRegEx : UserControl
     {
-        public event EventHandler DeleteMe;
         public UCTagRegEx()
         {
             InitializeComponent();
@@ -45,7 +44,6 @@ namespace AI_Note_Review
         {
             SqlTagRegExM ParentTagRegEx = DataContext as SqlTagRegExM;
             ParentTagRegEx.DeleteFromDB();
-            DeleteMe(this, EventArgs.Empty);
         }
 
 

@@ -156,6 +156,7 @@ public PersonViewModel(PersonModel person) {
         }
 
 
+
         public void AddTag(SqlTagVM tg)
         {
             string sql = "";
@@ -214,6 +215,22 @@ public PersonViewModel(PersonModel person) {
             }
 
         }
+
+        private ICommand mAddTag;
+        public ICommand AddTagCommand
+        {
+            get
+            {
+                if (mAddTag == null)
+                    mAddTag = new TagAdder();
+                return mAddTag;
+            }
+            set
+            {
+                mAddTag = value;
+            }
+        }
+
 
 
         #region Update Command
@@ -366,22 +383,6 @@ public PersonViewModel(PersonModel person) {
             }
         }
         #endregion
-
-        private ICommand mAddTag;
-        public ICommand AddTagCommand
-        {
-            get
-            {
-                if (mAddTag == null)
-                    mAddTag = new TagAdder();
-                return mAddTag;
-            }
-            set
-            {
-                mAddTag = value;
-            }
-        }
-
 
     }
 

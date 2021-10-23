@@ -48,7 +48,7 @@
                             <Grid Drop="ListBox_Drop" AllowDrop="True" >
                                 <Grid.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Edit" Click="MenuItemEditSegment_Click"/>
+                                        <MenuItem Header="Edit" Command="{Binding EditSegmentCommand}" CommandParameter="{Binding}"/>
                                         <MenuItem Header="Create Index" ToolTip="Create an index and copy it to the clipboard" Click="MenuItemCreateSegmentIndex"/>
                                     </ContextMenu>
                                 </Grid.ContextMenu>
@@ -85,13 +85,13 @@
                     <ListBox x:Name="lbCheckpoints" ItemsSource="{Binding Checkpoints}" Style="{StaticResource MyListBox}" HorizontalContentAlignment="Stretch">
                         <ListBox.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Add Checkpoint>">
+                                <MenuItem Header="Add Checkpoint" Command="{Binding AddCPCommand}" CommandParameter="{Binding}">
                                     <MenuItem.Style>
                                         <Style TargetType="MenuItem">
                                             <Setter Property="IsEnabled" Value="True" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedItem,ElementName=lbICD10}" Value="{x:Null}">
-                                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                                <DataTrigger Binding="{Binding SelectedValue, ElementName=lbICD10}" Value="{x:Null}">
+                                                    <Setter Property="IsEnabled" Value="True"></Setter>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -201,7 +201,10 @@
                         </SpellCheck.CustomDictionaries>
                     </TextBox>
 
-                    <Button Command="{Binding AddImageCommand}" CommandParameter="{Binding}" ToolTip="Click this button to add image from clipboard."  Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource LinkButton}">Images:</Button>
+                    <Button Command="{Binding AddImageCommand}" CommandParameter="{Binding}" 
+                            ToolTip="Click this button to add image from clipboard."  Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource LinkButton}">
+                        
+                        Images:</Button>
                     <ListBox 
                         x:Name="lbImages"
                         ItemsSource="{Binding Images}"
@@ -227,12 +230,27 @@
             </DockPanel>
             <DockPanel  DataContext="{Binding ElementName=lbCheckpoints, Path=SelectedValue}" Grid.Column="3" Margin="3">
                 <Label Style="{StaticResource MyLblStyle}" DockPanel.Dock="Top" HorizontalAlignment="Center">Tags</Label>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                    <Button Style="{StaticResource LinkButton}" Margin="3" Click="AddTag">Add Tag</Button>
-                </StackPanel>
                 <Border BorderBrush="White" BorderThickness="1">
+                    <Border.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Add Tag" Command="{Binding AddTagCommand}" CommandParameter="{Binding}">
+                                <MenuItem.Style>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=lbCheckpoints}" Value="{x:Null}">
+                                                <Setter Property="IsEnabled" Value="True"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </MenuItem.Style>
+                            </MenuItem>
+                        </ContextMenu>
+                    </Border.ContextMenu>
+
                     <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
-                        <local:UCTag1 AddMe="UCTag1_AddMe" DataContext="{Binding}"></local:UCTag1>
+                        
+                        <local:UCTag1 DataContext="{Binding}"></local:UCTag1>
                     </ScrollViewer>
                 </Border>
             </DockPanel>

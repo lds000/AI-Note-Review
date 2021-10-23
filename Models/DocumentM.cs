@@ -130,7 +130,7 @@ namespace AI_Note_Review
             }
         }
 
-        public ObservableCollection<SqlICD10Segment> ICD10Segments
+        public ObservableCollection<SqlICD10SegmentVM> ICD10Segments
         {
             get
             {
@@ -477,7 +477,7 @@ namespace AI_Note_Review
         /// An array where the index matches the notesectionID
         /// </summary>
         DateTime dOB;
-        private ObservableCollection<SqlICD10Segment> iCD10Segments = new ObservableCollection<SqlICD10Segment>();
+        private ObservableCollection<SqlICD10SegmentVM> iCD10Segments = new ObservableCollection<SqlICD10SegmentVM>();
         public string[] NoteSectionText = new string[30];
         public int ptAgeYrs;
         private int providerID;

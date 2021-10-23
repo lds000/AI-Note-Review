@@ -268,7 +268,7 @@ namespace AI_Note_Review
 
             foreach (SqlICD10SegmentVM ns in documentVM.GetSegments()) //reset icd10segments
             {
-                if (ns.SqlICD10Segment.ICD10SegmentID != 90) ns.SqlICD10Segment.IncludeSegment = true; //reset for all except EDtransfer, which is manually selected.
+                if (ns.SqlICD10Segment.ICD10SegmentID != 90) ns.IncludeSegment = true; //reset for all except EDtransfer, which is manually selected.
             }
             foreach (SqlICD10SegmentVM ns in documentVM.GetSegments())
             {
@@ -278,57 +278,57 @@ namespace AI_Note_Review
                 #region Assign Include segments
                 if (!document.HashTags.Contains("!HTNUrgency") && ns.SqlICD10Segment.ICD10SegmentID == 40) //if htnurgency is not present
                 {
-                    ns.SqlICD10Segment.IncludeSegment = false;
+                    ns.IncludeSegment = false;
                 }
                 if (ns.SqlICD10Segment.ICD10SegmentID == 72) //Adult rapid RR
                 {
-                    if (patient.PtAgeYrs <= 17) ns.SqlICD10Segment.IncludeSegment = false; //do not include children in 72
-                    if (!document.HashTags.Contains("!RRHigh")) ns.SqlICD10Segment.IncludeSegment = false; //do not include children in 72
+                    if (patient.PtAgeYrs <= 17) ns.IncludeSegment = false; //do not include children in 72
+                    if (!document.HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
                 }
                 if (ns.SqlICD10Segment.ICD10SegmentID == 91) //Peds rapid RR
                 {
-                    if (patient.PtAgeYrs >= 18) ns.SqlICD10Segment.IncludeSegment = false;
-                    if (!document.HashTags.Contains("!RRHigh")) ns.SqlICD10Segment.IncludeSegment = false; //do not include children in 72
+                    if (patient.PtAgeYrs >= 18) ns.IncludeSegment = false;
+                    if (!document.HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
                 }
                 if (!document.HashTags.Contains("@Elderly") && ns.SqlICD10Segment.ICD10SegmentID == 75) //if htnurgency is not present
                 {
-                    ns.SqlICD10Segment.IncludeSegment = false;
+                    ns.IncludeSegment = false;
                 }
                 if (!document.HashTags.Contains("@Child") && ns.SqlICD10Segment.ICD10SegmentID == 80) //if htnurgency is not present
                 {
-                    ns.SqlICD10Segment.IncludeSegment = false;
+                    ns.IncludeSegment = false;
                 }
                 if (!document.HashTags.Contains("@Infant") && ns.SqlICD10Segment.ICD10SegmentID == 76) //if htnurgency is not present
                 {
-                    ns.SqlICD10Segment.IncludeSegment = false;
+                    ns.IncludeSegment = false;
                 }
                 if (!document.HashTags.Contains("@pregnantcapable") && ns.SqlICD10Segment.ICD10SegmentID == 82) //if htnurgency is not present
                 {
-                    ns.SqlICD10Segment.IncludeSegment = false;
+                    ns.IncludeSegment = false;
                 }
                 if (!document.HashTags.Contains("!HighFever") && ns.SqlICD10Segment.ICD10SegmentID == 73) //if htnurgency is not present
                 {
-                    ns.SqlICD10Segment.IncludeSegment = false;
+                    ns.IncludeSegment = false;
                 }
                 if (!document.HashTags.Contains("!Tachycardia") && ns.SqlICD10Segment.ICD10SegmentID == 74) //if htnurgency is not present
                 {
-                    ns.SqlICD10Segment.IncludeSegment = false;
+                    ns.IncludeSegment = false;
                 }
                 if (ns.SqlICD10Segment.ICD10SegmentID == 92) //todo: find better way to see if procedure note included.
                 {
                     if (document.ProcedureNote == null)
                     {
-                        ns.SqlICD10Segment.IncludeSegment = false;
+                        ns.IncludeSegment = false;
                     }
                     else
                     {
-                        if (document.ProcedureNote.Length < 100) ns.SqlICD10Segment.IncludeSegment = false;
+                        if (document.ProcedureNote.Length < 100) ns.IncludeSegment = false;
                     }
                 }
 
                 #endregion
 
-                if (!ns.SqlICD10Segment.IncludeSegment) continue;
+                if (!ns.IncludeSegment) continue;
                 //Console.WriteLine($"Now checking segment: {ns.SegmentTitle}");
 
                 foreach (SqlCheckpointVM cp in ns.Checkpoints)

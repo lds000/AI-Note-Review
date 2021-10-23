@@ -82,7 +82,7 @@
     <Compile Include="ViewModels\SqlTagVM.cs" />
     <Compile Include="Helper Classes\CF.cs" />
     <Compile Include="Helper Classes\ClipboardClass.cs" />
-    <Compile Include="ViewModels\SqlICD10SegmentViewModel.cs" />
+    <Compile Include="ViewModels\SqlICD10SegmentVM.cs" />
     <Compile Include="Models\BiMonthlyReviewM.cs" />
     <Compile Include="Models\DocumentM.cs" />
     <Compile Include="Models\PatientM.cs" />
@@ -92,7 +92,7 @@
     <Compile Include="DataAccessLayer\SqlCheckpointM.cs" />
     <Compile Include="DataAccessLayer\SqlCheckPointType.cs" />
     <Compile Include="DataAccessLayer\SqlDocumentReviewSummaryM.cs" />
-    <Compile Include="DataAccessLayer\SqlICD10Segment.cs" />
+    <Compile Include="DataAccessLayer\SqlICD10SegmentM.cs" />
     <Compile Include="DataAccessLayer\SqlLightDataAccess.cs" />
     <Compile Include="DataAccessLayer\SqlMonthReviewSummary.cs" />
     <Compile Include="DataAccessLayer\SqlNoteSection.cs" />
