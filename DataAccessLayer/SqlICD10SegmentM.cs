@@ -26,21 +26,12 @@ namespace AI_Note_Review
         public int ICD10SegmentID { get; set; }
 
         public int LeftOffset { get; set; }
-        public string icd10Chapter
-        {
-            get => icd10Chapter1;
-            set
-            {
-                icd10Chapter1 = value;
-            }
-        }
+        public string icd10Chapter { get; set; }
         public double icd10CategoryStart { get; set; }
         public double icd10CategoryEnd { get; set; }
         public string SegmentTitle { get; set; }
         public string SegmentComment { get; set; }
 
-
-        private string icd10Chapter1;
 
         public SqlICD10SegmentM()
         {
@@ -59,7 +50,6 @@ namespace AI_Note_Review
                 SegmentTitle = p.SegmentTitle;
             }
         }
-
         public void SaveToDB()
         {
             string sql = "UPDATE ICD10Segments SET " +
@@ -76,5 +66,4 @@ namespace AI_Note_Review
             }
         }
     }
-
 }

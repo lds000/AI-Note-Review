@@ -69,18 +69,45 @@ class PersonViewModel {
 
 
 
-        public void RemoveTagRegEx(SqlTagRegExVM str) {this.SqlTag.RemoveTagRegEx(str); }
-        public void SaveToDB() { this.SaveToDB(); }
-        public void DeleteFromDB() { this.DeleteFromDB(); }
+        public void RemoveTagRegEx(SqlTagRegExVM str) 
+        {
+            this.SqlTag.RemoveTagRegEx(str);
+            OnPropertyChanged("TagRegExs");
+        }
+        public void SaveToDB() { this.SqlTag.SaveToDB(); }
+        public void DeleteFromDB() { this.SqlTag.DeleteFromDB(); }
+
+        public void AddTagRegEx(SqlCheckpointVM cp)
+        {
+            SqlTagRegExVM srex = new SqlTagRegExVM(TagID, "Search Text", cp.TargetSection, 1);
+            OnPropertyChanged("TagRegExs");
+        }
 
         public List<SqlTagRegExVM> GetTagRegExs()
         {
             string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                return cnn.Query<SqlTagRegExVM>(sql).ToList();
+                var tmpList = cnn.Query<SqlTagRegExVM>(sql).ToList();
+                foreach (var tmp in tmpList)
+                {
+                    tmp.ParentTag = this;
+                }
+                return tmpList;
             }
 
+        }
+
+        public void EditTagText()
+        {
+            WinEnterText wet = new WinEnterText("Edit Title", TagText);
+            wet.ShowDialog();
+            if (wet.ReturnValue != null)
+            {
+                TagText = wet.ReturnValue;
+                SaveToDB();
+                OnPropertyChanged("TagText");
+            }
         }
 
         /// <summary>
@@ -118,8 +145,12 @@ class PersonViewModel {
                 string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    var tmpreturn = cnn.Query<SqlTagRegExVM>(sql, this).ToList();
-                        return tmpreturn;
+                    var tmpList = cnn.Query<SqlTagRegExVM>(sql).ToList();
+                    foreach (var tmp in tmpList)
+                    {
+                        tmp.ParentTag = this;
+                    }
+                    return tmpList;
                 }
             }
 
@@ -157,6 +188,22 @@ class PersonViewModel {
                 mRemoveTag = value;
             }
         }
+
+        private ICommand mEditTagText;
+        public ICommand EditTagTextCommand
+        {
+            get
+            {
+                if (mEditTagText == null)
+                    mEditTagText = new TagTextEditor();
+                return mEditTagText;
+            }
+            set
+            {
+                mEditTagText = value;
+            }
+        }
+
         #endregion
 
 
@@ -179,7 +226,7 @@ class PersonViewModel {
         public void Execute(object parameter)
         {
             SqlTagVM st = parameter as SqlTagVM;
-            //st.AddSqlTagRegex(st); not sure what this does, so I commented it out.
+            st.AddTagRegEx(st.ParentCheckPoint); //not sure what this does, so I commented it out.
         }
         #endregion
     }
@@ -205,4 +252,27 @@ class PersonViewModel {
         }
         #endregion
     }
+
+    class TagTextEditor : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlTagVM st = parameter as SqlTagVM;
+            st.EditTagText();
+        }
+        #endregion
+    }
+
 }

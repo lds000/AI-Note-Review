@@ -24,8 +24,8 @@ namespace AI_Note_Review
             InitializeComponent();
         }
 
-        private SqlICD10SegmentM parentSeg;
-        public WinEditSegment(SqlICD10SegmentM seg)
+        private SqlICD10SegmentVM parentSeg;
+        public WinEditSegment(SqlICD10SegmentVM seg)
         {
             InitializeComponent();
             parentSeg = seg;

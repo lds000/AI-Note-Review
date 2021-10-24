@@ -77,7 +77,7 @@
                     <Border BorderBrush="White" BorderThickness="1">
                         <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
                             <!--<StackPanel x:Name="spTags"></StackPanel>-->
-                            <local:UCTag1 AddMe="UCTag1_AddMe" DataContext="{Binding}"></local:UCTag1>
+                            <local:UCTag1 DataContext="{Binding}"></local:UCTag1>
                         </ScrollViewer>
                     </Border>
                 </DockPanel>

@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -46,9 +45,10 @@ public PersonViewModel(PersonModel person) {
         {
         }
 
-        public SqlCheckpointVM(SqlCheckpointM cp)
+        public SqlCheckpointVM(SqlCheckpointM cp, SqlICD10SegmentVM icd10)
         {
             this.SqlCheckpoint = cp;
+            ParentICD10SegmentVM = icd10;
         }
 
         public SqlCheckpointVM(string strCheckPointTitle, int iTargetICD10Segment)
@@ -65,8 +65,8 @@ public PersonViewModel(PersonModel person) {
             }
         }
 
-        public SqlICD10SegmentVM ParentSegment { get; set; }
-        public DocumentVM ParentDocument { get; set; }
+        public SqlICD10SegmentVM ParentICD10SegmentVM { get; set; }
+
         public SqlCheckpointM SqlCheckpoint { get; set; }
         public int CheckPointID { get { return this.SqlCheckpoint.CheckPointID; } set { this.SqlCheckpoint.CheckPointID = value; } }
         public string CheckPointTitle { get { return this.SqlCheckpoint.CheckPointTitle; } set { this.SqlCheckpoint.CheckPointTitle = value; } }
@@ -78,173 +78,29 @@ public PersonViewModel(PersonModel person) {
         public string Action { get { return this.SqlCheckpoint.Action; } set { this.SqlCheckpoint.Action = value; } }
         public string Link { get { return this.SqlCheckpoint.Link; } set { this.SqlCheckpoint.Link = value; } }
         public int Expiration { get { return this.SqlCheckpoint.Expiration; } set { this.SqlCheckpoint.Expiration = value; } }
-        public ObservableCollection<SqlCheckPointImage> Images        {            get            {                return this.SqlCheckpoint.Images;            }        }
 
-        private SqlTagRegExM.EnumResult? cPoverideStatus;
-        private SqlTagRegExM.EnumResult cPStatus;
-        public SqlTagRegExM.EnumResult CPStatus {
+
+        public ObservableCollection<SqlCheckPointImage> Images
+        {
             get
             {
-                //check if I have manually overidden the checkpoint and keep that assignment, since I am the genius here, not the program.
-                if (cPoverideStatus != null) return (SqlTagRegExM.EnumResult)cPoverideStatus;
-
-                SqlTagRegExM.EnumResult trTagResult = SqlTagRegExM.EnumResult.Pass;
-                if (CheckPointTitle.Contains("Augmentin XR"))
+                string sql = $"select * from CheckPointImages where CheckPointID = @CheckPointID;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    //use this for testing...
-                }
-                foreach (SqlTagVM tagCurrentTag in GetTags())
-                {
-                    SqlTagRegExM.EnumResult trCurrentTagResult;
-                    List<SqlTagRegExVM> tmpTagRegExs = tagCurrentTag.GetTagRegExs();
-                    trCurrentTagResult = CheckTagRegExs(tmpTagRegExs);
-
-                    if (trCurrentTagResult != SqlTagRegExM.EnumResult.Pass)
+                    var tmpImages = new ObservableCollection<SqlCheckPointImage>(cnn.Query<SqlCheckPointImage>(sql, this).ToList());
+                    foreach (var tmpImage in tmpImages)
                     {
-                        //tag fails, no match.
-                        trTagResult = trCurrentTagResult;
-                        break; //if the first tag does not qualify, then do not proceed to the next tag.
+                        tmpImage.ParentCheckPointVM = this;
                     }
-                    //report.DocumentTags.Add(tagCurrentTag.TagText); Don't I need this.
+                    return tmpImages;
                 }
-
-                return trTagResult;
             }
-            set
-            {
-                cPStatus = value;
-            } 
         }
 
-        /// <summary>
-        /// Holds the current review's Yes/No SqlRegex's
-        /// </summary>
-        private Dictionary<int, bool> YesNoSqlRegExIndex = new Dictionary<int, bool>();
-
-        /// <summary>
-        /// Run the SqlTagRegExes of a tag and return as result, this is the brains of the whole operation.
-        /// </summary>
-        /// <param name="tmpTagRegExs"></param>
-        /// <returns></returns>
-        private SqlTagRegExM.EnumResult CheckTagRegExs(List<SqlTagRegExVM> tmpTagRegExs)
+        public void UpDateImages()
         {
-            foreach (SqlTagRegExVM TagRegEx in tmpTagRegExs) //cycle through the TagRegExs, usually one or two, fail or hide stops iteration, if continues returns pass.
-            {
-                if (TagRegEx.RegExText.Contains("prolonged")) //used to debug
-                {
-                }
-
-                //This boolean shortens the code
-                bool StopIfMissOrHide = TagRegEx.TagRegExMatchResult != SqlTagRegExM.EnumResult.Pass;
-
-                // check demographic limits and return result if met.
-                //If any TagRegEx fails due to demographics, the entire series fails
-                double age = ParentDocument.Patient.GetAgeInYearsDouble();
-                if (age < TagRegEx.MinAge) return SqlTagRegExM.EnumResult.Hide;
-                if (age >= TagRegEx.MaxAge) return SqlTagRegExM.EnumResult.Hide;
-                if (ParentDocument.Patient.isMale && !TagRegEx.Male) return SqlTagRegExM.EnumResult.Hide;
-                if (!ParentDocument.Patient.isMale && !TagRegEx.Female) return SqlTagRegExM.EnumResult.Hide;
-
-                //Process each of the tags, if any fail or hide then series stop, otherwise passes.
-                //Process Yes/No Tag
-                if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Ask) //ask question... pass if yes, fail if no
-                {
-                    if (Properties.Settings.Default.AskYesNo) //If Bypass is on then assume answer was yes
-                    {
-                        if (StopIfMissOrHide) return TagRegEx.TagRegExMatchResult; //Match result is the result if a positive "yes" or "no" if set as Result (not "noResult") match is met
-                        continue;
-                    }
-                    else
-                    {
-                        bool yn = false;
-                        if (YesNoSqlRegExIndex.ContainsKey(TagRegEx.TagRegExID))
-                        {
-                            yn = YesNoSqlRegExIndex[TagRegEx.TagRegExID];
-                        }
-                        else
-                        {
-                            WinShowRegExYesNo ws = new WinShowRegExYesNo();
-                            if (TagRegEx.RegExText.Contains('|'))
-                            {
-                                ws.tbQuestion.Text = TagRegEx.RegExText.Split('|')[1];
-                            }
-                            else
-                            {
-                                ws.tbQuestion.Text = TagRegEx.RegExText;
-                            }
-                            ws.DataContext = TagRegEx;
-                            ws.ShowDialog();
-                            YesNoSqlRegExIndex.Add(TagRegEx.TagRegExID, ws.YesNoResult);
-                            yn = ws.YesNoResult;
-                        }
-                        if (yn == true)
-                        {
-                            if (StopIfMissOrHide) return TagRegEx.TagRegExMatchResult; //if Yes return 1st Result option if it's fail or hide
-                            continue; //continue to next iteration bacause result is pass.
-                        }
-                        else
-                        {
-                            if (TagRegEx.TagRegExMatchNoResult != SqlTagRegExM.EnumResult.Pass) return TagRegEx.TagRegExMatchNoResult;
-                            continue;  //continue to next iteration bacause result is pass.
-                        }
-                    }
-                }
-
-                //process all,none,any match condition
-                //Cycle through the list of terms and search through section of note if term is a match or not
-                bool AllTermsMatch = true;
-                bool NoTermsMatch = true;
-
-                string strTextToMatch = "";
-                if (ParentDocument.NoteSectionText[TagRegEx.TargetSection] != null) strTextToMatch = ParentDocument.NoteSectionText[TagRegEx.TargetSection].ToLower();
-                foreach (string strRegEx in TagRegEx.RegExText.Split(','))
-                {
-                    if (strRegEx.Trim() != "")
-                    {
-                        //This is original: i took the prefix out, not sure why it was there if (Regex.IsMatch(strTextToMatch, CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase))
-                        if (Regex.IsMatch(strTextToMatch, CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase)) // /i is lower case directive for regex
-                        {
-                            //Match is found!
-                            //ANY condition is met, so stop if miss or hide if that is the 1st action
-                            if (StopIfMissOrHide) if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.
-                            NoTermsMatch = false;
-                            if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) break; //condition met, no need to check rest
-                        }
-                        else
-                        {
-                            AllTermsMatch = false;
-                        }
-                    }
-                }
-                //ALL condition met if all terms match
-                if (StopIfMissOrHide)
-                {
-                    if (AllTermsMatch && StopIfMissOrHide)
-                    {
-                        if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.All) return TagRegEx.TagRegExMatchResult; //Contains All return 2nd Result because any clause not reached
-                    }
-                    if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.None) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.)
-                    if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) return TagRegEx.TagRegExMatchNoResult;
-                }
-                //NONE condition met if no terms match
-
-                if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) continue;
-
-                if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.None) //none condition met, carry out pass
-                {
-
-                }
-                else
-                {
-                    if (TagRegEx.TagRegExMatchNoResult != SqlTagRegExM.EnumResult.Pass) return TagRegEx.TagRegExMatchNoResult;
-                }
-                //ASK,ALL, and NONE conditions are note met, so the NoResult condition is the action
-            }
-
-            return SqlTagRegExM.EnumResult.Pass; //default is pass
+            OnPropertyChanged("Images");
         }
-
-
         public string StrCheckPointType
         {
             get
@@ -267,6 +123,8 @@ public PersonViewModel(PersonModel person) {
         public void AddImageFromClipBoard()
         {
             this.SqlCheckpoint.AddImageFromClipBoard();
+            OnPropertyChanged("Images");
+
         }
         /// <summary>
         /// Get the tags associated with the checkpoint
@@ -296,6 +154,7 @@ public PersonViewModel(PersonModel person) {
                 return cnn.Query<SqlTagVM>(sql, this).ToList();
             }
         }
+
 
 
         public void AddTag(SqlTagVM tg)
@@ -328,12 +187,12 @@ public PersonViewModel(PersonModel person) {
         }
 
 
-        public List<SqlCheckpointM> GetCPsFromSegment(int SegmentID)
+        public List<SqlCheckpointVM> GetCPsFromSegment(int SegmentID)
         {
             string sql = $"Select * from CheckPoints where TargetICD10Segment == {SegmentID}";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                return cnn.Query<SqlCheckpointM>(sql).ToList();
+                return cnn.Query<SqlCheckpointVM>(sql).ToList();
             }
 
         }
@@ -357,6 +216,22 @@ public PersonViewModel(PersonModel person) {
 
         }
 
+        private ICommand mAddTag;
+        public ICommand AddTagCommand
+        {
+            get
+            {
+                if (mAddTag == null)
+                    mAddTag = new TagAdder();
+                return mAddTag;
+            }
+            set
+            {
+                mAddTag = value;
+            }
+        }
+
+
 
         #region Update Command
 
@@ -374,9 +249,103 @@ public PersonViewModel(PersonModel person) {
                 mUpdateCP = value;
             }
         }
-#endregion
+        #endregion
+
+        
 
 
+        class CPRemover : ICommand
+        {
+            #region ICommand Members  
+
+            public bool CanExecute(object parameter)
+            {
+                return true;
+            }
+            public event EventHandler CanExecuteChanged
+            {
+                add { CommandManager.RequerySuggested += value; }
+                remove { CommandManager.RequerySuggested -= value; }
+            }
+
+            public void Execute(object parameter)
+            {
+                SqlCheckpointVM cp = parameter as SqlCheckpointVM;
+                cp.DeleteFromDB();
+                cp.ParentICD10SegmentVM.UpdateCheckPoints();
+            }
+            #endregion
+        }
+
+        private ICommand mRemoveCP;
+        public ICommand RemoveCPCommand
+        {
+            get
+            {
+                if (mRemoveCP == null)
+                    mRemoveCP = new CPRemover();
+                return mRemoveCP;
+            }
+            set
+            {
+                mRemoveCP = value;
+            }
+        }
+
+        private ICommand mAddImage;
+        public ICommand AddImageCommand
+        {
+            get
+            {
+                if (mAddImage == null)
+                    mAddImage = new CPImageAdder();
+                return mAddImage;
+            }
+            set
+            {
+                mAddImage = value;
+            }
+        }
+
+        private ICommand mCPTagMissMove;
+        public ICommand CPTagMissMoveCommand
+        {
+            get
+            {
+                if (mCPTagMissMove == null)
+                    mCPTagMissMove = new CPTagMissMove();
+                return mCPTagMissMove;
+            }
+            set
+            {
+                mCPTagMissMove = value;
+            }
+        }
+
+    }
+
+    class CPImageAdder : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
+            return CP != null;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
+            if (CP == null) return;
+            CP.AddImageFromClipBoard();
+        }
+        #endregion
     }
 
     class TagAdder : ICommand
@@ -433,23 +402,8 @@ public PersonViewModel(PersonModel person) {
         }
         #endregion
 
-        private ICommand mAddTag;
-        public ICommand AddTagCommand
-        {
-            get
-            {
-                if (mAddTag == null)
-                    mAddTag = new TagAdder();
-                return mAddTag;
-            }
-            set
-            {
-                mAddTag = value;
-            }
-        }
-
-
     }
+
 
     class CPUpdater : ICommand
     {
@@ -472,4 +426,30 @@ public PersonViewModel(PersonModel person) {
         }
         #endregion
     }
+
+
+    class CPTagMissMove : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
+            return CP != null;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlCheckpointM CP = parameter as SqlCheckpointM;
+            WinCheckPointEditor wce = new WinCheckPointEditor(CP);
+            wce.ShowDialog();
+        }
+        #endregion
+    }
+
 }

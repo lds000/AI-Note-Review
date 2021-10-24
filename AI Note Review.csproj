@@ -82,7 +82,7 @@
     <Compile Include="ViewModels\SqlTagVM.cs" />
     <Compile Include="Helper Classes\CF.cs" />
     <Compile Include="Helper Classes\ClipboardClass.cs" />
-    <Compile Include="ViewModels\SqlICD10SegmentViewModel.cs" />
+    <Compile Include="ViewModels\SqlICD10SegmentVM.cs" />
     <Compile Include="Models\BiMonthlyReviewM.cs" />
     <Compile Include="Models\DocumentM.cs" />
     <Compile Include="Models\PatientM.cs" />
