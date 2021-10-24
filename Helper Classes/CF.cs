@@ -42,7 +42,7 @@ namespace AI_Note_Review
         public static string strRegexPrefix = @"\b";
         public static PatientM CurrentPatient;
         public static DocumentM ClinicNote;
-        public static VisitReportM NoteReview;
+        public static ReportM NoteReview;
 
         public static List<SqlCheckpointM> CheckPointList
         {

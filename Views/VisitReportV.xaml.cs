@@ -40,9 +40,12 @@ namespace AI_Note_Review
         public VisitReportV(bool GeneralCheckPointsOnly = false)
         {
             InitializeComponent();
+         //   document.ICD10Segments = document.GetSegments(GeneralCheckPointsOnly); //load all pertinent and 'X' segments
+         //   document.GenerateReport(true);
+         //   DataContext = document;
         }
 
-        public VisitReportV(VisitReportVM rvm, bool GeneralCheckPointsOnly = false)
+        public VisitReportV(ReportVM rvm, bool GeneralCheckPointsOnly = false)
         {
             InitializeComponent();
             DataContext = rvm;

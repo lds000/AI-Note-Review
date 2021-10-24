@@ -14,7 +14,7 @@ namespace AI_Note_Review
     {
         public DateTime VisitDate { get; set; }
         public int PtID { get; set; }
-        VisitReportM rpt = new VisitReportM();
+        ReportM rpt = new ReportM();
 
         public string CheckPointsSummaryHTML
         {
@@ -27,9 +27,10 @@ namespace AI_Note_Review
                     rlist = cnn.Query<SqlRelCPProvider>(sql).ToList();
                 }
 
-                VisitReportM report = new VisitReportM();
+                ReportM report = new ReportM();
                 report.MissedCheckPoints.Clear();
                 report.DroppedCheckPoints.Clear();
+                report.IrrelaventCP.Clear();
                 report.PassedCheckPoints.Clear();
                 string strReturn = "";
                 foreach (SqlRelCPProvider r in rlist)
@@ -47,6 +48,10 @@ namespace AI_Note_Review
                     if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Fail)
                     {
                         report.MissedCheckPoints.Add(cp);
+                    }
+                    if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Irrelevant)
+                    {
+                        report.IrrelaventCP.Add(cp);
                     }
                 }
 
@@ -196,6 +201,7 @@ namespace AI_Note_Review
 
             return strReturn;
         }
+
     }
 }
 

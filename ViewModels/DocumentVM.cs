@@ -40,7 +40,7 @@ namespace AI_Note_Review
             SetUpNote(); //todo: might be better way of implementing this.
         }
 
-        public PatientVM PatientVM
+        public  PatientVM PatientVM
         {
             get
             {
@@ -54,49 +54,6 @@ namespace AI_Note_Review
                 return document;
             }
         }
-
-        public string Facility { get { return document.Facility; } set { document.Facility = value; } }
-        public string Provider { get { return document.Provider; } set { document.Provider = value; } }
-        public SqlProvider ProviderSql { get { return document.ProviderSql; } set { document.ProviderSql = value; } }
-        public int ProviderID { get {return document.ProviderID; } set{document.ProviderID = value;} }
-        public DateTime VisitDate { get {return document.VisitDate; } set{document.VisitDate = value;} }
-        public string HashTags { get {return document.HashTags; } set{document.HashTags = value;} }
-        public ObservableCollection<string> ICD10s { get {return document.ICD10s; } set{document.ICD10s = value;} }
-
-        //try to get rid of these!!!
-        public string[] NoteSectionText { get {return document.NoteSectionText; } }
-
-
-     public string NoteHTML { get {return document.NoteHTML; } set{document.NoteHTML = value;} }
-     public string ReasonForAppt { get {return document.ReasonForAppt; } set{document.ReasonForAppt = value;} }
-     public string CC { get {return document.CC; } set{document.CC = value;} }
-     public string HPI { get {return document.HPI; } set{document.HPI = value;} }
-     public string Allergies { get {return document.Allergies; } set{document.Allergies = value;} }
-     public string SurgHx { get {return document.SurgHx;} set{document.SurgHx = value;} }
-     public string FamHx { get {return document.FamHx; } set{document.FamHx = value;} }
-     public string CurrentMeds { get {return document.CurrentMeds; } set{document.CurrentMeds = value;} }
-     public string CurrentPrnMeds { get {return document.CurrentPrnMeds;} set{document.CurrentPrnMeds = value;} }
-     public string ProblemList { get {return document.ProblemList;} set{document.ProblemList = value;} }
-     public string ROS { get {return document.ROS;} set{document.ROS = value;} }
-     public string PMHx { get {return document.PMHx;} set{document.PMHx = value;} }
-     public string SocHx { get {return document.SocHx;} set{document.SocHx = value;} }
-     public string GeneralHx { get {return document.GeneralHx;} set{document.GeneralHx = value;} }
-     public string Vitals { get {return document.Vitals;} set{document.Vitals = value;} }
-     public string Exam{ get {return document.Exam;} set{document.Exam = value;} }
-    public string Treatment { get {return document.Treatment;} set{document.Treatment = value;} }
-    public string PreventiveMed { get {return document.PreventiveMed;} set{document.PreventiveMed = value;} }
-    public string MedsStarted { get {return document.MedsStarted;} set{document.MedsStarted = value;} }
-    public string ImagesOrdered { get {return document.ImagesOrdered;} set{document.ImagesOrdered = value;} }
-    public string VisitCodes { get {return document.VisitCodes;} set{document.VisitCodes = value;} }
-    public string LabsOrdered { get {return document.LabsOrdered;} set{document.LabsOrdered = value;} }
-    public string Assessments { get {return document.Assessments;} set{document.Assessments = value;} }
-    public string FollowUp { get {return document.FollowUp;} set{document.FollowUp = value;} }
-
-    //public string { get {return document.;} set{document. = value;} }
-        public string ProcedureNote { get { return document.ProcedureNote; } set { document.ProcedureNote = value; } }
-
-
-        //{ get {return document.;} set{document. = value;} }
 
         public PatientM Patient
         {
@@ -242,104 +199,71 @@ namespace AI_Note_Review
            Document.ICD10s.Clear();
         }
 
+        private ObservableCollection<SqlICD10SegmentVM> iCD10Segments;
         public ObservableCollection<SqlICD10SegmentVM> ICD10Segments
         {
             get 
             {
-                #region Yikes! ugly, only open if you have to
-                //get icd10 segments
-                ObservableCollection<SqlICD10SegmentVM> tmpICD10Segments = new ObservableCollection<SqlICD10SegmentVM>();
-                    foreach (string strICD10 in Document.ICD10s)
-                    {
-                        string strAlphaCode = strICD10.Substring(0, 1);
-                        string str = "";
-                        foreach (char ch in strICD10)
-                        {
-                            if (Char.IsDigit(ch)) str += ch;
-                            if (ch == '.') str += ch; //preserve decimal
-                            if (Char.ToLower(ch) == 'x') break; //if placeholder character, then stop.
-                        }
-                        double icd10numeric = double.Parse(str);
+                return iCD10Segments;
+            }
+            set
+            {
+                iCD10Segments = value;
+            }
+        }
 
-                        foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
-                        {
-                            if (strAlphaCode == ns.SqlICD10Segment.icd10Chapter)
-                            {
-                                if (icd10numeric >= ns.SqlICD10Segment.icd10CategoryStart && icd10numeric <= ns.SqlICD10Segment.icd10CategoryEnd)
-                                {
-                                ns.IncludeSegment = true;
-                                tmpICD10Segments.Add(ns);
-                                }
-                            }
-                        }
-                    }
+        /// <summary>
+        /// Load all pertinent and ICD10 related segments
+        /// </summary>
+        /// <param name="GeneralCheckPointsOnly"></param>
+        /// <returns></returns>
+        public ObservableCollection<SqlICD10SegmentVM> GetSegments(bool GeneralCheckPointsOnly = false)
+        {
+            //get icd10 segments
+            ObservableCollection<SqlICD10SegmentVM> tmpICD10Segments = new ObservableCollection<SqlICD10SegmentVM>();
 
-                //add all general sections
-                foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
+            if (!GeneralCheckPointsOnly) //do not check the ICD10s for general check
+                foreach (string strICD10 in Document.ICD10s)
                 {
-                    if (ns.SqlICD10Segment.icd10Chapter == "X")
+                    string strAlphaCode = strICD10.Substring(0, 1);
+                    string str = "";
+                    foreach (char ch in strICD10)
                     {
-                        ns.IncludeSegment = true;
-                        #region Assign Include segments
-                        if (!document.HashTags.Contains("!HTNUrgency") && ns.SqlICD10Segment.ICD10SegmentID == 40) //if htnurgency is not present
+                        if (Char.IsDigit(ch)) str += ch;
+                        if (ch == '.') str += ch; //preserve decimal
+                        if (Char.ToLower(ch) == 'x') break; //if placeholder character, then stop.
+                    }
+                    double icd10numeric = double.Parse(str);
+
+                    foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
+                    {
+                        if (strAlphaCode == ns.SqlICD10Segment.icd10Chapter)
                         {
-                            ns.IncludeSegment = false;
-                        }
-                        if (ns.SqlICD10Segment.ICD10SegmentID == 72) //Adult rapid RR
-                        {
-                            if (patient.PtAgeYrs <= 17) ns.IncludeSegment = false; //do not include children in 72
-                            if (!document.HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
-                        }
-                        if (ns.SqlICD10Segment.ICD10SegmentID == 91) //Peds rapid RR
-                        {
-                            if (patient.PtAgeYrs >= 18) ns.IncludeSegment = false;
-                            if (!document.HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
-                        }
-                        if (!document.HashTags.Contains("@Elderly") && ns.SqlICD10Segment.ICD10SegmentID == 75) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (!document.HashTags.Contains("@Child") && ns.SqlICD10Segment.ICD10SegmentID == 80) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (!document.HashTags.Contains("@Infant") && ns.SqlICD10Segment.ICD10SegmentID == 76) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (!document.HashTags.Contains("@pregnantcapable") && ns.SqlICD10Segment.ICD10SegmentID == 82) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (!document.HashTags.Contains("!HighFever") && ns.SqlICD10Segment.ICD10SegmentID == 73) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (!document.HashTags.Contains("!Tachycardia") && ns.SqlICD10Segment.ICD10SegmentID == 74) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (ns.SqlICD10Segment.ICD10SegmentID == 92) //todo: find better way to see if procedure note included.
-                        {
-                            if (document.ProcedureNote == null)
+                            if (icd10numeric >= ns.SqlICD10Segment.icd10CategoryStart && icd10numeric <= ns.SqlICD10Segment.icd10CategoryEnd)
                             {
-                                ns.IncludeSegment = false;
-                            }
-                            else
-                            {
-                                if (document.ProcedureNote.Length < 100) ns.IncludeSegment = false;
+                                if (!GeneralCheckPointsOnly) tmpICD10Segments.Add(ns);
                             }
                         }
-
-                        #endregion
-
-                        tmpICD10Segments.Add(ns);
                     }
                 }
-                document.ICD10Segments = tmpICD10Segments;
-                #endregion
-                return document.ICD10Segments; ////see code above...
+
+            //add all general sections
+            foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
+            {
+                if (ns.SqlICD10Segment.icd10Chapter == "X")
+                {
+                    tmpICD10Segments.Add(ns);
+                }
             }
+
+            //if (IsHTNUrgency) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(40)); //pull in HTNUrgencySegment
+            //if (isRRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(72)); //pull in HTNUrgencySegment
+            //if (isTempHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(73)); //pull in HTNUrgencySegment
+            //if (isHRHigh) tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(74)); //pull in HTNUrgencySegment
+
+            //tmpICD10Segments.Add(SqlLiteDataAccess.GetSegment(36)); //add general segment that applies to all visits.
+            ICD10Segments = tmpICD10Segments;
+            return tmpICD10Segments;
         }
 
         private string[] noteSection = {"Chief Complaint(s):", "HPI:", "Current Medication:", "Medical History:", "Allergies/Intolerance:", "Surgical History:", "Hospitalization:",
@@ -1039,7 +963,7 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            VisitReportVM rvm = parameter as VisitReportVM;
+            ReportVM rvm = parameter as ReportVM;
             VisitReportV wp = new VisitReportV(rvm);
             wp.ShowDialog();
         }
@@ -1062,7 +986,7 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            VisitReportVM rvm = parameter as VisitReportVM;
+            ReportVM rvm = parameter as ReportVM;
             VisitReportV wp = new VisitReportV(rvm, true);
             wp.ShowDialog();
         }

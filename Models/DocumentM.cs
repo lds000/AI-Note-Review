@@ -38,8 +38,6 @@ namespace AI_Note_Review
 
         }
 
-
-
         #region note details
         public string Facility
         {
@@ -132,7 +130,7 @@ namespace AI_Note_Review
             }
         }
 
-        public ObservableCollection<SqlICD10SegmentVM> ICD10Segments
+        public ObservableCollection<SqlICD10Segment> ICD10Segments
         {
             get
             {
@@ -144,8 +142,25 @@ namespace AI_Note_Review
                 NotifyPropertyChanged();
             }
         }
-
-
+        //todo: complete seglist
+        public ObservableCollection<string> ICD10Seglist
+        {
+            get
+            {
+                return new ObservableCollection<string>();
+            }
+        }
+        public ObservableCollection<string> DocumentTags
+        {
+            get
+            {
+                return documentTags;
+            }
+            set
+            {
+                documentTags = value;
+            }
+        }
 
         #endregion
 
@@ -462,7 +477,7 @@ namespace AI_Note_Review
         /// An array where the index matches the notesectionID
         /// </summary>
         DateTime dOB;
-        private ObservableCollection<SqlICD10SegmentVM> iCD10Segments = new ObservableCollection<SqlICD10SegmentVM>();
+        private ObservableCollection<SqlICD10Segment> iCD10Segments = new ObservableCollection<SqlICD10Segment>();
         public string[] NoteSectionText = new string[30];
         public int ptAgeYrs;
         private int providerID;
@@ -507,6 +522,8 @@ namespace AI_Note_Review
         private double vitalsBMI;
         private string visitCodes;
         private ObservableCollection<string> iCD10s = new ObservableCollection<string>();
+        private ObservableCollection<string> documentTags = new ObservableCollection<string>();
+
         #endregion
 
 

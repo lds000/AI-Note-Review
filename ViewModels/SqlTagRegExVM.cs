@@ -71,8 +71,6 @@ public PersonViewModel(PersonModel person) {
         public bool Female { get { return this.SqlTagRegEx.Female; } set { SqlTagRegEx.Female = value; } }
 
 
-
-
         public IEnumerable<SqlTagRegExM.EnumMatch> MyMatchTypeValues
         {
             get

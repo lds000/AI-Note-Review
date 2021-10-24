@@ -248,8 +248,5 @@ namespace AI_Note_Review
         }
 
 
-
     }
-
-
 }

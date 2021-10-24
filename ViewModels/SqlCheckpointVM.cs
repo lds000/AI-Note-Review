@@ -45,10 +45,9 @@ public PersonViewModel(PersonModel person) {
         {
         }
 
-        public SqlCheckpointVM(SqlCheckpointM cp, SqlICD10SegmentVM icd10)
+        public SqlCheckpointVM(SqlCheckpointM cp)
         {
             this.SqlCheckpoint = cp;
-            ParentICD10SegmentVM = icd10;
         }
 
         public SqlCheckpointVM(string strCheckPointTitle, int iTargetICD10Segment)
@@ -65,7 +64,6 @@ public PersonViewModel(PersonModel person) {
             }
         }
 
-        public SqlICD10SegmentVM ParentICD10SegmentVM { get; set; }
 
         public SqlCheckpointM SqlCheckpoint { get; set; }
         public int CheckPointID { get { return this.SqlCheckpoint.CheckPointID; } set { this.SqlCheckpoint.CheckPointID = value; } }
@@ -78,29 +76,8 @@ public PersonViewModel(PersonModel person) {
         public string Action { get { return this.SqlCheckpoint.Action; } set { this.SqlCheckpoint.Action = value; } }
         public string Link { get { return this.SqlCheckpoint.Link; } set { this.SqlCheckpoint.Link = value; } }
         public int Expiration { get { return this.SqlCheckpoint.Expiration; } set { this.SqlCheckpoint.Expiration = value; } }
+        public ObservableCollection<SqlCheckPointImage> Images        {            get            {                return this.SqlCheckpoint.Images;            }        }
 
-
-        public ObservableCollection<SqlCheckPointImage> Images
-        {
-            get
-            {
-                string sql = $"select * from CheckPointImages where CheckPointID = @CheckPointID;";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    var tmpImages = new ObservableCollection<SqlCheckPointImage>(cnn.Query<SqlCheckPointImage>(sql, this).ToList());
-                    foreach (var tmpImage in tmpImages)
-                    {
-                        tmpImage.ParentCheckPointVM = this;
-                    }
-                    return tmpImages;
-                }
-            }
-        }
-
-        public void UpDateImages()
-        {
-            OnPropertyChanged("Images");
-        }
         public string StrCheckPointType
         {
             get
@@ -123,8 +100,6 @@ public PersonViewModel(PersonModel person) {
         public void AddImageFromClipBoard()
         {
             this.SqlCheckpoint.AddImageFromClipBoard();
-            OnPropertyChanged("Images");
-
         }
         /// <summary>
         /// Get the tags associated with the checkpoint
@@ -154,7 +129,6 @@ public PersonViewModel(PersonModel person) {
                 return cnn.Query<SqlTagVM>(sql, this).ToList();
             }
         }
-
 
 
         public void AddTag(SqlTagVM tg)
@@ -187,12 +161,12 @@ public PersonViewModel(PersonModel person) {
         }
 
 
-        public List<SqlCheckpointVM> GetCPsFromSegment(int SegmentID)
+        public List<SqlCheckpointM> GetCPsFromSegment(int SegmentID)
         {
             string sql = $"Select * from CheckPoints where TargetICD10Segment == {SegmentID}";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                return cnn.Query<SqlCheckpointVM>(sql).ToList();
+                return cnn.Query<SqlCheckpointM>(sql).ToList();
             }
 
         }
@@ -216,22 +190,6 @@ public PersonViewModel(PersonModel person) {
 
         }
 
-        private ICommand mAddTag;
-        public ICommand AddTagCommand
-        {
-            get
-            {
-                if (mAddTag == null)
-                    mAddTag = new TagAdder();
-                return mAddTag;
-            }
-            set
-            {
-                mAddTag = value;
-            }
-        }
-
-
 
         #region Update Command
 
@@ -249,103 +207,9 @@ public PersonViewModel(PersonModel person) {
                 mUpdateCP = value;
             }
         }
-        #endregion
-
-        
+#endregion
 
 
-        class CPRemover : ICommand
-        {
-            #region ICommand Members  
-
-            public bool CanExecute(object parameter)
-            {
-                return true;
-            }
-            public event EventHandler CanExecuteChanged
-            {
-                add { CommandManager.RequerySuggested += value; }
-                remove { CommandManager.RequerySuggested -= value; }
-            }
-
-            public void Execute(object parameter)
-            {
-                SqlCheckpointVM cp = parameter as SqlCheckpointVM;
-                cp.DeleteFromDB();
-                cp.ParentICD10SegmentVM.UpdateCheckPoints();
-            }
-            #endregion
-        }
-
-        private ICommand mRemoveCP;
-        public ICommand RemoveCPCommand
-        {
-            get
-            {
-                if (mRemoveCP == null)
-                    mRemoveCP = new CPRemover();
-                return mRemoveCP;
-            }
-            set
-            {
-                mRemoveCP = value;
-            }
-        }
-
-        private ICommand mAddImage;
-        public ICommand AddImageCommand
-        {
-            get
-            {
-                if (mAddImage == null)
-                    mAddImage = new CPImageAdder();
-                return mAddImage;
-            }
-            set
-            {
-                mAddImage = value;
-            }
-        }
-
-        private ICommand mCPTagMissMove;
-        public ICommand CPTagMissMoveCommand
-        {
-            get
-            {
-                if (mCPTagMissMove == null)
-                    mCPTagMissMove = new CPTagMissMove();
-                return mCPTagMissMove;
-            }
-            set
-            {
-                mCPTagMissMove = value;
-            }
-        }
-
-    }
-
-    class CPImageAdder : ICommand
-    {
-        #region ICommand Members  
-
-        public bool CanExecute(object parameter)
-        {
-            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
-            return CP != null;
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public void Execute(object parameter)
-        {
-            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
-            if (CP == null) return;
-            CP.AddImageFromClipBoard();
-        }
-        #endregion
     }
 
     class TagAdder : ICommand
@@ -402,8 +266,23 @@ public PersonViewModel(PersonModel person) {
         }
         #endregion
 
-    }
+        private ICommand mAddTag;
+        public ICommand AddTagCommand
+        {
+            get
+            {
+                if (mAddTag == null)
+                    mAddTag = new TagAdder();
+                return mAddTag;
+            }
+            set
+            {
+                mAddTag = value;
+            }
+        }
 
+
+    }
 
     class CPUpdater : ICommand
     {
@@ -426,30 +305,4 @@ public PersonViewModel(PersonModel person) {
         }
         #endregion
     }
-
-
-    class CPTagMissMove : ICommand
-    {
-        #region ICommand Members  
-
-        public bool CanExecute(object parameter)
-        {
-            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
-            return CP != null;
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public void Execute(object parameter)
-        {
-            SqlCheckpointM CP = parameter as SqlCheckpointM;
-            WinCheckPointEditor wce = new WinCheckPointEditor(CP);
-            wce.ShowDialog();
-        }
-        #endregion
-    }
-
 }
