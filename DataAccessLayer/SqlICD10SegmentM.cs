@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace AI_Note_Review
 {
-    public class SqlICD10Segment : INotifyPropertyChanged
+    public class SqlICD10SegmentM : INotifyPropertyChanged
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -40,14 +40,13 @@ namespace AI_Note_Review
         public string SegmentComment { get; set; }
 
 
-        private bool includeSegment = true;
         private string icd10Chapter1;
 
-        public SqlICD10Segment()
+        public SqlICD10SegmentM()
         {
         }
 
-        public SqlICD10Segment(string strSegmentTitle)
+        public SqlICD10SegmentM(string strSegmentTitle)
         {
             strSegmentTitle = strSegmentTitle.Replace("'", "''"); //used to avoid errors in titles with ' character
             string sql = "";
@@ -55,26 +54,9 @@ namespace AI_Note_Review
             sql += $"Select * from ICD10Segments where SegmentTitle = '{strSegmentTitle}';"; //this part is to get the ID of the newly created phrase
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                SqlICD10Segment p = cnn.QueryFirstOrDefault<SqlICD10Segment>(sql);
+                SqlICD10SegmentM p = cnn.QueryFirstOrDefault<SqlICD10SegmentM>(sql);
                 ICD10SegmentID = p.ICD10SegmentID;
                 SegmentTitle = p.SegmentTitle;
-            }
-        }
-
-        public bool IncludeSegment
-        {
-            get
-            {
-                includeSegment = true;
-                if (ICD10SegmentID == 90) //ed transfer, never include
-                {
-                    includeSegment = false;
-                }
-                return includeSegment;
-            }
-            set
-            {
-                includeSegment = value;
             }
         }
 

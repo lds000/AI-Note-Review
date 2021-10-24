@@ -22,12 +22,12 @@ namespace AI_Note_Review
             }
         }
 
-        public static SqlICD10Segment GetSegment(int iSegID)
+        public static SqlICD10SegmentM GetSegment(int iSegID)
         {
             string sql = $"Select * from ICD10Segments where ICD10SegmentID == {iSegID};";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                var output = cnn.Query<SqlICD10Segment>(sql).First();
+                var output = cnn.Query<SqlICD10SegmentM>(sql).First();
                 return output;
             }
 

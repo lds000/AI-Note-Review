@@ -22,25 +22,39 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private SqlICD10Segment sqlICD10Segment;
+        private SqlICD10SegmentM sqlICD10Segment;
 
         public SqlICD10SegmentVM()
         {
-            sqlICD10Segment = new SqlICD10Segment();
+            sqlICD10Segment = new SqlICD10SegmentM();
         }
 
-        public SqlICD10SegmentVM(SqlICD10Segment sc)
+        public SqlICD10SegmentVM(SqlICD10SegmentM sc)
         {
             sqlICD10Segment = sc;
         }
 
-        public SqlICD10Segment SqlICD10Segment
+        public SqlICD10SegmentVM(string strSegmentTitle)
+        {
+            sqlICD10Segment = new SqlICD10SegmentM(strSegmentTitle);
+        }
+
+        public DocumentVM ParentDocument { get; set; }
+
+        public SqlICD10SegmentM SqlICD10Segment
             {
             get
             {
                 return sqlICD10Segment;
             } 
         }
+        public int ICD10SegmentID { get { return sqlICD10Segment.ICD10SegmentID; } set {sqlICD10Segment.ICD10SegmentID = value; } }
+        public int LeftOffset { get { return sqlICD10Segment.LeftOffset; } set { sqlICD10Segment.LeftOffset = value; } }
+        public string icd10Chapter { get { return sqlICD10Segment.icd10Chapter; } set { sqlICD10Segment.icd10Chapter = value; } }
+        public double icd10CategoryStart { get { return sqlICD10Segment.icd10CategoryStart; } set { sqlICD10Segment.icd10CategoryStart = value; } }
+        public double icd10CategoryEnd { get { return sqlICD10Segment.icd10CategoryEnd; } set { sqlICD10Segment.icd10CategoryEnd = value; } }
+        public string SegmentTitle { get { return sqlICD10Segment.SegmentTitle; } set { sqlICD10Segment.SegmentTitle = value; } }
+        public string SegmentComment { get { return sqlICD10Segment.SegmentComment; } set { sqlICD10Segment.SegmentComment = value; } }
 
         public ObservableCollection<SqlCheckpointVM> Checkpoints
         {
@@ -53,10 +67,48 @@ namespace AI_Note_Review
                     ObservableCollection<SqlCheckpointVM> tmpCol = new ObservableCollection<SqlCheckpointVM>();
                     foreach (var item in tmpList)
                     {
-                        tmpCol.Add(new SqlCheckpointVM(item));
+                        SqlCheckpointVM cpvm = new SqlCheckpointVM(item);
+                        cpvm.ParentSegment = this;
+                        cpvm.ParentDocument = this.ParentDocument;
+                        tmpCol.Add(cpvm);
                     }
                     return tmpCol;
                 }
+            }
+        }
+
+        public ObservableCollection<SqlCheckpointVM> PassedCPs
+        {
+            get
+            {
+                return new ObservableCollection<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Pass select c);
+            }
+        }
+        public ObservableCollection<SqlCheckpointVM> MissedCPs
+        {
+            get
+            {
+                return new ObservableCollection<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Miss select c);
+            }
+        }
+        public ObservableCollection<SqlCheckpointVM> DroppedCPs
+        {
+            get
+            {
+                return new ObservableCollection<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Hide select c);
+            }
+        }
+
+        private bool includeSegment;
+        public bool IncludeSegment
+        {
+            get
+            {
+                return includeSegment;
+            }
+            set
+            {
+                includeSegment = value;
             }
         }
 
@@ -91,9 +143,9 @@ namespace AI_Note_Review
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
-                    var l = cnn.Query<SqlICD10Segment>(sql).ToList();
+                    var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
                     List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
-                    foreach (SqlICD10Segment s in l)
+                    foreach (SqlICD10SegmentM s in l)
                     {
                         SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
                         lvm.Add(scvm);
@@ -190,7 +242,7 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            SqlICD10Segment s = parameter as SqlICD10Segment;
+            SqlICD10SegmentM s = parameter as SqlICD10SegmentM;
             SqlICD10SegmentVM sivm = new SqlICD10SegmentVM(s);
             WinEnterText wet = new WinEnterText("Please input new title.");
             wet.WindowStartupLocation = WindowStartupLocation.CenterOwner;

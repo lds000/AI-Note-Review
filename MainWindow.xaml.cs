@@ -38,13 +38,13 @@ namespace AI_Note_Review
     {
         //string strApikey = "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"; //for AI
 
-        ReportVM reportVM;
+        VisitReportVM reportVM;
         BiMonthlyReviewVM biMonthlyReviewVM;
         public MainWindow()
         {
             ProgramInit();
             InitializeComponent();
-            reportVM = new ReportVM();
+            reportVM = new VisitReportVM();
             biMonthlyReviewVM = new BiMonthlyReviewVM();
             this.DataContext = reportVM;
             biMonthReviewMI.DataContext = biMonthlyReviewVM;
@@ -200,7 +200,7 @@ namespace AI_Note_Review
                             if (h.EcwHTMLDocument.Body != null)
                                 if (h.EcwHTMLDocument.Body.InnerHtml != null)
                                 {
-                                    reportVM.DocumentVM.processLockedt(h.EcwHTMLDocument);
+                                    reportVM.Document.processLockedt(h.EcwHTMLDocument);
                                     if (reportVM.Patient.PtName != "") break;
                                 }
                     }

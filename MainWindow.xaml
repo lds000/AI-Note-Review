@@ -76,10 +76,10 @@
                 <Button  Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
                 <Button Margin="100,0,0,0" 
                         VerticalAlignment="Center" 
-                        Command="{Binding Path=DocumentVM.ShowReport}"
+                        Command="{Binding Path=Document.ShowReport}"
                                 CommandParameter="{Binding}" 
                         Style="{StaticResource LinkButton}" FontSize="20">Check!</Button>
-                    <Button Margin="100,0,0,0" VerticalAlignment="Center"  Command="{Binding Path=DocumentVM.ShowReportGen}"
+                    <Button Margin="100,0,0,0" VerticalAlignment="Center"  Command="{Binding Path=Document.ShowReportGen}"
                                 CommandParameter="{Binding}"  Style="{StaticResource LinkButton}" FontSize="20">Check X Only</Button>
                 </StackPanel>
                 <TabControl x:Name="tcNote">

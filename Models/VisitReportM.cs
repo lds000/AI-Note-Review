@@ -18,7 +18,7 @@ namespace AI_Note_Review
     /// 
     /// Code behind for report xaml
     /// </summary>
-    public class ReportM : INotifyPropertyChanged
+    public class VisitReportM : INotifyPropertyChanged
     {
 
         #region inotify
@@ -36,12 +36,12 @@ namespace AI_Note_Review
 
         #endregion
         private DocumentM document;
-        public ReportM(DocumentM tmpDoc)
+        public VisitReportM(DocumentM tmpDoc)
         {
             document = tmpDoc;
         }
 
-        public ReportM()
+        public VisitReportM()
         {
 
         }
@@ -55,7 +55,6 @@ namespace AI_Note_Review
             set
             {
                 reviewDate = value;
-                NotifyPropertyChanged();
             }
         }
 
@@ -66,45 +65,9 @@ namespace AI_Note_Review
         /// <summary>
         /// int CheckpointID, int CPstatus
         /// </summary>
-        public Dictionary<SqlCheckpointVM, SqlRelCPProvider.MyCheckPointStates> CPStatusOverrides
-        {
-            get
-            {
-                return cPStatusOverrides;
-            }
-            set
-            {
-                cPStatusOverrides = value;
-            }
-        }
-
-        public ObservableCollection<string> DocumentTags
-        {
-            get
-            {
-                return documentTags;
-            }
-            set
-            {
-                documentTags = value;
-            }
-        }
-
-        public ObservableCollection<SqlCheckpointVM> DroppedCheckPoints
-        {
-            get
-            {
-                return droppedCheckPoints;
-            }
-            set
-            {
-                droppedCheckPoints = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-
-
+        public Dictionary<SqlCheckpointVM, SqlRelCPProvider.MyCheckPointStates> CPStatusOverrides          {get{return cPStatusOverrides;}set{cPStatusOverrides = value;}}
+        public ObservableCollection<string> DocumentTags {get{return documentTags;}set{documentTags = value;}}
+        public ObservableCollection<SqlCheckpointVM> DroppedCheckPoints{ get{return droppedCheckPoints;}set{droppedCheckPoints = value;NotifyPropertyChanged();}}
         public ObservableCollection<SqlCheckpointVM> PassedCheckPoints
         {
             get
@@ -129,24 +92,10 @@ namespace AI_Note_Review
                 NotifyPropertyChanged();
             }
         }
-        public ObservableCollection<SqlCheckpointVM> IrrelaventCP
-        {
-            get
-            {
-                return irrelaventCheckPoints;
-            }
-            set
-            {
-                irrelaventCheckPoints = value;
-                NotifyPropertyChanged();
-            }
-        }
         #endregion
 
         private ObservableCollection<string> documentTags = new ObservableCollection<string>();
-        private ObservableCollection<SqlCheckpointVM> irrelaventCheckPoints = new ObservableCollection<SqlCheckpointVM>();
         private ObservableCollection<SqlCheckpointVM> missedCheckPoints = new ObservableCollection<SqlCheckpointVM>();
-        private ObservableCollection<SqlCheckpointVM> relevantCheckPoints = new ObservableCollection<SqlCheckpointVM>();
         private ObservableCollection<SqlCheckpointVM> passedCheckPoints = new ObservableCollection<SqlCheckpointVM>();
         private ObservableCollection<SqlCheckpointVM> droppedCheckPoints = new ObservableCollection<SqlCheckpointVM>();
         private Dictionary<SqlCheckpointVM, SqlRelCPProvider.MyCheckPointStates> cPStatusOverrides = new Dictionary<SqlCheckpointVM, SqlRelCPProvider.MyCheckPointStates>();
