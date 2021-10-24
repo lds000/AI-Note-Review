@@ -251,6 +251,9 @@ public PersonViewModel(PersonModel person) {
         }
         #endregion
 
+        
+
+
         class CPRemover : ICommand
         {
             #region ICommand Members  
@@ -301,6 +304,21 @@ public PersonViewModel(PersonModel person) {
             set
             {
                 mAddImage = value;
+            }
+        }
+
+        private ICommand mCPTagMissMove;
+        public ICommand CPTagMissMoveCommand
+        {
+            get
+            {
+                if (mCPTagMissMove == null)
+                    mCPTagMissMove = new CPTagMissMove();
+                return mCPTagMissMove;
+            }
+            set
+            {
+                mCPTagMissMove = value;
             }
         }
 
@@ -386,6 +404,7 @@ public PersonViewModel(PersonModel person) {
 
     }
 
+
     class CPUpdater : ICommand
     {
         #region ICommand Members  
@@ -407,4 +426,30 @@ public PersonViewModel(PersonModel person) {
         }
         #endregion
     }
+
+
+    class CPTagMissMove : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
+            return CP != null;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlCheckpointM CP = parameter as SqlCheckpointM;
+            WinCheckPointEditor wce = new WinCheckPointEditor(CP);
+            wce.ShowDialog();
+        }
+        #endregion
+    }
+
 }

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         
                 Loaded="Window_Loaded"        
@@ -24,6 +25,10 @@
                 <Grid>
                     <Grid.ContextMenu>
                         <ContextMenu>
+                            <MenuItem Header="Show Editor." 
+                                      Command="{Binding CPTagMissMoveCommand}" 
+                                      CommandParameter="{Binding}">
+                            </MenuItem>
                             <MenuItem Header="Add/Edit Comment." Click="AddCommentCP"></MenuItem>
                             <MenuItem Header="Move to passed." Click="MovePassedCP"></MenuItem>
                             <MenuItem Header="Move to missed." Click="MoveMissedCP"></MenuItem>
@@ -39,7 +44,11 @@
                     </Grid.ColumnDefinitions>
 
                     <CheckBox Grid.Column="0"  Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" IsChecked="{Binding IncludeCheckpoint}" Margin="0,0,5,0"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
+                    <TextBlock Grid.Column="1" 
+                               Text="{Binding Path=CheckPointTitle}" 
+                               Margin="0" Padding="0" 
+                               Style="{StaticResource MyTbStyle}" >
+                    </TextBlock>
                     <TextBlock Grid.Column="2" Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
                     <Image MouseUp="Image_MouseDown" Grid.Column="3" Source="Icons\eye.png" Width="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></Image>
                     <Button Style="{StaticResource LinkButton}" Visibility="{Binding Path=CustomComment, Converter={StaticResource CPCommentToVisibilityConverter}}" Foreground="Red" FontWeight="Bold" Grid.Column="4" Margin="3,0,0,0">!</Button>
@@ -95,7 +104,7 @@
                     <DockPanel Grid.Row="0" Grid.Column="1">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Missed Checkpoints</Label>
                         <ListBox x:Name="lbFail" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" 
-                                 ItemsSource="{Binding Report.MissedCheckPoints}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
+                                 ItemsSource="{Binding Report.MissedCheckPoints}" Style="{StaticResource MyListBox}" >
                         </ListBox>
                     </DockPanel>
                     <DockPanel Grid.Row="1" Grid.Column="1">
