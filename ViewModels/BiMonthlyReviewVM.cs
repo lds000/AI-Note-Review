@@ -29,7 +29,8 @@ namespace AI_Note_Review
 
         public BiMonthlyReviewM BiMonthlyReviewM
         {
-            get {
+            get
+            {
                 return biMonthlyReviewM;
             }
         }

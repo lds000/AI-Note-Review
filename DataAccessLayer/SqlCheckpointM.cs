@@ -131,7 +131,7 @@ class PersonViewModel {
 
         public int TargetSection
         {
-            get => targetSection; 
+            get => targetSection;
             set
             {
                 if (targetSection != 0)
@@ -260,7 +260,7 @@ class PersonViewModel {
 
         public bool DeleteFromDB()
         {
-            MessageBoxResult mr = MessageBox.Show("Are you sure you want to remove this checkpoint? This is permenant and will delete all content for this checkpoint FOREVER, no recounts .", "Confirm Delete", MessageBoxButton.YesNo);
+            MessageBoxResult mr = MessageBox.Show("Are you sure you want to remove this diagnosis? This is permenant and will delete all content.", "Confirm Delete", MessageBoxButton.YesNo);
             if (mr != MessageBoxResult.Yes)
             {
                 return false;
@@ -300,6 +300,17 @@ class PersonViewModel {
             OnPropertyChanged("Images");
         }
 
+        public ObservableCollection<SqlCheckPointImage> Images
+        {
+            get
+            {
+                string sql = $"select * from CheckPointImages where CheckPointID = @CheckPointID;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return new ObservableCollection<SqlCheckPointImage>(cnn.Query<SqlCheckPointImage>(sql, this).ToList());
+                }
+            }
+        }
 
 
         /// <summary>
@@ -363,13 +374,12 @@ class PersonViewModel {
             }
 
 
-            sql = $"INSERT INTO CheckPoints (CheckPointTitle, TargetICD10Segment, TargetSection, CheckPointType) VALUES ('{strCheckPointTitle}', {iTargetICD10Segment}, {targetSection}, {targetType});SELECT last_insert_rowid();";
+
+            sql = $"INSERT INTO CheckPoints (CheckPointTitle, TargetICD10Segment, TargetSection, CheckPointType) VALUES ('{strCheckPointTitle}', {iTargetICD10Segment}, {targetSection}, {targetType});";
+            sql += $"Select * from CheckPoints where CheckPointTitle = '{strCheckPointTitle}' AND TargetICD10Segment = {iTargetICD10Segment};"; //this part is to get the ID of the newly created phrase
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                int lastID  = cnn.ExecuteScalar<int>(sql);
-                sql = $"Select * from CheckPoints where CheckPointID = {lastID};"; //this part is to get the ID of the newly created phrase
-                SqlCheckpointM p = cnn.QueryFirst<SqlCheckpointM>(sql); //throw error if not exists!
-
+                SqlCheckpointM p = cnn.QueryFirstOrDefault<SqlCheckpointM>(sql);
                 CheckPointID = p.CheckPointID;
                 TargetICD10Segment = p.TargetICD10Segment;
                 TargetSection = p.TargetSection;
@@ -379,6 +389,6 @@ class PersonViewModel {
         }
 
     }
-    
+
 
 }

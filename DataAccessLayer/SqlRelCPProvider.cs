@@ -11,7 +11,7 @@ namespace AI_Note_Review
         public int RelCPPRoviderID { get; set; }
         public int ProviderID { get; set; }
 
-        public enum MyCheckPointStates  {Pass = 1, Fail = 2, Relevant = 3, Irrelevant = 4}
+        public enum MyCheckPointStates { Pass = 1, Fail = 2, Relevant = 3, Irrelevant = 4 }
         public int CheckPointID { get; set; }
 
         public int PtID { get; set; }

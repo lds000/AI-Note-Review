@@ -45,15 +45,15 @@ public PersonViewModel(PersonModel person) {
             this.SqlTagRegEx = new SqlTagRegExM();
         }
 
-        public SqlTagRegExVM(long intTargetTag, string strRegExText, long intTargetSection, long iTagRegExType = 1, long iTagRegExMatchType = 1, long iTagRegExMatchResult = 1, long iTagRegExMatchNoResult = 1, double dMinAge = 0, double dMaxAge = 99, bool bMale = true, bool bFemale = true)
+        public SqlTagRegExVM(long intTargetTag, string strRegExText, long intTargetSection, long iTagRegExType = 1, long iTagRegExMatchType = 0, long iTagRegExMatchResult = 0, double dMinAge = 0, double dMaxAge = 99, bool bMale = true, bool bFemale = true)
         {
             strRegExText = strRegExText.Replace("'", "''"); //used to avoid errors in titles with ' character
             string sql = "";
-            sql = $"INSERT INTO TagRegEx (TargetTag, RegExText, TargetSection, TagRegExType, TagRegExMatchType, TagRegExMatchResult, TagRegExMatchNoResult, MinAge, MaxAge, Male, Female) VALUES ({intTargetTag}, '{strRegExText}', {intTargetSection}, {iTagRegExType}, {iTagRegExMatchType}, {iTagRegExMatchResult}, {iTagRegExMatchNoResult}, {dMinAge},{dMaxAge},{bMale},{bFemale});SELECT last_insert_rowid();";
+            sql = $"INSERT INTO TagRegEx (TargetTag, RegExText, TargetSection, TagRegExType, TagRegExMatchType, TagRegExMatchResult, MinAge, MaxAge, Male, Female) VALUES ({intTargetTag}, '{strRegExText}', {intTargetSection}, {iTagRegExType}, {iTagRegExMatchType}, {iTagRegExMatchResult}, {dMinAge},{dMaxAge},{bMale},{bFemale});SELECT last_insert_rowid();";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 int lastID = cnn.ExecuteScalar<int>(sql); //find ID of the insert tag and retreive it.
-                sql = $"Select * from TagRegEx where TagRegExID = {lastID}";
+                sql = $"Select * from TagRegEx where TagRegExID = ${lastID}";
                 this.SqlTagRegEx = cnn.Query<SqlTagRegExM>(sql).FirstOrDefault();
             }
 
@@ -69,6 +69,8 @@ public PersonViewModel(PersonModel person) {
         public double MaxAge { get { return this.SqlTagRegEx.MaxAge; } set { SqlTagRegEx.MaxAge = value; } }
         public bool Male { get { return this.SqlTagRegEx.Male; } set { SqlTagRegEx.Male = value; } }
         public bool Female { get { return this.SqlTagRegEx.Female; } set { SqlTagRegEx.Female = value; } }
+
+
 
 
         public IEnumerable<SqlTagRegExM.EnumMatch> MyMatchTypeValues
@@ -95,36 +97,7 @@ public PersonViewModel(PersonModel person) {
         {
             get
             {
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    string sql = $"Select TypeDescription from TagRegExMatchTypes where TypeID = {TagRegExType};";
-                    return cnn.ExecuteScalar<string>(sql);
-                }
-            }
-        }
-
-        //Text="{Binding TagRegExMatchResultDescription, FallbackValue=Then that}"
-        public string TagRegExMatchResultDescription
-        {
-            get
-            {
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    string sql = $"Select ResultDescription from TagRegExMatchResults where ResultID = {(int)TagRegExMatchResult};";
-                    return cnn.ExecuteScalar<string>(sql);
-                }
-            }
-        }
-
-        public string TagRegExMatchNoResultDescription
-        {
-            get
-            {
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    string sql = $"Select ResultDescription from TagRegExMatchResults where ResultID = {(int)TagRegExMatchNoResult};";
-                    return cnn.ExecuteScalar<string>(sql);
-                }
+                return "sql select from types";
             }
         }
 

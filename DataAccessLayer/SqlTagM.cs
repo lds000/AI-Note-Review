@@ -15,7 +15,7 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class SqlTagM: INotifyPropertyChanged
+    public class SqlTagM : INotifyPropertyChanged
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -35,12 +35,6 @@ namespace AI_Note_Review
 
         public void RemoveTagRegEx(SqlTagRegExVM str)
         {
-            MessageBoxResult mr = MessageBox.Show("Are you sure you want to delete this search term from the database? This is permenant.", "Confirm Delete", MessageBoxButton.YesNo);
-            if (mr != MessageBoxResult.Yes)
-            {
-                return;
-            }
-
             string sql = $"Delete from TagRegEx WHERE TagRegExID={str.TagRegExID};";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {

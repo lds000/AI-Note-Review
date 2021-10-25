@@ -17,7 +17,7 @@ namespace AI_Note_Review
 
         public List<SqlCheckpointM> RelatedCheckPoints
         {
-            get 
+            get
             {
                 string sql = $"select * from CheckPoints cp inner join RelCPPRovider relcp on relcp.CheckPointID = cp.CheckPointID where relcp.VisitDate = '{VisitDate.ToString("yyyy-MM-dd")}' and PtID = {PtID}";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))

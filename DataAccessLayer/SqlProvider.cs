@@ -23,7 +23,7 @@ namespace AI_Note_Review
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-    
+
         public int ProviderID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -83,14 +83,14 @@ namespace AI_Note_Review
 
         public SqlProvider(string strFirstName, string strLastName, string strCert, string strHomeClinic, int intReviewInterval, string strFullName)
         {
-                string sql = "";
-                sql = $"INSERT INTO Providers (FirstName,LastName,Cert,HomeClinic,ReviewInterval,FullName, IsWestSidePod) VALUES ('{strFirstName}','{strLastName}','{strCert}','{strHomeClinic}',{intReviewInterval},'{strFullName}', {IsWestSidePod});";
-                sql += $"Select * from Providers where FirstName = '{FirstName}' AND LastName = '{LastName}';"; //this part is to get the ID of the newly created phrase
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    SqlProvider p = cnn.QueryFirstOrDefault<SqlProvider>(sql);
-                    ProviderID = p.ProviderID;
-                }
+            string sql = "";
+            sql = $"INSERT INTO Providers (FirstName,LastName,Cert,HomeClinic,ReviewInterval,FullName, IsWestSidePod) VALUES ('{strFirstName}','{strLastName}','{strCert}','{strHomeClinic}',{intReviewInterval},'{strFullName}', {IsWestSidePod});";
+            sql += $"Select * from Providers where FirstName = '{FirstName}' AND LastName = '{LastName}';"; //this part is to get the ID of the newly created phrase
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                SqlProvider p = cnn.QueryFirstOrDefault<SqlProvider>(sql);
+                ProviderID = p.ProviderID;
+            }
         }
 
 

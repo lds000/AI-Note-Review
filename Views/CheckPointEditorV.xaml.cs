@@ -149,7 +149,7 @@ namespace AI_Note_Review
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
+            SqlICD10SegmentM seg = lbICD10.SelectedItem as SqlICD10SegmentM;
             if (seg != null)
             {
                 seg.SegmentComment = tbComment.Text;
@@ -169,7 +169,7 @@ namespace AI_Note_Review
 
         private void MenuItemEditSegment_Click(object sender, RoutedEventArgs e)
         {
-            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
+            SqlICD10SegmentM seg = lbICD10.SelectedItem as SqlICD10SegmentM;
             if (seg != null)
             {
                 WinEditSegment wes = new WinEditSegment(seg);
@@ -180,7 +180,7 @@ namespace AI_Note_Review
 
         private void AddGroupClick(object sender, RoutedEventArgs e)
         {
-            SqlICD10Segment seg = new SqlICD10Segment("Enter Segment Title");
+            SqlICD10SegmentM seg = new SqlICD10SegmentM("Enter Segment Title");
             WinEditSegment wes = new WinEditSegment(seg);
             wes.Owner = this;
             wes.ShowDialog();
@@ -196,11 +196,11 @@ namespace AI_Note_Review
         }
         private void ListBox_Drop(object sender, DragEventArgs e)
         {
-            SqlICD10Segment CurrentSeg = lbICD10.SelectedItem as SqlICD10Segment;
+            SqlICD10SegmentM CurrentSeg = lbICD10.SelectedItem as SqlICD10SegmentM;
             if (CurrentSeg != null)
             {
                 Grid g = (Grid)sender;
-                SqlICD10Segment DestinationSeg = g.DataContext as SqlICD10Segment;
+                SqlICD10SegmentM DestinationSeg = g.DataContext as SqlICD10SegmentM;
                 int cpID = (int)e.Data.GetData(typeof(int));
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
@@ -222,7 +222,7 @@ namespace AI_Note_Review
 
         private void CPSummaryClick(object sender, RoutedEventArgs e)
         {
-            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
+            SqlICD10SegmentM seg = lbICD10.SelectedItem as SqlICD10SegmentM;
             if (seg != null)
             {
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -261,7 +261,7 @@ namespace AI_Note_Review
 
         private void MenuItemCreateSegmentIndex(object sender, RoutedEventArgs e)
         {
-            SqlICD10Segment seg = lbICD10.SelectedItem as SqlICD10Segment;
+            SqlICD10SegmentM seg = lbICD10.SelectedItem as SqlICD10SegmentM;
             if (seg != null)
             {
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -318,7 +318,7 @@ namespace AI_Note_Review
 
                 }
             }
-            }
+        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {

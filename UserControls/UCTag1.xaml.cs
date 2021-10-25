@@ -20,9 +20,49 @@ namespace AI_Note_Review
     /// </summary>
     public partial class UCTag1 : UserControl
     {
+        public event EventHandler AddMe;
         public UCTag1()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //WinEnterText wet = new WinEnterText();
+            Button b = sender as Button;
+            SqlCheckpointM cp = DataContext as SqlCheckpointM;
+            SqlTagM st = b.DataContext as SqlTagM;
+            SqlTagRegExVM srex = new SqlTagRegExVM(st.TagID, "Search Text", cp.TargetSection, 1);
+            AddMe(this, EventArgs.Empty);
+        }
+
+        private void UCTagRegEx_DeleteMe(object sender, EventArgs e)
+        {
+            AddMe(this, EventArgs.Empty);
+        }
+
+        private void btnRemoveTag_Click(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            SqlCheckpointVM cp = DataContext as SqlCheckpointVM;
+            SqlTagVM st = b.DataContext as SqlTagVM;
+            cp.RemoveTag(st);
+            AddMe(this, EventArgs.Empty);
+
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock tb = sender as TextBlock;
+            SqlTagM st = tb.DataContext as SqlTagM;
+            WinEnterText wet = new WinEnterText("Edit Title", st.TagText);
+            wet.ShowDialog();
+            if (wet.ReturnValue != null)
+            {
+                st.TagText = wet.ReturnValue;
+                st.SaveToDB();
+                tb.Text = wet.ReturnValue;
+            }
         }
     }
 }

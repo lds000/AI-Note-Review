@@ -94,16 +94,16 @@ namespace AI_Note_Review
                 foreach (string strSearch in strSearchTerms.Split(','))
                 {
                     List<string> replacedStr = new List<string>();
-// I took this out
-//                    foreach (Match m in Regex.Matches(input, CF.strRegexPrefix + strSearch.Trim(), RegexOptions.IgnoreCase))
-                        if (strSearch.Trim()!="")
+                    // I took this out
+                    //                    foreach (Match m in Regex.Matches(input, CF.strRegexPrefix + strSearch.Trim(), RegexOptions.IgnoreCase))
+                    if (strSearch.Trim() != "")
                         if (input != null)
-                        foreach (Match m in Regex.Matches(input, CF.strRegexPrefix + strSearch.Trim(), RegexOptions.IgnoreCase))
-                        {
-                            if (!replacedStr.Contains(m.Value)) //do not replace same value more than once!
-                            escapedXml = escapedXml.Replace(m.Value, $"|~s~|{m.Value}|~e~|");
-                            replacedStr.Add(m.Value);
-                        }
+                            foreach (Match m in Regex.Matches(input, CF.strRegexPrefix + strSearch.Trim(), RegexOptions.IgnoreCase))
+                            {
+                                if (!replacedStr.Contains(m.Value)) //do not replace same value more than once!
+                                    escapedXml = escapedXml.Replace(m.Value, $"|~s~|{m.Value}|~e~|");
+                                replacedStr.Add(m.Value);
+                            }
 
                     //todo: replace without case sensitive search
                 }
@@ -215,7 +215,7 @@ namespace AI_Note_Review
             throw new NotSupportedException();
         }
     }
-    
+
 
     [ValueConversion(typeof(SqlCheckPointImage), typeof(BitmapImage))]
     public class ImageConverter : IValueConverter
@@ -240,7 +240,7 @@ namespace AI_Note_Review
         }
     }
 
-        [ValueConversion(typeof(int), typeof(Thickness))]
+    [ValueConversion(typeof(int), typeof(Thickness))]
     public class ICD10Margin : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -284,7 +284,7 @@ namespace AI_Note_Review
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            
+
             if (value == null)
                 return Brushes.White;
             if ((int)value >= 7) return Brushes.Red;
@@ -318,7 +318,7 @@ namespace AI_Note_Review
             throw new NotSupportedException();
         }
     }
-    
+
 
     [ValueConversion(typeof(string), typeof(List<String>))]
     public class ICD10Segments : IValueConverter
@@ -343,7 +343,7 @@ namespace AI_Note_Review
                     if (icd10numeric >= ns.SqlICD10Segment.icd10CategoryStart && icd10numeric <= ns.SqlICD10Segment.icd10CategoryEnd) _ICD10Segments.Add(ns.SqlICD10Segment.SegmentTitle);
                 }
             }
-            if (_ICD10Segments.Count == 0 )
+            if (_ICD10Segments.Count == 0)
             {
                 string sql = "";
                 sql = $"INSERT INTO MissingICD10Codes (StrCode) VALUES ('{strTest}');";

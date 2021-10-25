@@ -40,12 +40,9 @@ namespace AI_Note_Review
         public VisitReportV(bool GeneralCheckPointsOnly = false)
         {
             InitializeComponent();
-         //   document.ICD10Segments = document.GetSegments(GeneralCheckPointsOnly); //load all pertinent and 'X' segments
-         //   document.GenerateReport(true);
-         //   DataContext = document;
         }
 
-        public VisitReportV(ReportVM rvm, bool GeneralCheckPointsOnly = false)
+        public VisitReportV(VisitReportVM rvm, bool GeneralCheckPointsOnly = false)
         {
             InitializeComponent();
             DataContext = rvm;
@@ -58,7 +55,7 @@ namespace AI_Note_Review
         private void lbFail_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ListBox lb = sender as ListBox;
-            SqlCheckpointM cp = (SqlCheckpointM) lb.SelectedItem;
+            SqlCheckpointM cp = (SqlCheckpointM)lb.SelectedItem;
             WinCheckPointEditor wce = new WinCheckPointEditor(cp);
             wce.Owner = this;
             wce.ShowDialog();
@@ -79,7 +76,7 @@ namespace AI_Note_Review
 
             //document.GenerateReport();
             //DataContext = document;
-            
+
         }
 
 
@@ -122,7 +119,7 @@ namespace AI_Note_Review
             //Image i = sender as Image;
             //SqlCheckpoint cp = i.DataContext as SqlCheckpoint;
 
-            bool updown = true;            
+            bool updown = true;
             while (updown)
             {
                 WinShowCheckPointRichText scp = new WinShowCheckPointRichText();
@@ -184,7 +181,7 @@ namespace AI_Note_Review
 
         private void Button_CommittReportClick(object sender, RoutedEventArgs e)
         {
-            
+
         }
     }
 

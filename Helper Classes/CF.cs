@@ -33,7 +33,7 @@ namespace AI_Note_Review
         }
 
 
-        
+
 
         /// <summary>
         /// This prefix is used to match whole words and not parts of words
@@ -42,7 +42,7 @@ namespace AI_Note_Review
         public static string strRegexPrefix = @"\b";
         public static PatientM CurrentPatient;
         public static DocumentM ClinicNote;
-        public static ReportM NoteReview;
+        public static VisitReportM NoteReview;
 
         public static List<SqlCheckpointM> CheckPointList
         {

@@ -10,19 +10,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace AI_Note_Review
 {
-    public class SqlCheckPointImage : INotifyPropertyChanged
+    public class SqlCheckPointImage
     {
-        // Declare the event
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
         // Declare the event
         public int ImageID { get; set; }
         public int CheckPointID { get; set; }
@@ -74,60 +67,6 @@ namespace AI_Note_Review
             }
             return true;
         }
-
-        public SqlCheckpointVM ParentCheckPointVM
-        {
-            get { 
-                return parentCheckPointVM;
-            }
-            set
-            {
-                parentCheckPointVM = value;
-                OnPropertyChanged("ParentCheckPointVM");
-            }
-        }
-
-        private ICommand mDeleteImage;
-        private SqlCheckpointVM parentCheckPointVM;
-
-        public ICommand DeleteImageCommand
-        {
-            get
-            {
-                if (mDeleteImage == null)
-                    mDeleteImage = new CPImageDeleter();
-                return mDeleteImage;
-            }
-            set
-            {
-                mDeleteImage = value;
-            }
-        }
-
     }
-
-    class CPImageDeleter : ICommand
-    {
-        #region ICommand Members  
-
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public void Execute(object parameter)
-        {
-            SqlCheckPointImage CPI = parameter as SqlCheckPointImage;
-            CPI.DeleteFromDB();
-            CPI.ParentCheckPointVM.UpDateImages();
-        }
-        #endregion
-    }
-
 }
 

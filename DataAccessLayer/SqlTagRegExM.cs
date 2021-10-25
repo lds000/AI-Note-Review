@@ -47,7 +47,7 @@ namespace AI_Note_Review
         public EnumResult TagRegExMatchResult { get => tagRegExMatchResult; set => tagRegExMatchResult = value; }
         public EnumResult TagRegExMatchNoResult { get => tagRegExMatchNoResult; set => tagRegExMatchNoResult = value; }
 
-        public int iTagRegExMatchType { get => (int)tagRegExMatchType; set => tagRegExMatchType = (EnumMatch) value; }
+        public int iTagRegExMatchType { get => (int)tagRegExMatchType; set => tagRegExMatchType = (EnumMatch)value; }
         public int iTagRegExMatchResult { get => (int)tagRegExMatchResult; set => tagRegExMatchResult = (EnumResult)value; }
         public int iTagRegExMatchNoResult { get => (int)tagRegExMatchNoResult; set => tagRegExMatchNoResult = (EnumResult)value; }
 

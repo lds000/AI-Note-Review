@@ -32,8 +32,9 @@ namespace AI_Note_Review
 
         public PatientM Patient
         {
-            get {
-                return patient; 
+            get
+            {
+                return patient;
             }
         }
 

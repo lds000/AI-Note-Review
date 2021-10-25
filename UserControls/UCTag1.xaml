@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:AI_Note_Review"
              mc:Ignorable="d" 
              >
@@ -27,32 +26,25 @@
                             <TextBlock
                             FontSize="20"
                             Tag="{Binding}"
+                            MouseDown="TextBlock_MouseDown"
                             Text="{Binding TagText, FallbackValue=#TagTitle}" 
-                            Style="{StaticResource MyTbStyle}">
-                                                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseDown">
-                            <i:InvokeCommandAction Command="{Binding EditTagTextCommand}" CommandParameter="{Binding}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-
-                            </TextBlock>
+                            Style="{StaticResource MyTbStyle}"></TextBlock>
                             <Button 
                                 Margin="10,0,0,0"
                                 x:Name="btnRemoveTag" 
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Style="{StaticResource LinkButton}" Command="{Binding RemoveTagCommand}" CommandParameter="{Binding}">Remove Tag</Button>
+                                Style="{StaticResource LinkButton}" Click="btnRemoveTag_Click" >Remove Tag</Button>
                         </StackPanel>
                             <ItemsControl Margin="20,0,10,0" Grid.Row="1"  ItemsSource="{Binding TagRegExs}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <local:UCTagRegEx DataContext="{Binding}"></local:UCTagRegEx>
+                                        <local:UCTagRegEx DeleteMe="UCTagRegEx_DeleteMe" DataContext="{Binding}"></local:UCTagRegEx>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         <Button Grid.Row="2"
                                 Margin="10,0,0,20"
-                                Command="{Binding AddTagRegExCommand}" CommandParameter="{Binding}"
-                                Style="{StaticResource LinkButton}" >Add Search Term</Button>
+                                Style="{StaticResource LinkButton}" Click="Button_Click">Add Search Term</Button>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

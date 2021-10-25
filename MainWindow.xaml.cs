@@ -38,13 +38,13 @@ namespace AI_Note_Review
     {
         //string strApikey = "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"; //for AI
 
-        ReportVM reportVM;
+        VisitReportVM reportVM;
         BiMonthlyReviewVM biMonthlyReviewVM;
         public MainWindow()
         {
             ProgramInit();
             InitializeComponent();
-            reportVM = new ReportVM();
+            reportVM = new VisitReportVM();
             biMonthlyReviewVM = new BiMonthlyReviewVM();
             this.DataContext = reportVM;
             biMonthReviewMI.DataContext = biMonthlyReviewVM;
@@ -191,22 +191,22 @@ namespace AI_Note_Review
             {
                 int i = 0;
                 if (!CF.IsReviewWindowOpen) //do not load new patient if in a current review.
-                while (i < 20)
-                {
-                    HookIE h = new HookIE(hwnd, 0);
-                    if (h.EcwHTMLDocument != null)
+                    while (i < 20)
                     {
-                        if (h.IHTMLDocument != null)
-                            if (h.EcwHTMLDocument.Body != null)
-                                if (h.EcwHTMLDocument.Body.InnerHtml != null)
-                                {
-                                    reportVM.DocumentVM.processLockedt(h.EcwHTMLDocument);
-                                    if (reportVM.Patient.PtName != "") break;
-                                }
+                        HookIE h = new HookIE(hwnd, 0);
+                        if (h.EcwHTMLDocument != null)
+                        {
+                            if (h.IHTMLDocument != null)
+                                if (h.EcwHTMLDocument.Body != null)
+                                    if (h.EcwHTMLDocument.Body.InnerHtml != null)
+                                    {
+                                        reportVM.Document.processLockedt(h.EcwHTMLDocument);
+                                        if (reportVM.Patient.PtName != "") break;
+                                    }
+                        }
+                        Thread.Sleep(200);
+                        i++;
                     }
-                    Thread.Sleep(200);
-                    i++;
-                }
             }
         }
         private void Close_Click(object sender, RoutedEventArgs e)
