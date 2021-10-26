@@ -39,12 +39,11 @@ namespace AI_Note_Review
 
         public VisitReportVM()
         {
-            report = new VisitReportM();
+            report = new VisitReportM(); //1st executed command in program
             sqlProvider = new SqlProvider(); //Change provider for report
             patientVM = new PatientVM();
             patient = patientVM.Patient;
             document = new DocumentVM(sqlProvider, patientVM);
-            GenerateReport(); //first time
         }
 
         #region Report VM definitions - boring stuff
@@ -58,9 +57,6 @@ namespace AI_Note_Review
         public DateTime ReviewDate { get { return report.ReviewDate; } set { report.ReviewDate = value; } }
         public Dictionary<SqlCheckpointVM, SqlRelCPProvider.MyCheckPointStates> CPStatusOverrides { get { return report.CPStatusOverrides; } set { report.CPStatusOverrides = value; } }
         public ObservableCollection<string> DocumentTags { get { return report.DocumentTags; } set { report.DocumentTags = value; } }
-        public ObservableCollection<SqlCheckpointVM> DroppedCheckPoints { get { return report.DroppedCheckPoints; } set { report.DroppedCheckPoints = value; } }
-        public ObservableCollection<SqlCheckpointVM> MissedCheckPoints { get { return report.MissedCheckPoints; } set { report.MissedCheckPoints = value; } }
-        public ObservableCollection<SqlCheckpointVM> PassedCheckPoints { get { return report.PassedCheckPoints; } set { report.PassedCheckPoints = value; } }
         #endregion
         #region Document and Document VM definitions
         public DocumentVM Document
@@ -77,18 +73,29 @@ namespace AI_Note_Review
         public DateTime VisitDate { get { return document.VisitDate; } set { document.VisitDate = value; } }
         public string HashTags { get { return document.HashTags; } set { document.HashTags = value; } }
         public ObservableCollection<string> ICD10s { get { return document.ICD10s; } set { document.ICD10s = value; } }
+
+        private ObservableCollection<SqlICD10SegmentVM> iCD10Segments;
         public ObservableCollection<SqlICD10SegmentVM> ICD10Segments
         {
             get
             {
-                var tmpCol = document.ICD10Segments;
-                foreach (var tmpSeg in tmpCol)
+                if (iCD10Segments == null)
                 {
-                    tmpSeg.ParentDocument = document;
+                    iCD10Segments = document.ICD10Segments;
+                    foreach (var tmpSeg in iCD10Segments)
+                    {
+                        tmpSeg.ParentDocument = document;
+                        tmpSeg.ParentReport = this;
+                    }
                 }
-                return tmpCol;
+                return iCD10Segments;
+            }
+            set
+            {
+                iCD10Segments = value;
             }
         }
+
         #endregion
         #region SqlProvider definitions
         public SqlProvider SqlProvider
@@ -121,294 +128,86 @@ namespace AI_Note_Review
         }
         #endregion
 
-        public List<SqlCheckpointVM> PassedCPs
-        {
+        private List<SqlCheckpointVM> passedCPs;
+        public List<SqlCheckpointVM> PassedCPs 
+        { 
             get
             {
-                List<SqlCheckpointVM> tmpList = new List<SqlCheckpointVM>();
-                foreach (var tmpCollection in ICD10Segments)
+                if (passedCPs == null)
                 {
-                    if (tmpCollection.IncludeSegment)
-                        foreach (var tmpCP in tmpCollection.PassedCPs)
+                    passedCPs = new List<SqlCheckpointVM>();
+                    foreach (var tmpCollection in ICD10Segments)
+                    {
+                        if (tmpCollection.IncludeSegment)
                         {
-                            tmpList.Add(tmpCP);
+                            passedCPs = passedCPs.Concat(tmpCollection.PassedCPs).ToList();
                         }
+                    }
                 }
-                return tmpList;
+                return passedCPs;
+            }
+            set
+            {
+                passedCPs = value;
             }
         }
+
+        private List<SqlCheckpointVM> missedCPs;
         public List<SqlCheckpointVM> MissedCPs
         {
             get
             {
-                List<SqlCheckpointVM> tmpList = new List<SqlCheckpointVM>();
-                foreach (var tmpCollection in ICD10Segments)
+                if (missedCPs == null)
                 {
-                    foreach (var tmpCP in tmpCollection.MissedCPs)
+                    missedCPs = new List<SqlCheckpointVM>();
+                    foreach (var tmpCollection in ICD10Segments) //only run once per report
                     {
-                        tmpList.Add(tmpCP);
+                        if (tmpCollection.IncludeSegment)
+                        {
+                            missedCPs = missedCPs.Concat(tmpCollection.MissedCPs).ToList(); //run 19 times
+                        }
                     }
                 }
-                return tmpList;
+                return missedCPs;
+            }
+            set
+            {
+                missedCPs = value;
             }
         }
+
+        private List<SqlCheckpointVM> droppedCPs;
         public List<SqlCheckpointVM> DroppedCPs
         {
             get
             {
-                List<SqlCheckpointVM> tmpList = new List<SqlCheckpointVM>();
-                foreach (var tmpCollection in ICD10Segments)
+                if (droppedCPs == null)
                 {
-                    foreach (var tmpCP in tmpCollection.DroppedCPs)
+                    droppedCPs = new List<SqlCheckpointVM>();
+                    foreach (var tmpCollection in ICD10Segments)
                     {
-                        tmpList.Add(tmpCP);
+                        if (tmpCollection.IncludeSegment)
+                        {
+                            droppedCPs = droppedCPs.Concat(tmpCollection.DroppedCPs).ToList();
+                        }
                     }
                 }
-                return tmpList;
+                return droppedCPs;
             }
+            set
+            {
+                droppedCPs = value;
+            }
+        }
+
+        public void SetCPs()
+        {
         }
 
         /// <summary>
         /// Holds the current review's Yes/No SqlRegex's
         /// </summary>
         private Dictionary<int, bool> YesNoSqlRegExIndex = new Dictionary<int, bool>();
-
-
-
-        /// <summary>
-        /// Possible checkpoint match results, FailNoCount no longer used, held for legacy reasons.
-        /// </summary>
-        SqlTagRegExM.EnumResult TagResult; //{ Pass, Fail, FailNoCount, DropTag };
-
-        /// <summary>
-        /// Run the SqlTagRegExes of a tag and return as result, this is the brains of the whole operation.
-        /// </summary>
-        /// <param name="tmpTagRegExs"></param>
-        /// <returns></returns>
-        private SqlTagRegExM.EnumResult CheckTagRegExs(List<SqlTagRegExVM> tmpTagRegExs)
-        {
-            foreach (SqlTagRegExVM TagRegEx in tmpTagRegExs) //cycle through the TagRegExs, usually one or two, fail or hide stops iteration, if continues returns pass.
-            {
-                if (TagRegEx.RegExText.Contains("prolonged")) //used to debug
-                {
-                }
-
-                //This boolean shortens the code
-                bool StopIfMissOrHide = TagRegEx.TagRegExMatchResult != SqlTagRegExM.EnumResult.Pass;
-
-                // check demographic limits and return result if met.
-                //If any TagRegEx fails due to demographics, the entire series fails
-                double age = patient.GetAgeInYearsDouble();
-                if (age < TagRegEx.MinAge) return SqlTagRegExM.EnumResult.Hide;
-                if (age >= TagRegEx.MaxAge) return SqlTagRegExM.EnumResult.Hide;
-                if (patient.isMale && !TagRegEx.Male) return SqlTagRegExM.EnumResult.Hide;
-                if (!patient.isMale && !TagRegEx.Female) return SqlTagRegExM.EnumResult.Hide;
-
-                //Process each of the tags, if any fail or hide then series stop, otherwise passes.
-                //Process Yes/No Tag
-                if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Ask) //ask question... pass if yes, fail if no
-                {
-                    if (Properties.Settings.Default.AskYesNo) //If Bypass is on then assume answer was yes
-                    {
-                        if (StopIfMissOrHide) return TagRegEx.TagRegExMatchResult; //Match result is the result if a positive "yes" or "no" if set as Result (not "noResult") match is met
-                        continue;
-                    }
-                    else
-                    {
-                        bool yn = false;
-                        if (YesNoSqlRegExIndex.ContainsKey(TagRegEx.TagRegExID))
-                        {
-                            yn = YesNoSqlRegExIndex[TagRegEx.TagRegExID];
-                        }
-                        else
-                        {
-                            WinShowRegExYesNo ws = new WinShowRegExYesNo();
-                            if (TagRegEx.RegExText.Contains('|'))
-                            {
-                                ws.tbQuestion.Text = TagRegEx.RegExText.Split('|')[1];
-                            }
-                            else
-                            {
-                                ws.tbQuestion.Text = TagRegEx.RegExText;
-                            }
-                            ws.DataContext = TagRegEx;
-                            ws.ShowDialog();
-                            YesNoSqlRegExIndex.Add(TagRegEx.TagRegExID, ws.YesNoResult);
-                            yn = ws.YesNoResult;
-                        }
-                        if (yn == true)
-                        {
-                            if (StopIfMissOrHide) return TagRegEx.TagRegExMatchResult; //if Yes return 1st Result option if it's fail or hide
-                            continue; //continue to next iteration bacause result is pass.
-                        }
-                        else
-                        {
-                            if (TagRegEx.TagRegExMatchNoResult != SqlTagRegExM.EnumResult.Pass) return TagRegEx.TagRegExMatchNoResult;
-                            continue;  //continue to next iteration bacause result is pass.
-                        }
-                    }
-                }
-
-                //process all,none,any match condition
-                //Cycle through the list of terms and search through section of note if term is a match or not
-                bool AllTermsMatch = true;
-                bool NoTermsMatch = true;
-
-                string strTextToMatch = "";
-                if (document.NoteSectionText[TagRegEx.TargetSection] != null) strTextToMatch = document.NoteSectionText[TagRegEx.TargetSection].ToLower();
-                foreach (string strRegEx in TagRegEx.RegExText.Split(','))
-                {
-                    if (strRegEx.Trim() != "")
-                    {
-                        //This is original: i took the prefix out, not sure why it was there if (Regex.IsMatch(strTextToMatch, CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase))
-                        if (Regex.IsMatch(strTextToMatch, CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase)) // /i is lower case directive for regex
-                        {
-                            //Match is found!
-                            //ANY condition is met, so stop if miss or hide if that is the 1st action
-                            if (StopIfMissOrHide) if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.
-                            NoTermsMatch = false;
-                            if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) break; //condition met, no need to check rest
-                        }
-                        else
-                        {
-                            AllTermsMatch = false;
-                        }
-                    }
-                }
-                //ALL condition met if all terms match
-                if (StopIfMissOrHide)
-                {
-                    if (AllTermsMatch && StopIfMissOrHide)
-                    {
-                        if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.All) return TagRegEx.TagRegExMatchResult; //Contains All return 2nd Result because any clause not reached
-                    }
-                    if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.None) return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.)
-                    if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) return TagRegEx.TagRegExMatchNoResult;
-                }
-                //NONE condition met if no terms match
-
-                if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) continue;
-
-                if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.None) //none condition met, carry out pass
-                {
-
-                }
-                else
-                {
-                    if (TagRegEx.TagRegExMatchNoResult != SqlTagRegExM.EnumResult.Pass) return TagRegEx.TagRegExMatchNoResult;
-                }
-                //ASK,ALL, and NONE conditions are note met, so the NoResult condition is the action
-            }
-
-            return SqlTagRegExM.EnumResult.Pass; //default is pass
-        }
-
-        private void ResetCheckpointStatus()
-        {
-
-        }
-        /// <summary>
-        /// clear note, clear checkpoints, check note
-        /// </summary>
-        /// <param name="resetOverides"></param>
-        public void GenerateReport(bool resetOverides = false)
-        {
-            Stopwatch stopwatch = new Stopwatch();
-
-            int tmpC = 0;
-            stopwatch.Start();
-
-            if (resetOverides) //reset the yesno saved index and cpstatus overides I have marked on the checkbox
-            {
-                report.CPStatusOverrides.Clear();
-                YesNoSqlRegExIndex.Clear();
-            }
-            report.DocumentTags.Clear();
-            report.PassedCheckPoints.Clear();
-            report.MissedCheckPoints.Clear();
-            report.DroppedCheckPoints.Clear();
-
-            List<int> AlreadyAddedCheckPointIDs = new List<int>();
-
-            foreach (SqlICD10SegmentVM ns in ICD10Segments)
-            {
-                if (!ns.IncludeSegment) continue;
-
-                foreach (SqlCheckpointVM cp in ns.Checkpoints)
-                {
-                    foreach (var p in report.CPStatusOverrides)
-                    {
-                        if (p.Key.CheckPointID == cp.CheckPointID)
-                        {
-                            report.MissedCheckPoints.Remove(p.Key);
-                            report.PassedCheckPoints.Remove(p.Key);
-                            if (p.Value == SqlRelCPProvider.MyCheckPointStates.Fail)
-                            {
-                                report.MissedCheckPoints.Add(p.Key);
-                                p.Key.IncludeCheckpoint = true;
-                            }
-                            if (p.Value == SqlRelCPProvider.MyCheckPointStates.Pass)
-                            {
-                                report.PassedCheckPoints.Add(p.Key);
-                                p.Key.IncludeCheckpoint = false;
-                            }
-                            AlreadyAddedCheckPointIDs.Add(p.Key.CheckPointID);
-                        }
-                    }
-                    if (AlreadyAddedCheckPointIDs.Contains(cp.CheckPointID)) //no need to double check
-                    {
-                        continue;
-                    }
-                    AlreadyAddedCheckPointIDs.Add(cp.CheckPointID);
-                    ///Console.WriteLine($"Now analyzing '{cp.CheckPointTitle}' checkpoint.");
-                    SqlTagRegExM.EnumResult trTagResult = SqlTagRegExM.EnumResult.Pass;
-                    if (cp.CheckPointTitle.Contains("Augmentin XR"))
-                    {
-
-                    }
-                    foreach (SqlTagVM tagCurrentTag in cp.GetTags())
-                    {
-                        SqlTagRegExM.EnumResult trCurrentTagResult;
-                        List<SqlTagRegExVM> tmpTagRegExs = tagCurrentTag.GetTagRegExs();
-                        trCurrentTagResult = CheckTagRegExs(tmpTagRegExs);
-
-                        if (trCurrentTagResult != SqlTagRegExM.EnumResult.Pass)
-                        {
-                            //tag fails, no match.
-                            trTagResult = trCurrentTagResult;
-                            break; //if the first tag does not qualify, then do not proceed to the next tag.
-                        }
-                        report.DocumentTags.Add(tagCurrentTag.TagText);
-                    }
-
-                    switch (trTagResult)
-                    {
-                        case SqlTagRegExM.EnumResult.Pass:
-                            cp.IncludeCheckpoint = false;
-                            report.PassedCheckPoints.Add(cp); //do not include passed for All diagnosis.
-                            break;
-                        case SqlTagRegExM.EnumResult.Hide:
-                            cp.IncludeCheckpoint = false;
-                            report.DroppedCheckPoints.Add(cp);
-                            break;
-                        case SqlTagRegExM.EnumResult.Miss:
-                            cp.IncludeCheckpoint = true;
-                            report.MissedCheckPoints.Add(cp);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            //now re-order checkpoints by severity
-            report.PassedCheckPoints = new ObservableCollection<SqlCheckpointVM>(report.PassedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
-            report.MissedCheckPoints = new ObservableCollection<SqlCheckpointVM>(report.MissedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
-            report.DroppedCheckPoints = new ObservableCollection<SqlCheckpointVM>(report.DroppedCheckPoints.OrderByDescending(c => c.ErrorSeverity));
-            stopwatch.Stop();
-            Console.WriteLine("Elapsed Time is {0} ms", stopwatch.ElapsedMilliseconds);
-            Console.WriteLine(tmpC);
-        }
 
 
         public string GetReport(SqlCheckpointVM sqlCheckpointVM, DocumentVM doc, PatientM pt)
@@ -446,11 +245,11 @@ namespace AI_Note_Review
             double[] MissedScores = new double[] { 0, 0, 0, 0 };
             double[] Totals = new double[] { 0, 0, 0, 0 };
             double[] Scores = new double[] { 0, 0, 0, 0 };
-            foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in PassedCPs orderby c.ErrorSeverity descending select c))
             {
                 PassedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
-            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in MissedCPs orderby c.ErrorSeverity descending select c))
             {
                 MissedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
@@ -498,7 +297,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in PassedCPs orderby c.ErrorSeverity descending select c))
             {
                 tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
             }
@@ -510,7 +309,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in MissedCPs where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
                     tmpCheck += GetReport(cp, document, patient);
@@ -523,7 +322,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in PassedCPs where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
                     tmpCheck += GetReport(cp, document, patient);
@@ -579,12 +378,12 @@ namespace AI_Note_Review
 
             report.ReviewDate = DateTime.Now;
 
-            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in MissedCPs orderby c.ErrorSeverity descending select c))
             {
                 Commit(cp, document, patient, report, SqlRelCPProvider.MyCheckPointStates.Fail);
             }
 
-            foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in PassedCPs orderby c.ErrorSeverity descending select c))
             {
                 Commit(cp, document, patient, report, SqlRelCPProvider.MyCheckPointStates.Pass);
             }
@@ -619,26 +418,7 @@ namespace AI_Note_Review
                 }
 
 
-                report.MissedCheckPoints.Clear();
-                report.DroppedCheckPoints.Clear();
-                report.PassedCheckPoints.Clear();
                 string strReturn = "";
-                foreach (SqlRelCPProvider r in rlist)
-                {
-                    SqlCheckpointVM cp = new SqlCheckpointVM(r.CheckPointID);
-                    if (r.Comment != "")
-                    {
-                        cp.CustomComment = r.Comment;
-                    }
-                    if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Pass)
-                    {
-                        report.PassedCheckPoints.Add(cp);
-                    }
-                    if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Fail)
-                    {
-                        report.MissedCheckPoints.Add(cp);
-                    }
-                }
 
                 return CurrentDocToHTML();
             }
@@ -654,11 +434,11 @@ namespace AI_Note_Review
             double[] MissedScores = new double[] { 0, 0, 0, 0 };
             double[] Totals = new double[] { 0, 0, 0, 0 };
             double[] Scores = new double[] { 0, 0, 0, 0 };
-            foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in PassedCPs orderby c.ErrorSeverity descending select c))
             {
                 PassedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
-            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in MissedCPs orderby c.ErrorSeverity descending select c))
             {
                 MissedScores[SqlNoteSection.NoteSections.First(c => c.SectionID == cp.TargetSection).ScoreSection] += cp.ErrorSeverity;
             }
@@ -706,7 +486,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointVM cp in (from c in report.PassedCheckPoints orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in PassedCPs orderby c.ErrorSeverity descending select c))
             {
                 tmpCheck += $"<li><font size='+1'>{cp.CheckPointTitle}</font> <font size='-1'>(Score Weight:{cp.ErrorSeverity}/10)</font></li>" + Environment.NewLine;
                 if (cp.CustomComment != "")
@@ -722,7 +502,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in MissedCPs where c.ErrorSeverity > 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
                     tmpCheck += GetReport(cp, document, patient);
@@ -735,7 +515,7 @@ namespace AI_Note_Review
             }
 
             tmpCheck = "";
-            foreach (SqlCheckpointVM cp in (from c in report.MissedCheckPoints where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
+            foreach (SqlCheckpointVM cp in (from c in MissedCPs where c.ErrorSeverity == 0 orderby c.ErrorSeverity descending select c))
             {
                 if (cp.IncludeCheckpoint)
                     tmpCheck += GetReport(cp, document, patient);
@@ -763,16 +543,6 @@ namespace AI_Note_Review
             //System.Windows.Clipboard.SetText(strReport);
             //ClipboardHelper.CopyToClipboard(strReport, "");
             return strReport;
-        }
-
-
-        public void AddCheckPoint(SqlCheckpointM cp, DateTime dtReviewDate)
-        {
-            string sql = $"INSERT INTO RelCPPRovider (ProviderID,CheckPointID,PtID,HomeClinic,ReviewInterval,IsWestSidePod) VALUES ({document.ProviderID},{cp.CheckPointID},{patient.PtID},'{dtReviewDate}','{document.VisitDate}',{sqlProvider.IsWestSidePod});";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql);
-            }
         }
 
         private ICommand mCommitReport;

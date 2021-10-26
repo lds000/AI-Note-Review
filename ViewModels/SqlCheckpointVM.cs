@@ -81,35 +81,40 @@ public PersonViewModel(PersonModel person) {
         public ObservableCollection<SqlCheckPointImage> Images { get { return this.SqlCheckpoint.Images; } }
 
         private SqlTagRegExM.EnumResult? cPoverideStatus;
-        private SqlTagRegExM.EnumResult cPStatus;
+        private SqlTagRegExM.EnumResult? cPStatus;
         public SqlTagRegExM.EnumResult CPStatus
         {
             get
             {
-                //check if I have manually overidden the checkpoint and keep that assignment, since I am the genius here, not the program.
-                if (cPoverideStatus != null) return (SqlTagRegExM.EnumResult)cPoverideStatus;
-
-                SqlTagRegExM.EnumResult trTagResult = SqlTagRegExM.EnumResult.Pass;
-                if (CheckPointTitle.Contains("Augmentin XR"))
+                if (cPStatus == null) 
                 {
-                    //use this for testing...
-                }
-                foreach (SqlTagVM tagCurrentTag in GetTags())
-                {
-                    SqlTagRegExM.EnumResult trCurrentTagResult;
-                    List<SqlTagRegExVM> tmpTagRegExs = tagCurrentTag.GetTagRegExs();
-                    trCurrentTagResult = CheckTagRegExs(tmpTagRegExs);
+                    //this should only be run once for each checkpoint every time the report is opened.
+                    //check if I have manually overidden the checkpoint and keep that assignment, since I am the genius here, not the program.
+                    if (cPoverideStatus != null) cPStatus = (SqlTagRegExM.EnumResult)cPoverideStatus;
+                    OnPropertyChanged("CPStatus");
 
-                    if (trCurrentTagResult != SqlTagRegExM.EnumResult.Pass)
+                    SqlTagRegExM.EnumResult trTagResult = SqlTagRegExM.EnumResult.Pass;
+                    if (CheckPointTitle.Contains("Augmentin XR"))
                     {
-                        //tag fails, no match.
-                        trTagResult = trCurrentTagResult;
-                        break; //if the first tag does not qualify, then do not proceed to the next tag.
+                        //use this for testing...
                     }
-                    //report.DocumentTags.Add(tagCurrentTag.TagText); Don't I need this.
-                }
+                    foreach (SqlTagVM tagCurrentTag in GetTags())
+                    {
+                        SqlTagRegExM.EnumResult trCurrentTagResult;
+                        List<SqlTagRegExVM> tmpTagRegExs = tagCurrentTag.GetTagRegExs();
+                        trCurrentTagResult = CheckTagRegExs(tmpTagRegExs);
 
-                return trTagResult;
+                        if (trCurrentTagResult != SqlTagRegExM.EnumResult.Pass)
+                        {
+                            //tag fails, no match.
+                            trTagResult = trCurrentTagResult;
+                            break; //if the first tag does not qualify, then do not proceed to the next tag.
+                        }
+                        //report.DocumentTags.Add(tagCurrentTag.TagText); Don't I need this.
+                    }
+                    cPStatus = trTagResult;                    
+                }
+                return (SqlTagRegExM.EnumResult)cPStatus;
             }
             set
             {
@@ -117,10 +122,15 @@ public PersonViewModel(PersonModel person) {
             }
         }
 
+        public void CalculateStatus()
+        {
+        }
+
         /// <summary>
         /// Holds the current review's Yes/No SqlRegex's
         /// </summary>
         private Dictionary<int, bool> YesNoSqlRegExIndex = new Dictionary<int, bool>();
+
 
         /// <summary>
         /// Run the SqlTagRegExes of a tag and return as result, this is the brains of the whole operation.

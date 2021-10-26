@@ -40,6 +40,7 @@ namespace AI_Note_Review
         }
 
         public DocumentVM ParentDocument { get; set; }
+        public VisitReportVM ParentReport { get; set; }
 
         public SqlICD10SegmentM SqlICD10Segment
         {
@@ -56,49 +57,98 @@ namespace AI_Note_Review
         public string SegmentTitle { get { return sqlICD10Segment.SegmentTitle; } set { sqlICD10Segment.SegmentTitle = value; } }
         public string SegmentComment { get { return sqlICD10Segment.SegmentComment; } set { sqlICD10Segment.SegmentComment = value; } }
 
+        private ObservableCollection<SqlCheckpointVM> checkpoints;
         public ObservableCollection<SqlCheckpointVM> Checkpoints
         {
             get
             {
-                string sql = $"Select * from CheckPoints where TargetICD10Segment = {sqlICD10Segment.ICD10SegmentID};";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                if (checkpoints == null)
                 {
-                    var tmpList = cnn.Query<SqlCheckpointM>(sql).ToList();
-                    ObservableCollection<SqlCheckpointVM> tmpCol = new ObservableCollection<SqlCheckpointVM>();
-                    foreach (var item in tmpList)
+                    string sql = $"Select * from CheckPoints where TargetICD10Segment = {sqlICD10Segment.ICD10SegmentID};";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
-                        SqlCheckpointVM cpvm = new SqlCheckpointVM(item);
-                        cpvm.ParentSegment = this;
-                        cpvm.ParentDocument = this.ParentDocument;
-                        tmpCol.Add(cpvm);
+                        var tmpList = cnn.Query<SqlCheckpointM>(sql).ToList();
+                        ObservableCollection<SqlCheckpointVM> tmpCol = new ObservableCollection<SqlCheckpointVM>();
+                        foreach (var item in tmpList)
+                        {
+                            SqlCheckpointVM cpvm = new SqlCheckpointVM(item);
+                            cpvm.ParentSegment = this;
+                            cpvm.ParentDocument = this.ParentDocument;
+                            tmpCol.Add(cpvm);
+                        }
+                        checkpoints = tmpCol;
                     }
-                    return tmpCol;
                 }
+                return checkpoints;
             }
         }
 
-        public ObservableCollection<SqlCheckpointVM> PassedCPs
+
+
+        public void CheckSegment()
+        {
+            passedCPs = new List<SqlCheckpointVM>();
+            missedCPs = new List<SqlCheckpointVM>();
+            droppedCPs = new List<SqlCheckpointVM>();
+            OnPropertyChanged("PassedCPs");
+            OnPropertyChanged("MissedCPs");
+            OnPropertyChanged("DroppedCPs");
+        }
+
+
+
+        private List<SqlCheckpointVM> passedCPs;
+        public List<SqlCheckpointVM> PassedCPs
         {
             get
             {
-                return new ObservableCollection<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Pass select c);
+                if (passedCPs == null)
+                {
+                    passedCPs = new List<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Pass select c);
+                }
+                return passedCPs;
+            }
+            set
+            {
+
             }
         }
-        public ObservableCollection<SqlCheckpointVM> MissedCPs
+        private List<SqlCheckpointVM> missedCPs;
+        public List<SqlCheckpointVM> MissedCPs
         {
             get
             {
-                return new ObservableCollection<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Miss select c);
+                if (missedCPs == null)
+                {
+                    missedCPs = new List<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Miss select c);
+                }
+                return missedCPs;
             }
         }
-        public ObservableCollection<SqlCheckpointVM> DroppedCPs
+        private List<SqlCheckpointVM> droppedCPs;
+        public List<SqlCheckpointVM> DroppedCPs
         {
             get
             {
-                return new ObservableCollection<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Hide select c);
+                if (droppedCPs == null)
+                {
+                    droppedCPs = new List<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Hide select c);
+                }
+                return droppedCPs;
             }
         }
 
+        //recheck CPs;
+        public void UpdateCPs()
+        {
+            passedCPs = null;
+            missedCPs = null;
+            droppedCPs = null;
+            OnPropertyChanged("CheckPoints");
+            OnPropertyChanged("MissedCP");
+            OnPropertyChanged("DroppedCPs");
+            OnPropertyChanged("PassedCPs");
+        }
         private bool includeSegment;
         public bool IncludeSegment
         {
@@ -169,20 +219,6 @@ namespace AI_Note_Review
             OnPropertyChanged("Checkpoints");
         }
 
-        private ICommand mAddCP;
-        public ICommand AddCPCommand
-        {
-            get
-            {
-                if (mAddCP == null)
-                    mAddCP = new CPAdder();
-                return mAddCP;
-            }
-            set
-            {
-                mAddCP = value;
-            }
-        }
 
         /// <summary>
         /// Calculate the indent amount for each ICD10 segment and save it to the database.
@@ -224,6 +260,58 @@ namespace AI_Note_Review
             }
         }
 
+        private ICommand mAddCP;
+        public ICommand AddCPCommand
+        {
+            get
+            {
+                if (mAddCP == null)
+                    mAddCP = new CPAdder();
+                return mAddCP;
+            }
+            set
+            {
+                mAddCP = value;
+            }
+        }
+
+        private ICommand mSegIncludeChecked;
+        public ICommand SegIncludeCheckedCommand
+        {
+            get
+            {
+                if (mSegIncludeChecked == null)
+                    mSegIncludeChecked = new SegIncludeChecked();
+                return mSegIncludeChecked;
+            }
+            set
+            {
+                mSegIncludeChecked = value;
+            }
+        }
+
+    }
+
+    class SegIncludeChecked : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlICD10SegmentVM ssvm = parameter as SqlICD10SegmentVM;
+            ssvm.ParentReport.SetCPs();
+        }
+        #endregion
     }
 
     class CPAdder : ICommand

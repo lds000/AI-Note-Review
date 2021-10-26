@@ -20,6 +20,7 @@ namespace AI_Note_Review
         {
             get
             {
+                /*
                 List<SqlRelCPProvider> rlist;
                 string sql = $"Select * from RelCPPRovider where PtID={PtID} and VisitDate='{VisitDate.ToString("yyyy-MM-dd")}';";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -28,27 +29,7 @@ namespace AI_Note_Review
                 }
 
                 VisitReportM report = new VisitReportM();
-                report.MissedCheckPoints.Clear();
-                report.DroppedCheckPoints.Clear();
-                report.PassedCheckPoints.Clear();
                 string strReturn = "";
-                foreach (SqlRelCPProvider r in rlist)
-                {
-                    SqlCheckpointVM cp = new SqlCheckpointVM(r.CheckPointID);
-                    cp.IncludeCheckpoint = true; //This is added last minute.
-                    if (r.Comment != "")
-                    {
-                        cp.CustomComment = r.Comment;
-                    }
-                    if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Pass)
-                    {
-                        report.PassedCheckPoints.Add(cp);
-                    }
-                    if (r.CheckPointStatus == SqlRelCPProvider.MyCheckPointStates.Fail)
-                    {
-                        report.MissedCheckPoints.Add(cp);
-                    }
-                }
 
                 double[] PassedScores = new double[] { 0, 0, 0, 0 };
                 double[] MissedScores = new double[] { 0, 0, 0, 0 };
@@ -92,14 +73,6 @@ namespace AI_Note_Review
                 strReport += Environment.NewLine;
 
                 strReport += $"Scores: HPI <b>{HPI_Score.ToString("0.##")}</b> Exam <b>{Exam_Score.ToString("0.##")}</b> Dx <b>{Dx_Score.ToString("0.##")}</b> Treatment <b>{Rx_Score.ToString("0.##")}</b> <a href='#footnote'>Total Score<sup>*</sup></a> <b>{Total_Score.ToString("0.##")}</b><br><hr>";
-
-                /*
-                    foreach (var seg in document.ICD10Segments)
-                    {
-                        if (seg.IncludeSegment)
-                            tmpCheck += $"<li><font size='+1'>{seg.SegmentTitle}</font></li>" + Environment.NewLine;
-                    }
-                    */
 
                 if (tmpCheck != "")
                 {
@@ -165,7 +138,9 @@ namespace AI_Note_Review
 
                 //System.Windows.Clipboard.SetText(strReport);
                 //ClipboardHelper.CopyToClipboard(strReport, "");
-                return strReport;
+                return strReport; */
+
+                return "";
             }
         }
 

@@ -125,12 +125,6 @@ namespace AI_Note_Review
         /// </summary>
         private void ProgramInit()
         {
-            //hook up window changed event
-            _winEventProc = new WinEventDelegate(WinEventProc);
-            m_hhook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND,
-                EVENT_SYSTEM_FOREGROUND, IntPtr.Zero, _winEventProc,
-                0, 0, WINEVENT_OUTOFCONTEXT);
-            ActiveWindowChanged += MainWindow_ActiveWindowChanged;
 
             string strUserName = Environment.GetEnvironmentVariable("USERNAME");
 
@@ -144,6 +138,15 @@ namespace AI_Note_Review
             {
                 SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\llostod\source\repos\AI Note Review\NoteReviewDB.db";
             }
+
+            return; // disable hook
+            //hook up window changed event
+            _winEventProc = new WinEventDelegate(WinEventProc);
+            m_hhook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND,
+                EVENT_SYSTEM_FOREGROUND, IntPtr.Zero, _winEventProc,
+                0, 0, WINEVENT_OUTOFCONTEXT);
+            ActiveWindowChanged += MainWindow_ActiveWindowChanged;
+
         }
 
         #region window functions

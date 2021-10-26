@@ -67,37 +67,9 @@ namespace AI_Note_Review
         /// </summary>
         public Dictionary<SqlCheckpointVM, SqlRelCPProvider.MyCheckPointStates> CPStatusOverrides { get { return cPStatusOverrides; } set { cPStatusOverrides = value; } }
         public ObservableCollection<string> DocumentTags { get { return documentTags; } set { documentTags = value; } }
-        public ObservableCollection<SqlCheckpointVM> DroppedCheckPoints { get { return droppedCheckPoints; } set { droppedCheckPoints = value; NotifyPropertyChanged(); } }
-        public ObservableCollection<SqlCheckpointVM> PassedCheckPoints
-        {
-            get
-            {
-                return passedCheckPoints;
-            }
-            set
-            {
-                passedCheckPoints = value;
-                NotifyPropertyChanged();
-            }
-        }
-        public ObservableCollection<SqlCheckpointVM> MissedCheckPoints
-        {
-            get
-            {
-                return missedCheckPoints;
-            }
-            set
-            {
-                missedCheckPoints = value;
-                NotifyPropertyChanged();
-            }
-        }
         #endregion
 
         private ObservableCollection<string> documentTags = new ObservableCollection<string>();
-        private ObservableCollection<SqlCheckpointVM> missedCheckPoints = new ObservableCollection<SqlCheckpointVM>();
-        private ObservableCollection<SqlCheckpointVM> passedCheckPoints = new ObservableCollection<SqlCheckpointVM>();
-        private ObservableCollection<SqlCheckpointVM> droppedCheckPoints = new ObservableCollection<SqlCheckpointVM>();
         private Dictionary<SqlCheckpointVM, SqlRelCPProvider.MyCheckPointStates> cPStatusOverrides = new Dictionary<SqlCheckpointVM, SqlRelCPProvider.MyCheckPointStates>();
 
     }

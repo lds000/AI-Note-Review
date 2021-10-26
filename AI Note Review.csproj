@@ -87,7 +87,7 @@
     <Compile Include="Models\DocumentM.cs" />
     <Compile Include="Models\PatientM.cs" />
     <Compile Include="Models\ProviderM.cs" />
-    <Compile Include="Models\VisitReport.cs" />
+    <Compile Include="Models\VisitReportM.cs" />
     <Compile Include="DataAccessLayer\SqlCheckPointImages.cs" />
     <Compile Include="DataAccessLayer\SqlCheckpointM.cs" />
     <Compile Include="DataAccessLayer\SqlCheckPointType.cs" />
@@ -256,7 +256,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <Resource Include="Icons\edit_notes.png" />
-    <Resource Include="Icons\eye.png" />
     <Resource Include="Icons\westside.jpg" />
     <Resource Include="Icons\rightarrow.png" />
     <Content Include="MedTerms.lex">
