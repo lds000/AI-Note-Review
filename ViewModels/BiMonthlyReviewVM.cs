@@ -84,6 +84,7 @@ namespace AI_Note_Review
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
         }
+        #endregion
 
         public void Execute(object parameter)
         {
@@ -91,7 +92,6 @@ namespace AI_Note_Review
             BiMonthlyReviewV wp = new BiMonthlyReviewV(rvm);
             wp.ShowDialog();
         }
-        #endregion
     }
 
 }

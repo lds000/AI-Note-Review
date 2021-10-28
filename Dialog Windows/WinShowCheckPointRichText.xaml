@@ -10,7 +10,7 @@
         Closing="Window_Closing"
         PreviewKeyDown="Window_PreviewKeyDown"
         Title="WinShowCheckPointRichText" Height="450" Width="1400">
-    <Grid Background="Black">
+    <Grid Background="Black" DataContext="{Binding SelectedItem}">
         <Grid.Resources>
             <local:SqlTagRegExToString x:Key="mySqlTagRegExToString"/>
             <local:SqlTagRegExToXamlConverter x:Key="mySqlTagRegExToXamlConverter"/>
@@ -45,7 +45,6 @@
                                         <TextBlock
                             FontSize="20"
                             Tag="{Binding}"
-                            MouseDown="TextBlock_MouseDown"
                             Text="{Binding TagText, FallbackValue=#TagTitle}" 
                             Style="{StaticResource MyTbStyle}"></TextBlock>
                                         <UserControl
@@ -67,7 +66,7 @@
                                         <DataTemplate>
                                             <Border BorderBrush="White" BorderThickness="1" Background="#373838">
                                                 <StackPanel>
-                                                    <local:UCTagRegEx DeleteMe="UCTagRegEx_DeleteMe" DataContext="{Binding}"></local:UCTagRegEx>
+                                                    <local:UCTagRegEx DataContext="{Binding}"></local:UCTagRegEx>
                                                         <Border BorderBrush="Gray" BorderThickness="1" Margin="5" Background="Black">
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -76,11 +75,13 @@
                                                             </StackPanel>
                                                             <ContentControl Margin="10"
                                                     HorizontalAlignment="Left"
-                                                    VerticalAlignment="Center"
-                                                    Content="{Binding Converter={StaticResource mySqlTagRegExToXamlConverter}}">
+                                                    VerticalAlignment="Center">
+                                                                <MultiBinding Converter="{StaticResource mySqlTagRegExToXamlConverter}">
+                                                                    <Binding Path="NoteSectionText"/>
+                                                                    <Binding Path="TagRegExMatchType" />
+                                                                    <Binding Path="RegExText" />
+                                                                </MultiBinding>
                                                             </ContentControl>
-
-
                                                     </StackPanel>
                                                     </Border>
                                                 </StackPanel>

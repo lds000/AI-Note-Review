@@ -50,8 +50,7 @@ namespace AI_Note_Review
         public int iTagRegExMatchType { get => (int)tagRegExMatchType; set => tagRegExMatchType = (EnumMatch)value; }
         public int iTagRegExMatchResult { get => (int)tagRegExMatchResult; set => tagRegExMatchResult = (EnumResult)value; }
         public int iTagRegExMatchNoResult { get => (int)tagRegExMatchNoResult; set => tagRegExMatchNoResult = (EnumResult)value; }
-
-        public double MinAge { get; set; }
+        public double? MinAge { get; set; }
         public double MaxAge { get; set; }
         public bool Male { get; set; }
         public bool Female { get; set; }

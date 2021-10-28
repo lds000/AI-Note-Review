@@ -20,7 +20,7 @@
                 <Grid>
                     <Grid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Delete Image." Click="DeleteImage"></MenuItem>
+                            <MenuItem Command="{Binding DeleteThisImage}" CommandParameter="{Binding}"></MenuItem>
                         </ContextMenu>
                     </Grid.ContextMenu>
                     <Image Source="{Binding Converter={StaticResource ImageConverter}}" ></Image>
@@ -45,7 +45,7 @@
                 <ListBox x:Name="lbICD10" ItemsSource="{Binding Path=NoteICD10Segments}" Style="{StaticResource MyListBox}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Drop="ListBox_Drop" AllowDrop="True" >
+                            <Grid>
                                 <Grid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Edit" Click="MenuItemEditSegment_Click"/>
@@ -89,7 +89,7 @@
                     <ListBox x:Name="lbCheckpoints" ItemsSource="{Binding Checkpoints}" Style="{StaticResource MyListBox}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}" PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown">
+                                <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
                                     <TextBlock Margin="0,0,0,0" Padding="0,0,0,0" Grid.Column="1" Text="{Binding Path=CheckPointTitle}" ToolTip="{Binding Path=Comment}"/>
                                     <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
                                     <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding Path=StrCheckPointType}" ToolTip="{Binding Path=Comment}"/>
@@ -176,7 +176,7 @@
                         </SpellCheck.CustomDictionaries>
                     </TextBox>
 
-                    <Button Click="ButtonImage_Click" ToolTip="Click this button to add image from clipboard."  Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource LinkButton}">Images:</Button>
+                    <Button Command="{Binding AddImageFromClipBoardCommand}" CommandParameter="{Binding}" ToolTip="Click this button to add image from clipboard."  Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource LinkButton}">Images:</Button>
                     <ListBox 
                         x:Name="lbImages"
                         ItemsSource="{Binding Images}"

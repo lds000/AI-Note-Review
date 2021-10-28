@@ -13,9 +13,6 @@
         Title="WinReport" Height="800" Width="1400">
     <Border BorderBrush="White" BorderThickness="1" Background="Black">
         <Border.Resources>
-            <Style TargetType="ListBoxItem">
-                <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-            </Style>
             <local:MultiplyConverter x:Key="MultiplyConverter"/>
             <local:SeverityToBrushConverter x:Key="BrushConverter"/>
             <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -24,10 +21,12 @@
                 <Grid>
                     <Grid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Add/Edit Comment." Click="AddCommentCP"></MenuItem>
-                            <MenuItem Header="Move to passed." Click="MovePassedCP"></MenuItem>
-                            <MenuItem Header="Move to missed." Click="MoveMissedCP"></MenuItem>
-                            <MenuItem Header="Drop." Click="DropCP"></MenuItem>
+                            <MenuItem Header="Add/Edit Comment" Click="AddCommentCP"></MenuItem>
+                            <MenuItem Header="Move to passed" Click="MovePassedCP"></MenuItem>
+                            <MenuItem Header="Move to missed" Click="MoveMissedCP"></MenuItem>
+                            <MenuItem Header="Drop" Click="DropCP"></MenuItem>
+                            <MenuItem Header="Edit Checkpoint Properties" Command="{Binding EditCheckPointCommand}" CommandParameter="{Binding}"></MenuItem>
+                            <MenuItem Header="Show Checkpoint Report" Command="{Binding ShowCPRichTextCommand}" CommandParameter="{Binding}"></MenuItem>
                         </ContextMenu>
                     </Grid.ContextMenu>
                     <Grid.ColumnDefinitions>
@@ -36,13 +35,19 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <CheckBox Grid.Column="0"  Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" IsChecked="{Binding IncludeCheckpoint}" Margin="0,0,5,0"/>
                     <TextBlock Grid.Column="1" Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
                     <TextBlock Grid.Column="2" Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
-                    <Image MouseUp="Image_MouseDown" Grid.Column="3" Source="Icons\eye.png" Width="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></Image>
-                    <Button Style="{StaticResource LinkButton}" Visibility="{Binding Path=CustomComment, Converter={StaticResource CPCommentToVisibilityConverter}}" Foreground="Red" FontWeight="Bold" Grid.Column="4" Margin="3,0,0,0">!</Button>
+                    <Button Command="{Binding ShowCPRichTextCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}" Grid.Column="3">
+                        <Image MouseUp="Image_MouseDown" Source="..\Icons\eye.png" Width="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></Image>
+                    </Button>
+                    <Button Command="{Binding EditCheckPointCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}" Grid.Column="4">
+                        <Image MouseUp="Image_MouseDown" Source="..\Icons\edit.png" Width="11" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"></Image>
+                    </Button>
+                    <Button Style="{StaticResource LinkButton}" Visibility="{Binding Path=CustomComment, Converter={StaticResource CPCommentToVisibilityConverter}}" Foreground="Red" FontWeight="Bold" Grid.Column="5" Margin="3,0,0,0">!</Button>
                 </Grid>
             </DataTemplate>
         </Border.Resources>
@@ -92,17 +97,19 @@
 
                     <DockPanel Grid.Row="0" Grid.Column="1">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Missed Checkpoints</Label>
-                        <ListBox x:Name="lbFail" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" 
+                        <ListBox x:Name="lbFail" SelectedItem="{Binding SelectedItem}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" HorizontalContentAlignment="Stretch"
                                  ItemsSource="{Binding MissedCPs}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
                         </ListBox>
                     </DockPanel>
                     <DockPanel Grid.Row="1" Grid.Column="1">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Dropped Checkpoints</Label>
-                        <ListBox x:Name="lbDrop" ItemsSource="{Binding DroppedCPs}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
+                        <ListBox x:Name="lbDrop" SelectedItem="{Binding SelectedItem}" ItemsSource="{Binding DroppedCPs}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5"  HorizontalContentAlignment="Stretch"
+                                 Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
                     </DockPanel>
                     <DockPanel Grid.Row="0" Grid.Column="2">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Passed Checkpoints</Label>
-                        <ListBox x:Name="lbPassed" ItemsSource="{Binding PassedCPs}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
+                        <ListBox x:Name="lbPassed" SelectedItem="{Binding SelectedItem}" ItemsSource="{Binding PassedCPs}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5"  HorizontalContentAlignment="Stretch"
+                                 Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
                     </DockPanel>
                 </Grid>
 

@@ -5,12 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
-                Loaded="Window_Loaded"        
+        xmlns:sys="clr-namespace:System;assembly=system"
+        Loaded="Window_Loaded"        
         Closing="Window_Closing"
         WindowStartupLocation="CenterOwner"
         Title="WinCheckPointEditor" Height="850" Width="1000">
-    <Border BorderBrush="White" BorderThickness="1" Background="Black">
+    <Border BorderBrush="White" BorderThickness="1" Background="Black" DataContext="{Binding SelectedItem}">
         <DockPanel Name="dpCheckpoint">
+            <DockPanel.Resources>
+                <local:ICD10Margin x:Key="ICD10Margin"/>
+                <local:ImageConverter x:Key="ImageConverter"/>
+                <local:CF x:Key="cf"/>
+                <local:SqlICD10SegmentVM x:Key="SqlICD10SegmentVM"/>
+                <local:SqlNoteSection x:Key="SqlNoteSection"/>
+                <DataTemplate x:Key="myCheckPointImageTemplate">
+                    <Grid>
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Delete Image." Command="{Binding DeleteThisImage}" CommandParameter="{Binding}"></MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+                        <Image Source="{Binding Converter={StaticResource ImageConverter}}" ></Image>
+                    </Grid>
+                </DataTemplate>
+            </DockPanel.Resources>
             <Button HorizontalAlignment="Center" FontSize="16" Click="Button_Click" DockPanel.Dock="Bottom" Style="{StaticResource LinkButton}">Close</Button>
             <Border Margin="5" DockPanel.Dock="Bottom" BorderThickness="1" BorderBrush="White" >
                 <TextBlock x:Name="tbTargetText" TextWrapping="Wrap" Padding="5" Style="{StaticResource MyTbStyle}"></TextBlock>
@@ -25,12 +43,14 @@
                         <Label Style="{StaticResource MyLblStyle}">Checkpoint:</Label>
                         <Label  Style="{StaticResource MyLblStyle}" Content="{Binding Path=CheckPointTitle, FallbackValue=CheckPointTitle}"></Label>
                     </StackPanel>
-                    <Grid Margin="5">
+                    <Grid Margin="5" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="122*"/>
+                            <ColumnDefinition Width="269*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -41,43 +61,88 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Margin="5" Grid.Column="0" Grid.Row="0" Style="{StaticResource MyTbStyle}">Title:</TextBlock>
-                        <TextBox Margin="5" x:Name="tbTitle" Grid.Column="1" Grid.Row="0" Text="{Binding Path=CheckPointTitle}" Style="{StaticResource MyTextBox}" LostFocus="tbTitle_LostFocus"></TextBox>
+                        <TextBox Margin="5" x:Name="tbTitle" Grid.Column="1" Grid.Row="0" Text="{Binding Path=CheckPointTitle}" Style="{StaticResource MyTextBox}" Grid.ColumnSpan="2">
+                        </TextBox>
 
                         <TextBlock Margin="5" Grid.Column="0" Grid.Row="1" Style="{StaticResource MyTbStyle}">Type:</TextBlock>
-                        <ComboBox Margin="5,2,5,2" Name="cbTypes" DisplayMemberPath="Title"  SelectedValuePath="CheckPointTypeID" SelectedValue="{Binding CheckPointType}" SelectionChanged="cbTypes_SelectionChanged" Grid.Row="1" Grid.Column="1"/>
+                        <ComboBox Margin="5,2,5,2" Name="cbTypes" DisplayMemberPath="Title" ItemsSource="{Binding CheckPointTypes}"
+                          SelectedValuePath="CheckPointTypeID" SelectedValue="{Binding CheckPointType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
 
                         <TextBlock Margin="5" Grid.Column="0" Grid.Row="2" Style="{StaticResource MyTbStyle}">Section:</TextBlock>
-                        <ComboBox Margin="5,2,5,2"  Grid.Column="1" Grid.Row="2" Name="cbTargetSection" DisplayMemberPath="NoteSectionTitle" SelectedValuePath="SectionID" SelectedValue="{Binding TargetSection}" SelectionChanged="cbTargetSection_SelectionChanged"></ComboBox>
+                        <ComboBox Margin="5,2,5,2" ItemsSource="{Binding Source={StaticResource SqlNoteSection}, Path=NoteSections}"  
+                              Grid.Column="1" Grid.Row="2" Name="cbTargetSection" 
+                              DisplayMemberPath="NoteSectionTitle" 
+                              SelectedValuePath="SectionID" 
+                              SelectedValue="{Binding TargetSection}" Grid.ColumnSpan="2"></ComboBox>
 
                         <TextBlock Margin="5" Grid.Column="0" Grid.Row="3" Style="{StaticResource MyTbStyle}">ICD10:</TextBlock>
-                        <ComboBox Margin="5,2,5,2"  Grid.Column="1" Grid.Row="3" Name="cbTargetICD10" DisplayMemberPath="SegmentTitle" SelectedValuePath="ICD10SegmentID" SelectedValue="{Binding TargetICD10Segment}" SelectionChanged="cbTargetICD10_SelectionChanged"></ComboBox>
+                        <ComboBox Margin="5,2,5,2" 
+                              ItemsSource="{Binding Source={StaticResource SqlICD10SegmentVM}, Path=NoteICD10Segments}"  
+                              Grid.Column="1" Grid.Row="3" Name="cbTargetICD10" 
+                              DisplayMemberPath="SqlICD10Segment.SegmentTitle" 
+                              SelectedValuePath="SqlICD10Segment.ICD10SegmentID" 
+                              SelectedValue="{Binding TargetICD10Segment}" Grid.ColumnSpan="2"></ComboBox>
 
-                        <TextBlock Margin="5" Grid.Column="0" Grid.Row="4" Style="{StaticResource MyTbStyle}">Text:</TextBlock>
-                        <TextBox Margin="5" x:Name="tbComment" Grid.Row="4" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Comment}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" LostFocus="tbComment_LostFocus"></TextBox>
+                        <TextBlock Margin="5" Grid.Column="0" Grid.Row="4" Style="{StaticResource MyTbStyle}">Severity:</TextBlock>
 
-                        <TextBlock Margin="5" Grid.Column="0" Grid.Row="5" Style="{StaticResource MyTbStyle}">Images:</TextBlock>
+                        <Grid  Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Slider Margin="5"  Name="slideSeverity"
+                            Value="{Binding ErrorSeverity, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                            Minimum="0" Maximum="10"
+                            TickFrequency="1" 
+                            IsSnapToTickEnabled="True" 
+                            Ticks="1,2,3,4,5,6,7,8,9,10"
+                            TickPlacement="Both"
+                            ></Slider>
+                            <Label Grid.Column="1" Style="{StaticResource MyLblStyle}"
+                               Content="{Binding ElementName=slideSeverity, Path=Value}"
+                               HorizontalAlignment="Center" FontSize="20"></Label>
 
-                        <TextBlock Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource MyTbStyle}">Action:</TextBlock>
-                        <TextBox Margin="5" x:Name="tbAction" Grid.Row="6" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Action}" ToolTip="{Binding Path=Action}" LostFocus="tbAction_LostFocus"></TextBox>
+                        </Grid>
+
+                        <TextBlock Margin="5" Grid.Column="0" Grid.Row="5" Style="{StaticResource MyTbStyle}">Text:</TextBlock>
+                        <TextBox Margin="5" x:Name="tbComment" Grid.Row="5" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Comment}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" SpellCheck.IsEnabled="True" Grid.ColumnSpan="2">
+                            <SpellCheck.CustomDictionaries>
+                                <sys:Uri>pack://application:,,,/MedTerms.lex</sys:Uri>
+                            </SpellCheck.CustomDictionaries>
+                        </TextBox>
+
+                        <Button Command="{Binding AddImageFromClipBoardCommand}" CommandParameter="{Binding}" ToolTip="Click this button to add image from clipboard."  Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource LinkButton}">Images:</Button>
+                        <ListBox 
+                        x:Name="lbImages"
+                        ItemsSource="{Binding Images}"
+                        ItemTemplate="{StaticResource myCheckPointImageTemplate}"
+                        Margin="5"
+                        Grid.Column="1"
+                        Grid.Row="6" 
+                        Style="{StaticResource MyListBox}" Grid.ColumnSpan="2"/>
+                        <TextBlock Margin="5" Grid.Column="0" Grid.Row="7" Style="{StaticResource MyTbStyle}">Action:</TextBlock>
+                        <TextBox Margin="5" x:Name="tbAction" Grid.Row="7" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Action}" ToolTip="{Binding Path=Action}" SpellCheck.IsEnabled="True" Grid.ColumnSpan="2">
+                            <SpellCheck.CustomDictionaries>
+                                <sys:Uri>pack://application:,,,/MedTerms.lex</sys:Uri>
+                            </SpellCheck.CustomDictionaries>
+                        </TextBox>
 
 
-                        <TextBlock Margin="5" Grid.Column="0" Grid.Row="7" Style="{StaticResource MyTbStyle}">Link:</TextBlock>
-                        <TextBox Margin="5" x:Name="tbLink" Grid.Row="7" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Link}" ToolTip="{Binding Path=Link}" LostFocus="tbLink_LostFocus"></TextBox>
+                        <Button ToolTip="Click here to follow link." Margin="5" Grid.Column="0" Grid.Row="8" Style="{StaticResource LinkButton}">Link:</Button>
+                        <TextBox Margin="5" x:Name="tbLink" Grid.Row="8" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Link}" ToolTip="{Binding Path=Link}" Grid.ColumnSpan="2" ></TextBox>
 
 
                     </Grid>
 
                 </DockPanel>
-
                 <DockPanel Grid.Column="1" Margin="3">
                     <Label Style="{StaticResource MyLblStyle}" DockPanel.Dock="Top" HorizontalAlignment="Center">Tags</Label>
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                        <Button Style="{StaticResource LinkButton}" Margin="3" Click="AddTag">Add Tag</Button>
+                        <Button Command="{Binding AddTagCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}" Margin="3">Add Tag</Button>
                     </StackPanel>
                     <Border BorderBrush="White" BorderThickness="1">
                         <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
-                            <!--<StackPanel x:Name="spTags"></StackPanel>-->
-                            <local:UCTag1 AddMe="UCTag1_AddMe" DataContext="{Binding}"></local:UCTag1>
+                            <local:UCTag1 DataContext="{Binding}"></local:UCTag1>
                         </ScrollViewer>
                     </Border>
                 </DockPanel>

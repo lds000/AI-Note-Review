@@ -37,6 +37,16 @@ public PersonViewModel(PersonModel person) {
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        protected void OnPropertyChangedSave([CallerMemberName] string name = null)
+        {
+            if (PropertyChanged != null)
+            {
+                SaveToDB();
+                Console.WriteLine($"Property {name} was saved on TagRegEx!");
+                UpdateTagRegExCPStatus();
+            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         private SqlTagRegExM SqlTagRegEx { get; set; }
 
@@ -60,19 +70,21 @@ public PersonViewModel(PersonModel person) {
         }
 
         public SqlTagVM ParentTag { get; set; }
-        public int TagRegExID { get { return this.SqlTagRegEx.TagRegExID; } set { this.SqlTagRegEx.TagRegExID = value; } }
-        public int TargetTag { get { return this.SqlTagRegEx.TargetTag; } set { SqlTagRegEx.TargetTag = value; } }
-        public int TargetSection { get { return this.SqlTagRegEx.TargetSection; } set { SqlTagRegEx.TargetSection = value; } }
-        public string RegExText { get { return this.SqlTagRegEx.RegExText; } set { SqlTagRegEx.RegExText = value; } }
-        public int TagRegExType { get { return this.SqlTagRegEx.TagRegExType; } set { SqlTagRegEx.TagRegExType = value; } }
-        public double MinAge { get { return this.SqlTagRegEx.MinAge; } set { SqlTagRegEx.MinAge = value; } }
-        public double MaxAge { get { return this.SqlTagRegEx.MaxAge; } set { SqlTagRegEx.MaxAge = value; } }
-        public bool Male { get { return this.SqlTagRegEx.Male; } set { SqlTagRegEx.Male = value; } }
-        public bool Female { get { return this.SqlTagRegEx.Female; } set { SqlTagRegEx.Female = value; } }
+        public int TagRegExID { get { return this.SqlTagRegEx.TagRegExID; } set { this.SqlTagRegEx.TagRegExID = value; OnPropertyChangedSave(); } }
+        public int TargetTag { get { return this.SqlTagRegEx.TargetTag; } set { SqlTagRegEx.TargetTag = value; OnPropertyChangedSave(); } }
+        public int TargetSection { get { return this.SqlTagRegEx.TargetSection; } set { SqlTagRegEx.TargetSection = value; OnPropertyChangedSave(); } }
+        public string RegExText { get { return this.SqlTagRegEx.RegExText; } set { SqlTagRegEx.RegExText = value; OnPropertyChangedSave(); } }
+        public int TagRegExType { get { return this.SqlTagRegEx.TagRegExType; } set { SqlTagRegEx.TagRegExType = value; OnPropertyChangedSave(); OnPropertyChanged("TagRegExMatchTypeDescription"); } }
+        public double MinAge { get { return (double)this.SqlTagRegEx.MinAge; } set { 
+                SqlTagRegEx.MinAge = value; 
+                OnPropertyChangedSave();  } }
+        public double MaxAge { get { return this.SqlTagRegEx.MaxAge; } set { SqlTagRegEx.MaxAge = value; OnPropertyChangedSave(); } }
+        public bool Male { get { return this.SqlTagRegEx.Male; } set { SqlTagRegEx.Male = value; OnPropertyChangedSave(); } }
+        public bool Female { get { return this.SqlTagRegEx.Female; } set { SqlTagRegEx.Female = value; OnPropertyChangedSave(); } }
 
-
-
-
+        public string NoteSectionText { 
+            get { return ParentTag.ParentCheckPoint.ParentDocument.NoteSectionText[TargetSection]; } 
+        }
         public IEnumerable<SqlTagRegExM.EnumMatch> MyMatchTypeValues
         {
             get
@@ -88,7 +100,7 @@ public PersonViewModel(PersonModel person) {
             set
             {
                 this.SqlTagRegEx.TagRegExMatchType = value;
-                OnPropertyChanged("TagRegExMatchType");
+                OnPropertyChangedSave();
                 OnPropertyChanged("TagRegExMatchTypeDescription");
             }
         }
@@ -97,7 +109,7 @@ public PersonViewModel(PersonModel person) {
         {
             get
             {
-                return "sql select from types";
+                return $"If {TagRegExTypesToString(TagRegExMatchType)} then {TagRegExMatchToString(TagRegExMatchResult)}, otherwise {TagRegExMatchToString(TagRegExMatchNoResult)}.";
             }
         }
 
@@ -116,6 +128,7 @@ public PersonViewModel(PersonModel person) {
             set
             {
                 this.SqlTagRegEx.TagRegExMatchResult = value;
+                OnPropertyChangedSave();
                 OnPropertyChanged("TagRegExMatchType");
             }
         }
@@ -127,6 +140,53 @@ public PersonViewModel(PersonModel person) {
             {
                 this.SqlTagRegEx.TagRegExMatchNoResult = value;
                 OnPropertyChanged("TagRegExMatchType");
+                OnPropertyChangedSave();
+            }
+        }
+
+        public string TagRegExMatchToString(SqlTagRegExM.EnumResult enumTagRegExMatch) //either Result or noresults match can be used as arguement;
+        {
+            switch (enumTagRegExMatch)
+            {
+                case SqlTagRegExM.EnumResult.Pass:
+                    {
+                        return "the checkpoint will pass";
+                    }
+                case SqlTagRegExM.EnumResult.Hide:
+                    {
+                        return "the checkpoint will be hidden";
+                    }
+                case SqlTagRegExM.EnumResult.Miss:
+                    {
+                        return "the checkpoint will miss";
+                    }
+                default:
+                    return "";
+            }
+        }
+
+        public string TagRegExTypesToString(SqlTagRegExM.EnumMatch enumTagRegExMatch) //either Result or noresults match can be used as arguement;
+        {
+            switch (enumTagRegExMatch)
+            {
+                case SqlTagRegExM.EnumMatch.Any:
+                    {
+                        return "If any of the following terms match";
+                    }
+                case SqlTagRegExM.EnumMatch.All:
+                    {
+                        return "If all of the following terms match";
+                    }
+                case SqlTagRegExM.EnumMatch.None:
+                    {
+                        return "If none of the following terms match";
+                    }
+                case SqlTagRegExM.EnumMatch.Ask:
+                    {
+                        return "Ask question, if yes";
+                    }
+                default:
+                    return "";
             }
         }
 
@@ -149,6 +209,12 @@ public PersonViewModel(PersonModel person) {
         public bool DeleteFromDB()
         {
             return SqlTagRegEx.DeleteFromDB();
+        }
+
+        public void UpdateTagRegExCPStatus()
+        {
+            //push this upstream to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
+            ParentTag.UpdateCPStatus();
         }
 
         public static List<SqlNoteSection> NoteSections //todo, move this out to a common function.

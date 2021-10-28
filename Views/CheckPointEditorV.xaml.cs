@@ -74,31 +74,6 @@ namespace AI_Note_Review
             if (CurrentCheckpoint == null) return;
         }
 
-        /*
-        private void StrToRTB(string strIn, RichTextBox rtb)
-         {
-            byte[] byteArray = Encoding.ASCII.GetBytes(strIn);
-            using (MemoryStream ms = new MemoryStream(byteArray))
-            {
-                TextRange tr = new TextRange(rtb.DocumentM.ContentStart, rtb.DocumentM.ContentEnd);
-                tr.Load(ms, DataFormats.Rtf);
-            }
-        }
-
-        private string RTBtoStr(RichTextBox rtb)
-        {
-            string rtfText; //string to save to db
-            TextRange tr = new TextRange(rtb.DocumentM.ContentStart, rtb.DocumentM.ContentEnd);
-            using (MemoryStream ms = new MemoryStream())
-            {
-                tr.Save(ms, DataFormats.Rtf);
-                rtfText = Encoding.ASCII.GetString(ms.ToArray());
-            }
-            return rtfText;
-
-        }
-        */
-
         private void AddTag(object sender, RoutedEventArgs e)
         {
             if (CurrentCheckpoint == null) return;
@@ -187,30 +162,6 @@ namespace AI_Note_Review
             SqlICD10SegmentVM.CalculateLeftOffsets();
         }
 
-        private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            StackPanel parent = (StackPanel)sender;
-            int cpID = int.Parse(parent.Tag.ToString());
-            //This next statement is really slowing down the operation
-            //DragDrop.DoDragDrop(parent, cpID, DragDropEffects.Move);
-        }
-        private void ListBox_Drop(object sender, DragEventArgs e)
-        {
-            SqlICD10SegmentM CurrentSeg = lbICD10.SelectedItem as SqlICD10SegmentM;
-            if (CurrentSeg != null)
-            {
-                Grid g = (Grid)sender;
-                SqlICD10SegmentM DestinationSeg = g.DataContext as SqlICD10SegmentM;
-                int cpID = (int)e.Data.GetData(typeof(int));
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    string sql = $"Select * from CheckPoints where CheckPointID = {cpID};";
-                    SqlCheckpointM cp = cnn.Query<SqlCheckpointM>(sql).FirstOrDefault();
-                    cp.TargetICD10Segment = DestinationSeg.ICD10SegmentID;
-                    cp.SaveToDB();
-                }
-            }
-        }
 
         private void UCTag1_AddMe(object sender, EventArgs e)
         {
@@ -331,14 +282,6 @@ namespace AI_Note_Review
             CurrentCheckpoint.AddImageFromClipBoard();
 
 
-        }
-
-        private void DeleteImage(object sender, RoutedEventArgs e)
-        {
-            if (CurrentCheckpoint == null) return;
-            MenuItem mi = sender as MenuItem;
-            SqlCheckPointImage sc = mi.DataContext as SqlCheckPointImage;
-            CurrentCheckpoint.DeleteImage(sc);
         }
 
         private void btnLinkClick(object sender, RoutedEventArgs e)

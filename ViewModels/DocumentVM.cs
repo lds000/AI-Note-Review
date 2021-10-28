@@ -26,8 +26,8 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private DocumentM document;
         private PatientM patient;
+        private DocumentM document;
         private SqlProvider sqlProvider;
         private PatientVM patientVM;
 
@@ -40,6 +40,11 @@ namespace AI_Note_Review
             SetUpNote(); //todo: might be better way of implementing this.
         }
 
+        public DocumentVM()
+        {
+            document = SampleDocument; //New DocumentM() called under this.
+            SetUpNote(); //todo: might be better way of implementing this.
+        }
         public PatientVM PatientVM
         {
             get
@@ -48,53 +53,45 @@ namespace AI_Note_Review
             }
         }
 
-        public DocumentM Document
-        {
-            get
-            {
-                return document;
-            }
-        }
-
-        public string Facility { get { return document.Facility; } set { document.Facility = value; } }
-        public string Provider { get { return document.Provider; } set { document.Provider = value; } }
-        public SqlProvider ProviderSql { get { return document.ProviderSql; } set { document.ProviderSql = value; } }
-        public int ProviderID { get { return document.ProviderID; } set { document.ProviderID = value; } }
-        public DateTime VisitDate { get { return document.VisitDate; } set { document.VisitDate = value; } }
-        public string HashTags { get { return document.HashTags; } set { document.HashTags = value; } }
-        public ObservableCollection<string> ICD10s { get { return document.ICD10s; } set { document.ICD10s = value; } }
+        public string Facility { get { return document.Facility; } set { document.Facility = value; OnPropertyChanged(); } }
+        public string Provider { get { return document.Provider; } set { document.Provider = value; OnPropertyChanged(); } }
+        public SqlProvider ProviderSql { get { return document.ProviderSql; } set { document.ProviderSql = value; OnPropertyChanged(); } }
+        public int ProviderID { get { return document.ProviderID; } set { document.ProviderID = value; OnPropertyChanged(); } }
+        public DateTime VisitDate { get { return document.VisitDate; } set { document.VisitDate = value; OnPropertyChanged(); } }
+        public string HashTags { get { return document.HashTags; } set { document.HashTags = value; OnPropertyChanged(); } }
+        public ObservableCollection<string> ICD10s { get { return document.ICD10s; } set { document.ICD10s = value; OnPropertyChanged(); } }
 
         //try to get rid of these!!!
         public string[] NoteSectionText { get { return document.NoteSectionText; } }
 
 
-        public string NoteHTML { get { return document.NoteHTML; } set { document.NoteHTML = value; } }
-        public string ReasonForAppt { get { return document.ReasonForAppt; } set { document.ReasonForAppt = value; } }
-        public string CC { get { return document.CC; } set { document.CC = value; } }
-        public string HPI { get { return document.HPI; } set { document.HPI = value; } }
-        public string Allergies { get { return document.Allergies; } set { document.Allergies = value; } }
-        public string SurgHx { get { return document.SurgHx; } set { document.SurgHx = value; } }
-        public string FamHx { get { return document.FamHx; } set { document.FamHx = value; } }
-        public string CurrentMeds { get { return document.CurrentMeds; } set { document.CurrentMeds = value; } }
-        public string CurrentPrnMeds { get { return document.CurrentPrnMeds; } set { document.CurrentPrnMeds = value; } }
-        public string ProblemList { get { return document.ProblemList; } set { document.ProblemList = value; } }
-        public string ROS { get { return document.ROS; } set { document.ROS = value; } }
-        public string PMHx { get { return document.PMHx; } set { document.PMHx = value; } }
-        public string SocHx { get { return document.SocHx; } set { document.SocHx = value; } }
-        public string GeneralHx { get { return document.GeneralHx; } set { document.GeneralHx = value; } }
-        public string Vitals { get { return document.Vitals; } set { document.Vitals = value; } }
-        public string Exam { get { return document.Exam; } set { document.Exam = value; } }
-        public string Treatment { get { return document.Treatment; } set { document.Treatment = value; } }
-        public string PreventiveMed { get { return document.PreventiveMed; } set { document.PreventiveMed = value; } }
-        public string MedsStarted { get { return document.MedsStarted; } set { document.MedsStarted = value; } }
-        public string ImagesOrdered { get { return document.ImagesOrdered; } set { document.ImagesOrdered = value; } }
-        public string VisitCodes { get { return document.VisitCodes; } set { document.VisitCodes = value; } }
-        public string LabsOrdered { get { return document.LabsOrdered; } set { document.LabsOrdered = value; } }
-        public string Assessments { get { return document.Assessments; } set { document.Assessments = value; } }
-        public string FollowUp { get { return document.FollowUp; } set { document.FollowUp = value; } }
+        public string NoteHTML { get { return document.NoteHTML; } set { document.NoteHTML = value; OnPropertyChanged(); } }
+        public string ReasonForAppt { get { return document.ReasonForAppt; } set { document.ReasonForAppt = value; OnPropertyChanged(); } }
+        public string CC { get { return document.CC; } set { document.CC = value; OnPropertyChanged();             }        }
+        public string HPI { get { return document.HPI; } set { document.HPI = value; OnPropertyChanged(); } }
+        public string Allergies { get { return document.Allergies; } set { document.Allergies = value; OnPropertyChanged(); } }
+        public string SurgHx { get { return document.SurgHx; } set { document.SurgHx = value; OnPropertyChanged(); } }
+        public string FamHx { get { return document.FamHx; } set { document.FamHx = value; OnPropertyChanged(); } }
+        public string CurrentMeds { get { return document.CurrentMeds; } set { document.CurrentMeds = value; OnPropertyChanged(); } }
+        public string CurrentPrnMeds { get { return document.CurrentPrnMeds; } set { document.CurrentPrnMeds = value; OnPropertyChanged(); } }
+        public string ProblemList { get { return document.ProblemList; } set { document.ProblemList = value; OnPropertyChanged(); } }
+        public string ROS { get { return document.ROS; } set { document.ROS = value; OnPropertyChanged(); } }
+        public string PMHx { get { return document.PMHx; } set { document.PMHx = value; OnPropertyChanged(); } }
+        public string SocHx { get { return document.SocHx; } set { document.SocHx = value; OnPropertyChanged(); } }
+        public string GeneralHx { get { return document.GeneralHx; } set { document.GeneralHx = value; OnPropertyChanged(); } }
+        public string Vitals { get { return document.Vitals; } set { document.Vitals = value; OnPropertyChanged(); } }
+        public string Exam { get { return document.Exam; } set { document.Exam = value; OnPropertyChanged(); } }
+        public string Treatment { get { return document.Treatment; } set { document.Treatment = value; OnPropertyChanged(); } }
+        public string PreventiveMed { get { return document.PreventiveMed; } set { document.PreventiveMed = value; OnPropertyChanged(); } }
+        public string MedsStarted { get { return document.MedsStarted; } set { document.MedsStarted = value; OnPropertyChanged(); } }
+        public string ImagesOrdered { get { return document.ImagesOrdered; } set { document.ImagesOrdered = value; OnPropertyChanged(); } }
+        public string VisitCodes { get { return document.VisitCodes; } set { document.VisitCodes = value; OnPropertyChanged(); } }
+        public string LabsOrdered { get { return document.LabsOrdered; } set { document.LabsOrdered = value; OnPropertyChanged(); } }
+        public string Assessments { get { return document.Assessments; } set { document.Assessments = value; OnPropertyChanged(); } }
+        public string FollowUp { get { return document.FollowUp; } set { document.FollowUp = value; OnPropertyChanged(); } }
 
         //public string { get {return document.;} set{document. = value;} }
-        public string ProcedureNote { get { return document.ProcedureNote; } set { document.ProcedureNote = value; } }
+        public string ProcedureNote { get { return document.ProcedureNote; } set { document.ProcedureNote = value; OnPropertyChanged(); } }
 
 
         //{ get {return document.;} set{document. = value;} }
@@ -123,23 +120,23 @@ namespace AI_Note_Review
             get
             {
                 document = new DocumentM();
-                document.Provider = "Devin Hansen";
-                document.ProviderID = 1;
-                document.VisitDate = new DateTime(2021, 7, 14);
-                document.CC = "Abdominal pain for 10 days";
-                document.Facility = "Meridian UC";
-                document.ICD10s.Add("R10.10");
-                document.ICD10s.Add("I10");
+                Provider = "Devin Hansen";
+                ProviderID = 1;
+                VisitDate = new DateTime(2021, 7, 14);
+                CC = "Abdominal pain for 10 days";
+                Facility = "Meridian UC";
+                ICD10s.Add("R10.10");
+                ICD10s.Add("I10");
                 //DateTime.Now;
 
-                document.HPI = "Mark is a 30yo male who presents today complaining of right lower quadrant abdominal pain that began two days ago and acutely worse today. " +
+                HPI = "Mark is a 30yo male who presents today complaining of right lower quadrant abdominal pain that began two days ago and acutely worse today. " +
                     "He denies diarrhea or constipation.  He states he cannot tolerate a full meal due to the pain.  " +
                     "Mark has tried OTC medications.  He denies chest pain.  He denies blood in the vomit. Thus far he has tried ibuprofen and tylenol";
 
-                document.HPI = "Dalton Anthony Ware is a 26 y.o. male who presents with a chief complaint of rash, blisters. PatientM presents to the ER today with rash, lesions in the mouth, nose and eye on the left.He indicates that about 2 - 3 weeks ago he felt like he got a cold / sinus infection.He was taking multiple medications for this including NSAID, mucinex, spray in the nose to help with this.Didn't have a cough, didn't have a fever.  Had some chest discomfort that he felt was due to some chest congestion that seems to have resolved.Never had any n / v / d.He has not had any pain with urination, but indicates that his urine smells funny like he has had asparagus, but he has not. On Tuesday felt like he was getting a canker sore on the left side of the lip and by the next day was getting larger.He now has very large sores on the left, bilateral cheeks and under the tongue, also feels like something in the throat as well.He has some pain and irritation up in the nose on the left side, feels some crusting there.He has had purulent drainage from the left eye as well over the last couple of days and some generalized irritation.He has not been able to eat / drink much over the last couple of days due to the oral discomfort.He did use a new toothpaste once prior to this all starting, no longer using, this was thought to be part of the cause.  He denies any current n / v / d.He was told that might be SJS and he then looked at the scrotum today and feels like it might be more red than normal, but again, no pain with urination.No fever or chills.  He was never tested for COVID during the URI type illness that he had prior.He does currently complain of headache and pressure behind the eyes as well. No oral sex, patient states ever.Neither have ever had STI otherwise. Patients partner is 7 months pregnant at this point as well.He has never had acold sore, but does get canker sores occasionally.";
+                HPI = "Dalton Anthony Ware is a 26 y.o. male who presents with a chief complaint of rash, blisters. PatientM presents to the ER today with rash, lesions in the mouth, nose and eye on the left.He indicates that about 2 - 3 weeks ago he felt like he got a cold / sinus infection.He was taking multiple medications for this including NSAID, mucinex, spray in the nose to help with this.Didn't have a cough, didn't have a fever.  Had some chest discomfort that he felt was due to some chest congestion that seems to have resolved.Never had any n / v / d.He has not had any pain with urination, but indicates that his urine smells funny like he has had asparagus, but he has not. On Tuesday felt like he was getting a canker sore on the left side of the lip and by the next day was getting larger.He now has very large sores on the left, bilateral cheeks and under the tongue, also feels like something in the throat as well.He has some pain and irritation up in the nose on the left side, feels some crusting there.He has had purulent drainage from the left eye as well over the last couple of days and some generalized irritation.He has not been able to eat / drink much over the last couple of days due to the oral discomfort.He did use a new toothpaste once prior to this all starting, no longer using, this was thought to be part of the cause.  He denies any current n / v / d.He was told that might be SJS and he then looked at the scrotum today and feels like it might be more red than normal, but again, no pain with urination.No fever or chills.  He was never tested for COVID during the URI type illness that he had prior.He does currently complain of headache and pressure behind the eyes as well. No oral sex, patient states ever.Neither have ever had STI otherwise. Patients partner is 7 months pregnant at this point as well.He has never had acold sore, but does get canker sores occasionally.";
 
-                document.CurrentMeds = "ibuprofen, Tylenol, prednisone";
-                document.Exam = "AO, NAD PERRL\nNormal OP\nCTA bilat\nRRR no murmurs\nS NTND NABS, no guarding, no rebound\nNo edema";
+                CurrentMeds = "ibuprofen, Tylenol, prednisone";
+                Exam = "AO, NAD PERRL\nNormal OP\nCTA bilat\nRRR no murmurs\nS NTND NABS, no guarding, no rebound\nNo edema";
                 return document;
             }
         }
@@ -150,7 +147,7 @@ namespace AI_Note_Review
         /// <param name="strHashTag"></param>
         public void AddHashTag(string strHashTag)
         {
-            Document.HashTags += strHashTag + ", ";
+            HashTags += strHashTag + ", ";
         }
 
         /// <summary>
@@ -159,7 +156,7 @@ namespace AI_Note_Review
         public void SetUpNote()
         {
             //add hashtags here. #Hash
-            Document.HashTags = "";
+            HashTags = "";
             if (patient.PtAgeYrs > 65) AddHashTag("@Elderly");             //75	X	5	5	Elderly
             if (patient.PtSex.StartsWith("F")) AddHashTag("@Female");
             if (patient.PtAgeYrs < 4) AddHashTag("@Child");             //80	X	7	7	Children
@@ -182,29 +179,29 @@ namespace AI_Note_Review
                 //MessageBoxResult mr = MessageBox.Show($"This patient is {patient.GetAgeInDays()} days old and has a fever of {patient.VitalsTemp}.  Was the patient sent to an ED or appropriate workup performed?", "Infant Fever", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 //if (mr == MessageBoxResult.No) DocumentM.HashTags += "#NeonteNotSentToED";
             }
-            Document.HashTags = Document.HashTags.TrimEnd().TrimEnd(',');
-            Document.NoteSectionText[0] = $"{patient.PtAgeYrs} Sex{patient.PtSex}"; //Demographics 
-            Document.NoteSectionText[1] = Document.HPI + Document.ROS; //HPI
-            Document.NoteSectionText[2] = Document.CurrentMeds + Document.CurrentPrnMeds; //CurrentMeds
-            Document.NoteSectionText[3] = Document.ProblemList; //Active Problem List
-            Document.NoteSectionText[4] = Document.PMHx; //Past Medical History
-            Document.NoteSectionText[5] = Document.SocHx; //Social History
-            Document.NoteSectionText[6] = Document.Allergies; //Allergies
-            Document.NoteSectionText[7] = Document.Vitals; //Vital Signs
-            Document.NoteSectionText[8] = Document.Exam; //Examination
-            Document.NoteSectionText[9] = Document.Assessments; //Assessments
-            Document.NoteSectionText[10] = Document.Treatment; //Treatment
-            Document.NoteSectionText[11] = Document.LabsOrdered; //Labs
-            Document.NoteSectionText[12] = Document.ImagesOrdered; //Imaging
-            Document.NoteSectionText[13] = Document.ROS; //Review of Systems
-            Document.NoteSectionText[14] = Document.Assessments; //Assessments
-            Document.NoteSectionText[15] = Document.MedsStarted; //Prescribed Medications
-            Document.NoteSectionText[16] = Document.FamHx;
-            Document.NoteSectionText[17] = Document.SurgHx;
-            Document.NoteSectionText[18] = Document.HashTags;
-            Document.NoteSectionText[19] = Document.CC;
-            Document.NoteSectionText[20] = Document.ProcedureNote;
-            Document.NoteSectionText[21] = Document.PreventiveMed;
+            HashTags = HashTags.TrimEnd().TrimEnd(',');
+            NoteSectionText[0] = $"{patient.PtAgeYrs} Sex{patient.PtSex}"; //Demographics 
+            NoteSectionText[1] = HPI + ROS; //HPI
+            NoteSectionText[2] = CurrentMeds + CurrentPrnMeds; //CurrentMeds
+            NoteSectionText[3] = ProblemList; //Active Problem List
+            NoteSectionText[4] = PMHx; //Past Medical History
+            NoteSectionText[5] = SocHx; //Social History
+            NoteSectionText[6] = Allergies; //Allergies
+            NoteSectionText[7] = Vitals; //Vital Signs
+            NoteSectionText[8] = Exam; //Examination
+            NoteSectionText[9] = Assessments; //Assessments
+            NoteSectionText[10] = Treatment; //Treatment
+            NoteSectionText[11] = LabsOrdered; //Labs
+            NoteSectionText[12] = ImagesOrdered; //Imaging
+            NoteSectionText[13] = ROS; //Review of Systems
+            NoteSectionText[14] = Assessments; //Assessments
+            NoteSectionText[15] = MedsStarted; //Prescribed Medications
+            NoteSectionText[16] = FamHx;
+            NoteSectionText[17] = SurgHx;
+            NoteSectionText[18] = HashTags;
+            NoteSectionText[19] = CC;
+            NoteSectionText[20] = ProcedureNote;
+            NoteSectionText[21] = PreventiveMed;
         }
 
         /// <summary>
@@ -213,134 +210,146 @@ namespace AI_Note_Review
         public void Clear()
         {
             //demographics
-            Document.Facility = "";
-            Document.VisitDate = new DateTime(2020, 1, 1);
-            Document.Provider = "";
-            Document.ReasonForAppt = "";
-            Document.Allergies = "";
-            Document.NoteHTML = "";
-            Document.Vitals = "";
-            Document.CC = "";
-            Document.HPI = "";
-            Document.CurrentMeds = "";
-            Document.ProcedureNote = "";
-            Document.PreventiveMed = "";
-            Document.CurrentPrnMeds = "";
-            Document.ProblemList = "";
-            Document.ROS = "";
-            Document.PMHx = "";
-            Document.SocHx = "";
-            Document.GeneralHx = "";
-            Document.Exam = "";
-            Document.Treatment = "";
-            Document.MedsStarted = "";
-            Document.ImagesOrdered = "";
-            Document.LabsOrdered = "";
-            Document.Assessments = "";
-            Document.FollowUp = "";
-            Document.SurgHx = "";
-            Document.FamHx = "";
-            Document.ICD10s.Clear();
+            Facility = "";
+            VisitDate = new DateTime(2020, 1, 1);
+            Provider = "";
+            ReasonForAppt = "";
+            Allergies = "";
+            NoteHTML = "";
+            Vitals = "";
+            CC = "";
+            HPI = "";
+            CurrentMeds = "";
+            ProcedureNote = "";
+            PreventiveMed = "";
+            CurrentPrnMeds = "";
+            ProblemList = "";
+            ROS = "";
+            PMHx = "";
+            SocHx = "";
+            GeneralHx = "";
+            Exam = "";
+            Treatment = "";
+            MedsStarted = "";
+            ImagesOrdered = "";
+            LabsOrdered = "";
+            Assessments = "";
+            FollowUp = "";
+            SurgHx = "";
+            FamHx = "";
+            VisitCodes = "";
+            ICD10s.Clear();
         }
 
         public ObservableCollection<SqlICD10SegmentVM> ICD10Segments
         {
             get
             {
-                #region Yikes! ugly, only open if you have to
-                //get icd10 segments
-                ObservableCollection<SqlICD10SegmentVM> tmpICD10Segments = new ObservableCollection<SqlICD10SegmentVM>();
-                foreach (string strICD10 in Document.ICD10s)
-                {
-                    string strAlphaCode = strICD10.Substring(0, 1);
-                    string str = "";
-                    foreach (char ch in strICD10)
-                    {
-                        if (Char.IsDigit(ch)) str += ch;
-                        if (ch == '.') str += ch; //preserve decimal
-                        if (Char.ToLower(ch) == 'x') break; //if placeholder character, then stop.
-                    }
-                    double icd10numeric = double.Parse(str);
-
-                    foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
-                    {
-                        if (strAlphaCode == ns.SqlICD10Segment.icd10Chapter)
-                        {
-                            if (icd10numeric >= ns.SqlICD10Segment.icd10CategoryStart && icd10numeric <= ns.SqlICD10Segment.icd10CategoryEnd)
-                            {
-                                ns.IncludeSegment = true;
-                                tmpICD10Segments.Add(ns);
-                            }
-                        }
-                    }
-                }
-
-                //add all general sections
-                foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
-                {
-                    if (ns.SqlICD10Segment.icd10Chapter == "X")
-                    {
-                        ns.IncludeSegment = true;
-                        #region Assign Include segments
-                        if (!document.HashTags.Contains("!HTNUrgency") && ns.SqlICD10Segment.ICD10SegmentID == 40) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (ns.SqlICD10Segment.ICD10SegmentID == 72) //Adult rapid RR
-                        {
-                            if (patient.PtAgeYrs <= 17) ns.IncludeSegment = false; //do not include children in 72
-                            if (!document.HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
-                        }
-                        if (ns.SqlICD10Segment.ICD10SegmentID == 91) //Peds rapid RR
-                        {
-                            if (patient.PtAgeYrs >= 18) ns.IncludeSegment = false;
-                            if (!document.HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
-                        }
-                        if (!document.HashTags.Contains("@Elderly") && ns.SqlICD10Segment.ICD10SegmentID == 75) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (!document.HashTags.Contains("@Child") && ns.SqlICD10Segment.ICD10SegmentID == 80) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (!document.HashTags.Contains("@Infant") && ns.SqlICD10Segment.ICD10SegmentID == 76) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (!document.HashTags.Contains("@pregnantcapable") && ns.SqlICD10Segment.ICD10SegmentID == 82) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (!document.HashTags.Contains("!HighFever") && ns.SqlICD10Segment.ICD10SegmentID == 73) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (!document.HashTags.Contains("!Tachycardia") && ns.SqlICD10Segment.ICD10SegmentID == 74) //if htnurgency is not present
-                        {
-                            ns.IncludeSegment = false;
-                        }
-                        if (ns.SqlICD10Segment.ICD10SegmentID == 92) //todo: find better way to see if procedure note included.
-                        {
-                            if (document.ProcedureNote == null)
-                            {
-                                ns.IncludeSegment = false;
-                            }
-                            else
-                            {
-                                if (document.ProcedureNote.Length < 100) ns.IncludeSegment = false;
-                            }
-                        }
-
-                        #endregion
-
-                        tmpICD10Segments.Add(ns);
-                    }
-                }
-                document.ICD10Segments = tmpICD10Segments;
-                #endregion
+                UpdateICD10Segments();
                 return document.ICD10Segments; ////see code above...
             }
+            set
+            {
+                document.ICD10Segments = value;
+            }
+        }
+
+        private void UpdateICD10Segments()
+        {
+            ObservableCollection<SqlICD10SegmentVM> tmpICD10Segments = new ObservableCollection<SqlICD10SegmentVM>();
+            #region Yikes! ugly, only open if you have to
+            //get icd10 segments
+            foreach (string strICD10 in ICD10s)
+            {
+                string strAlphaCode = strICD10.Substring(0, 1);
+                string str = "";
+                foreach (char ch in strICD10)
+                {
+                    if (Char.IsDigit(ch)) str += ch;
+                    if (ch == '.') str += ch; //preserve decimal
+                    if (Char.ToLower(ch) == 'x') break; //if placeholder character, then stop.
+                }
+                double icd10numeric = double.Parse(str);
+
+                foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
+                {
+                    if (strAlphaCode == ns.SqlICD10Segment.icd10Chapter)
+                    {
+                        if (icd10numeric >= ns.SqlICD10Segment.icd10CategoryStart && icd10numeric <= ns.SqlICD10Segment.icd10CategoryEnd)
+                        {
+                            ns.IncludeSegment = true;
+                            tmpICD10Segments.Add(ns);
+                        }
+                    }
+                }
+            }
+
+            //add all general sections
+            foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
+            {
+                if (ns.SqlICD10Segment.icd10Chapter == "X")
+                {
+                    ns.IncludeSegment = true;
+                    #region Assign Include segments
+                    if (!HashTags.Contains("!HTNUrgency") && ns.SqlICD10Segment.ICD10SegmentID == 40) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (ns.SqlICD10Segment.ICD10SegmentID == 72) //Adult rapid RR
+                    {
+                        if (patient.PtAgeYrs <= 17) ns.IncludeSegment = false; //do not include children in 72
+                        if (!HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
+                    }
+                    if (ns.SqlICD10Segment.ICD10SegmentID == 91) //Peds rapid RR
+                    {
+                        if (patient.PtAgeYrs >= 18) ns.IncludeSegment = false;
+                        if (!HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
+                    }
+                    if (!HashTags.Contains("@Elderly") && ns.SqlICD10Segment.ICD10SegmentID == 75) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!HashTags.Contains("@Child") && ns.SqlICD10Segment.ICD10SegmentID == 80) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!HashTags.Contains("@Infant") && ns.SqlICD10Segment.ICD10SegmentID == 76) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!HashTags.Contains("@pregnantcapable") && ns.SqlICD10Segment.ICD10SegmentID == 82) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!HashTags.Contains("!HighFever") && ns.SqlICD10Segment.ICD10SegmentID == 73) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (!HashTags.Contains("!Tachycardia") && ns.SqlICD10Segment.ICD10SegmentID == 74) //if htnurgency is not present
+                    {
+                        ns.IncludeSegment = false;
+                    }
+                    if (ns.SqlICD10Segment.ICD10SegmentID == 92) //todo: find better way to see if procedure note included.
+                    {
+                        if (ProcedureNote == null)
+                        {
+                            ns.IncludeSegment = false;
+                        }
+                        else
+                        {
+                            if (ProcedureNote.Length < 100) ns.IncludeSegment = false;
+                        }
+                    }
+
+                    #endregion
+
+                    tmpICD10Segments.Add(ns);
+                }
+            }
+            #endregion
+            ICD10Segments = tmpICD10Segments;
+            //OnPropertyChanged("ICD10Segments");
+
         }
 
         private string[] noteSection = {"Chief Complaint(s):", "HPI:", "Current Medication:", "Medical History:", "Allergies/Intolerance:", "Surgical History:", "Hospitalization:",
@@ -352,17 +361,17 @@ namespace AI_Note_Review
         {
 
             Clear();
-
             if (HDoc.Body.InnerHtml.StartsWith("<LINK"))
             {
                 processUnlocked(HDoc);
                 return;
             }
+            #region Process locked document magic
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             HtmlElementCollection AllTRItems = HDoc.Body.GetElementsByTagName("TR"); //5 ms
             HtmlElementCollection AllTHEADItems = HDoc.Body.GetElementsByTagName("THEAD"); //5 ms
-            document.NoteHTML = HDoc.Body.InnerHtml; //3 ms
+            NoteHTML = HDoc.Body.InnerHtml; //3 ms
 
             string strCurrentHeading = "";
             foreach (HtmlElement TempEl in AllTHEADItems) //1 item, 1.9 seconds!
@@ -373,7 +382,7 @@ namespace AI_Note_Review
                     if (strInnerText.Contains("DOS:"))
                     {
                         strInnerText = strInnerText.Replace("DOS:", "|");
-                        document.VisitDate = DateTime.Parse(strInnerText.Split('|')[1]);
+                        VisitDate = DateTime.Parse(strInnerText.Split('|')[1]);
                         continue;
                     }
                 }
@@ -396,7 +405,7 @@ namespace AI_Note_Review
                             {
                                 string strDocname = strInnerText.Split(':')[1].Trim();
                                 strDocname = strDocname.Replace("    ", "|");
-                                document.Provider = strDocname.Split('|')[0];
+                                Provider = strDocname.Split('|')[0];
                             }
                             continue;
 
@@ -408,7 +417,7 @@ namespace AI_Note_Review
                             {
                                 string strDocname = strInnerText.Split(':')[1].Trim();
                                 strDocname = strDocname.Replace("    ", "|");
-                                document.Provider = strDocname.Split('|')[0];
+                                Provider = strDocname.Split('|')[0];
 
                             }
                             continue;
@@ -428,7 +437,7 @@ namespace AI_Note_Review
                             if (strInnerText.Contains("Appointment Facility:")) document.Facility = strInnerText.Split(':')[1].Trim();
                             if (strInnerText.Contains("DOB:"))
                             {
-                                //   document.PtAge = strInnerText.Split(':')[0].TrimEnd("DOB");
+                                //   PtAge = strInnerText.Split(':')[0].TrimEnd("DOB");
                                 patient.DOB = DateTime.Parse(strInnerText.Split(':')[1].Trim());
                                 if (strInnerText.Contains("Female"))
                                 {
@@ -452,11 +461,11 @@ namespace AI_Note_Review
 
                             if (strCurrentHeading == "Reason for Appointment")
                             {
-                                document.CC = strInnerText.Substring(3);
+                                CC = strInnerText.Substring(3);
                             }
                             if (strCurrentHeading == "History of Present Illness")
                             {
-                                document.HPI = strInnerText;
+                                HPI = strInnerText;
                             }
                             if (strCurrentHeading == "Current Medications")
                             {
@@ -489,26 +498,26 @@ namespace AI_Note_Review
                                     strOut += strMed + "\n";
                                 }
 
-                                document.CurrentMeds = strOut;
+                                CurrentMeds = strOut;
                             }
                             if (strCurrentHeading == "Active Problem List")
                             {
                                 string strTextToParse = strInnerText;
                                 if (strInnerText == null) continue;
                                 var result = strTextToParse.Split(new[] { '\r', '\n' });
-                                List<string> ProblemList = new List<string>();
+                                List<string> lProblemList = new List<string>();
                                 foreach (string str in result)
                                 {
                                     if (str.Trim() == "") continue;
                                     if (str.StartsWith("Onset")) continue;
-                                    ProblemList.Add(str);
+                                    lProblemList.Add(str);
                                 }
                                 string strOut = "";
-                                foreach (string strProblem in ProblemList)
+                                foreach (string strProblem in lProblemList)
                                 {
                                     strOut += strProblem + "\n";
                                 }
-                                document.ProblemList = strOut;
+                                ProblemList = strOut;
                             }
                             if (strCurrentHeading == "Past Medical History")
                             {
@@ -525,42 +534,42 @@ namespace AI_Note_Review
                                 {
                                     strOut += strMHx + "\n";
                                 }
-                                document.PMHx = strOut;
+                                PMHx = strOut;
                             }
                             if (strCurrentHeading == "Social History")
                             {
-                                document.SocHx = strInnerText;
+                                SocHx = strInnerText;
                             }
                             if (strCurrentHeading == "Allergies")
                             {
-                                document.Allergies = strInnerText;
+                                Allergies = strInnerText;
                             }
                             if (strCurrentHeading == "Review of Systems")
                             {
-                                document.ROS = strInnerText;
+                                ROS = strInnerText;
                             }
 
                             if (strCurrentHeading == "Vital Signs")
                             {
                                 var result = strInnerText.Split(new[] { '\r', '\n' });
-                                document.Vitals = result[0];
+                                Vitals = result[0];
                             }
                             if (strCurrentHeading == "Examination")
                             {
-                                document.Exam = strInnerText;
+                                Exam = strInnerText;
                             }
                             if (strCurrentHeading == "Visit Code")
                             {
-                                document.VisitCodes = strInnerText;
+                                VisitCodes = strInnerText;
                             }
                             if (strCurrentHeading == "Preventive Medicine")
                             {
-                                document.PreventiveMed = strInnerText;
+                                PreventiveMed = strInnerText;
                             }
 
                             if (strCurrentHeading == "Follow Up")
                             {
-                                document.FollowUp = strInnerText;
+                                FollowUp = strInnerText;
                             }
                             if (strCurrentHeading == "Assessments")
                             {
@@ -577,26 +586,26 @@ namespace AI_Note_Review
                                 {
                                     strOut += strProblem + Environment.NewLine;
                                 }
-                                document.Assessments = strOut;
+                                Assessments = strOut;
                             }
 
                             if (strCurrentHeading.Trim() == "Procedures")
                             {
-                                document.ProcedureNote += strInnerText;
+                                ProcedureNote += strInnerText;
                             }
 
                             if (strCurrentHeading == "Treatment")
                             {
                                 var result = strInnerText.Split(new[] { '\r', '\n' });
                                 List<string> medsStarted = new List<string>();
-                                List<string> LabsOrdered = new List<string>();
+                                List<string> lLabsOrdered = new List<string>();
                                 string strMedsSarted = "";
                                 string strLabsOrdered = "";
                                 foreach (string str in result)
                                 {
                                     if (str.Trim().StartsWith("LAB:"))
                                     {
-                                        LabsOrdered.Add(str);
+                                        lLabsOrdered.Add(str);
                                         strLabsOrdered += str + "\n";
                                     }
                                     if (str.StartsWith("Start "))
@@ -605,9 +614,9 @@ namespace AI_Note_Review
                                         strMedsSarted += str + "\n";
                                     }
                                 }
-                                document.Treatment = strInnerText;
-                                document.MedsStarted = strMedsSarted;
-                                document.LabsOrdered = strLabsOrdered;
+                                Treatment = strInnerText;
+                                MedsStarted = strMedsSarted;
+                                LabsOrdered = strLabsOrdered;
                             }
 
                             if (strCurrentHeading.StartsWith("Diagnostic Imaging") && strInnerText != null)
@@ -623,11 +632,11 @@ namespace AI_Note_Review
                                         strImagesOrdered += str.Trim() + "\n";
                                     }
                                 }
-                                document.ImagesOrdered = strImagesOrdered;
+                                ImagesOrdered = strImagesOrdered;
                             }
                             if (strCurrentHeading.Trim() == "Labs")
                             {
-                                document.LabsOrdered += strInnerText;
+                                LabsOrdered += strInnerText;
                             }
 
                         }
@@ -645,18 +654,18 @@ namespace AI_Note_Review
                 //Console.WriteLine($"Run time: {watch.ElapsedMilliseconds}");
 
             }
-            document.ICD10s = new ObservableCollection<string>();
+            ICD10s = new ObservableCollection<string>();
             try
             {
-                if (document.Assessments != null)
-                    foreach (var tmpAssessment in document.Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                if (Assessments != null)
+                    foreach (var tmpAssessment in Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                     {
                         if (tmpAssessment.Contains(" - "))
                         {
                             string strClean = tmpAssessment.TrimEnd(" (Primary)").Trim();
                             strClean = strClean.Replace(" - ", "|");
                             string strCode = strClean.Split('|')[1].Trim();
-                            document.ICD10s.Add(strCode);
+                            ICD10s.Add(strCode);
                         }
                     }
             }
@@ -664,8 +673,9 @@ namespace AI_Note_Review
             {
                 throw;
             }
+            #endregion
             SetUpNote();
-            parseVitalsString(document.Vitals);
+            parseVitalsString(Vitals);
         }
 
         private void parseVitalsString(string strVitals)
@@ -780,15 +790,15 @@ namespace AI_Note_Review
 
 
             //parse icd10
-            document.ICD10s = new ObservableCollection<string>();
-            foreach (var tmpAssessment in document.Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            ICD10s = new ObservableCollection<string>();
+            foreach (var tmpAssessment in Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 if (tmpAssessment.Contains(" - "))
                 {
                     string strClean = tmpAssessment.TrimEnd(" (Primary) ").Trim();
                     strClean = strClean.Replace(" - ", "|");
                     string strCode = strClean.Split('|')[1].Trim();
-                    document.ICD10s.Add(strCode);
+                    ICD10s.Add(strCode);
                 }
             }
 
@@ -799,9 +809,8 @@ namespace AI_Note_Review
 
         public void processUnlocked(HtmlDocument HDoc)
         {
-            //Console.WriteLine("Processing document");
-            //this.DataContext = null;
             string strNote = HDoc.Body.InnerText;
+            #region Process unlocked magic
             if (strNote == null) return;
             string strCommand = "";
             string strMedType = "";
@@ -825,13 +834,13 @@ namespace AI_Note_Review
                 {
                     string strPtInfo = myString.Replace("Encounter Date:", "");
                     strPtInfo = strPtInfo.Replace("ProviderM:", "|");
-                    document.VisitDate = DateTime.Parse(strPtInfo.Split('|')[0].Trim());
-                    document.Provider = strPtInfo.Split('|')[1].Trim();
+                    VisitDate = DateTime.Parse(strPtInfo.Split('|')[0].Trim());
+                    Provider = strPtInfo.Split('|')[1].Trim();
                 }
 
                 if (myString.StartsWith("Appointment Facility:"))
                 {
-                    document.Facility = myString.Split(':')[1];
+                    Facility = myString.Split(':')[1];
                 }
 
                 if (myString.StartsWith("Account Number:"))
@@ -849,18 +858,18 @@ namespace AI_Note_Review
                     switch (strCommand)
                     {
                         case "Chief Complaint(s):":
-                            document.CC += myString;
+                            CC += myString;
                             break;
                         case "HPI:":
                             if (myString.Trim() == "Respiratory Clinic") break;
                             if (myString.Trim() == "Note:") break;
-                            document.HPI += myString + Environment.NewLine;
+                            HPI += myString + Environment.NewLine;
                             break;
                         case "Allergies/Intolerance:":
-                            document.Allergies += myString + Environment.NewLine;
+                            Allergies += myString + Environment.NewLine;
                             break;
                         case "Medical History:":
-                            document.PMHx += myString + Environment.NewLine;
+                            PMHx += myString + Environment.NewLine;
                             break;
                         case "Current Medication:":
                             if (myString.Trim() == "None") break;
@@ -889,83 +898,83 @@ namespace AI_Note_Review
 
                             if (strMedType == "prn")
                             {
-                                document.CurrentPrnMeds += myString + " (prn)" + Environment.NewLine;
+                                CurrentPrnMeds += myString + " (prn)" + Environment.NewLine;
                                 break;
                             }
 
                             if (strMedType == "unknown")
                             {
-                                document.CurrentMeds += myString + " (unknown)" + Environment.NewLine;
+                                CurrentMeds += myString + " (unknown)" + Environment.NewLine;
                                 break;
                             }
 
                             if (strMedType == "active")
                             {
-                                document.CurrentMeds += myString + " (active)" + Environment.NewLine;
+                                CurrentMeds += myString + " (active)" + Environment.NewLine;
                                 break;
                             }
 
                             if (strMedType == "Discontinued")
                             {
-                                //document.CurrentPrnMeds += myString + " (Discontinued)" + Environment.NewLine;
+                                //CurrentPrnMeds += myString + " (Discontinued)" + Environment.NewLine;
                                 break;
                             }
-                            document.CurrentMeds += myString + " (??????)" + Environment.NewLine;
+                            CurrentMeds += myString + " (??????)" + Environment.NewLine;
                             break;
                         case "Surgical History:":
-                            document.SurgHx += myString + Environment.NewLine;
+                            SurgHx += myString + Environment.NewLine;
                             break;
                         case "Family History:":
-                            document.FamHx += myString + Environment.NewLine;
+                            FamHx += myString + Environment.NewLine;
                             break;
                         case "Social History:":
-                            document.SocHx += myString + Environment.NewLine;
+                            SocHx += myString + Environment.NewLine;
                             break;
                         case "ROS:":
-                            document.ROS += myString + Environment.NewLine;
+                            ROS += myString + Environment.NewLine;
                             break;
                         case "Vitals:":
-                            document.Vitals += myString + Environment.NewLine;
+                            Vitals += myString + Environment.NewLine;
                             break;
                         case "Examination:":
-                            document.Exam += myString + Environment.NewLine;
+                            Exam += myString + Environment.NewLine;
                             break;
                         case "Assessment:":
-                            document.Assessments += myString + Environment.NewLine;
+                            Assessments += myString + Environment.NewLine;
                             break;
                         case "Preventive Medicine:":
-                            document.PreventiveMed += myString + Environment.NewLine;
+                            PreventiveMed += myString + Environment.NewLine;
                             break;
                         case "Treatment:":
                             if (myString.StartsWith("         Start")) //may not always work, keep an eye on this.
                             {
-                                document.MedsStarted += myString + Environment.NewLine;
+                                MedsStarted += myString + Environment.NewLine;
                             }
                             else
                             {
-                                document.Treatment += myString + Environment.NewLine;
+                                Treatment += myString + Environment.NewLine;
                             }
                             break;
                         case "Immunizations:":
-                            document.Treatment += myString + Environment.NewLine;
+                            Treatment += myString + Environment.NewLine;
                             break;
                         case "Therapeutic Injections:":
-                            document.Treatment += myString + Environment.NewLine;
+                            Treatment += myString + Environment.NewLine;
                             break;
                         case "Procedures:":
-                            document.ProcedureNote += myString + Environment.NewLine;
+                            ProcedureNote += myString + Environment.NewLine;
                             break;
                         case "Diagnostic Imaging:":
-                            document.ImagesOrdered += myString + Environment.NewLine;
+                            ImagesOrdered += myString + Environment.NewLine;
                             break;
                         case "Lab Reports:":
-                            document.LabsOrdered += myString + Environment.NewLine;
+                            LabsOrdered += myString + Environment.NewLine;
                             break;
                         case "Next Appointment:":
-                            document.FollowUp += myString + Environment.NewLine;
+                            FollowUp += myString + Environment.NewLine;
                             break;
                         case "Visit Code:":
-                            document.VisitCodes += myString + Environment.NewLine;
+                            VisitCodes += myString + Environment.NewLine;
                             break;
                         default:
                             break;
@@ -977,14 +986,15 @@ namespace AI_Note_Review
             //parse Vitals
             //       BP 138/74, HR 144, Temp 97.9, O2 sat % 99.
             string strVitals = "";
-            if (document.Vitals != "")
+            if (Vitals != "")
             {
-                strVitals = document.Vitals.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)[0];
+                strVitals = Vitals.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)[0];
             }
             strVitals = strVitals.Trim().TrimEnd('.');
 
             parseVitalsString(strVitals);
-
+            #endregion
+            SetUpNote();
         }
         #endregion
 
@@ -1037,6 +1047,7 @@ namespace AI_Note_Review
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
         }
+        #endregion
 
         public void Execute(object parameter)
         {
@@ -1044,7 +1055,6 @@ namespace AI_Note_Review
             VisitReportV wp = new VisitReportV(rvm);
             wp.ShowDialog();
         }
-        #endregion
     }
 
     class ShowReportGen : ICommand

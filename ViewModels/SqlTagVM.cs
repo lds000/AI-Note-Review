@@ -98,6 +98,12 @@ class PersonViewModel {
 
         }
 
+        public void UpdateCPStatus()
+        {
+            //push this upstream to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
+            ParentCheckPoint.UpdateCPStatus();
+        }
+
         public void EditTagText()
         {
             WinEnterText wet = new WinEnterText("Edit Title", TagText);

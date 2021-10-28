@@ -139,7 +139,7 @@ namespace AI_Note_Review
                 SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\llostod\source\repos\AI Note Review\NoteReviewDB.db";
             }
 
-            return; // disable hook
+            //return; // disable hook
             //hook up window changed event
             _winEventProc = new WinEventDelegate(WinEventProc);
             m_hhook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND,

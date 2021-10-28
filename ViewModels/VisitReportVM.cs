@@ -44,6 +44,22 @@ namespace AI_Note_Review
             patientVM = new PatientVM();
             patient = patientVM.Patient;
             document = new DocumentVM(sqlProvider, patientVM);
+            passedCPs = new ObservableCollection<SqlCheckpointVM>();
+            missedCPs = new ObservableCollection<SqlCheckpointVM>();
+            droppedCPs = new ObservableCollection<SqlCheckpointVM>();
+            GeneralCheckPointsOnly = false;
+            UpdateCPs();
+        }
+
+
+        //not sure I need this.
+        public void ResetReport()
+        {
+            passedCPs.Clear();
+            missedCPs.Clear();
+            droppedCPs.Clear();
+            GeneralCheckPointsOnly = false;
+            UpdateCPs();
         }
 
         #region Report VM definitions - boring stuff
@@ -128,23 +144,23 @@ namespace AI_Note_Review
         }
         #endregion
 
-        private List<SqlCheckpointVM> passedCPs;
-        public List<SqlCheckpointVM> PassedCPs 
-        { 
+        private ObservableCollection<SqlCheckpointVM> passedCPs;
+        public ObservableCollection<SqlCheckpointVM> PassedCPs
+        {
             get
             {
                 if (passedCPs == null)
                 {
-                    passedCPs = new List<SqlCheckpointVM>();
+                    passedCPs = new ObservableCollection<SqlCheckpointVM>();
                     foreach (var tmpCollection in ICD10Segments)
                     {
                         if (tmpCollection.IncludeSegment)
                         {
-                            passedCPs = passedCPs.Concat(tmpCollection.PassedCPs).ToList();
+                            passedCPs = passedCPs.Union(tmpCollection.PassedCPs).ToObservableCollection();
                         }
                     }
                 }
-                return passedCPs;
+                return passedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
             }
             set
             {
@@ -152,23 +168,24 @@ namespace AI_Note_Review
             }
         }
 
-        private List<SqlCheckpointVM> missedCPs;
-        public List<SqlCheckpointVM> MissedCPs
+        private ObservableCollection<SqlCheckpointVM> missedCPs;
+        public ObservableCollection<SqlCheckpointVM> MissedCPs
         {
             get
             {
                 if (missedCPs == null)
                 {
-                    missedCPs = new List<SqlCheckpointVM>();
+                    missedCPs = new ObservableCollection<SqlCheckpointVM>();
                     foreach (var tmpCollection in ICD10Segments) //only run once per report
                     {
                         if (tmpCollection.IncludeSegment)
                         {
-                            missedCPs = missedCPs.Concat(tmpCollection.MissedCPs).ToList(); //run 19 times
+                            missedCPs = missedCPs.Union(tmpCollection.MissedCPs).ToObservableCollection(); //run 19 times
+                            //var unitedPoints = observableCollection1.Union(observableCollection2).ToObservableCollection();
                         }
                     }
                 }
-                return missedCPs;
+                return missedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
             }
             set
             {
@@ -176,23 +193,23 @@ namespace AI_Note_Review
             }
         }
 
-        private List<SqlCheckpointVM> droppedCPs;
-        public List<SqlCheckpointVM> DroppedCPs
+        private ObservableCollection<SqlCheckpointVM> droppedCPs;
+        public ObservableCollection<SqlCheckpointVM> DroppedCPs
         {
             get
             {
                 if (droppedCPs == null)
                 {
-                    droppedCPs = new List<SqlCheckpointVM>();
+                    droppedCPs = new ObservableCollection<SqlCheckpointVM>();
                     foreach (var tmpCollection in ICD10Segments)
                     {
                         if (tmpCollection.IncludeSegment)
                         {
-                            droppedCPs = droppedCPs.Concat(tmpCollection.DroppedCPs).ToList();
+                            droppedCPs = droppedCPs.Union(tmpCollection.DroppedCPs).ToObservableCollection();
                         }
                     }
                 }
-                return droppedCPs;
+                return droppedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
             }
             set
             {
@@ -200,6 +217,54 @@ namespace AI_Note_Review
             }
         }
 
+        /// <summary>
+        /// used for the 1st review
+        /// </summary>
+        public bool GeneralCheckPointsOnly { get; set; }
+
+        private SqlCheckpointVM selectedItem;
+        public SqlCheckpointVM SelectedItem
+        {
+            get { return selectedItem; }
+            set
+            {
+                if (value == selectedItem)
+                    return;
+                if (value == null)
+                    return;
+                selectedItem = value;
+
+                OnPropertyChanged("SelectedItem");
+                if (selectedItem != null)
+                Console.WriteLine($"Current checkpoint is '{selectedItem.CheckPointTitle}'");
+
+                // selection changed - do something special
+            }
+        }
+
+        public void UpdateCPs()
+            {
+            missedCPs.Clear();
+            passedCPs.Clear();
+            droppedCPs.Clear();
+                foreach (var tmpCollection in ICD10Segments) //only run once per report
+                {
+                    if (tmpCollection.IncludeSegment)
+                    {
+                        missedCPs = missedCPs.Union(tmpCollection.MissedCPs).ToObservableCollection(); //run 19 times
+                        passedCPs = passedCPs.Union(tmpCollection.PassedCPs).ToObservableCollection(); //run 19 times
+                        droppedCPs = droppedCPs.Union(tmpCollection.DroppedCPs).ToObservableCollection(); //run 19 times
+                }
+            }
+            missedCPs = missedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
+            passedCPs = passedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
+            droppedCPs = droppedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
+            Console.WriteLine("Setting missed,dropped,passed cp's to null on visit report.");
+            OnPropertyChanged("MissedCPs");
+            OnPropertyChanged("DroppedCPs");
+            OnPropertyChanged("PassedCPs");
+            OnPropertyChanged("SelectedItem");
+        }
         public void SetCPs()
         {
         }
@@ -560,6 +625,21 @@ namespace AI_Note_Review
             }
         }
 
+        private ICommand mCheckPointEditor;
+        public ICommand CheckPointEditorCommand
+        {
+            get
+            {
+                if (mCheckPointEditor == null)
+                    mCheckPointEditor = new CheckPointEditor();
+                return mCheckPointEditor;
+            }
+            set
+            {
+                mCheckPointEditor = value;
+            }
+        }
+
     }
 
     class CommitMyReport : ICommand
@@ -584,5 +664,26 @@ namespace AI_Note_Review
         #endregion
     }
 
+    class CheckPointEditor : ICommand
+    {
+        #region ICommand Members  
 
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            VisitReportVM rvm = parameter as VisitReportVM;
+            CheckPointEditorV w = new CheckPointEditorV();
+            w.Show();
+        }
+    }
 }

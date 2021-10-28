@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
@@ -15,6 +16,16 @@ using System.Windows.Forms;
 namespace AI_Note_Review
 {
 
+    public static class MyEnumerable
+    {
+        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> source)
+        {
+            var result = new ObservableCollection<T>();
+            foreach (var item in source)
+                result.Add(item);
+            return result;
+        }
+    }
     public static class GenericMethods
     {
         public static void CreateNewOrUpdateExisting<TKey, TValue>(this IDictionary<TKey, TValue> map, TKey key, TValue value)

@@ -26,52 +26,6 @@ namespace AI_Note_Review
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e) //add search term
-        {
-            //WinEnterText wet = new WinEnterText();
-            Button b = sender as Button;
-            SqlCheckpointM cp = DataContext as SqlCheckpointM;
-            SqlTagVM st = b.DataContext as SqlTagVM;
-            SqlTagRegExVM srex = new SqlTagRegExVM(st.TagID, "Search Text", cp.TargetSection, 1);
-            //ImChanged(this, EventArgs.Empty);
-            //I need to implement something else here
-        }
-
-
-        private void UCTagRegEx_DeleteMe(object sender, EventArgs e)
-        {
-            ImChanged(this, EventArgs.Empty);
-        }
-
-        private void btnRemoveTag_Click(object sender, RoutedEventArgs e)
-        {
-            Button b = sender as Button;
-            SqlCheckpointVM cp = DataContext as SqlCheckpointVM;
-            SqlTagVM st = b.DataContext as SqlTagVM;
-            cp.RemoveTag(st);
-            ImChanged(this, EventArgs.Empty);
-
-        }
-
-        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            TextBlock tb = sender as TextBlock;
-            SqlTagVM st = tb.DataContext as SqlTagVM;
-            WinEnterText wet = new WinEnterText("Edit Title", st.TagText);
-            wet.ShowDialog();
-            if (wet.ReturnValue != null)
-            {
-                st.TagText = wet.ReturnValue;
-                st.SaveToDB();
-                tb.Text = wet.ReturnValue;
-            }
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void Button_Click_Done(object sender, RoutedEventArgs e)
         {
             UpDownPressed = false;

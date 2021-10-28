@@ -71,7 +71,6 @@ class PersonViewModel {
             {
                 if (checkPointTitle != null)
                 {
-                    Console.WriteLine($"Update Title! to {value}");
                     checkPointTitle = value; //set this now for the update to work.
                     string sql = "UPDATE CheckPoints SET CheckPointTitle=@CheckPointTitle WHERE CheckPointID=@CheckPointID;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -94,7 +93,6 @@ class PersonViewModel {
             {
                 if (errorSeverity != 0)
                 {
-                    Console.WriteLine($"Update ErrorSeverity type to: {value}");
                     errorSeverity = value; //set this now for the update to work.
                     string sql = "UPDATE CheckPoints SET ErrorSeverity=@ErrorSeverity WHERE CheckPointID=@CheckPointID;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -116,7 +114,6 @@ class PersonViewModel {
             {
                 if (checkPointType != 0)
                 {
-                    Console.WriteLine($"Update Checkpoint type to: {value}");
                     checkPointType = value; //set this now for the update to work.
                     string sql = "UPDATE CheckPoints SET CheckPointType=@CheckPointType WHERE CheckPointID=@CheckPointID;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -154,7 +151,6 @@ class PersonViewModel {
             {
                 if (comment != null)
                 {
-                    Console.WriteLine($"Update Comment! to {value}");
                     comment = value; //set this now for the update to work.
                     string sql = "UPDATE CheckPoints SET Comment=@Comment WHERE CheckPointID=@CheckPointID;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -173,7 +169,6 @@ class PersonViewModel {
             {
                 if (action != null)
                 {
-                    Console.WriteLine($"Update Action! to {value}");
                     action = value; //set this now for the update to work.
                     string sql = "UPDATE CheckPoints SET Action=@Action WHERE CheckPointID=@CheckPointID;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -193,7 +188,6 @@ class PersonViewModel {
             {
                 if (link != null)
                 {
-                    Console.WriteLine($"Update Action! to {value}");
                     link = value; //set this now for the update to work.
                     string sql = "UPDATE CheckPoints SET Link=@Link WHERE CheckPointID=@CheckPointID;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -225,7 +219,6 @@ class PersonViewModel {
             {
                 if (targetICD10Segment != 0)
                 {
-                    Console.WriteLine($"Update TargetICD10Segment to: {value}");
                     targetICD10Segment = value; //set this now for the update to work.
                     string sql = "UPDATE CheckPoints SET TargetICD10Segment=@TargetICD10Segment WHERE CheckPointID=@CheckPointID;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -300,14 +293,14 @@ class PersonViewModel {
             OnPropertyChanged("Images");
         }
 
-        public ObservableCollection<SqlCheckPointImage> Images
+        public ObservableCollection<SqlCheckPointImageVM> Images
         {
             get
             {
                 string sql = $"select * from CheckPointImages where CheckPointID = @CheckPointID;";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    return new ObservableCollection<SqlCheckPointImage>(cnn.Query<SqlCheckPointImage>(sql, this).ToList());
+                    return new ObservableCollection<SqlCheckPointImageVM>(cnn.Query<SqlCheckPointImageVM>(sql, this).ToList());
                 }
             }
         }

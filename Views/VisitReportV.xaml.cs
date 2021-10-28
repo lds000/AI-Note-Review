@@ -54,11 +54,11 @@ namespace AI_Note_Review
 
         private void lbFail_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ListBox lb = sender as ListBox;
-            SqlCheckpointM cp = (SqlCheckpointM)lb.SelectedItem;
-            WinCheckPointEditor wce = new WinCheckPointEditor(cp);
-            wce.Owner = this;
-            wce.ShowDialog();
+            //ListBox lb = sender as ListBox;
+            //SqlCheckpointM cp = (SqlCheckpointM)lb.SelectedItem;
+            //WinCheckPointEditor wce = new WinCheckPointEditor(cp);
+            //wce.Owner = this;
+            //wce.ShowDialog();
         }
         private void Button_Click_Recheck(object sender, RoutedEventArgs e)
         {

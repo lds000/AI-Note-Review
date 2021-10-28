@@ -29,9 +29,9 @@ namespace AI_Note_Review
             sqlICD10Segment = new SqlICD10SegmentM();
         }
 
-        public SqlICD10SegmentVM(SqlICD10SegmentM sc)
+        public SqlICD10SegmentVM(SqlICD10SegmentVM sc)
         {
-            sqlICD10Segment = sc;
+            sqlICD10Segment = sc.sqlICD10Segment;
         }
 
         public SqlICD10SegmentVM(string strSegmentTitle)
@@ -144,10 +144,8 @@ namespace AI_Note_Review
             passedCPs = null;
             missedCPs = null;
             droppedCPs = null;
-            OnPropertyChanged("CheckPoints");
-            OnPropertyChanged("MissedCP");
-            OnPropertyChanged("DroppedCPs");
-            OnPropertyChanged("PassedCPs");
+            Console.WriteLine($"Setting passed, missed, and droppedCPs to null for segment {SegmentTitle}.");
+            ParentReport.UpdateCPs();
         }
         private bool includeSegment;
         public bool IncludeSegment
@@ -193,9 +191,9 @@ namespace AI_Note_Review
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
-                    var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
+                    var l = cnn.Query<SqlICD10SegmentVM>(sql).ToList();
                     List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
-                    foreach (SqlICD10SegmentM s in l)
+                    foreach (SqlICD10SegmentVM s in l)
                     {
                         SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
                         lvm.Add(scvm);
@@ -208,14 +206,7 @@ namespace AI_Note_Review
 
         public void AddCheckPoint(SqlCheckpointM cp)
         {
-            MessageBox.Show("not implemented");
-            return;
-            string sql = "";
-            sql = $"INSERT OR IGNORE INTO relICD10SegmentsCheckPoints (ICD10SegmentID, CheckPointID) VALUES({sqlICD10Segment.ICD10SegmentID}, {cp.CheckPointID});";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql);
-            }
+            checkpoints.Add(new SqlCheckpointVM(cp));
             OnPropertyChanged("Checkpoints");
         }
 
@@ -327,13 +318,14 @@ namespace AI_Note_Review
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
         }
+        #endregion
 
         public void Execute(object parameter)
         {
-            SqlICD10SegmentM s = parameter as SqlICD10SegmentM;
+            SqlICD10SegmentVM s = parameter as SqlICD10SegmentVM;
             SqlICD10SegmentVM sivm = new SqlICD10SegmentVM(s);
+
             WinEnterText wet = new WinEnterText("Please input new title.");
-            wet.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             wet.ShowDialog();
             if (wet.ReturnValue == null) return;
             if (wet.ReturnValue.Trim() != "")
@@ -341,7 +333,6 @@ namespace AI_Note_Review
                 sivm.AddCheckPoint(new SqlCheckpointM(wet.ReturnValue, s.ICD10SegmentID));
             }
         }
-        #endregion
     }
 
 

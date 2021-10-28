@@ -24,6 +24,22 @@ namespace AI_Note_Review
     {
     }
 
+    public class ArrayMultiValueConverter : IMultiValueConverter
+    {
+        #region interface implementations
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values.Clone();
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
     public class EnumDescriptionConverter : IValueConverter
     {
         private string GetEnumDescription(Enum enumObj)
@@ -56,15 +72,18 @@ namespace AI_Note_Review
         }
     }
 
-    class SqlTagRegExToXamlConverter : IValueConverter
+        public class SqlTagRegExToXamlConverter : IMultiValueConverter
     {
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            SqlTagRegExVM s = value as SqlTagRegExVM;
-            string input = CF.ClinicNote.NoteSectionText[s.TargetSection];
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+            if (values == null) return null;
+            string s = (string)values[0];
+            SqlTagRegExM.EnumMatch rType = (SqlTagRegExM.EnumMatch)values[1];
+            string strRegex = (string)values[2];
+            
+            string input = s;
             Brush HighlightColor = Brushes.Yellow;
-            switch (s.TagRegExMatchType)
+            switch (rType)
             {
                 case SqlTagRegExM.EnumMatch.Any:
                     HighlightColor = Brushes.Yellow;
@@ -85,8 +104,8 @@ namespace AI_Note_Review
             {
                 var textBlock = new TextBlock();
                 textBlock.TextWrapping = TextWrapping.Wrap;
-                string strSearchTerms = s.RegExText;
-                if (s.TagRegExMatchType == SqlTagRegExM.EnumMatch.Ask)
+                string strSearchTerms = strRegex;
+                if (rType == SqlTagRegExM.EnumMatch.Ask)
                 {
                     strSearchTerms = strSearchTerms.Split('|')[0];
                 }
@@ -136,6 +155,10 @@ namespace AI_Note_Review
             throw new NotImplementedException("This converter cannot be used in two-way binding.");
         }
 
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     [ValueConversion(typeof(SqlTagRegExVM), typeof(string))]
