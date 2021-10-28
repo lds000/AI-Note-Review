@@ -58,6 +58,7 @@
                 </ListBox>
             </Border>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="3">
+                <!-- SqlDocumentReviewSummaryVM -->
                 <WebBrowser local:WebBrowserHelper.Body="{Binding ElementName=lbMonthReview, Path=SelectedItem.CheckPointsSummaryHTML}">
 
                 </WebBrowser>

@@ -83,7 +83,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel x:Name="spTemplate" Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding IncludeSegment}" Command="{Binding SegIncludeCheckedCommand}" CommandParameter="{Binding}">
+                                        <CheckBox IsChecked="{Binding CBIncludeSegment}" Command="{Binding SegIncludeCheckedCommand}" CommandParameter="{Binding}">
                                             <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding SegmentTitle}"></TextBlock>
                                         </CheckBox>
                                     </StackPanel>

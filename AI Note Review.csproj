@@ -79,6 +79,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\ReportToHtmlM.cs" />
+    <Compile Include="ViewModels\ReportToHtmlVM.cs" />
     <Compile Include="ViewModels\SqlCheckPointImageVM.cs" />
     <Compile Include="ViewModels\SqlTagVM.cs" />
     <Compile Include="Helper Classes\CF.cs" />

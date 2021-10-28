@@ -54,6 +54,7 @@ public PersonViewModel(PersonModel person) {
         }
         public SqlCheckpointVM()
         {
+            SqlCheckpoint = new SqlCheckpointM();
         }
 
         public SqlCheckpointVM(SqlCheckpointM cp)

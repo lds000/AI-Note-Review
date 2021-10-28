@@ -53,6 +53,7 @@ namespace AI_Note_Review
             }
         }
 
+        #region mirror properties of DocumentM
         public string Facility { get { return document.Facility; } set { document.Facility = value; OnPropertyChanged(); } }
         public string Provider { get { return document.Provider; } set { document.Provider = value; OnPropertyChanged(); } }
         public SqlProvider ProviderSql { get { return document.ProviderSql; } set { document.ProviderSql = value; OnPropertyChanged(); } }
@@ -60,11 +61,8 @@ namespace AI_Note_Review
         public DateTime VisitDate { get { return document.VisitDate; } set { document.VisitDate = value; OnPropertyChanged(); } }
         public string HashTags { get { return document.HashTags; } set { document.HashTags = value; OnPropertyChanged(); } }
         public ObservableCollection<string> ICD10s { get { return document.ICD10s; } set { document.ICD10s = value; OnPropertyChanged(); } }
-
         //try to get rid of these!!!
         public string[] NoteSectionText { get { return document.NoteSectionText; } }
-
-
         public string NoteHTML { get { return document.NoteHTML; } set { document.NoteHTML = value; OnPropertyChanged(); } }
         public string ReasonForAppt { get { return document.ReasonForAppt; } set { document.ReasonForAppt = value; OnPropertyChanged(); } }
         public string CC { get { return document.CC; } set { document.CC = value; OnPropertyChanged();             }        }
@@ -92,7 +90,7 @@ namespace AI_Note_Review
 
         //public string { get {return document.;} set{document. = value;} }
         public string ProcedureNote { get { return document.ProcedureNote; } set { document.ProcedureNote = value; OnPropertyChanged(); } }
-
+        #endregion  
 
         //{ get {return document.;} set{document. = value;} }
 
@@ -180,6 +178,8 @@ namespace AI_Note_Review
                 //if (mr == MessageBoxResult.No) DocumentM.HashTags += "#NeonteNotSentToED";
             }
             HashTags = HashTags.TrimEnd().TrimEnd(',');
+
+            //not happy with this, set notesection texts.
             NoteSectionText[0] = $"{patient.PtAgeYrs} Sex{patient.PtSex}"; //Demographics 
             NoteSectionText[1] = HPI + ROS; //HPI
             NoteSectionText[2] = CurrentMeds + CurrentPrnMeds; //CurrentMeds
@@ -339,6 +339,10 @@ namespace AI_Note_Review
                         {
                             if (ProcedureNote.Length < 100) ns.IncludeSegment = false;
                         }
+                    }
+                    if (ns.SqlICD10Segment.ICD10SegmentID == 90) //never check ED Transfer
+                    {
+                        ns.IncludeSegment = false;
                     }
 
                     #endregion
@@ -677,7 +681,6 @@ namespace AI_Note_Review
             SetUpNote();
             parseVitalsString(Vitals);
         }
-
         private void parseVitalsString(string strVitals)
         {
             patient.VitalsRR = 0;
@@ -1052,6 +1055,7 @@ namespace AI_Note_Review
         public void Execute(object parameter)
         {
             VisitReportVM rvm = parameter as VisitReportVM;
+            rvm.NewEcWDocument(); //reset document
             VisitReportV wp = new VisitReportV(rvm);
             wp.ShowDialog();
         }

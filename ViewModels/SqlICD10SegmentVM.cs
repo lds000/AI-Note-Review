@@ -157,8 +157,26 @@ namespace AI_Note_Review
             set
             {
                 includeSegment = value;
+                OnPropertyChanged("IncludeSegment");
+                OnPropertyChanged("CBIncludeSegment");
             }
         }
+        //used to track manual changes to textbox
+        public bool CBIncludeSegment
+        {
+            get
+            {
+                return includeSegment;
+            }
+            set
+            {
+                includeSegment = value;
+                OnPropertyChanged("IncludeSegment");
+                OnPropertyChanged("CBIncludeSegment");
+                ParentReport.UpdateCPs(); //now recalculate all checkpoints.
+            }
+        }
+        
 
         public int CheckPointCount
         {
