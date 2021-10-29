@@ -60,9 +60,20 @@ namespace AI_Note_Review
                 sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{Properties.Settings.Default.StartReviewDate.ToString("yyyy-MM-dd")}' and '{Properties.Settings.Default.EndReviewDate.ToString("yyyy-MM-dd")}';";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    return new ObservableCollection<SqlDocumentReviewSummaryM>(cnn.Query<SqlDocumentReviewSummaryM>(sql).ToList());
+                    ObservableCollection<SqlDocumentReviewSummaryM> tmpL = new ObservableCollection<SqlDocumentReviewSummaryM>(cnn.Query<SqlDocumentReviewSummaryM>(sql).ToList());
+                    foreach (var l in tmpL)
+                    {
+                        l.ParentProvider = this;
+                    }
+                    return tmpL;
                 }
             }
+        }
+
+        public void UpdateSqlDocumentReviewsSummaryProperty()
+        {
+            OnPropertyChanged("SqlDocumentReviewsSummaryProperty");
+            OnPropertyChanged("CurrentReviewCount");
         }
 
         public int CurrentReviewCount

@@ -226,21 +226,11 @@ namespace AI_Note_Review
         }
         #endregion
 
-        private void EditCP(object sender, RoutedEventArgs e)
-        {
-            CheckPointEditorV w = new CheckPointEditorV();
-            w.Owner = this;
-            w.Show();
-        }
         private void OpenSettings(object sender, RoutedEventArgs e)
         {
             WinSettings ws = new WinSettings();
             ws.Owner = this;
             ws.ShowDialog();
-        }
-        private void Reviews_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

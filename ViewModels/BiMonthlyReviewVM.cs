@@ -40,6 +40,13 @@ namespace AI_Note_Review
             biMonthlyReviewM = new BiMonthlyReviewM();
         }
 
+        public List<SqlProvider> MyPeeps
+        {
+            get
+            {
+                return biMonthlyReviewM.MyPeeps;
+            }
+        }
 
         public SqlProvider SelectedProviderForBiMonthlyReview
         {

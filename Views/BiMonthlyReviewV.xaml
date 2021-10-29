@@ -10,11 +10,13 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         Title="BiMonthlyReviewView" Height="450" Width="1000">
+    <!--Datacontext is BiMonthlyReviewVM-->
     <DockPanel Background="Black">
         <DockPanel.Resources>
             <local:ChartCountToBrushConverter x:Key="ChartCountToBrushConverter"/>
         </DockPanel.Resources>
         <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Style="{StaticResource MyTbStyle}" FontSize="24">Provider Reviews</TextBlock>
+        <!--Report header from property.settings-->
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
             <TextBlock Style="{StaticResource MyTbStyle}" FontSize="16"
                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=StartReviewDate, StringFormat=d}"></TextBlock>
@@ -31,10 +33,13 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="White" BorderThickness="1" Margin="5">
-                <ListBox Style="{StaticResource MyListBox}" x:Name="lbProviders" SelectedValue="{Binding SelectedProviderForBiMonthlyReview}"  ItemsSource="{Binding BiMonthlyReviewM.MyPeeps}">
+                <!--List source:MyPeeps, SelectedValue=SelectedProviderForBiMonthlyReview-->
+                <ListBox Style="{StaticResource MyListBox}" x:Name="lbProviders" 
+                         SelectedValue="{Binding SelectedProviderForBiMonthlyReview}"  ItemsSource="{Binding MyPeeps}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel x:Name="spTemplate" Orientation="Horizontal">
+                                <!--SqlProvider-->
                                 <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding FullName}"></TextBlock>
                                 <TextBlock Style="{StaticResource MyTbStyle}" Margin="5,0,0,0">(</TextBlock>
                                 <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding CurrentReviewCount}" Foreground="{Binding CurrentReviewCount, Converter={StaticResource ChartCountToBrushConverter}}"></TextBlock>
@@ -45,11 +50,16 @@
                 </ListBox>
             </Border>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="1">
-                <!-- Contains a list of SqlDocumentReviewSummaryVM -->
+                <!-- Contains a list of SqlDocumentReviewSummaryM from SqlProvider.SqlDocumentReviewsSummaryProperty -->
                 <ListBox x:Name="lbMonthReview" Grid.Row="1" Style="{StaticResource MyListBox}" ItemsSource="{Binding ElementName=lbProviders, Path=SelectedValue.SqlDocumentReviewsSummaryProperty}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Delete This Review" Command="{Binding DeleteThisReviewCommand}" CommandParameter="{Binding}"/>
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
                                 <TextBlock Margin="0,0,10,0" Style="{StaticResource MyTbStyle}" Text="{Binding VisitDate, StringFormat=d}"></TextBlock>
                                 <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding PtID}"></TextBlock>
                             </StackPanel>
@@ -58,7 +68,7 @@
                 </ListBox>
             </Border>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="3">
-                <!-- SqlDocumentReviewSummaryVM -->
+                <!-- Binds to lbMonthReview.selecteditem, which is a SqlDocumentReviewSummaryM -->
                 <WebBrowser local:WebBrowserHelper.Body="{Binding ElementName=lbMonthReview, Path=SelectedItem.CheckPointsSummaryHTML}">
 
                 </WebBrowser>

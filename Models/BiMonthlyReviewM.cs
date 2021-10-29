@@ -56,7 +56,7 @@ namespace AI_Note_Review
         /// <summary>
         /// Get a list of providers for the west side pod
         /// </summary>
-        public static List<SqlProvider> MyPeeps
+        public List<SqlProvider> MyPeeps
         {
             get
             {
