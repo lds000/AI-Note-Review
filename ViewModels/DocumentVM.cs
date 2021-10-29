@@ -118,9 +118,8 @@ namespace AI_Note_Review
             get
             {
                 document = new DocumentM();
-                Provider = "Devin Hansen";
-                ProviderID = 1;
-                VisitDate = new DateTime(2021, 7, 14);
+                Provider = "Devin Hansen"; //Provider ID comes from this.
+                VisitDate = new DateTime(2021, 10, 14);
                 CC = "Abdominal pain for 10 days";
                 Facility = "Meridian UC";
                 ICD10s.Add("R10.10");
@@ -213,6 +212,7 @@ namespace AI_Note_Review
             Facility = "";
             VisitDate = new DateTime(2020, 1, 1);
             Provider = "";
+            ProviderID = 0;
             ReasonForAppt = "";
             Allergies = "";
             NoteHTML = "";
@@ -833,10 +833,10 @@ namespace AI_Note_Review
                 }
 
 
-                if (myString.StartsWith("Encounter Date:") && myString.Contains("ProviderM:"))
+                if (myString.StartsWith("Encounter Date:") && myString.Contains("Provider:"))
                 {
                     string strPtInfo = myString.Replace("Encounter Date:", "");
-                    strPtInfo = strPtInfo.Replace("ProviderM:", "|");
+                    strPtInfo = strPtInfo.Replace("Provider:", "|");
                     VisitDate = DateTime.Parse(strPtInfo.Split('|')[0].Trim());
                     Provider = strPtInfo.Split('|')[1].Trim();
                 }

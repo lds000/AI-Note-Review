@@ -41,6 +41,8 @@ namespace AI_Note_Review
 
         public ReportToHtmlVM(DateTime dt, int ptID)
         {
+            this.ptID = ptID;
+            this.visitDate = dt;
             string sqlCheck = $"Select * from(Select distinct CheckPointID rel,Comment RelComment,CheckPointStatus from RelCPPRovider where PtID={ptID} " +
                 $"AND VisitDate = '{dt.ToString("yyyy-MM-dd")}') " +
                 $"inner join CheckPoints cp on rel = cp.CheckPointID " +
@@ -96,7 +98,7 @@ namespace AI_Note_Review
 
                 string tmpCheck = "";
                 string strReport = @"<!DOCTYPE html><html><head></head><body>";
-                strReport += $"<font size='+3'>PatientM ID {ptID}</font><br>"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
+                strReport += $"<font size='+3'>Patient ID {ptID}</font><br>"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
                 strReport += $"<font size='+1'>Date: {visitDate.ToShortDateString()}</font><br>";
                 strReport += Environment.NewLine;
 

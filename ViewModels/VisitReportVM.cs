@@ -310,14 +310,19 @@ namespace AI_Note_Review
 
             report.ReviewDate = DateTime.Now;
 
-            foreach (SqlCheckpointVM cp in (from c in MissedCPs orderby c.ErrorSeverity descending select c))
-            {
-                Commit(cp, document, patient, report, SqlRelCPProvider.MyCheckPointStates.Fail);
-            }
-
+            string sql = "";
             foreach (SqlCheckpointVM cp in (from c in PassedCPs orderby c.ErrorSeverity descending select c))
             {
-                Commit(cp, document, patient, report, SqlRelCPProvider.MyCheckPointStates.Pass);
+                sql += $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({document.ProviderID}, {cp.CheckPointID}, {patient.PtID}, '{report.ReviewDate.ToString("yyyy-MM-dd")}', '{document.VisitDate.ToString("yyyy-MM-dd")}', {(int)SqlRelCPProvider.MyCheckPointStates.Pass}, '{cp.CustomComment}');\n";
+            }
+            foreach (SqlCheckpointVM cp in (from c in MissedCPs orderby c.ErrorSeverity descending select c))
+            {
+                if (cp.CustomComment == null) cp.CustomComment = "";
+                sql += $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({document.ProviderID}, {cp.CheckPointID}, {patient.PtID}, '{report.ReviewDate.ToString("yyyy-MM-dd")}', '{document.VisitDate.ToString("yyyy-MM-dd")}', {(int)SqlRelCPProvider.MyCheckPointStates.Fail}, '{cp.CustomComment}');\n";
+            }
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
             }
             MessageBox.Show($"{document.ProviderSql.CurrentReviewCount}/10 reports committed.");
         }
@@ -334,27 +339,6 @@ namespace AI_Note_Review
 
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string VisitCheckPointReportHTML
-        {
-            get
-            {
-                List<SqlRelCPProvider> rlist;
-                string sql = $"Select * from RelCPPRovider where PtID={patient.PtID} and VisitDate='{document.VisitDate.ToString("yyyy-MM-dd")}';";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    rlist = cnn.Query<SqlRelCPProvider>(sql).ToList();
-                }
-
-
-                string strReturn = "";
-
-                //return CurrentDocToHTML();
-            }
-        }
 
         private ICommand mCommitReport;
         public ICommand CommitMyReportCommand
@@ -401,13 +385,13 @@ namespace AI_Note_Review
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
         }
+        #endregion
 
         public void Execute(object parameter)
         {
             VisitReportVM rvm = parameter as VisitReportVM;
             rvm.CommitReport();
         }
-        #endregion
     }
 
     class CheckPointEditor : ICommand
