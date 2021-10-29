@@ -9,6 +9,7 @@
         Loaded="Window_Loaded"        
         Closing="Window_Closing"
         Title="winDbRelICD10CheckpointsEditor" Height="800" Width="1600">
+    <!--Datacontext SqlICD10SegmentVM-->
     <DockPanel Background="Black" Name="dpCheckpoint">
         <DockPanel.Resources>
             <local:ICD10Margin x:Key="ICD10Margin"/>
@@ -40,8 +41,9 @@
             <DockPanel>
                 <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">ICD-10</Label>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                    <Button Click="AddGroupClick" Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
+                    <Button Command="{Binding AddGroupCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
                 </StackPanel>
+                <!--ItemsSource=SqlICD10SegmentVM.NoteICD10Segments, a list of SqlICD10SegmentVM-->
                 <ListBox x:Name="lbICD10" ItemsSource="{Binding Path=NoteICD10Segments}" Style="{StaticResource MyListBox}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -50,6 +52,7 @@
                                     <ContextMenu>
                                         <MenuItem Header="Edit" Click="MenuItemEditSegment_Click"/>
                                         <MenuItem Header="Create Index" ToolTip="Create an index and copy it to the clipboard" Click="MenuItemCreateSegmentIndex"/>
+                                        <MenuItem Header="Delete Group"/> 
                                     </ContextMenu>
                                 </Grid.ContextMenu>
                                 <Grid.ColumnDefinitions>

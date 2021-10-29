@@ -42,8 +42,7 @@ namespace AI_Note_Review
             {
             }
             #endregion  
-
-            lbICD10.DataContext = new SqlICD10SegmentVM();
+            DataContext = new SqlICD10SegmentVM();
         }
 
         private void closeclick(object sender, RoutedEventArgs e)
@@ -153,14 +152,6 @@ namespace AI_Note_Review
             }
         }
 
-        private void AddGroupClick(object sender, RoutedEventArgs e)
-        {
-            SqlICD10SegmentM seg = new SqlICD10SegmentM("Enter Segment Title");
-            WinEditSegment wes = new WinEditSegment(seg);
-            wes.Owner = this;
-            wes.ShowDialog();
-            SqlICD10SegmentVM.CalculateLeftOffsets();
-        }
 
 
         private void UCTag1_AddMe(object sender, EventArgs e)

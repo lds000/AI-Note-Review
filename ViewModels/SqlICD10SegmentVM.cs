@@ -200,7 +200,7 @@ namespace AI_Note_Review
         }
 
         /// <summary>
-        /// A list of all SqlICD10Segments
+        /// A list of all SqlICD10Segments, the main list for the CheckPointEditor View
         /// </summary>Celica9
         public static List<SqlICD10SegmentVM> NoteICD10Segments
         {
@@ -221,10 +221,22 @@ namespace AI_Note_Review
             }
         }
 
+        /// <summary>
+        /// Create a new group and update the list
+        /// </summary>
+        /// <param name="strTitle"></param>
+        public void AddGroup(string strTitle)
+        {
+            SqlICD10SegmentM seg = new SqlICD10SegmentM("Enter Segment Title");
+            WinEditSegment wes = new WinEditSegment(seg);
+            wes.ShowDialog();
+            SqlICD10SegmentVM.CalculateLeftOffsets();
+            OnPropertyChanged("NoteICD10Segments");
+        }
 
         public void AddCheckPoint(SqlCheckpointM cp)
         {
-            checkpoints.Add(new SqlCheckpointVM(cp));
+            Checkpoints.Add(new SqlCheckpointVM(cp));
             OnPropertyChanged("Checkpoints");
         }
 
@@ -298,6 +310,20 @@ namespace AI_Note_Review
                 mSegIncludeChecked = value;
             }
         }
+        private ICommand mAddGroup;
+        public ICommand AddGroupCommand
+        {
+            get
+            {
+                if (mAddGroup == null)
+                    mAddGroup = new GroupAdder();
+                return mAddGroup;
+            }
+            set
+            {
+                mAddGroup = value;
+            }
+        }
 
     }
 
@@ -341,17 +367,38 @@ namespace AI_Note_Review
         public void Execute(object parameter)
         {
             SqlICD10SegmentVM s = parameter as SqlICD10SegmentVM;
-            SqlICD10SegmentVM sivm = new SqlICD10SegmentVM(s);
 
             WinEnterText wet = new WinEnterText("Please input new title.");
             wet.ShowDialog();
             if (wet.ReturnValue == null) return;
             if (wet.ReturnValue.Trim() != "")
             {
+                SqlICD10SegmentVM sivm = new SqlICD10SegmentVM(s);
                 sivm.AddCheckPoint(new SqlCheckpointM(wet.ReturnValue, s.ICD10SegmentID));
             }
         }
     }
 
+    class GroupAdder : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            SqlICD10SegmentVM s = parameter as SqlICD10SegmentVM;
+            s.AddGroup("Enter Segment Title");
+        }
+    }
 
 }
