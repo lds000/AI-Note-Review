@@ -21,17 +21,19 @@ namespace AI_Note_Review
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        public DocumentVM ParentDocument { get; set; }
+        public VisitReportVM ParentReport { get; set; }
 
         private SqlICD10SegmentM sqlICD10Segment;
+
+        public SqlICD10SegmentM SqlICD10Segment
+        {
+            get { return sqlICD10Segment; }
+        }
 
         public SqlICD10SegmentVM()
         {
             sqlICD10Segment = new SqlICD10SegmentM();
-        }
-
-        public SqlICD10SegmentVM(SqlICD10SegmentVM sc)
-        {
-            sqlICD10Segment = sc.sqlICD10Segment;
         }
 
         public SqlICD10SegmentVM(string strSegmentTitle)
@@ -39,23 +41,67 @@ namespace AI_Note_Review
             sqlICD10Segment = new SqlICD10SegmentM(strSegmentTitle);
         }
 
-        public DocumentVM ParentDocument { get; set; }
-        public VisitReportVM ParentReport { get; set; }
 
-        public SqlICD10SegmentM SqlICD10Segment
+        public SqlICD10SegmentVM(SqlICD10SegmentM sc)
         {
-            get
-            {
-                return sqlICD10Segment;
-            }
+            sqlICD10Segment = sc;
         }
+
         public int ICD10SegmentID { get { return sqlICD10Segment.ICD10SegmentID; } set { sqlICD10Segment.ICD10SegmentID = value; } }
-        public int LeftOffset { get { return sqlICD10Segment.LeftOffset; } set { sqlICD10Segment.LeftOffset = value; } }
+        public string SegmentTitle { get { return sqlICD10Segment.SegmentTitle; } set { sqlICD10Segment.SegmentTitle = value; } }
+        public string SegmentComment { get { return sqlICD10Segment.SegmentComment; } set { sqlICD10Segment.SegmentComment = value; } }
+
         public string icd10Chapter { get { return sqlICD10Segment.icd10Chapter; } set { sqlICD10Segment.icd10Chapter = value; } }
         public double icd10CategoryStart { get { return sqlICD10Segment.icd10CategoryStart; } set { sqlICD10Segment.icd10CategoryStart = value; } }
         public double icd10CategoryEnd { get { return sqlICD10Segment.icd10CategoryEnd; } set { sqlICD10Segment.icd10CategoryEnd = value; } }
-        public string SegmentTitle { get { return sqlICD10Segment.SegmentTitle; } set { sqlICD10Segment.SegmentTitle = value; } }
-        public string SegmentComment { get { return sqlICD10Segment.SegmentComment; } set { sqlICD10Segment.SegmentComment = value; } }
+        public int LeftOffset { get { return sqlICD10Segment.LeftOffset; } set { sqlICD10Segment.LeftOffset = value; } }
+
+        public void SaveToDB()
+        {
+            sqlICD10Segment.SaveToDB();
+        }
+
+        private bool includeSegment;
+        public bool IncludeSegment
+        {
+            get
+            {
+                return includeSegment;
+            }
+            set
+            {
+                includeSegment = value;
+                OnPropertyChanged("IncludeSegment");
+                OnPropertyChanged("CBIncludeSegment");
+            }
+        }
+        //used to track manual changes to textbox
+        public bool CBIncludeSegment
+        {
+            get
+            {
+                return includeSegment;
+            }
+            set
+            {
+                includeSegment = value;
+                OnPropertyChanged("IncludeSegment");
+                OnPropertyChanged("CBIncludeSegment");
+                ParentReport.UpdateCPs(); //now recalculate all checkpoints.
+            }
+        }
+        public void UpdateAll()
+        {
+            CalculateLeftOffsets();
+            OnPropertyChanged("NoteICD10Segments");
+        }
+
+        public void AddSegment()
+        {
+            OnPropertyChanged("NoteICD10Segments");
+            CalculateLeftOffsets();
+            OnPropertyChanged("NoteICD10Segments");
+        }
 
         private ObservableCollection<SqlCheckpointVM> checkpoints;
         public ObservableCollection<SqlCheckpointVM> Checkpoints
@@ -141,42 +187,20 @@ namespace AI_Note_Review
         //recheck CPs;
         public void UpdateCPs()
         {
-            passedCPs = null;
-            missedCPs = null;
-            droppedCPs = null;
-            Console.WriteLine($"Setting passed, missed, and droppedCPs to null for segment {SegmentTitle}.");
-            ParentReport.UpdateCPs();
+            if (ParentReport != null)
+            {
+                passedCPs = null;
+                missedCPs = null;
+                droppedCPs = null;
+                Console.WriteLine($"Setting passed, missed, and droppedCPs to null for segment {SegmentTitle}.");
+                ParentReport.UpdateCPs();
+            }
         }
-        private bool includeSegment;
-        public bool IncludeSegment
+
+        public void UpdateCheckPoints()
         {
-            get
-            {
-                return includeSegment;
-            }
-            set
-            {
-                includeSegment = value;
-                OnPropertyChanged("IncludeSegment");
-                OnPropertyChanged("CBIncludeSegment");
-            }
+            OnPropertyChanged("Checkpoints");
         }
-        //used to track manual changes to textbox
-        public bool CBIncludeSegment
-        {
-            get
-            {
-                return includeSegment;
-            }
-            set
-            {
-                includeSegment = value;
-                OnPropertyChanged("IncludeSegment");
-                OnPropertyChanged("CBIncludeSegment");
-                ParentReport.UpdateCPs(); //now recalculate all checkpoints.
-            }
-        }
-        
 
         public int CheckPointCount
         {
@@ -190,6 +214,7 @@ namespace AI_Note_Review
             }
         }
 
+
         public Thickness Icd10Margin
         {
 
@@ -198,25 +223,31 @@ namespace AI_Note_Review
                 return new Thickness(sqlICD10Segment.LeftOffset, 0, 0, 0);
             }
         }
+        public void UpdateMargin()
+        {
+            OnPropertyChanged("Icd10Margin");
+
+        }
 
         /// <summary>
         /// A list of all SqlICD10Segments
         /// </summary>Celica9
-        public static List<SqlICD10SegmentVM> NoteICD10Segments
+        private ObservableCollection<SqlICD10SegmentVM> noteICD10Segments;
+        public static ObservableCollection<SqlICD10SegmentVM> NoteICD10Segments
         {
             get
             {
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
-                    var l = cnn.Query<SqlICD10SegmentVM>(sql).ToList();
+                    var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
                     List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
-                    foreach (SqlICD10SegmentVM s in l)
+                    foreach (SqlICD10SegmentM s in l)
                     {
                         SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
                         lvm.Add(scvm);
                     }
-                    return lvm;
+                    return lvm.ToObservableCollection();
                 }
             }
         }
@@ -224,7 +255,6 @@ namespace AI_Note_Review
 
         public void AddCheckPoint(SqlCheckpointM cp)
         {
-            checkpoints.Add(new SqlCheckpointVM(cp));
             OnPropertyChanged("Checkpoints");
         }
 
@@ -242,6 +272,7 @@ namespace AI_Note_Review
             foreach (SqlICD10SegmentVM ns in NoteICD10Segments)
             {
                 iOffset = 0;
+                if (ns.SqlICD10Segment.icd10Chapter == null) continue;
                 if (charChapter == char.Parse(ns.SqlICD10Segment.icd10Chapter))
                 {
                     if ((ns.SqlICD10Segment.icd10CategoryStart >= CodeStart) && (ns.SqlICD10Segment.icd10CategoryEnd <= CodeEnd))
@@ -262,6 +293,9 @@ namespace AI_Note_Review
                     CodeEnd = 0;
                 }
                 strSql += $"UPDATE ICD10Segments SET LeftOffset = {iOffset} WHERE ICD10SegmentID = {ns.SqlICD10Segment.ICD10SegmentID};\n";
+                ns.LeftOffset = iOffset;
+                ns.UpdateMargin();
+
             }
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
@@ -284,30 +318,66 @@ namespace AI_Note_Review
             }
         }
 
-        private ICommand mSegIncludeChecked;
-        public ICommand SegIncludeCheckedCommand
+        private ICommand mEditSegment;
+        public ICommand EditSegmentCommand
         {
             get
             {
-                if (mSegIncludeChecked == null)
-                    mSegIncludeChecked = new SegIncludeChecked();
-                return mSegIncludeChecked;
+                if (mEditSegment == null)
+                    mEditSegment = new SegmentEditor();
+                return mEditSegment;
             }
             set
             {
-                mSegIncludeChecked = value;
+                mEditSegment = value;
             }
         }
 
+        private ICommand mAddSegment;
+        public ICommand AddSegmentCommand
+        {
+            get
+            {
+                if (mAddSegment == null)
+                    mAddSegment = new SegmentAdder();
+                return mAddSegment;
+            }
+            set
+            {
+                mAddSegment = value;
+            }
+        }
+
+
+        private ICommand mCreateIndex;
+        public ICommand CreateIndexCommand
+        {
+            get
+            {
+                if (mCreateIndex == null)
+                    mCreateIndex = new CreateIndex();
+                return mCreateIndex;
+            }
+            set
+            {
+                mCreateIndex = value;
+            }
+        }
+
+
     }
 
-    class SegIncludeChecked : ICommand
+    /// <summary>
+    /// Edit segment
+    /// </summary>
+    class SegmentEditor : ICommand
     {
         #region ICommand Members  
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            SqlICD10SegmentVM sivm = parameter as SqlICD10SegmentVM;
+            return sivm != null;
         }
         public event EventHandler CanExecuteChanged
         {
@@ -317,18 +387,59 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            SqlICD10SegmentVM ssvm = parameter as SqlICD10SegmentVM;
-            ssvm.ParentReport.SetCPs();
+            SqlICD10SegmentVM seg = parameter as SqlICD10SegmentVM;
+            if (seg != null)
+            {
+                WinEditSegment wes = new WinEditSegment(seg);
+                wes.ShowDialog();
+                seg.UpdateAll();
+            }
         }
         #endregion
     }
 
+    /// <summary>
+    /// Add checkpoint
+    /// </summary>
     class CPAdder : ICommand
     {
         #region ICommand Members  
 
         public bool CanExecute(object parameter)
         {
+            SqlICD10SegmentVM sivm = parameter as SqlICD10SegmentVM;
+            return sivm != null;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlICD10SegmentVM sivm = parameter as SqlICD10SegmentVM;
+            WinEnterText wet = new WinEnterText("Please input new title.");
+            wet.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            wet.ShowDialog();
+            if (wet.ReturnValue == null) return;
+            if (wet.ReturnValue.Trim() != "")
+            {
+                sivm.AddCheckPoint(new SqlCheckpointM(wet.ReturnValue, sivm.ICD10SegmentID));
+            }
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// Add Segment
+    /// </summary>
+    class SegmentAdder : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
             return true;
         }
         public event EventHandler CanExecuteChanged
@@ -337,21 +448,92 @@ namespace AI_Note_Review
             remove { CommandManager.RequerySuggested -= value; }
         }
         #endregion
-
         public void Execute(object parameter)
         {
-            SqlICD10SegmentVM s = parameter as SqlICD10SegmentVM;
-            SqlICD10SegmentVM sivm = new SqlICD10SegmentVM(s);
+            SqlICD10SegmentVM sivm = parameter as SqlICD10SegmentVM;
+            SqlICD10SegmentVM seg = new SqlICD10SegmentVM("Enter Segment Title");
+            WinEditSegment wes = new WinEditSegment(seg);
+            wes.ShowDialog();
+            seg.AddSegment();
+        }
 
-            WinEnterText wet = new WinEnterText("Please input new title.");
-            wet.ShowDialog();
-            if (wet.ReturnValue == null) return;
-            if (wet.ReturnValue.Trim() != "")
+    }
+    /// <summary>
+    /// CreateIndex
+    /// </summary>
+    class CreateIndex : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+        public void Execute(object parameter)
+        {
+            SqlICD10SegmentVM seg = parameter as SqlICD10SegmentVM;
+            if (seg != null)
             {
-                sivm.AddCheckPoint(new SqlCheckpointM(wet.ReturnValue, s.ICD10SegmentID));
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    SqlCheckpointVM cpvm = new SqlCheckpointVM();
+                    ObservableCollection<SqlCheckpointVM> lcp = seg.Checkpoints;
+                    List<SqlCheckPointType> lcpt = cpvm.CheckPointTypes;
+                    string strSummary = $"<h1>{seg.SegmentTitle}</h1><br>";
+                    foreach (SqlCheckPointType cpt in lcpt)
+                    {
+                        string strTempOut = "<ol>";
+                        foreach (SqlCheckpointVM cp in lcp)
+                        {
+                            if (cp.CheckPointType == cpt.CheckPointTypeID)
+                            {
+                                strTempOut += $"<li><dl><dt><font size='+1'>{cp.CheckPointTitle}</font>" + Environment.NewLine;
+                                if (cp.Comment != null)
+                                {
+                                    strTempOut += $"<dd><i>{cp.Comment.Replace(Environment.NewLine, "<br>")}</i>" + Environment.NewLine;
+                                    if (cp.Link != null)
+                                    {
+                                        strTempOut += $"<br><a href='{cp.Link}'>[Link to source]</a>";
+                                    }
+                                    if (cp.Images.Count > 0)
+                                    {
+                                        foreach (var imgCPimage in cp.Images)
+                                        {
+                                            var b64String = Convert.ToBase64String(imgCPimage.ImageData);
+                                            var dataUrl = "data:image/bmp;base64," + b64String;
+                                            strTempOut += $"<br><img src=\"{dataUrl}" + "\" />";
+                                        }
+                                    }
+                                    strTempOut += "";
+                                }
+                                strTempOut += "</dl></li>";
+                            }
+                        }
+                        if (strTempOut != "<ol>")
+                        {
+                            strSummary += $"<font size='+2'><B>{cpt.Title} </B></font>" + Environment.NewLine;
+                            strSummary += strTempOut + "</ol>";
+                            strSummary += Environment.NewLine;
+                        }
+                        else
+                        {
+                            strTempOut = "";
+                        }
+                    }
+                    //Clipboard.SetText(strSummary, TextDataFormat.Html);
+                    ClipboardHelper.CopyToClipboard(strSummary, "");
+                    WinPreviewHTML wp = new WinPreviewHTML();
+                    wp.MyWB.NavigateToString(strSummary);
+                    wp.ShowDialog();
+                }
             }
         }
+
     }
-
-
 }

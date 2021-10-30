@@ -245,7 +245,8 @@ namespace AI_Note_Review
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            SqlCheckPointImage si = value as SqlCheckPointImage;
+            SqlCheckPointImageVM si = value as SqlCheckPointImageVM;
+            if (si == null) return null;
             using (var memoryStream = new System.IO.MemoryStream(si.ImageData))
             {
                 var image = new BitmapImage();

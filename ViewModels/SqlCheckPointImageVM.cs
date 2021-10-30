@@ -28,7 +28,10 @@ namespace AI_Note_Review
             set { checkPointImage = value; }
         }
 
-        public SqlCheckPointImageVM() { } //paramaterless constructor for dapper
+        public SqlCheckPointImageVM()
+        {
+            checkPointImage = new SqlCheckPointImage();
+        } //paramaterless constructor for dapper
 
         public SqlCheckPointImageVM(SqlCheckpointVM parentCheckpoint, int iCheckPointID, BitmapSource bs)
         {

@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
@@ -43,7 +44,7 @@ namespace AI_Note_Review
             }
             #endregion  
 
-            lbICD10.DataContext = new SqlICD10SegmentVM();
+            DataContext = new SqlICD10SegmentVM();
         }
 
         private void closeclick(object sender, RoutedEventArgs e)
@@ -144,7 +145,7 @@ namespace AI_Note_Review
 
         private void MenuItemEditSegment_Click(object sender, RoutedEventArgs e)
         {
-            SqlICD10SegmentM seg = lbICD10.SelectedItem as SqlICD10SegmentM;
+            SqlICD10SegmentVM seg = lbICD10.SelectedItem as SqlICD10SegmentVM;
             if (seg != null)
             {
                 WinEditSegment wes = new WinEditSegment(seg);
@@ -155,7 +156,7 @@ namespace AI_Note_Review
 
         private void AddGroupClick(object sender, RoutedEventArgs e)
         {
-            SqlICD10SegmentM seg = new SqlICD10SegmentM("Enter Segment Title");
+            SqlICD10SegmentVM seg = new SqlICD10SegmentVM("Enter Segment Title");
             WinEditSegment wes = new WinEditSegment(seg);
             wes.Owner = this;
             wes.ShowDialog();
@@ -212,19 +213,19 @@ namespace AI_Note_Review
 
         private void MenuItemCreateSegmentIndex(object sender, RoutedEventArgs e)
         {
-            SqlICD10SegmentM seg = lbICD10.SelectedItem as SqlICD10SegmentM;
+            SqlICD10SegmentVM seg = lbICD10.SelectedItem as SqlICD10SegmentVM;
             if (seg != null)
             {
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     SqlCheckpointVM cpvm = new SqlCheckpointVM();
-                    List<SqlCheckpointM> lcp = cpvm.GetCPsFromSegment(seg.ICD10SegmentID);
+                    ObservableCollection<SqlCheckpointVM> lcp = seg.Checkpoints;
                     List<SqlCheckPointType> lcpt = cpvm.CheckPointTypes;
                     string strSummary = $"<h1>{seg.SegmentTitle}</h1><br>";
                     foreach (SqlCheckPointType cpt in lcpt)
                     {
                         string strTempOut = "<ol>";
-                        foreach (SqlCheckpointM cp in lcp)
+                        foreach (SqlCheckpointVM cp in lcp)
                         {
                             if (cp.CheckPointType == cpt.CheckPointTypeID)
                             {
@@ -266,7 +267,6 @@ namespace AI_Note_Review
                     WinPreviewHTML wp = new WinPreviewHTML();
                     wp.MyWB.NavigateToString(strSummary);
                     wp.ShowDialog();
-
                 }
             }
         }

@@ -82,9 +82,7 @@ public PersonViewModel(PersonModel person) {
         public int CheckPointID { get { return this.SqlCheckpoint.CheckPointID; } set { this.SqlCheckpoint.CheckPointID = value; OnPropertyChangedSave(); } }
         public string CheckPointTitle { get { return this.SqlCheckpoint.CheckPointTitle; } set { this.SqlCheckpoint.CheckPointTitle = value; OnPropertyChangedSave(); } }
         public int CheckPointType { get { return this.SqlCheckpoint.CheckPointType; } set { this.SqlCheckpoint.CheckPointType = value; OnPropertyChangedSave(); } }
-        public string Comment { get { return this.SqlCheckpoint.Comment; } set { this.SqlCheckpoint.Comment = value;
-                OnPropertyChangedSave(); 
-            } }
+        public string Comment { get { return this.SqlCheckpoint.Comment; } set { this.SqlCheckpoint.Comment = value;  OnPropertyChangedSave(); } }
         public int ErrorSeverity { get { return this.SqlCheckpoint.ErrorSeverity; } set { this.SqlCheckpoint.ErrorSeverity = value; OnPropertyChangedSave(); } }
         public int TargetSection { get { return this.SqlCheckpoint.TargetSection; } set { this.SqlCheckpoint.TargetSection = value; } }
         public int TargetICD10Segment { get { return this.SqlCheckpoint.TargetICD10Segment; } set { this.SqlCheckpoint.TargetICD10Segment = value; OnPropertyChangedSave(); } }
@@ -322,6 +320,7 @@ public PersonViewModel(PersonModel person) {
                     foreach (SqlTagVM st in tmpList)
                     {
                         st.ParentCheckPoint = this;
+                        
                     }
                     return tmpList;
                 }
@@ -367,7 +366,6 @@ public PersonViewModel(PersonModel person) {
             get; set;
         }
 
-
         public List<SqlCheckpointM> GetCPsFromSegment(int SegmentID)
         {
             string sql = $"Select * from CheckPoints where TargetICD10Segment == {SegmentID}";
@@ -378,12 +376,14 @@ public PersonViewModel(PersonModel person) {
 
         }
 
-
         /// <summary>
         /// A personal comment added to a checkpoint that is saved in the database under the commit (not checkpoint model).
         /// </summary>
         public string CustomComment { get; set; }
 
+        /// <summary>
+        /// A list of the check point types from database
+        /// </summary>
         public List<SqlCheckPointType> CheckPointTypes
         {
             get
@@ -396,6 +396,7 @@ public PersonViewModel(PersonModel person) {
             }
 
         }
+
 
 
         #region Update Command
