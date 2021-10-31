@@ -82,6 +82,7 @@
                         Command="{Binding Path=Document.ShowReport}"
                                 CommandParameter="{Binding}" 
                         Style="{StaticResource LinkButton}" FontSize="20">Check!</Button>
+                    <!--DocumentVM-->
                     <Button Margin="100,0,0,0" VerticalAlignment="Center"  Command="{Binding Path=Document.ShowReportGen}"
                                 CommandParameter="{Binding}"  Style="{StaticResource LinkButton}" FontSize="20">Check X Only</Button>
                 </StackPanel>

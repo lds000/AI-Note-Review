@@ -33,17 +33,15 @@ namespace AI_Note_Review
         //key entities
         private VisitReportM report;
         private DocumentVM document;
-        private PatientVM patientVM;
-        private PatientM patient;
+        private PatientVM patient;
         private SqlProvider sqlProvider;
 
         public VisitReportVM()
         {
             report = new VisitReportM(); //1st executed command in program
             sqlProvider = new SqlProvider(); //Change provider for report
-            patientVM = new PatientVM();
-            patient = patientVM.Patient;
-            document = new DocumentVM(sqlProvider, patientVM);
+            patient = new PatientVM();
+            document = new DocumentVM(sqlProvider, patient);
             passedCPs = new ObservableCollection<SqlCheckpointVM>();
             missedCPs = new ObservableCollection<SqlCheckpointVM>();
             droppedCPs = new ObservableCollection<SqlCheckpointVM>();
@@ -55,16 +53,14 @@ namespace AI_Note_Review
         {
             report = new VisitReportM(); //1st executed command in program
             sqlProvider = new SqlProvider(); //Change provider for report
-            patientVM = new PatientVM();
-            patient = patientVM.Patient;
-            document = new DocumentVM(sqlProvider, patientVM);
+            patient = new PatientVM();
+            document = new DocumentVM(sqlProvider, patient);
             passedCPs = new ObservableCollection<SqlCheckpointVM>();
             missedCPs = new ObservableCollection<SqlCheckpointVM>();
             droppedCPs = new ObservableCollection<SqlCheckpointVM>();
             GeneralCheckPointsOnly = false;
             NewEcWDocument();
         }
-
 
         //not sure I need this.
         public void NewEcWDocument()
@@ -73,7 +69,6 @@ namespace AI_Note_Review
             missedCPs.Clear();
             droppedCPs.Clear();
             iCD10Segments = null; //reset segments
-            UpdateCPs();
         }
 
         #region Report VM definitions - boring stuff
@@ -141,19 +136,11 @@ namespace AI_Note_Review
         }
         #endregion
         #region Patient yadda tadd
-        public PatientM Patient
+        public PatientVM Patient
         {
             get
             {
                 return patient;
-            }
-        }
-
-        public PatientVM PatientVM
-        {
-            get
-            {
-                return patientVM;
             }
         }
         #endregion
@@ -234,7 +221,18 @@ namespace AI_Note_Review
         /// <summary>
         /// used for the 1st review
         /// </summary>
-        public bool GeneralCheckPointsOnly { get; set; }
+        private bool generalCheckPointsOnly;
+        public bool GeneralCheckPointsOnly { 
+            get
+            {
+                return generalCheckPointsOnly;
+            }
+            set
+            {
+                generalCheckPointsOnly = value;
+                document.GeneralCheckPointsOnly = value;
+            }
+        }
 
         private SqlCheckpointVM selectedItem;
         public SqlCheckpointVM SelectedItem

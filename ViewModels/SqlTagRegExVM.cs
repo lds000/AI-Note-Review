@@ -66,7 +66,6 @@ public PersonViewModel(PersonModel person) {
                 sql = $"Select * from TagRegEx where TagRegExID = ${lastID}";
                 this.SqlTagRegEx = cnn.Query<SqlTagRegExM>(sql).FirstOrDefault();
             }
-
         }
 
         public SqlTagVM ParentTag { get; set; }
@@ -83,7 +82,10 @@ public PersonViewModel(PersonModel person) {
         public bool Female { get { return this.SqlTagRegEx.Female; } set { SqlTagRegEx.Female = value; OnPropertyChangedSave(); } }
 
         public string NoteSectionText { 
-            get { return ParentTag.ParentCheckPoint.ParentDocument.NoteSectionText[TargetSection]; } 
+            get 
+            {
+                return ParentTag.ParentCheckPoint.ParentDocument.NoteSectionText[TargetSection]; 
+            } 
         }
         public IEnumerable<SqlTagRegExM.EnumMatch> MyMatchTypeValues
         {

@@ -42,7 +42,7 @@ namespace AI_Note_Review
             InitializeComponent();
         }
 
-        public VisitReportV(VisitReportVM rvm, bool GeneralCheckPointsOnly = false)
+        public VisitReportV(VisitReportVM rvm)
         {
             InitializeComponent();
             DataContext = rvm;

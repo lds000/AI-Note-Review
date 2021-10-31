@@ -22,9 +22,9 @@
                     <Grid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Add/Edit Comment" Click="AddCommentCP"></MenuItem>
-                            <MenuItem Header="Move to passed" Click="MovePassedCP"></MenuItem>
-                            <MenuItem Header="Move to missed" Click="MoveMissedCP"></MenuItem>
-                            <MenuItem Header="Drop" Click="DropCP"></MenuItem>
+                            <MenuItem Header="Move to passed" Command="{Binding MovePassedCommand}" CommandParameter="{Binding}"></MenuItem>
+                            <MenuItem Header="Move to missed" Command="{Binding MoveMissedCommand}" CommandParameter="{Binding}"></MenuItem>
+                            <MenuItem Header="Drop" Command="{Binding MoveDroppedCommand}" CommandParameter="{Binding}"></MenuItem>
                             <MenuItem Header="Edit Checkpoint Properties" Command="{Binding EditCheckPointCommand}" CommandParameter="{Binding}"></MenuItem>
                             <MenuItem Header="Show Checkpoint Report" Command="{Binding ShowCPRichTextCommand}" CommandParameter="{Binding}"></MenuItem>
                         </ContextMenu>
@@ -55,15 +55,10 @@
         <DockPanel Background="Black" Margin="5,7,5,3">
             <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="20" HorizontalAlignment="Center">Note Report</Label>
             <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal">
-                <Button Margin="0,0,20,0" Click="Button_Click_Recheck"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Recheck</Button>
-                <Button Click="Button_Click"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Close</Button>
-                <Button Margin="20,0,0,0" Click="Button_CopyReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Report</Button>
-                <Button Margin="20,0,0,0" Click="Button_CopyIndexClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Index</Button>
-                <Button Margin="20,0,0,0"
+                <Button FontSize="20" Click="Button_Click"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Close</Button>
+                <Button FontSize="20" Margin="20,0,0,0"
                         Command="{Binding CommitMyReportCommand}" CommandParameter="{Binding}"
                         Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Commit Review</Button>
-                <Button Margin="20,0,0,0" Click="Button_CheckpointAuditClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Checkpoint Audit</Button>
-                <Button Margin="20,0,0,0" Click="Button_ResetYesNo"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Reset Yes/No Answers</Button>
             </StackPanel>
             <ScrollViewer>
                 <Grid>
@@ -83,7 +78,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel x:Name="spTemplate" Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding CBIncludeSegment}" Command="{Binding SegIncludeCheckedCommand}" CommandParameter="{Binding}">
+                                        <CheckBox IsChecked="{Binding CBIncludeSegment}">
                                             <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding SegmentTitle}"></TextBlock>
                                         </CheckBox>
                                     </StackPanel>

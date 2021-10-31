@@ -80,6 +80,7 @@ class PersonViewModel {
         public void AddTagRegEx(SqlCheckpointVM cp)
         {
             SqlTagRegExVM srex = new SqlTagRegExVM(TagID, "Search Text", cp.TargetSection, 1);
+            srex.ParentTag = this;
             OnPropertyChanged("TagRegExs");
         }
 

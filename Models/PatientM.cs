@@ -35,6 +35,10 @@ namespace AI_Note_Review
         #endregion
 
         PatientM patient;
+
+        /// <summary>
+        /// for Dapper
+        /// </summary>
         public PatientM()
         {
         }
@@ -700,8 +704,6 @@ namespace AI_Note_Review
         /// An array where the index matches the notesectionID
         /// </summary>
         DateTime dOB;
-        private ObservableCollection<SqlICD10SegmentM> iCD10Segments = new ObservableCollection<SqlICD10SegmentM>();
-        public string[] NoteSectionText = new string[30];
         public int ptAgeYrs;
         private int providerID;
         private string ptName;
@@ -744,8 +746,6 @@ namespace AI_Note_Review
         private double vitalsWt;
         private double vitalsBMI;
         private string visitCodes;
-        private ObservableCollection<string> iCD10s = new ObservableCollection<string>();
-        private ObservableCollection<string> documentTags = new ObservableCollection<string>();
 
         #endregion
 

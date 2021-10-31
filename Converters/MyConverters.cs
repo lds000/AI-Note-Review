@@ -73,7 +73,7 @@ namespace AI_Note_Review
     }
 
         public class SqlTagRegExToXamlConverter : IMultiValueConverter
-    {
+        {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {
             if (values == null) return null;
@@ -148,11 +148,6 @@ namespace AI_Note_Review
             }
 
             return null;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException("This converter cannot be used in two-way binding.");
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

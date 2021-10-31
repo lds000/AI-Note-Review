@@ -26,16 +26,16 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private PatientM patient;
+        public bool GeneralCheckPointsOnly { get; set; }
+
+        private PatientVM patient;
         private DocumentM document;
         private SqlProvider sqlProvider;
-        private PatientVM patientVM;
 
         public DocumentVM(SqlProvider prov, PatientVM pvm)
         {
             sqlProvider = prov;
-            patientVM = pvm;
-            patient = pvm.SamplePatient;
+            patient = pvm;
             document = SampleDocument; //New DocumentM() called under this.
             SetUpNote(); //todo: might be better way of implementing this.
         }
@@ -44,13 +44,6 @@ namespace AI_Note_Review
         {
             document = SampleDocument; //New DocumentM() called under this.
             SetUpNote(); //todo: might be better way of implementing this.
-        }
-        public PatientVM PatientVM
-        {
-            get
-            {
-                return patientVM;
-            }
         }
 
         #region mirror properties of DocumentM
@@ -94,7 +87,7 @@ namespace AI_Note_Review
 
         //{ get {return document.;} set{document. = value;} }
 
-        public PatientM Patient
+        public PatientVM Patient
         {
             get
             {
@@ -130,7 +123,7 @@ namespace AI_Note_Review
                     "He denies diarrhea or constipation.  He states he cannot tolerate a full meal due to the pain.  " +
                     "Mark has tried OTC medications.  He denies chest pain.  He denies blood in the vomit. Thus far he has tried ibuprofen and tylenol";
 
-                HPI = "Dalton Anthony Ware is a 26 y.o. male who presents with a chief complaint of rash, blisters. PatientM presents to the ER today with rash, lesions in the mouth, nose and eye on the left.He indicates that about 2 - 3 weeks ago he felt like he got a cold / sinus infection.He was taking multiple medications for this including NSAID, mucinex, spray in the nose to help with this.Didn't have a cough, didn't have a fever.  Had some chest discomfort that he felt was due to some chest congestion that seems to have resolved.Never had any n / v / d.He has not had any pain with urination, but indicates that his urine smells funny like he has had asparagus, but he has not. On Tuesday felt like he was getting a canker sore on the left side of the lip and by the next day was getting larger.He now has very large sores on the left, bilateral cheeks and under the tongue, also feels like something in the throat as well.He has some pain and irritation up in the nose on the left side, feels some crusting there.He has had purulent drainage from the left eye as well over the last couple of days and some generalized irritation.He has not been able to eat / drink much over the last couple of days due to the oral discomfort.He did use a new toothpaste once prior to this all starting, no longer using, this was thought to be part of the cause.  He denies any current n / v / d.He was told that might be SJS and he then looked at the scrotum today and feels like it might be more red than normal, but again, no pain with urination.No fever or chills.  He was never tested for COVID during the URI type illness that he had prior.He does currently complain of headache and pressure behind the eyes as well. No oral sex, patient states ever.Neither have ever had STI otherwise. Patients partner is 7 months pregnant at this point as well.He has never had acold sore, but does get canker sores occasionally.";
+                HPI = "Dalton Anthony Ware is a 26 y.o. male who presents with a chief complaint of rash, blisters. Patient presents to the ER today with rash, lesions in the mouth, nose and eye on the left.He indicates that about 2 - 3 weeks ago he felt like he got a cold / sinus infection.He was taking multiple medications for this including NSAID, mucinex, spray in the nose to help with this.Didn't have a cough, didn't have a fever.  Had some chest discomfort that he felt was due to some chest congestion that seems to have resolved.Never had any n / v / d.He has not had any pain with urination, but indicates that his urine smells funny like he has had asparagus, but he has not. On Tuesday felt like he was getting a canker sore on the left side of the lip and by the next day was getting larger.He now has very large sores on the left, bilateral cheeks and under the tongue, also feels like something in the throat as well.He has some pain and irritation up in the nose on the left side, feels some crusting there.He has had purulent drainage from the left eye as well over the last couple of days and some generalized irritation.He has not been able to eat / drink much over the last couple of days due to the oral discomfort.He did use a new toothpaste once prior to this all starting, no longer using, this was thought to be part of the cause.  He denies any current n / v / d.He was told that might be SJS and he then looked at the scrotum today and feels like it might be more red than normal, but again, no pain with urination.No fever or chills.  He was never tested for COVID during the URI type illness that he had prior.He does currently complain of headache and pressure behind the eyes as well. No oral sex, patient states ever.Neither have ever had STI otherwise. Patients partner is 7 months pregnant at this point as well.He has never had acold sore, but does get canker sores occasionally.";
 
                 CurrentMeds = "ibuprofen, Tylenol, prednisone";
                 Exam = "AO, NAD PERRL\nNormal OP\nCTA bilat\nRRR no murmurs\nS NTND NABS, no guarding, no rebound\nNo edema";
@@ -167,11 +160,11 @@ namespace AI_Note_Review
             if (patient.PtAgeYrs < 1) AddHashTag("@Age<1");
             if (patient.PtAgeYrs < 2) AddHashTag("@Age<2");
             if (patient.PtAgeYrs < 4) AddHashTag("@Age<4");
-            if (patient.GetAgeInDays() < 183) AddHashTag("@Age<6mo");
+            if (patient.GetAgeInDays < 183) AddHashTag("@Age<6mo");
             if (patient.isRRHigh) AddHashTag("!RRHigh");             //72	X	2	2	Rapid Respiratory Rate
             if (patient.isTempHigh) AddHashTag("!HighFever");             //73	X	3	3	High Fever
             if (patient.isHRHigh) AddHashTag("!Tachycardia");             //74	X	4	4	Tachycardia
-            if (patient.GetAgeInDays() <= 90 && patient.VitalsTemp > 100.4)
+            if (patient.GetAgeInDays <= 90 && patient.VitalsTemp > 100.4)
             {
                 //MessageBoxResult mr = MessageBox.Show($"This patient is {patient.GetAgeInDays()} days old and has a fever of {patient.VitalsTemp}.  Was the patient sent to an ED or appropriate workup performed?", "Infant Fever", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 //if (mr == MessageBoxResult.No) DocumentM.HashTags += "#NeonteNotSentToED";
@@ -201,6 +194,7 @@ namespace AI_Note_Review
             NoteSectionText[19] = CC;
             NoteSectionText[20] = ProcedureNote;
             NoteSectionText[21] = PreventiveMed;
+            OnPropertyChanged("Patient");
         }
 
         /// <summary>
@@ -259,6 +253,7 @@ namespace AI_Note_Review
             ObservableCollection<SqlICD10SegmentVM> tmpICD10Segments = new ObservableCollection<SqlICD10SegmentVM>();
             #region Yikes! ugly, only open if you have to
             //get icd10 segments
+            if (!GeneralCheckPointsOnly)
             foreach (string strICD10 in ICD10s)
             {
                 string strAlphaCode = strICD10.Substring(0, 1);
@@ -270,7 +265,6 @@ namespace AI_Note_Review
                     if (Char.ToLower(ch) == 'x') break; //if placeholder character, then stop.
                 }
                 double icd10numeric = double.Parse(str);
-
                 foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
                 {
                     if (strAlphaCode == ns.SqlICD10Segment.icd10Chapter)
@@ -820,9 +814,9 @@ namespace AI_Note_Review
             Clear();
             foreach (var myString in strNote.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
-                if (myString.StartsWith("PatientM:") && myString.Contains("DOB:"))
+                if (myString.StartsWith("Patient:") && myString.Contains("DOB:"))
                 {
-                    string strPtInfo = myString.Replace("PatientM:", "");
+                    string strPtInfo = myString.Replace("Patient:", "");
                     strPtInfo = strPtInfo.Replace("DOB:", "|");
                     strPtInfo = strPtInfo.Replace("Age:", "|");
                     strPtInfo = strPtInfo.Replace("Sex:", "|");
@@ -1026,7 +1020,7 @@ namespace AI_Note_Review
             get
             {
                 if (mShowReportGen == null)
-                    mShowReportGen = new ShowReport();
+                    mShowReportGen = new ShowReportGen();
                 return mShowReportGen;
             }
             set
@@ -1055,7 +1049,9 @@ namespace AI_Note_Review
         public void Execute(object parameter)
         {
             VisitReportVM rvm = parameter as VisitReportVM;
+            rvm.GeneralCheckPointsOnly = false;
             rvm.NewEcWDocument(); //reset document
+            rvm.UpdateCPs(); //I don't think I need to update CPs if there are none.
             VisitReportV wp = new VisitReportV(rvm);
             wp.ShowDialog();
         }
@@ -1074,14 +1070,17 @@ namespace AI_Note_Review
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
         }
+        #endregion
 
         public void Execute(object parameter)
         {
             VisitReportVM rvm = parameter as VisitReportVM;
-            VisitReportV wp = new VisitReportV(rvm, true);
+            rvm.GeneralCheckPointsOnly = true;
+            rvm.NewEcWDocument(); //reset document
+            rvm.UpdateCPs(); //I don't think I need to update CPs if there are none.
+            VisitReportV wp = new VisitReportV(rvm);
             wp.ShowDialog();
         }
-        #endregion
     }
 
 }

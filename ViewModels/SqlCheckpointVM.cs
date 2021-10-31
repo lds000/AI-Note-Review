@@ -102,8 +102,18 @@ public PersonViewModel(PersonModel person) {
                 {
                     //this should only be run once for each checkpoint every time the report is opened.
                     //check if I have manually overidden the checkpoint and keep that assignment, since I am the genius here, not the program.
-                    if (cPoverideStatus != null) cPStatus = (SqlTagRegExM.EnumResult)cPoverideStatus;
-                    OnPropertyChanged("CPStatus");
+                    if (cPoverideStatus != null)
+                    {
+                        cPStatus = (SqlTagRegExM.EnumResult)cPoverideStatus;
+                        IncludeCheckpoint = false;
+                        if (cPStatus == SqlTagRegExM.EnumResult.Miss || cPStatus == SqlTagRegExM.EnumResult.Pass) //include checkpoint is linked to the checkbox button
+                        {
+                            IncludeCheckpoint = true;
+                            //OnPropertyChanged("IncludeCheckpoint");
+                        }
+                        //OnPropertyChanged("CPStatus");
+                        return (SqlTagRegExM.EnumResult)cPoverideStatus;
+                    }
 
                     SqlTagRegExM.EnumResult trTagResult = SqlTagRegExM.EnumResult.Pass;
                     if (CheckPointTitle.Contains("Augmentin XR"))
@@ -139,6 +149,11 @@ public PersonViewModel(PersonModel person) {
             }
         }
 
+        public void OverideStatus(SqlTagRegExM.EnumResult newStatus)
+        {
+            cPoverideStatus = newStatus;
+            UpdateCPStatus();
+        }
         public void CalculateStatus()
         {
         }
@@ -175,7 +190,7 @@ public PersonViewModel(PersonModel person) {
 
                 // check demographic limits and return result if met.
                 //If any TagRegEx fails due to demographics, the entire series fails
-                double age = ParentDocument.Patient.GetAgeInYearsDouble();
+                double age = ParentDocument.Patient.GetAgeInYearsDouble;
                 if (age < TagRegEx.MinAge) return SqlTagRegExM.EnumResult.Hide;
                 if (age >= TagRegEx.MaxAge) return SqlTagRegExM.EnumResult.Hide;
                 if (ParentDocument.Patient.isMale && !TagRegEx.Male) return SqlTagRegExM.EnumResult.Hide;
@@ -320,7 +335,6 @@ public PersonViewModel(PersonModel person) {
                     foreach (SqlTagVM st in tmpList)
                     {
                         st.ParentCheckPoint = this;
-                        
                     }
                     return tmpList;
                 }
@@ -332,7 +346,12 @@ public PersonViewModel(PersonModel person) {
             string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID} order by RelTagCheckPointID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                return cnn.Query<SqlTagVM>(sql, this).ToList();
+                var tmpList = cnn.Query<SqlTagVM>(sql, this).ToList();
+                foreach (var tmp in tmpList)
+                {
+                    tmp.ParentCheckPoint = this;
+                }
+                return tmpList;
             }
         }
 
@@ -487,6 +506,55 @@ public PersonViewModel(PersonModel person) {
         }
         #endregion
 
+        #region MoveMissed Command
+        private ICommand mMoveMissed;
+        public ICommand MoveMissedCommand
+        {
+            get
+            {
+                if (mMoveMissed == null)
+                    mMoveMissed = new MoveMissed();
+                return mMoveMissed;
+            }
+            set
+            {
+                mMoveMissed = value;
+            }
+        }
+        #endregion
+        #region MovePassed Command
+        private ICommand mMovePassed;
+        public ICommand MovePassedCommand
+        {
+            get
+            {
+                if (mMovePassed == null)
+                    mMovePassed = new MovePassed();
+                return mMovePassed;
+            }
+            set
+            {
+                mMovePassed = value;
+            }
+        }
+        #endregion
+        #region MoveMissed Command
+        private ICommand mMoveDropped;
+        public ICommand MoveDroppedCommand
+        {
+            get
+            {
+                if (mMoveDropped == null)
+                    mMoveDropped = new MoveDropped();
+                return mMoveDropped;
+            }
+            set
+            {
+                mMoveDropped = value;
+            }
+        }
+        #endregion
+
     }
 
     class TagAdder : ICommand
@@ -536,6 +604,7 @@ public PersonViewModel(PersonModel person) {
             {
                 SqlTagVM tg = SqlLiteDataAccess.GetTags(wat.ReturnValue).FirstOrDefault();
                 if (tg == null) tg = new SqlTagVM(wat.ReturnValue);
+                tg.ParentCheckPoint = CurrentCheckpoint;
                 CurrentCheckpoint.AddTag(tg);
 
                 //SqlTagRegEx srex = new SqlTagRegEx(tg.TagID, "Search Text", CurrentCheckpoint.TargetSection, 1);
@@ -646,7 +715,69 @@ public PersonViewModel(PersonModel person) {
         #endregion
     }
 
+    class MoveMissed : ICommand
+    {
+        #region ICommand Members  
 
-    
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
 
+        public void Execute(object parameter)
+        {
+            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
+            CP.OverideStatus(SqlTagRegExM.EnumResult.Miss);
+        }
+    }
+
+    class MovePassed : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
+            CP.OverideStatus(SqlTagRegExM.EnumResult.Pass);
+        }
+    }
+
+    class MoveDropped : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
+            CP.OverideStatus(SqlTagRegExM.EnumResult.Hide);
+        }
+    }
 }
