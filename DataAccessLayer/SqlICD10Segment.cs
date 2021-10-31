@@ -46,6 +46,7 @@ namespace AI_Note_Review
         {
         }
 
+
         public SqlICD10SegmentM(string strSegmentTitle)
         {
             strSegmentTitle = strSegmentTitle.Replace("'", "''"); //used to avoid errors in titles with ' character
@@ -57,6 +58,21 @@ namespace AI_Note_Review
                 SqlICD10SegmentM p = cnn.QueryFirstOrDefault<SqlICD10SegmentM>(sql);
                 ICD10SegmentID = p.ICD10SegmentID;
                 SegmentTitle = p.SegmentTitle;
+            }
+        }
+
+        public void DeleteSegment()
+        {
+            MessageBoxResult mr = MessageBox.Show("Are you sure you want to remove this segment? This is permenant and will delete all content.", "Confirm Delete", MessageBoxButton.YesNo);
+            if (mr != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            string sql = $"Delete from ICD10Segments where ICD10SegmentID = {ICD10SegmentID};"; //this part is to get the ID of the newly created phrase
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
             }
         }
 

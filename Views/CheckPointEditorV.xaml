@@ -53,6 +53,7 @@
                                         <MenuItem Header="Create Index"
                                                   Command="{Binding CreateIndexCommand}" CommandParameter="{Binding}"
                                                   ToolTip="Create an index and copy it to the clipboard"/>
+                                        <MenuItem Header="Delete Segment" Command="{Binding DeleteSegmentCommand}" CommandParameter="{Binding}"></MenuItem>
                                     </ContextMenu>
                                 </Grid.ContextMenu>
                                 <Grid.ColumnDefinitions>
@@ -224,8 +225,6 @@
                             <sys:Uri>pack://application:,,,/MedTerms.lex</sys:Uri>
                         </SpellCheck.CustomDictionaries>
                     </TextBox>
-
-
                     <Button ToolTip="Click here to follow link." Click="btnLinkClick" Margin="5" Grid.Column="0" Grid.Row="8" Style="{StaticResource LinkButton}">Link:</Button>
                     <TextBox Margin="5" x:Name="tbLink" Grid.Row="8" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Link}" ToolTip="{Binding Path=Link}" Grid.ColumnSpan="2" ></TextBox>
 

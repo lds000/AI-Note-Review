@@ -34,6 +34,23 @@ namespace AI_Note_Review
         }
     }
 
+    public static class HtmlLittlerHelper
+    { 
+        public static string FixHtml(string HTML)
+        {
+            StringBuilder sb = new StringBuilder();
+            char[] s = HTML.ToCharArray();
+            foreach (char c in s)
+            {
+                if (Convert.ToInt32(c) > 127)
+                    sb.Append("&#" + Convert.ToInt32(c) + ";");
+                else
+                    sb.Append(c);
+            }
+            return sb.ToString();
+        }
+    }
+
     public class CF : INotifyPropertyChanged
     {
         // Declare the event
