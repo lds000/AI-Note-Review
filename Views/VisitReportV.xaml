@@ -56,6 +56,7 @@
             <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="20" HorizontalAlignment="Center">Note Report</Label>
             <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal">
                 <Button FontSize="20" Click="Button_Click"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Close</Button>
+                <!-- -->
                 <Button FontSize="20" Margin="20,0,0,0"
                         Command="{Binding CommitMyReportCommand}" CommandParameter="{Binding}"
                         Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Commit Review</Button>

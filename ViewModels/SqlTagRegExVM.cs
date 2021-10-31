@@ -63,7 +63,7 @@ public PersonViewModel(PersonModel person) {
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 int lastID = cnn.ExecuteScalar<int>(sql); //find ID of the insert tag and retreive it.
-                sql = $"Select * from TagRegEx where TagRegExID = ${lastID}";
+                sql = $"Select * from TagRegEx where TagRegExID = {lastID}"; 
                 this.SqlTagRegEx = cnn.Query<SqlTagRegExM>(sql).FirstOrDefault();
             }
         }
