@@ -4,18 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
-                xmlns:properties="clr-namespace:AI_Note_Review.Properties"
+        xmlns:properties="clr-namespace:AI_Note_Review.Properties"
+        xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+        xmlns:cef="clr-namespace:CefSharp;assembly=CefSharp.Core"
         Loaded="Window_Loaded"
         Closing="Window_Closing"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="BiMonthlyReviewView" Height="450" Width="1000">
+        WindowState="Maximized"
+        Title="BiMonthlyReviewView">
     <!--Datacontext is BiMonthlyReviewVM-->
     <DockPanel Background="Black">
         <DockPanel.Resources>
             <local:ChartCountToBrushConverter x:Key="ChartCountToBrushConverter"/>
         </DockPanel.Resources>
         <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Style="{StaticResource MyTbStyle}" FontSize="24">Provider Reviews</TextBlock>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Label Style="{StaticResource MyLblStyle}">General Comment:</Label>
+            <TextBox></TextBox>
+        </StackPanel>
         <!--Report header from property.settings-->
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
             <TextBlock Style="{StaticResource MyTbStyle}" FontSize="16"
@@ -30,9 +37,24 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="White" BorderThickness="1" Margin="5">
+                <!--List source:BiMonthlyReviewList, SelectedValue=SelectedReview-->
+                <ListBox Style="{StaticResource MyListBox}" x:Name="lbReviews" 
+                         SelectedValue="{Binding SelectedMasterReviewSummary}"  ItemsSource="{Binding MasterReviewSummaryList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel x:Name="spTemplate" Orientation="Horizontal">
+                                <!--SqlProvider-->
+                                <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding MasterReviewSummaryTitle}"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ListBox>
+            </Border>
+            <Border BorderBrush="White" Grid.Column="1" BorderThickness="1" Margin="5">
                 <!--List source:MyPeeps, SelectedValue=SelectedProviderForBiMonthlyReview-->
                 <ListBox Style="{StaticResource MyListBox}" x:Name="lbProviders" 
                          SelectedValue="{Binding SelectedProviderForBiMonthlyReview}"  ItemsSource="{Binding MyPeeps}">
@@ -49,7 +71,7 @@
                     </ItemsControl.ItemTemplate>
                 </ListBox>
             </Border>
-            <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="1">
+            <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="2">
                 <!-- Contains a list of SqlDocumentReviewSummaryM from SqlProvider.SqlDocumentReviewsSummaryProperty -->
                 <ListBox x:Name="lbMonthReview" Grid.Row="1" Style="{StaticResource MyListBox}" ItemsSource="{Binding ElementName=lbProviders, Path=SelectedValue.SqlDocumentReviewsSummaryProperty}">
                     <ListBox.ItemTemplate>

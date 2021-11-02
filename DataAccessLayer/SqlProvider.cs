@@ -24,6 +24,16 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+        private MasterReviewSummaryVM parentMasterReviewSummary;
+        public MasterReviewSummaryVM ParentMasterReviewSummary 
+        {
+            get { return parentMasterReviewSummary; }
+            set {
+                parentMasterReviewSummary = value;
+                OnPropertyChanged();
+                OnPropertyChanged("CurrentReviewCount");
+            }
+        }
         public int ProviderID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -57,7 +67,7 @@ namespace AI_Note_Review
             get
             {
                 string sql = "";
-                sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{Properties.Settings.Default.StartReviewDate.ToString("yyyy-MM-dd")}' and '{Properties.Settings.Default.EndReviewDate.ToString("yyyy-MM-dd")}';";
+                sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{ParentMasterReviewSummary.StartDate.ToString("yyyy-MM-dd")}' and '{ParentMasterReviewSummary.EndDate.ToString("yyyy-MM-dd")}';";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     ObservableCollection<SqlDocumentReviewSummaryM> tmpL = new ObservableCollection<SqlDocumentReviewSummaryM>(cnn.Query<SqlDocumentReviewSummaryM>(sql).ToList());
@@ -80,8 +90,9 @@ namespace AI_Note_Review
         {
             get
             {
+                if (ParentMasterReviewSummary == null) return 0;
                 string sql = "";
-                sql += $"Select Count(distinct VisitDate || PtID) from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{Properties.Settings.Default.StartReviewDate.ToString("yyyy-MM-dd")}' and '{Properties.Settings.Default.EndReviewDate.ToString("yyyy-MM-dd")}';";
+                sql += $"Select Count(distinct VisitDate || PtID) from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{ParentMasterReviewSummary.StartDate.ToString("yyyy-MM-dd")}' and '{ParentMasterReviewSummary.EndDate.ToString("yyyy-MM-dd")}';";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     return cnn.ExecuteScalar<int>(sql);

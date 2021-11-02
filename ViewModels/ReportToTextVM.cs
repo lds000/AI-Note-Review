@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace AI_Note_Review
 {
-    public class ReportToHtmlVM : INotifyPropertyChanged
+    public class ReportToTextVM : INotifyPropertyChanged
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -22,12 +22,12 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private ReportToHtmlVM reportToHtmlVM;
+        private ReportToTextVM reportToHtmlVM;
         private SqlProvider sqlProvider;
         private int ptID;
         private DateTime visitDate;
         private List<ReportToHtmlM> lReportToHtmlM;
-        public ReportToHtmlVM ReportToHtml
+        public ReportToTextVM ReportToHtml
         {
             get
             {
@@ -35,13 +35,13 @@ namespace AI_Note_Review
             }
         }
 
-        public ReportToHtmlVM()
+        public ReportToTextVM()
         {
         }
 
-        public ReportToHtmlVM(SqlProvider sProvider, DateTime dt, int ptID)
+        public ReportToTextVM(SqlProvider sProvider, DateTime dt, int ptID)
         {
-            this.sqlProvider = sProvider;
+            sqlProvider = sProvider;
             this.ptID = ptID;
             this.visitDate = dt;
             string sqlCheck = $"Select * from(Select distinct CheckPointID rel,Comment RelComment,CheckPointStatus from RelCPPRovider where PtID={ptID} " +
@@ -98,8 +98,8 @@ namespace AI_Note_Review
                 double Total_Score = HPI_Score + Exam_Score + Dx_Score + Rx_Score;
 
                 string tmpCheck = "";
-                string strReport = @"<!DOCTYPE html><html><head></head><body>";
-                strReport += $"<font size='+3'>Patient ID {ptID}</font><br>"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
+                string strReport = $"{sqlProvider.FullName}";
+                strReport += $"{ptID}"; // "This report is using a programmed algorythm that searches for terms in your documentation.  I personally programmed these terms so they may not apply to this clinical scenario.  I'm working on version 1.0 and I know this report is not perfect, but by version infinity.0 it will be. Please let me know how well my program worked (or failed). Your feedback is so much more important than any feedback I may provide you. Most important is that you let me know if this information is in any way incorrect. I will edit or re-write code to make it correct. Thanks for all you do! ";
                 strReport += $"<font size='+1'>Date: {visitDate.ToShortDateString()}</font><br>";
                 strReport += Environment.NewLine;
 
@@ -131,7 +131,7 @@ namespace AI_Note_Review
                 tmpCheck = "";
                 foreach (ReportToHtmlM cp in (from c in MissedCPs where c.ErrorSeverity > 0 select c))
                 {
-                        tmpCheck += GetReport(cp);
+                    tmpCheck += GetReport(cp);
                 }
                 if (tmpCheck != "")
                 {
@@ -143,7 +143,7 @@ namespace AI_Note_Review
                 tmpCheck = "";
                 foreach (ReportToHtmlM cp in (from c in MissedCPs where c.ErrorSeverity == 0 select c))
                 {
-                        tmpCheck += GetReport(cp);
+                    tmpCheck += GetReport(cp);
                 }
                 if (tmpCheck != "")
                 {
@@ -169,7 +169,7 @@ namespace AI_Note_Review
                 //ClipboardHelper.CopyToClipboard(strReport, "");
                 return strReport;
             }
-    }
+        }
 
         public string GetReport(ReportToHtmlM sqlCheckpoint)
         {

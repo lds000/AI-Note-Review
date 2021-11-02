@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\CefSharp.Common.94.4.110\build\CefSharp.Common.props" Condition="Exists('packages\CefSharp.Common.94.4.110\build\CefSharp.Common.props')" />
+  <Import Project="packages\cef.redist.x86.94.4.11\build\cef.redist.x86.props" Condition="Exists('packages\cef.redist.x86.94.4.11\build\cef.redist.x86.props')" />
+  <Import Project="packages\cef.redist.x64.94.4.11\build\cef.redist.x64.props" Condition="Exists('packages\cef.redist.x64.94.4.11\build\cef.redist.x64.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -37,6 +40,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoItX3.Assembly">
+      <HintPath>..\..\..\..\Desktop\Programs 4_6 new\eCmonkey\eCmonkey\bin\Debug\AutoItX3.Assembly.dll</HintPath>
+    </Reference>
+    <Reference Include="CefSharp, Version=94.4.110.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>packages\CefSharp.Common.94.4.110\lib\net452\CefSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="CefSharp.Core, Version=94.4.110.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>packages\CefSharp.Common.94.4.110\lib\net452\CefSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CefSharp.Wpf, Version=94.4.110.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>packages\CefSharp.Wpf.94.4.110\lib\net462\CefSharp.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>packages\CommonServiceLocator.2.0.2\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
@@ -79,8 +94,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataAccessLayer\SqlMasterReviewSummaryM.cs" />
+    <Compile Include="DataAccessLayer\SqlRelProviderMasterReviewSummaryM.cs" />
     <Compile Include="Models\ReportToHtmlM.cs" />
     <Compile Include="ViewModels\ReportToHtmlVM.cs" />
+    <Compile Include="ViewModels\ReportToTextVM.cs" />
+    <Compile Include="ViewModels\MasterReviewSummaryVM.cs" />
     <Compile Include="ViewModels\SqlCheckPointImageVM.cs" />
     <Compile Include="ViewModels\SqlTagVM.cs" />
     <Compile Include="Helper Classes\CF.cs" />
@@ -263,6 +282,12 @@
     <Resource Include="Icons\rightarrow.png" />
     <Resource Include="Icons\eye.png" />
     <Resource Include="Icons\edit.png" />
+    <Content Include="AutoItX3.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AutoItX3_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="MedTerms.lex">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -307,5 +332,10 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
+    <Error Condition="!Exists('packages\cef.redist.x64.94.4.11\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\cef.redist.x64.94.4.11\build\cef.redist.x64.props'))" />
+    <Error Condition="!Exists('packages\cef.redist.x86.94.4.11\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\cef.redist.x86.94.4.11\build\cef.redist.x86.props'))" />
+    <Error Condition="!Exists('packages\CefSharp.Common.94.4.110\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CefSharp.Common.94.4.110\build\CefSharp.Common.props'))" />
+    <Error Condition="!Exists('packages\CefSharp.Common.94.4.110\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CefSharp.Common.94.4.110\build\CefSharp.Common.targets'))" />
   </Target>
+  <Import Project="packages\CefSharp.Common.94.4.110\build\CefSharp.Common.targets" Condition="Exists('packages\CefSharp.Common.94.4.110\build\CefSharp.Common.targets')" />
 </Project>

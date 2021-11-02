@@ -26,6 +26,7 @@ namespace AI_Note_Review
         }
         private BiMonthlyReviewM biMonthlyReviewM;
         private SqlProvider sqlProvider;
+        private MasterReviewSummaryVM biMonthlyReviews;
 
         public BiMonthlyReviewM BiMonthlyReviewM
         {
@@ -35,16 +36,56 @@ namespace AI_Note_Review
             }
         }
 
-        public BiMonthlyReviewVM()
-        {
-            biMonthlyReviewM = new BiMonthlyReviewM();
-        }
-
-        public List<SqlProvider> MyPeeps
+        public MasterReviewSummaryVM BiMonthlyReviews
         {
             get
             {
-                return biMonthlyReviewM.MyPeeps;
+                return biMonthlyReviews;
+            }
+        }
+
+        public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaryList
+        {
+            get { return biMonthlyReviews.MasterReviewSummaryList; }
+        }
+
+        private MasterReviewSummaryVM selectedMasterReviewSummary;
+        public MasterReviewSummaryVM SelectedMasterReviewSummary
+        {
+            get 
+            {
+                if (selectedMasterReviewSummary == null) return new MasterReviewSummaryVM();
+                return selectedMasterReviewSummary; 
+            }
+            set
+            {
+                selectedMasterReviewSummary = value;
+                OnPropertyChanged("MyPeeps");
+            }
+        }
+
+        public BiMonthlyReviewVM()
+        {
+            biMonthlyReviewM = new BiMonthlyReviewM();
+            biMonthlyReviews = new MasterReviewSummaryVM();
+        }
+
+        public ObservableCollection<SqlProvider> MyPeeps
+        {
+            get
+            {
+                Console.WriteLine($"getting west side pod and assigning {SelectedMasterReviewSummary.MasterReviewSummaryTitle} to provider.");
+                string sql = "";
+                sql += $"Select * from Providers where IsWestSidePod == '1' order by FullName;"; //this part is to get the ID of the newly created phrase
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    var tmpPeeps = cnn.Query<SqlProvider>(sql).ToList();
+                    foreach(var tmpPeep in tmpPeeps)
+                    {
+                        tmpPeep.ParentMasterReviewSummary = selectedMasterReviewSummary;
+                    }
+                    return tmpPeeps.ToObservableCollection();
+                }
             }
         }
 
@@ -57,6 +98,7 @@ namespace AI_Note_Review
             set
             {
                 sqlProvider = value;
+                OnPropertyChanged("MyPeeps");
             }
         }
 
