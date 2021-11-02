@@ -44,9 +44,13 @@ namespace AI_Note_Review
             }
         }
 
+        private ObservableCollection<MasterReviewSummaryVM> masterReviewSummaryVM;
         public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaryList
         {
-            get { return biMonthlyReviews.MasterReviewSummaryList; }
+            get 
+            { 
+                return masterReviewSummaryVM; 
+            }
         }
 
         private MasterReviewSummaryVM selectedMasterReviewSummary;
@@ -54,7 +58,7 @@ namespace AI_Note_Review
         {
             get 
             {
-                if (selectedMasterReviewSummary == null) return new MasterReviewSummaryVM();
+                //if (selectedMasterReviewSummary == null) return new MasterReviewSummaryVM();
                 return selectedMasterReviewSummary; 
             }
             set
@@ -68,6 +72,9 @@ namespace AI_Note_Review
         {
             biMonthlyReviewM = new BiMonthlyReviewM();
             biMonthlyReviews = new MasterReviewSummaryVM();
+            masterReviewSummaryVM = biMonthlyReviews.MasterReviewSummaryList;
+            //todo: set selected reviewmodel to one with today's date.
+            selectedMasterReviewSummary = masterReviewSummaryVM.First();
         }
 
         public ObservableCollection<SqlProvider> MyPeeps
@@ -98,7 +105,6 @@ namespace AI_Note_Review
             set
             {
                 sqlProvider = value;
-                OnPropertyChanged("MyPeeps");
             }
         }
 

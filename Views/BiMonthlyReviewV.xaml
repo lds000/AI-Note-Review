@@ -19,10 +19,6 @@
             <local:ChartCountToBrushConverter x:Key="ChartCountToBrushConverter"/>
         </DockPanel.Resources>
         <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Style="{StaticResource MyTbStyle}" FontSize="24">Provider Reviews</TextBlock>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Label Style="{StaticResource MyLblStyle}">General Comment:</Label>
-            <TextBox></TextBox>
-        </StackPanel>
         <!--Report header from property.settings-->
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
             <TextBlock Style="{StaticResource MyTbStyle}" FontSize="16"
@@ -41,6 +37,11 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="White" BorderThickness="1" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
                 <!--List source:BiMonthlyReviewList, SelectedValue=SelectedReview-->
                 <ListBox Style="{StaticResource MyListBox}" x:Name="lbReviews" 
                          SelectedValue="{Binding SelectedMasterReviewSummary}"  ItemsSource="{Binding MasterReviewSummaryList}">
@@ -48,11 +49,19 @@
                         <DataTemplate>
                             <StackPanel x:Name="spTemplate" Orientation="Horizontal">
                                 <!--SqlProvider-->
-                                <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding MasterReviewSummaryTitle}"></TextBlock>
+                                <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding MasterReviewSummaryToString}"></TextBlock>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ListBox>
+                    <Border BorderBrush="White" BorderThickness="1" Margin="2" Grid.Row="1">
+                        <StackPanel>
+                            <Label Style="{StaticResource MyLblStyle}">General Comment:</Label>
+                            <TextBox Style="{StaticResource MyTextBox}"></TextBox>
+                        </StackPanel>
+
+                    </Border>
+                </Grid>
             </Border>
             <Border BorderBrush="White" Grid.Column="1" BorderThickness="1" Margin="5">
                 <!--List source:MyPeeps, SelectedValue=SelectedProviderForBiMonthlyReview-->
@@ -73,7 +82,9 @@
             </Border>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="2">
                 <!-- Contains a list of SqlDocumentReviewSummaryM from SqlProvider.SqlDocumentReviewsSummaryProperty -->
-                <ListBox x:Name="lbMonthReview" Grid.Row="1" Style="{StaticResource MyListBox}" ItemsSource="{Binding ElementName=lbProviders, Path=SelectedValue.SqlDocumentReviewsSummaryProperty}">
+                <ListBox x:Name="lbMonthReview" Grid.Row="1" Style="{StaticResource MyListBox}"
+                         DataContext="{Binding  ElementName=lbProviders, Path=SelectedValue}"
+                         ItemsSource="{Binding SqlDocumentReviewsSummaryProperty}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">

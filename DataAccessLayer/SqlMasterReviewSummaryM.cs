@@ -49,5 +49,6 @@ class PersonVM {
         public string MasterReviewSummarySubject { get; set; }
         public string MasterReviewSummaryComment { get; set; }
         public string MasterReviewSummaryImpression { get; set; }
+
     }
 }

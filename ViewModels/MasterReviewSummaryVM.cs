@@ -82,6 +82,14 @@ class PersonVM {
         public string MasterReviewSummaryComment { get { return masterReviewSummary.MasterReviewSummaryComment; } set { masterReviewSummary.MasterReviewSummaryComment = value; OnPropertyChanged(); } }
         public string MasterReviewSummaryImpression { get { return masterReviewSummary.MasterReviewSummaryImpression; } set { masterReviewSummary.MasterReviewSummaryImpression = value; OnPropertyChanged(); } }
 
+        public string MasterReviewSummaryToString
+        {
+            get
+            {
+                return $"{StartDate.ToString("yyyy/MM/dd")}-{ StartDate.ToString("yyyy/MM/dd")} {MasterReviewSummaryTitle}";
+            }
+        }
+
         public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaryList
         {
             get 
