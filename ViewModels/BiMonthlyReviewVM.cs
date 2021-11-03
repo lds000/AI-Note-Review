@@ -25,8 +25,17 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         private BiMonthlyReviewM biMonthlyReviewM;
-        private SqlProvider sqlProvider;
         private MasterReviewSummaryVM biMonthlyReviews;
+
+        public BiMonthlyReviewVM()
+        {
+            biMonthlyReviewM = new BiMonthlyReviewM();
+            biMonthlyReviews = new MasterReviewSummaryVM();
+            masterReviewSummaryVM = biMonthlyReviews.MasterReviewSummaryList;
+            //todo: set selected reviewmodel to one with today's date.
+            SelectedMasterReviewSummary = masterReviewSummaryVM.First();
+        }
+
 
         public BiMonthlyReviewM BiMonthlyReviewM
         {
@@ -47,35 +56,93 @@ namespace AI_Note_Review
         private ObservableCollection<MasterReviewSummaryVM> masterReviewSummaryVM;
         public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaryList
         {
-            get 
-            { 
-                return masterReviewSummaryVM; 
+            get
+            {
+                return masterReviewSummaryVM;
             }
         }
 
         private MasterReviewSummaryVM selectedMasterReviewSummary;
         public MasterReviewSummaryVM SelectedMasterReviewSummary
         {
-            get 
+            get
             {
                 //if (selectedMasterReviewSummary == null) return new MasterReviewSummaryVM();
-                return selectedMasterReviewSummary; 
+                return selectedMasterReviewSummary;
             }
             set
             {
                 selectedMasterReviewSummary = value;
                 OnPropertyChanged("MyPeeps");
+                SelectedProviderForBiMonthlyReview = MyPeeps.First();
+            }
+        }
+        private SqlProvider selectedProviderForBiMonthlyReview;
+        public SqlProvider SelectedProviderForBiMonthlyReview
+        {
+            get
+            {
+                return selectedProviderForBiMonthlyReview;
+            }
+            set
+            {
+                selectedProviderForBiMonthlyReview = value;
+                OnPropertyChanged("ListOfDocumentReviews");
+                //when the provider is changed, set the selected document for review to the first item in the list.
+                SelectedDocumentReview = ListOfDocumentReviews.FirstOrDefault();
+                OnPropertyChanged("SelectedDocumentReview");
             }
         }
 
-        public BiMonthlyReviewVM()
+        /// <summary>
+        /// Populates a class containing PtID and Dates for a time period (usually two months)
+        /// </summary>
+        public ObservableCollection<SqlDocumentReviewSummaryVM> ListOfDocumentReviews
         {
-            biMonthlyReviewM = new BiMonthlyReviewM();
-            biMonthlyReviews = new MasterReviewSummaryVM();
-            masterReviewSummaryVM = biMonthlyReviews.MasterReviewSummaryList;
-            //todo: set selected reviewmodel to one with today's date.
-            selectedMasterReviewSummary = masterReviewSummaryVM.First();
+            get
+            {
+                if (selectedProviderForBiMonthlyReview == null) return null;
+                if (SelectedMasterReviewSummary == null) return null;
+                string sql = "";
+                sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={selectedProviderForBiMonthlyReview.ProviderID} and VisitDate Between '{SelectedMasterReviewSummary.StartDate.ToString("yyyy-MM-dd")}' and '{SelectedMasterReviewSummary.EndDate.ToString("yyyy-MM-dd")}';";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    ObservableCollection<SqlDocumentReviewSummaryVM> tmpL = new ObservableCollection<SqlDocumentReviewSummaryVM>(cnn.Query<SqlDocumentReviewSummaryVM>(sql).ToList());
+                    foreach (var l in tmpL)
+                    {
+                        l.ParentProvider = selectedProviderForBiMonthlyReview;
+                    }
+                    return tmpL;
+                }
+            }
         }
+
+
+        private SqlDocumentReviewSummaryVM selectedDocumentReview;
+        public SqlDocumentReviewSummaryVM SelectedDocumentReview
+        {
+            get
+            {
+                return selectedDocumentReview;
+            }
+            set
+            {
+                selectedDocumentReview = value;
+                OnPropertyChanged("ReviewHTML");
+            }
+        }
+
+        public string ReviewHTML
+        {
+            get
+            {
+                if (selectedDocumentReview == null) return "No Document Review to Display";
+                ReportToHtmlVM r = new ReportToHtmlVM(selectedDocumentReview.ParentProvider, selectedDocumentReview.VisitDate, selectedDocumentReview.PtID);
+                return r.CheckPointsSummaryHTML;
+            }
+        }
+
+
 
         public ObservableCollection<SqlProvider> MyPeeps
         {
@@ -96,17 +163,6 @@ namespace AI_Note_Review
             }
         }
 
-        public SqlProvider SelectedProviderForBiMonthlyReview
-        {
-            get
-            {
-                return sqlProvider;
-            }
-            set
-            {
-                sqlProvider = value;
-            }
-        }
 
         private ICommand mShowBiMonthlyReport;
         public ICommand ShowBiMonthlyReport

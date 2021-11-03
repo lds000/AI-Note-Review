@@ -81,10 +81,10 @@
                 </ListBox>
             </Border>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="2">
-                <!-- Contains a list of SqlDocumentReviewSummaryM from SqlProvider.SqlDocumentReviewsSummaryProperty -->
+                <!-- Contains a list of SqlDocumentReviewSummaryVM from SqlProvider.SqlDocumentReviewsSummaryProperty -->
                 <ListBox x:Name="lbMonthReview" Grid.Row="1" Style="{StaticResource MyListBox}"
-                         DataContext="{Binding  ElementName=lbProviders, Path=SelectedValue}"
-                         ItemsSource="{Binding SqlDocumentReviewsSummaryProperty}">
+                         ItemsSource="{Binding ListOfDocumentReviews}"
+                         SelectedItem="{Binding SelectedDocumentReview}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -101,8 +101,8 @@
                 </ListBox>
             </Border>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="3">
-                <!-- Binds to lbMonthReview.selecteditem, which is a SqlDocumentReviewSummaryM -->
-                <WebBrowser local:WebBrowserHelper.Body="{Binding ElementName=lbMonthReview, Path=SelectedItem.CheckPointsSummaryHTML}">
+                <!-- Binds to lbMonthReview.selecteditem, which is a SqlDocumentReviewSummaryVM -->
+                <WebBrowser local:WebBrowserHelper.Body="{Binding ReviewHTML}">
 
                 </WebBrowser>
             </Border>
