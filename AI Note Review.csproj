@@ -41,7 +41,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoItX3.Assembly">
-      <HintPath>..\..\..\..\Desktop\Programs 4_6 new\eCmonkey\eCmonkey\bin\Debug\AutoItX3.Assembly.dll</HintPath>
+      <HintPath>..\..\..\Desktop\MemStick\ecMonkey\ecMonkey\bin\Debug\AutoItX3.Assembly.dll</HintPath>
     </Reference>
     <Reference Include="CefSharp, Version=94.4.110.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
       <HintPath>packages\CefSharp.Common.94.4.110\lib\net452\CefSharp.dll</HintPath>

@@ -35,6 +35,7 @@ namespace AI_Note_Review
         private DocumentVM document;
         private PatientVM patient;
         private SqlProvider sqlProvider;
+        private MasterReviewSummaryVM masterReviewSummary;
 
         public VisitReportVM()
         {
@@ -329,6 +330,7 @@ namespace AI_Note_Review
             {
                 cnn.Execute(sql);
             }
+            document.ProviderSql.SetCurrentMasterReview(document.VisitDate);
             MessageBox.Show($"{document.ProviderSql.CurrentReviewCount}/10 reports committed.");
         }
 

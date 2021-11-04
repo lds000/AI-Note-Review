@@ -62,7 +62,7 @@ namespace AI_Note_Review
             documentReviewSummary = new SqlDocumentReviewSummaryM();
         }
 
-        public string CheckPointsSummaryHTML
+        public string ReviewHTML
         {
             get
             {
@@ -76,10 +76,9 @@ namespace AI_Note_Review
             {
             get 
             {
-                figure this out
+                //figure this out
                 if (ParentProvider == null) return null;
-                if (ParentProvider == null) return null;
-                if (ParentProvider == null) return null;
+                if (VisitDate == null) return null;
                 return new ReportToHtmlVM(ParentProvider, VisitDate, PtID);
             }
             set

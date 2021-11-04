@@ -111,6 +111,7 @@ namespace AI_Note_Review
                     foreach (var l in tmpL)
                     {
                         l.ParentProvider = selectedProviderForBiMonthlyReview;
+                        
                     }
                     return tmpL;
                 }
@@ -136,9 +137,8 @@ namespace AI_Note_Review
         {
             get
             {
-                if (selectedDocumentReview == null) return "No Document Review to Display";
-                ReportToHtmlVM r = new ReportToHtmlVM(selectedDocumentReview.ParentProvider, selectedDocumentReview.VisitDate, selectedDocumentReview.PtID);
-                return r.CheckPointsSummaryHTML;
+                if (selectedDocumentReview == null) return "Select a review";
+                return selectedDocumentReview.ReviewHTML;
             }
         }
 

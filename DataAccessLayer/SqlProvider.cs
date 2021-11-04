@@ -70,15 +70,42 @@ namespace AI_Note_Review
         {
             get
             {
-                if (ParentMasterReviewSummary == null) return 0;
+                if (ParentMasterReviewSummary == null && currentMasterReview == null) return -1;
                 string sql = "";
-                sql += $"Select Count(distinct VisitDate || PtID) from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{ParentMasterReviewSummary.StartDate.ToString("yyyy-MM-dd")}' and '{ParentMasterReviewSummary.EndDate.ToString("yyyy-MM-dd")}';";
+                if (currentMasterReview == null)
+                {
+                    currentMasterReview = parentMasterReviewSummary;
+                };
+
+                sql += $"Select Count(distinct VisitDate || PtID) from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{currentMasterReview.StartDate.ToString("yyyy-MM-dd")}' and '{currentMasterReview.EndDate.ToString("yyyy-MM-dd")}';";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     return cnn.ExecuteScalar<int>(sql);
                 }
             }
         }
+
+        private MasterReviewSummaryVM currentMasterReview { get; set; }
+        public void SetCurrentMasterReview(DateTime dt)
+        {
+            string sql = $"Select * from MasterReviewSummary;";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                foreach (var tmpMR in cnn.Query<MasterReviewSummaryVM>(sql).ToList())
+                {
+                    if (dt >= tmpMR.StartDate && dt <= tmpMR.EndDate)
+                    {
+                        currentMasterReview = tmpMR;
+                        return;
+                    }
+                }
+                currentMasterReview = null;
+            }
+
+        }
+
+
+
         public SqlProvider()
         {
         }
