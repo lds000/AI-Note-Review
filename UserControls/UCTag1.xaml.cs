@@ -30,8 +30,8 @@ namespace AI_Note_Review
         {
             //WinEnterText wet = new WinEnterText();
             Button b = sender as Button;
-            SqlCheckpointM cp = DataContext as SqlCheckpointM;
-            SqlTagM st = b.DataContext as SqlTagM;
+            SqlCheckpointVM cp = DataContext as SqlCheckpointVM;
+            SqlTagVM st = b.DataContext as SqlTagVM;
             SqlTagRegExVM srex = new SqlTagRegExVM(st.TagID, "Search Text", cp.TargetSection, 1);
             AddMe(this, EventArgs.Empty);
         }
