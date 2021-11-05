@@ -48,6 +48,19 @@ namespace AI_Note_Review
             biMonthlyReviewVM = new BiMonthlyReviewVM();
             this.DataContext = reportVM;
             biMonthReviewMI.DataContext = biMonthlyReviewVM;
+
+            string sqlCheck = $"Select * from MasterReviewSummary;";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                MasterReviewSummaryVM mrs = cnn.Query<MasterReviewSummaryVM>(sqlCheck).FirstOrDefault();
+                ReportToHtmlVM r = new ReportToHtmlVM();
+                WinPreviewHTML wp = new WinPreviewHTML();
+                wp.MyWB.NavigateToString(r.ExecutiveSummary(mrs));
+                wp.ShowDialog();
+                this.Close();
+
+            }
+
         }
 
         #region Monitor active Window

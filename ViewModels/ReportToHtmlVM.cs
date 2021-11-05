@@ -39,16 +39,48 @@ namespace AI_Note_Review
         {
         }
 
-        /*
-         Select r.*, cp.CheckPointTitle from RelCPPRovider r
-inner join Providers pr on r.ProviderID == pr.ProviderID
-inner join CheckPoints cp on cp.CheckPointID == r.CheckPointID
-where pr.IsWestSidePod == 1
-and r.CheckPointStatus == 2
-and r.VisitDate >= '2021-09-01'
-and r.VisitDate <= '2021-10-31'
-order by cp.CheckPointTitle;
-*/
+        public string ExecutiveSummary(MasterReviewSummaryVM mrs)
+        {
+            string sqlCheck = $"Select r.*, cp.CheckPointTitle from RelCPPRovider r inner join Providers pr on r.ProviderID == pr.ProviderID inner join CheckPoints cp on cp.CheckPointID == r.CheckPointID where pr.IsWestSidePod == 1 " +
+                $"and r.VisitDate >= '{mrs.StartDate.ToString("yyyy-MM-dd")}' and r.VisitDate <= '{mrs.EndDate.ToString("yyyy-MM-dd")}';";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                lReportToHtmlM = cnn.Query<ReportToHtmlM>(sqlCheck).ToList();
+            }
+            List<ReportToHtmlM> PassedCPs = (from c in lReportToHtmlM where c.CheckPointStatus == ReportToHtmlM.CPStates.Pass orderby c.ErrorSeverity descending select c).ToList();
+            List<ReportToHtmlM> MissedCPs = (from c in lReportToHtmlM where c.CheckPointStatus == ReportToHtmlM.CPStates.Fail orderby c.ErrorSeverity descending select c).ToList();
+            int ProviderCount = (from c in lReportToHtmlM select c.ProviderID).Distinct().Count();
+            int totalCPcount = PassedCPs.Count() + MissedCPs.Count();
+            double missedratio = (double)MissedCPs.Count() / (double)(totalCPcount);
+
+            string r = $"<font size='+3'>Report for '{mrs.MasterReviewSummaryTitle}' from {mrs.StartDate.ToString("MM/dd/yyyy")} to {mrs.EndDate.ToString("MM/dd/yyyy")}</font><br>";
+            r += "<hr>";
+            r += $"<font size='+3'>Checkpoint Summary<br>";
+            r += "<ul>";
+            r += $"<font size='+2'><li>Total providers reviewed: {ProviderCount}</font><br>";
+            r += $"<font size='+2'><li>Total checkpoints reviewed: {totalCPcount}</font><br>";
+            r += $"<font size='+2'><li>Total checkpoints missed: {MissedCPs.Count()} ({(missedratio * 100).ToString("0.#")}%)</font><br>";
+            r += "</ul>";
+
+
+            var newQuery = from cp in MissedCPs group cp by cp.CheckPointTitle into newGroup orderby ((double)newGroup.Count() / (double)(from c in lReportToHtmlM where c.CheckPointTitle == newGroup.Key select c).Count()) descending select newGroup;
+
+            r += $"<font size='+3'>Missed Checkpoint Breakdown<br>";
+            r += "<font size='+1'><ul>";
+            foreach (var g in newQuery)
+            {
+                int iCount = g.Count();
+                int iTotal = (from c in lReportToHtmlM where c.CheckPointTitle == g.Key select c).Count();
+                double dRatio = (double)iCount / (double)iTotal;
+
+                r += $"<li>{g.Key} {iCount} of {iTotal} ({(dRatio * 100).ToString("0.#")}%) applicable clinic documents failed";
+                r += "<br>";
+            }
+            r += "</ul></font>";
+
+            return r; 
+
+        }
 
         public ReportToHtmlVM(SqlProvider sProvider, DateTime dt, int ptID)
         {

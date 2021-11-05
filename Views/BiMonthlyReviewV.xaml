@@ -85,6 +85,7 @@
                     <RowDefinition/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Border BorderBrush="White" BorderThickness="1" Margin="5">
                 <!-- Contains a list of SqlDocumentReviewSummaryVM from SqlProvider.SqlDocumentReviewsSummaryProperty -->
@@ -106,8 +107,9 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </Border>
-                <Button Grid.Row="1" Command="{Binding SendOutlookCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}">Send To Outlook</Button>
-                <Button Grid.Row="2" Command="{Binding SendReportCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}">Send To Chrome</Button>
+                <Button Grid.Row="1" Command="{Binding SendExecutiveSummaryCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}">Send Executive Summary</Button>
+                <Button Grid.Row="2" Command="{Binding SendOutlookCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}">Send To Outlook</Button>
+                <Button Grid.Row="3" Command="{Binding SendReportCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}">Send To Chrome</Button>
             </Grid>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="3">
                 <!-- Binds to lbMonthReview.selecteditem, which is a SqlDocumentReviewSummaryVM -->

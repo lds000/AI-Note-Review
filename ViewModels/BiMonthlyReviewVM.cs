@@ -273,6 +273,16 @@ namespace AI_Note_Review
             System.Diagnostics.Process.Start(mailto);
         }
 
+        public void SendExecutiveSummary()
+        {
+            ReportToHtmlVM r = new ReportToHtmlVM();
+            ClipboardHelper.CopyToClipboard(r.ExecutiveSummary(SelectedMasterReviewSummary), "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", "lds00@yahoo.com", "Clinic Note Review For Sep-Oct 2021", "");
+            mailto = Uri.EscapeUriString(mailto);
+            System.Diagnostics.Process.Start(mailto);
+
+        }
+
         private ICommand mShowBiMonthlyReport;
         public ICommand ShowBiMonthlyReport
         {
@@ -320,6 +330,23 @@ namespace AI_Note_Review
             set
             {
                 mSendOutlook = value;
+            }
+            #endregion
+        }
+
+        private ICommand mSendExecutiveSummary;
+        public ICommand SendExecutiveSummaryCommand
+        {
+            #region Command Def
+            get
+            {
+                if (mSendExecutiveSummary == null)
+                    mSendExecutiveSummary = new SendExecutiveSummary();
+                return mSendExecutiveSummary;
+            }
+            set
+            {
+                mSendExecutiveSummary = value;
             }
             #endregion
         }
@@ -391,4 +418,27 @@ namespace AI_Note_Review
             rvm.SendOutlook();
         }
     }
-}
+
+        class SendExecutiveSummary : ICommand
+        {
+            #region ICommand Members  
+
+            public bool CanExecute(object parameter)
+            {
+                return true;
+            }
+            public event EventHandler CanExecuteChanged
+            {
+                add { CommandManager.RequerySuggested += value; }
+                remove { CommandManager.RequerySuggested -= value; }
+            }
+            #endregion
+
+            public void Execute(object parameter)
+            {
+                BiMonthlyReviewVM rvm = parameter as BiMonthlyReviewVM;
+                rvm.SendExecutiveSummary();
+            }
+        }
+
+    }
