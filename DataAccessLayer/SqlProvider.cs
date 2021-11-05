@@ -43,6 +43,8 @@ namespace AI_Note_Review
         public string FullName { get; set; }
         public bool IsWestSidePod { get; set; }
 
+        public string EMail { get; set; }
+
         public string PersonalNotes { get; set; }
 
         public List<SqlMonthReviewSummary> ReviewsByMonth
@@ -194,5 +196,8 @@ namespace AI_Note_Review
             return true;
         }
 
+
     }
+
+
 }

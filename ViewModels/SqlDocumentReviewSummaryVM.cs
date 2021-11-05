@@ -79,7 +79,11 @@ namespace AI_Note_Review
                 //figure this out
                 if (ParentProvider == null) return null;
                 if (VisitDate == null) return null;
-                return new ReportToHtmlVM(ParentProvider, VisitDate, PtID);
+                if (reportToHtmlVM == null)
+                {
+                    reportToHtmlVM = new ReportToHtmlVM(ParentProvider, VisitDate, PtID);
+                }
+                return reportToHtmlVM; 
             }
             set
             {
