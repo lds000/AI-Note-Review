@@ -44,10 +44,21 @@ namespace AI_Note_Review
         {
             ProgramInit();
             InitializeComponent();
+            //SetDay(new DateTime(2021, 11, 6));
             reportVM = new VisitReportVM();
             biMonthlyReviewVM = new BiMonthlyReviewVM();
             this.DataContext = reportVM;
             biMonthReviewMI.DataContext = biMonthlyReviewVM;
+
+            /*
+            Console.WriteLine("sending keys");
+            int i = AutoIt.AutoItX.WinActivate("Encounters");
+            AutoIt.AutoItX.Send("{F2}");
+            Console.WriteLine($"done: {i}");
+            this.Close();
+            
+            /*
+            
 
             string sqlCheck = $"Select * from MasterReviewSummary;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -58,9 +69,69 @@ namespace AI_Note_Review
                 wp.MyWB.NavigateToString(r.ExecutiveSummary(mrs));
                 wp.ShowDialog();
                 this.Close();
+                
+            }
+            */
+        }
 
+        public void SetDay(DateTime dt)
+        {
+            /*
+            AutoIt.AutoItX.MouseMove(600, 230);
+            Thread.Sleep(2000);
+            AutoIt.AutoItX.MouseMove(600, 855);
+            Thread.Sleep(2000);
+            this.Close();
+            */
+            Console.WriteLine("sending keys");
+
+            int i = AutoIt.AutoItX.WinActivate("eClinicalWorks (");
+            //AutoIt.AutoItX.MouseMove(600, 190);
+            AutoIt.AutoItX.MouseClick("LEFT", 600, 190,2);
+            AutoIt.AutoItX.Send(dt.Month.ToString());
+            AutoIt.AutoItX.MouseClick("LEFT", 617, 190, 2);
+            AutoIt.AutoItX.Send(dt.Day.ToString());
+            AutoIt.AutoItX.MouseClick("LEFT", 640, 190, 2);
+            AutoIt.AutoItX.Send(dt.Year.ToString());
+            Thread.Sleep(2000);
+            AutoIt.AutoItX.Send("{F2}");
+            Thread.Sleep(200);
+            AutoIt.AutoItX.WinActivate("CwReport");
+            Thread.Sleep(200);
+            AutoIt.AutoItX.Send("^a");
+            Thread.Sleep(200);
+            AutoIt.AutoItX.Send("^c");
+            Thread.Sleep(200);
+            string strVisitReport = AutoIt.AutoItX.ClipGet();
+            AutoIt.AutoItX.Send("^w");
+            using (StringReader reader = new StringReader(strVisitReport))
+            {
+                string line;
+                int VisitCount = 0;
+                int offset = 230;
+                double iHeight = (double)(855-230)/(double)40;
+                int y = 0;
+                while (null != (line = reader.ReadLine())) 
+                {
+                    int linecount = line.Split('\t').Count();
+                    {
+                        if (linecount > 5)
+                        {
+                            string strVisitType = line.Split('\t')[2];
+                            if (strVisitType == "UC" || strVisitType == "Resp")
+                            {
+                                VisitCount++;
+                                AutoIt.AutoItX.MouseMove(640, offset + (int)(iHeight * (double)y));
+                                Thread.Sleep(100);
+                            }
+                        }
+                    }
+                    y++;
+                }
+                Console.WriteLine($"Visit count is: {VisitCount}");
             }
 
+            Console.WriteLine($"done: {i}");
         }
 
         #region Monitor active Window
@@ -172,7 +243,7 @@ namespace AI_Note_Review
         private void MainWindow_ActiveWindowChanged(object sender, string windowHeader, IntPtr hwnd)
         {
 
-            //Console.WriteLine($"Window ({windowHeader}) focused.");
+            Console.WriteLine($"Window ({windowHeader}) focused.");
             //Console.WriteLine($"Header: {windowHeader}");
             //Get window data (top, left, size)
             RECT rct;
@@ -216,7 +287,15 @@ namespace AI_Note_Review
                                 if (h.EcwHTMLDocument.Body != null)
                                     if (h.EcwHTMLDocument.Body.InnerHtml != null)
                                     {
-                                        reportVM.Document.processLockedt(h.EcwHTMLDocument);
+                                        try
+                                        {
+                                            reportVM.Document.processLockedt(h.EcwHTMLDocument);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Console.WriteLine(e.Message);
+                                            break;
+                                        }
                                         if (reportVM.Patient.PtName != "") break;
                                     }
                         }

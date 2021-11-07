@@ -41,7 +41,7 @@ namespace AI_Note_Review
 
         public string ExecutiveSummary(MasterReviewSummaryVM mrs)
         {
-            string sqlCheck = $"Select r.*, cp.CheckPointTitle from RelCPPRovider r inner join Providers pr on r.ProviderID == pr.ProviderID inner join CheckPoints cp on cp.CheckPointID == r.CheckPointID where pr.IsWestSidePod == 1 " +
+               string sqlCheck = $"Select r.*, cp.CheckPointTitle from RelCPPRovider r inner join Providers pr on r.ProviderID == pr.ProviderID inner join CheckPoints cp on cp.CheckPointID == r.CheckPointID where pr.IsWestSidePod == 1 " +
                 $"and r.VisitDate >= '{mrs.StartDate.ToString("yyyy-MM-dd")}' and r.VisitDate <= '{mrs.EndDate.ToString("yyyy-MM-dd")}';";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
@@ -53,6 +53,7 @@ namespace AI_Note_Review
             int totalCPcount = PassedCPs.Count() + MissedCPs.Count();
             double missedratio = (double)MissedCPs.Count() / (double)(totalCPcount);
 
+            
             string r = $"<font size='+3'>Report for '{mrs.MasterReviewSummaryTitle}' from {mrs.StartDate.ToString("MM/dd/yyyy")} to {mrs.EndDate.ToString("MM/dd/yyyy")}</font><br>";
             r += "<hr>";
             r += $"<font size='+3'>Checkpoint Summary<br>";
@@ -63,7 +64,9 @@ namespace AI_Note_Review
             r += "</ul>";
 
 
-            var newQuery = from cp in MissedCPs group cp by cp.CheckPointTitle into newGroup orderby ((double)newGroup.Count() / (double)(from c in lReportToHtmlM where c.CheckPointTitle == newGroup.Key select c).Count()) descending select newGroup;
+            var newQuery = from cp in MissedCPs 
+                           group cp by cp.CheckPointTitle into newGroup 
+                           orderby ((double)newGroup.Count() / (double)(from c in lReportToHtmlM where c.CheckPointTitle == newGroup.Key select c).Count()) descending select newGroup;
 
             r += $"<font size='+3'>Missed Checkpoint Breakdown<br>";
             r += "<font size='+1'><ul>";
@@ -77,9 +80,14 @@ namespace AI_Note_Review
                 r += "<br>";
             }
             r += "</ul></font>";
-
+            r += "<font size='0'>";
+            foreach (var g in newQuery)
+            {
+                int iCount = g.Count();
+                r += $"{iCount},{g.Key}<br>";
+            }
+            r += "</font>";
             return r; 
-
         }
 
         public ReportToHtmlVM(SqlProvider sProvider, DateTime dt, int ptID)
