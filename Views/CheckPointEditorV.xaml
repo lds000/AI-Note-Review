@@ -42,8 +42,22 @@
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
                     <Button Command="{Binding AddSegmentCommand}" Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
                 </StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <ListBox x:Name="lbMasterReviews"
+                             ItemsSource="{Binding Path=MasterReviewSummaries}"
+                             Style="{StaticResource MyListBox}"
+                             SelectedItem="{Binding SelectedMasterReview}"
+                             DisplayMemberPath="MasterReviewSummaryTitle">
+
+                    </ListBox>
                 <!-- SqlICD10SegmentVM.NoteICD10Segments-->
-                <ListBox x:Name="lbICD10" ItemsSource="{Binding Path=NoteICD10Segments}" Style="{StaticResource MyListBox}">
+                    <ListBox x:Name="lbICD10" Grid.Row="1" 
+                             ItemsSource="{Binding Path=MasterReviewSummaryICD10Segments}" 
+                             Style="{StaticResource MyListBox}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid >
@@ -77,6 +91,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+                </Grid>
             </DockPanel>
             <DockPanel Grid.Column="1">
                 <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">Selected Checkpoints</Label>

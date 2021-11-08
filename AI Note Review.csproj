@@ -97,6 +97,7 @@
     <Compile Include="DataAccessLayer\SqlMasterReviewSummaryM.cs" />
     <Compile Include="DataAccessLayer\SqlRelProviderMasterReviewSummaryM.cs" />
     <Compile Include="Models\ReportToHtmlM.cs" />
+    <Compile Include="Models\ScoutNoteM.cs" />
     <Compile Include="ViewModels\ReportToHtmlVM.cs" />
     <Compile Include="ViewModels\ReportToTextVM.cs" />
     <Compile Include="ViewModels\MasterReviewSummaryVM.cs" />

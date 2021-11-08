@@ -78,6 +78,9 @@ namespace AI_Note_Review
                 SelectedProviderForBiMonthlyReview = MyPeeps.First();
             }
         }
+
+
+
         private SqlProvider selectedProviderForBiMonthlyReview;
         public SqlProvider SelectedProviderForBiMonthlyReview
         {

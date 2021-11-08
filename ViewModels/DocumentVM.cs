@@ -46,6 +46,14 @@ namespace AI_Note_Review
             SetUpNote(); //todo: might be better way of implementing this.
         }
 
+        public DocumentVM(HtmlDocument doc)
+        {
+            document = new DocumentM();
+            patient = new PatientVM();
+            ProcessDocument(doc);
+            SetUpNote(); //todo: might be better way of implementing this.
+        }
+
         #region mirror properties of DocumentM
         public string Facility { get { return document.Facility; } set { document.Facility = value; OnPropertyChanged(); } }
         public string Provider { get { return document.Provider; } set { document.Provider = value; OnPropertyChanged(); } }
@@ -235,11 +243,12 @@ namespace AI_Note_Review
             ICD10s.Clear();
         }
 
+
         public ObservableCollection<SqlICD10SegmentVM> ICD10Segments
         {
             get
             {
-                UpdateICD10Segments();
+                if (document.ICD10Segments == null) UpdateICD10Segments();
                 return document.ICD10Segments; ////see code above...
             }
             set
@@ -345,7 +354,7 @@ namespace AI_Note_Review
                 }
             }
             #endregion
-            ICD10Segments = tmpICD10Segments;
+            document.ICD10Segments = tmpICD10Segments;
             //OnPropertyChanged("ICD10Segments");
 
         }
@@ -355,7 +364,8 @@ namespace AI_Note_Review
             "Lab Reports:","Next Appointment:","Visit Code:","Procedure Codes:","Images:", "Objective:","Procedure Orders:","Preventive Medicine:","Billing Information:","Plan:"};
 
         #region Process EcwContent
-        public void processLockedt(HtmlDocument HDoc)
+        //todo: put this into the view model under set for htmlDoc;
+        public void ProcessDocument(HtmlDocument HDoc)
         {
 
             Clear();

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
@@ -88,6 +89,64 @@ class PersonVM {
             {
                 return $"{StartDate.ToString("yyyy/MM/dd")}-{ StartDate.ToString("yyyy/MM/dd")} {MasterReviewSummaryTitle}";
             }
+        }
+
+        public static MasterReviewSummaryVM CurrentMasterReview
+        {
+            get
+            {
+                string sql = $"Select * from MasterReviewSummary";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    var tmpCol = cnn.Query<MasterReviewSummaryVM>(sql).ToList();
+                    foreach (MasterReviewSummaryVM mrs in tmpCol)
+                    {
+
+                        if (DateTime.Now >= mrs.StartDate && DateTime.Now <= mrs.EndDate)
+                        {
+                            return mrs;
+                        }
+                    }
+                }
+                return null;
+            }
+        }
+
+
+        private List<SqlICD10SegmentVM> iCD10List;
+        public List<SqlICD10SegmentVM> ICD10List
+        {
+            get
+            {
+                if (iCD10List == null)
+                {
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {MasterReviewSummaryID} order by icd10Chapter, icd10CategoryStart;";
+                        var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
+                        List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
+                        foreach (SqlICD10SegmentM s in l)
+                        {
+                            SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
+                            lvm.Add(scvm);
+                        }
+                        iCD10List = lvm;
+                    }
+                }
+                return iCD10List;
+            }
+        }
+
+        public bool ContainsDocument(DocumentVM d)
+        {
+            foreach (SqlICD10SegmentVM icd10 in d.ICD10Segments)
+            {
+                foreach (SqlICD10SegmentVM mrsICD10 in ICD10List)
+                {
+                    if (mrsICD10.ICD10SegmentID == icd10.ICD10SegmentID) return true;
+                }
+            }
+            return false;
         }
 
         public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaryList
