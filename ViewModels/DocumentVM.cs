@@ -25,13 +25,21 @@ namespace AI_Note_Review
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-
+        
+        /// <summary>
+        ///Used for the 1st check point 
+        /// </summary>
         public bool GeneralCheckPointsOnly { get; set; }
 
         private PatientVM patient;
         private DocumentM document;
         private SqlProvider sqlProvider;
 
+        /// <summary>
+        /// Constructor given provider and patient, I don't think this is necessary, as Provider and patient are derived from the document model
+        /// </summary>
+        /// <param name="prov"></param>
+        /// <param name="pvm"></param>
         public DocumentVM(SqlProvider prov, PatientVM pvm)
         {
             sqlProvider = prov;
@@ -40,12 +48,19 @@ namespace AI_Note_Review
             SetUpNote(); //todo: might be better way of implementing this.
         }
 
+        /// <summary>
+        /// Default constructor, may be used in the future to save the Document object with Dapper
+        /// </summary>
         public DocumentVM()
         {
             document = SampleDocument; //New DocumentM() called under this.
             SetUpNote(); //todo: might be better way of implementing this.
         }
 
+        /// <summary>
+        /// Constructor used in notehunter.
+        /// </summary>
+        /// <param name="doc"></param>
         public DocumentVM(HtmlDocument doc)
         {
             document = new DocumentM();
@@ -95,6 +110,9 @@ namespace AI_Note_Review
 
         //{ get {return document.;} set{document. = value;} }
 
+        /// <summary>
+        /// The patient that is extracted from the document
+        /// </summary>
         public PatientVM Patient
         {
             get
@@ -103,6 +121,9 @@ namespace AI_Note_Review
             }
         }
 
+        /// <summary>
+        /// The provider that is extracted from the document
+        /// </summary>
         public SqlProvider SqlProvider
         {
             get
@@ -110,6 +131,16 @@ namespace AI_Note_Review
                 return sqlProvider;
             }
         }
+
+        public bool IsLocked
+        {
+            get
+            {
+                //unlocked charts html body start with the <link
+                return !NoteHTML.StartsWith("<LINK");
+            }
+        }
+
 
         /// <summary>
         /// return a sample document for testing
@@ -1005,6 +1036,11 @@ namespace AI_Note_Review
         }
         #endregion
 
+
+        /// <summary>
+        /// Commands
+        /// </summary>
+        #region Commands
         private ICommand mShowReport;
         public ICommand ShowReport
         {
@@ -1039,8 +1075,10 @@ namespace AI_Note_Review
             }
             #endregion
         }
+        #endregion
     }
 
+    #region Command Classes
     class ShowReport : ICommand
     {
         #region ICommand Members  
@@ -1092,5 +1130,5 @@ namespace AI_Note_Review
             wp.ShowDialog();
         }
     }
-
+    #endregion
 }

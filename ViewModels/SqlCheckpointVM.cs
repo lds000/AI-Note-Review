@@ -169,7 +169,7 @@ public PersonViewModel(PersonModel person) {
         /// <summary>
         /// Holds the current review's Yes/No SqlRegex's
         /// </summary>
-        private Dictionary<int, bool> YesNoSqlRegExIndex = new Dictionary<int, bool>();
+        public Dictionary<int, bool> YesNoSqlRegExIndex = new Dictionary<int, bool>();
 
 
         /// <summary>
@@ -184,6 +184,7 @@ public PersonViewModel(PersonModel person) {
                 if (TagRegEx.RegExText.Contains("prolonged")) //used to debug
                 {
                 }
+
 
                 //This boolean shortens the code
                 bool StopIfMissOrHide = TagRegEx.TagRegExMatchResult != SqlTagRegExM.EnumResult.Pass;
@@ -269,6 +270,8 @@ public PersonViewModel(PersonModel person) {
                         }
                     }
                 }
+
+
                 //ALL condition met if all terms match
                 if (StopIfMissOrHide)
                 {

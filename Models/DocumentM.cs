@@ -38,8 +38,6 @@ namespace AI_Note_Review
 
         }
 
-
-
         #region note details
         public string Facility
         {
@@ -457,7 +455,7 @@ namespace AI_Note_Review
         }
         #endregion
 
-        #region property variables
+        #region private property variables
         /// <summary>
         /// An array where the index matches the notesectionID
         /// </summary>

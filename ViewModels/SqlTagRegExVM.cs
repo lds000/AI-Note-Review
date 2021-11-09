@@ -7,6 +7,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -49,12 +50,28 @@ public PersonViewModel(PersonModel person) {
         }
 
         private SqlTagRegExM SqlTagRegEx { get; set; }
+        
+        public DocumentVM ParentDocumentVM { get; set; }
+        public SqlTagVM ParentTag { get; set; }
 
         public SqlTagRegExVM()
         {
             this.SqlTagRegEx = new SqlTagRegExM();
         }
 
+        /// <summary>
+        /// Create and save to database
+        /// </summary>
+        /// <param name="intTargetTag"></param>
+        /// <param name="strRegExText"></param>
+        /// <param name="intTargetSection"></param>
+        /// <param name="iTagRegExType"></param>
+        /// <param name="iTagRegExMatchType"></param>
+        /// <param name="iTagRegExMatchResult"></param>
+        /// <param name="dMinAge"></param>
+        /// <param name="dMaxAge"></param>
+        /// <param name="bMale"></param>
+        /// <param name="bFemale"></param>
         public SqlTagRegExVM(long intTargetTag, string strRegExText, long intTargetSection, long iTagRegExType = 1, long iTagRegExMatchType = 0, long iTagRegExMatchResult = 0, double dMinAge = 0, double dMaxAge = 99, bool bMale = true, bool bFemale = true)
         {
             strRegExText = strRegExText.Replace("'", "''"); //used to avoid errors in titles with ' character
@@ -68,7 +85,7 @@ public PersonViewModel(PersonModel person) {
             }
         }
 
-        public SqlTagVM ParentTag { get; set; }
+        #region Mirror the Model properties
         public int TagRegExID { get { return this.SqlTagRegEx.TagRegExID; } set { this.SqlTagRegEx.TagRegExID = value; OnPropertyChangedSave(); } }
         public int TargetTag { get { return this.SqlTagRegEx.TargetTag; } set { SqlTagRegEx.TargetTag = value; OnPropertyChangedSave(); } }
         public int TargetSection { get { return this.SqlTagRegEx.TargetSection; } set { SqlTagRegEx.TargetSection = value; OnPropertyChangedSave(); } }
@@ -80,13 +97,163 @@ public PersonViewModel(PersonModel person) {
         public double MaxAge { get { return this.SqlTagRegEx.MaxAge; } set { SqlTagRegEx.MaxAge = value; OnPropertyChangedSave(); } }
         public bool Male { get { return this.SqlTagRegEx.Male; } set { SqlTagRegEx.Male = value; OnPropertyChangedSave(); } }
         public bool Female { get { return this.SqlTagRegEx.Female; } set { SqlTagRegEx.Female = value; OnPropertyChangedSave(); } }
+        #endregion
 
-        public string NoteSectionText { 
+        //process all,none,any match condition
+        //Cycle through the list of terms and search through section of note if term is a match or not
+
+        private bool allTermsMatch;
+        public bool AllTermsMatch
+        {
+            get
+            {
+                return allTermsMatch;
+            }
+            set
+            {
+                allTermsMatch = value;
+            }
+        }
+
+        private bool noTermsMatch;
+        public bool NoTermsMatch
+        {
+            get
+            {
+                return noTermsMatch;
+            }
+            set
+            {
+                noTermsMatch = value;
+            }
+        }
+
+        //This boolean shortens the code
+        bool StopIfMissOrHide
+        {
+            get
+            {
+                return TagRegExMatchResult != SqlTagRegExM.EnumResult.Pass;
+            }
+        }
+
+        private bool? ask;
+        public bool Ask
+        {
+            get
+            {
+                if (ask == null)
+                {
+                        WinShowRegExYesNo ws = new WinShowRegExYesNo();
+                        if (RegExText.Contains('|'))
+                        {
+                            ws.tbQuestion.Text = RegExText.Split('|')[1];
+                        }
+                        else
+                        {
+                            ws.tbQuestion.Text = RegExText;
+                        }
+                        ws.DataContext = this;
+                        ws.ShowDialog();
+                        ParentTag.ParentCheckPoint.YesNoSqlRegExIndex.Add(TagRegExID, ws.YesNoResult);
+                        ask = ws.YesNoResult;
+                }
+                return (bool)ask;
+            }
+        }
+
+        private bool? isHidden;
+        public bool IsHidden
+        {
+            get
+            {
+                if (isHidden == null)
+                {
+                    double age = ParentDocumentVM.Patient.GetAgeInYearsDouble;
+                    if (age < MinAge) isHidden = true;
+                    if (age >= MaxAge) isHidden = true;
+                    if (ParentDocumentVM.Patient.isMale && !Male) isHidden = true;
+                    if (!ParentDocumentVM.Patient.isMale && !Female) isHidden = true;
+                }
+                return false;
+            }
+        }
+
+        private SqlTagRegExM.EnumResult getMatchStatus()
+        {
+                // check demographic limits and return result if met.
+                //If any TagRegEx fails due to demographics, the entire series fails
+                if (IsHidden) return SqlTagRegExM.EnumResult.Hide;
+
+            //Process each of the tags, if any fail or hide then series stop, otherwise passes.
+            //Process Yes/No Tag
+            if (TagRegExMatchType == SqlTagRegExM.EnumMatch.Ask) //ask question... pass if yes, fail if no
+                {
+                   if (Ask) //I made this into a property so it is remembered.
+                    {
+                        if (StopIfMissOrHide) return TagRegExMatchResult; //if Yes return 1st Result option if it's fail or hide
+                    }
+                    else
+                    {
+                        if (TagRegExMatchNoResult != SqlTagRegExM.EnumResult.Pass) return TagRegExMatchNoResult;
+                    }
+            }
+
+                foreach (string strRegEx in RegExText.Split(','))
+                {
+                    if (strRegEx.Trim() != "")
+                    {
+                        //This is original: i took the prefix out, not sure why it was there if (Regex.IsMatch(strTextToMatch, CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase))
+                        if (Regex.IsMatch(DocumentNoteSectionTextToMatch, CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase)) // /i is lower case directive for regex
+                        {
+                            //Match is found!
+                            //ANY condition is met, so stop if miss or hide if that is the 1st action
+                            if (StopIfMissOrHide) if (TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) return TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.
+                            NoTermsMatch = false;
+                            if (TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) break; //condition met, no need to check rest
+                        }
+                        else
+                        {
+                            AllTermsMatch = false;
+                        }
+                    }
+                    //ALL condition met if all terms match
+                    if (StopIfMissOrHide)
+                    {
+                        if (AllTermsMatch && StopIfMissOrHide)
+                        {
+                            if (TagRegExMatchType == SqlTagRegExM.EnumMatch.All) return TagRegExMatchResult; //Contains All return 2nd Result because any clause not reached
+                        }
+                        if (NoTermsMatch && TagRegExMatchType == SqlTagRegExM.EnumMatch.None) return TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.)
+                        if (!NoTermsMatch && TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) return TagRegExMatchNoResult;
+                    }
+                    //NONE condition met if no terms match
+
+                    if (!NoTermsMatch && TagRegExMatchType == SqlTagRegExM.EnumMatch.Any) continue;
+
+                    if (NoTermsMatch && TagRegExMatchType == SqlTagRegExM.EnumMatch.None) //none condition met, carry out pass
+                    {
+
+                    }
+                    else
+                    {
+                        if (TagRegExMatchNoResult != SqlTagRegExM.EnumResult.Pass) return TagRegExMatchNoResult;
+                    }
+                    //ASK,ALL, and NONE conditions are note met, so the NoResult condition is the action
+                }
+            return SqlTagRegExM.EnumResult.Pass; //default is pass
+        }
+
+        /// <summary>
+        /// Maps to the DocumentVM text section that is used to match this TagRexEx to.
+        /// </summary>
+        public string DocumentNoteSectionTextToMatch { 
             get 
             {
                 return ParentTag.ParentCheckPoint.ParentDocument.NoteSectionText[TargetSection]; 
             } 
         }
+
         public IEnumerable<SqlTagRegExM.EnumMatch> MyMatchTypeValues
         {
             get
@@ -232,6 +399,7 @@ public PersonViewModel(PersonModel person) {
 
         }
 
+        #region Commands
         private ICommand mSaveTagRegEx;
         public ICommand SaveTagRegExCommand
         {
@@ -261,8 +429,10 @@ public PersonViewModel(PersonModel person) {
                 mDeleteTagRegEx = value;
             }
         }
+        #endregion
     }
 
+    #region Command Classes
     class SaveTagRegEx : ICommand
     {
         #region ICommand Members  
@@ -305,4 +475,5 @@ public PersonViewModel(PersonModel person) {
         }
         #endregion
     }
+    #endregion
 }
