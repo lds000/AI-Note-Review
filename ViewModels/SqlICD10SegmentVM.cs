@@ -72,6 +72,9 @@ namespace AI_Note_Review
                 includeSegment = value;
                 OnPropertyChanged("IncludeSegment");
                 OnPropertyChanged("CBIncludeSegment");
+                OnPropertyChanged("MissedCPs");
+                OnPropertyChanged("PassedCPs");
+                OnPropertyChanged("DroppedCPs");
             }
         }
         //used to track manual changes to textbox
@@ -86,7 +89,7 @@ namespace AI_Note_Review
                 includeSegment = value;
                 OnPropertyChanged("IncludeSegment");
                 OnPropertyChanged("CBIncludeSegment");
-                ParentReport.UpdateCPs(); //now recalculate all checkpoints.
+                ParentReport.ClearCPs(); //now recalculate all checkpoints.
             }
         }
         public void UpdateAll()
@@ -224,7 +227,7 @@ namespace AI_Note_Review
                 missedCPs = null;
                 droppedCPs = null;
                 Console.WriteLine($"Setting passed, missed, and droppedCPs to null for segment {SegmentTitle}.");
-                ParentReport.UpdateCPs();
+                ParentReport.ClearCPs();
             }
         }
 

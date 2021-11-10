@@ -1099,7 +1099,6 @@ namespace AI_Note_Review
             VisitReportVM rvm = parameter as VisitReportVM;
             rvm.GeneralCheckPointsOnly = false;
             rvm.NewEcWDocument(); //reset document
-            rvm.UpdateCPs(); //I don't think I need to update CPs if there are none.
             VisitReportV wp = new VisitReportV(rvm);
             wp.ShowDialog();
         }
@@ -1125,7 +1124,6 @@ namespace AI_Note_Review
             VisitReportVM rvm = parameter as VisitReportVM;
             rvm.GeneralCheckPointsOnly = true;
             rvm.NewEcWDocument(); //reset document
-            rvm.UpdateCPs(); //I don't think I need to update CPs if there are none.
             VisitReportV wp = new VisitReportV(rvm);
             wp.ShowDialog();
         }

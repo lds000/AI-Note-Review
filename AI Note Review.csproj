@@ -294,6 +294,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Documentation\AINoteReviewPP.pptx" />
+    <None Include="Documentation\Presentation.pptx" />
     <None Include="NoteReviewDB.db" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

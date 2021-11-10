@@ -66,9 +66,9 @@ namespace AI_Note_Review
         //not sure I need this.
         public void NewEcWDocument()
         {
-            passedCPs.Clear();
-            missedCPs.Clear();
-            droppedCPs.Clear();
+            passedCPs = null;
+            missedCPs = null;
+            droppedCPs = null;
             iCD10Segments = null; //reset segments
         }
 
@@ -151,8 +151,6 @@ namespace AI_Note_Review
         {
             get
             {
-                if (passedCPs == null)
-                {
                     passedCPs = new ObservableCollection<SqlCheckpointVM>();
                     foreach (var tmpCollection in ICD10Segments)
                     {
@@ -161,7 +159,6 @@ namespace AI_Note_Review
                             passedCPs = passedCPs.Union(tmpCollection.PassedCPs).ToObservableCollection();
                         }
                     }
-                }
                 return passedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
             }
             set
@@ -175,8 +172,6 @@ namespace AI_Note_Review
         {
             get
             {
-                if (missedCPs == null)
-                {
                     missedCPs = new ObservableCollection<SqlCheckpointVM>();
                     foreach (var tmpCollection in ICD10Segments) //only run once per report
                     {
@@ -186,7 +181,6 @@ namespace AI_Note_Review
                             //var unitedPoints = observableCollection1.Union(observableCollection2).ToObservableCollection();
                         }
                     }
-                }
                 return missedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
             }
             set
@@ -200,8 +194,6 @@ namespace AI_Note_Review
         {
             get
             {
-                if (droppedCPs == null)
-                {
                     droppedCPs = new ObservableCollection<SqlCheckpointVM>();
                     foreach (var tmpCollection in ICD10Segments)
                     {
@@ -210,7 +202,6 @@ namespace AI_Note_Review
                             droppedCPs = droppedCPs.Union(tmpCollection.DroppedCPs).ToObservableCollection();
                         }
                     }
-                }
                 return droppedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
             }
             set
@@ -255,8 +246,15 @@ namespace AI_Note_Review
             }
         }
 
-        public void UpdateCPs()
+        public void ClearCPs()
             {
+            OnPropertyChanged("MissedCPs");
+            OnPropertyChanged("DroppedCPs");
+            OnPropertyChanged("PassedCPs");
+            /*
+            missedCPs = null;
+            passedCPs = null;
+            droppedCPs = null;
             missedCPs.Clear();
             passedCPs.Clear();
             droppedCPs.Clear();
@@ -273,10 +271,8 @@ namespace AI_Note_Review
             passedCPs = passedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
             droppedCPs = droppedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
             Console.WriteLine("Setting missed,dropped,passed cp's to null on visit report.");
-            OnPropertyChanged("MissedCPs");
-            OnPropertyChanged("DroppedCPs");
-            OnPropertyChanged("PassedCPs");
             OnPropertyChanged("SelectedItem");
+            */
         }
         public void SetCPs()
         {

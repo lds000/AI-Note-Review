@@ -98,43 +98,30 @@ public PersonViewModel(PersonModel person) {
         {
             get
             {
+                //check if I have manually overidden the checkpoint and keep that assignment, since I am the genius here, not the program.
+                if (cPoverideStatus != null)
+                {
+                    cPStatus = (SqlTagRegExM.EnumResult)cPoverideStatus;
+                    IncludeCheckpoint = false;
+                    if (cPStatus == SqlTagRegExM.EnumResult.Miss || cPStatus == SqlTagRegExM.EnumResult.Pass) //include checkpoint is linked to the checkbox button
+                    {
+                        IncludeCheckpoint = true;
+                    }
+                    return (SqlTagRegExM.EnumResult)cPoverideStatus;
+                }
+
                 if (cPStatus == null) 
                 {
-                    //this should only be run once for each checkpoint every time the report is opened.
-                    //check if I have manually overidden the checkpoint and keep that assignment, since I am the genius here, not the program.
-                    if (cPoverideStatus != null)
+                    //this should only be run once for each checkpoint every time the report is opened. Unless it is edited and set back to null;
+                    cPStatus = SqlTagRegExM.EnumResult.Pass;
+                    foreach (SqlTagVM tagCurrentTag in Tags)
                     {
-                        cPStatus = (SqlTagRegExM.EnumResult)cPoverideStatus;
-                        IncludeCheckpoint = false;
-                        if (cPStatus == SqlTagRegExM.EnumResult.Miss || cPStatus == SqlTagRegExM.EnumResult.Pass) //include checkpoint is linked to the checkbox button
+                        if (tagCurrentTag.MatchResult != SqlTagRegExM.EnumResult.Pass)
                         {
-                            IncludeCheckpoint = true;
-                            //OnPropertyChanged("IncludeCheckpoint");
-                        }
-                        //OnPropertyChanged("CPStatus");
-                        return (SqlTagRegExM.EnumResult)cPoverideStatus;
+                            cPStatus = tagCurrentTag.MatchResult;
+                            break; //miss or hide condition met, no need to proceed to additional tags.
+                         }
                     }
-
-                    SqlTagRegExM.EnumResult trTagResult = SqlTagRegExM.EnumResult.Pass;
-                    if (CheckPointTitle.Contains("Augmentin XR"))
-                    {
-                        //use this for testing...
-                    }
-                    foreach (SqlTagVM tagCurrentTag in GetTags())
-                    {
-                        SqlTagRegExM.EnumResult trCurrentTagResult;
-                        List<SqlTagRegExVM> tmpTagRegExs = tagCurrentTag.GetTagRegExs();
-                        trCurrentTagResult = CheckTagRegExs(tmpTagRegExs);
-
-                        if (trCurrentTagResult != SqlTagRegExM.EnumResult.Pass)
-                        {
-                            //tag fails, no match.
-                            trTagResult = trCurrentTagResult;
-                            break; //if the first tag does not qualify, then do not proceed to the next tag.
-                        }
-                        //report.DocumentTags.Add(tagCurrentTag.TagText); Don't I need this.
-                    }
-                    cPStatus = trTagResult;                    
                 }
                 if (cPStatus == SqlTagRegExM.EnumResult.Miss || cPStatus == SqlTagRegExM.EnumResult.Pass) //include checkpoint is linked to the checkbox button
                 {
@@ -327,20 +314,14 @@ public PersonViewModel(PersonModel person) {
         /// <summary>
         /// Get the tags associated with the checkpoint
         /// </summary>
+        public List<SqlTagVM> tags;
+
         public List<SqlTagVM> Tags
         {
             get
             {
-                string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID};";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    var tmpList = cnn.Query<SqlTagVM>(sql, this).ToList();
-                    foreach (SqlTagVM st in tmpList)
-                    {
-                        st.ParentCheckPoint = this;
-                    }
-                    return tmpList;
-                }
+                if (tags == null) tags = GetTags();
+                return tags;
             }
         }
 
@@ -353,6 +334,7 @@ public PersonViewModel(PersonModel person) {
                 foreach (var tmp in tmpList)
                 {
                     tmp.ParentCheckPoint = this;
+                    tmp.ParentDocument = ParentDocument; //maybe move this into the constructor
                 }
                 return tmpList;
             }
@@ -383,9 +365,18 @@ public PersonViewModel(PersonModel person) {
         /// <summary>
         /// A boolean indicating if the checkpoint will be included in the report.  This is true by default for all missed checkpoint, false for for all passed check point. It is not saved in the database.
         /// </summary>
+        private bool includeCheckpoint;
         public bool IncludeCheckpoint
         {
-            get; set;
+            get
+            {
+             return includeCheckpoint;
+            } 
+            set
+            {
+                includeCheckpoint = value;
+                OnPropertyChanged();
+            }
         }
 
         public List<SqlCheckpointM> GetCPsFromSegment(int SegmentID)
@@ -639,7 +630,7 @@ public PersonViewModel(PersonModel person) {
             WinCheckPointEditor wce = new WinCheckPointEditor(cp);
             wce.DataContext = cp.ParentSegment.ParentReport;
             wce.Show();
-            cp.ParentSegment.ParentReport.UpdateCPs();
+            cp.ParentSegment.ParentReport.ClearCPs();
         }
         #endregion
     }

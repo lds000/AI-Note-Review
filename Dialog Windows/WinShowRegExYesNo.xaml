@@ -32,7 +32,7 @@
                                                     VerticalAlignment="Center">
                 <ContentControl.Content>
                     <MultiBinding Converter="{StaticResource mySqlTagRegExToXamlConverter}">
-                        <Binding Path="NoteSectionText"/>
+                        <Binding Path="DocumentNoteSectionTextToMatch"/>
                         <Binding Path="TagRegExMatchType" />
                         <Binding Path="RegExText" />
                     </MultiBinding>

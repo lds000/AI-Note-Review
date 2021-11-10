@@ -41,6 +41,8 @@ class PersonViewModel {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+        public DocumentVM ParentDocument { get; set; }
+
         public SqlTagVM(string strTagText)
         {
             strTagText = strTagText.Replace("'", "''"); //used to avoid errors in titles with ' character
@@ -84,7 +86,58 @@ class PersonViewModel {
             OnPropertyChanged("TagRegExs");
         }
 
-        public List<SqlTagRegExVM> GetTagRegExs()
+        private SqlTagRegExM.EnumResult? matchResult;
+        public SqlTagRegExM.EnumResult MatchResult
+        {
+            get
+            {
+                if (matchResult == null)
+                {
+                    matchResult = SqlTagRegExM.EnumResult.Pass;
+                    foreach (var tmpTagRegEx in TagRegExs)
+                    {
+                        if (tmpTagRegEx.MatchStatus != SqlTagRegExM.EnumResult.Pass)
+                        {
+                            matchResult = tmpTagRegEx.MatchStatus;
+                            break;
+                        }
+                    }
+                }
+                return (SqlTagRegExM.EnumResult)matchResult;
+            }
+        }
+
+        private List<SqlTagRegExVM> tagRegExs;
+        public List<SqlTagRegExVM> TagRegExs
+        {
+            get
+            {
+                if (tagRegExs == null) tagRegExs = GetTagRegExs();
+                return tagRegExs;
+            }
+        }
+
+        /*
+        public List<SqlTagRegExVM> TagRegExs
+        {
+            get
+            {
+                string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    var tmpList = cnn.Query<SqlTagRegExVM>(sql).ToList();
+                    foreach (var tmp in tmpList)
+                    {
+                        tmp.ParentTag = this;
+                    }
+                    return tmpList;
+                }
+            }
+
+        }
+        */
+
+        private List<SqlTagRegExVM> GetTagRegExs()
         {
             string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -93,6 +146,7 @@ class PersonViewModel {
                 foreach (var tmp in tmpList)
                 {
                     tmp.ParentTag = this;
+                    tmp.ParentDocumentVM = ParentDocument;
                 }
                 return tmpList;
             }
@@ -142,23 +196,6 @@ class PersonViewModel {
 
                 tb.Foreground = Brushes.White;
                 return tb;
-            }
-
-        }
-        public List<SqlTagRegExVM> TagRegExs
-        {
-            get
-            {
-                string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    var tmpList = cnn.Query<SqlTagRegExVM>(sql).ToList();
-                    foreach (var tmp in tmpList)
-                    {
-                        tmp.ParentTag = this;
-                    }
-                    return tmpList;
-                }
             }
 
         }
