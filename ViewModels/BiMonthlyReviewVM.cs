@@ -286,6 +286,8 @@ namespace AI_Note_Review
 
         }
 
+        #region commands
+
         private ICommand mShowBiMonthlyReport;
         public ICommand ShowBiMonthlyReport
         {
@@ -370,8 +372,10 @@ namespace AI_Note_Review
             }
             #endregion
         }
+        #endregion
     }
 
+    #region command classes
     class ShowMasterReview : ICommand
     {
         #region ICommand Members  
@@ -483,5 +487,6 @@ namespace AI_Note_Review
                 rvm.SendExecutiveSummary();
             }
         }
+    #endregion
 
-    }
+}

@@ -34,7 +34,14 @@ public PersonViewModel(PersonModel person) {
 }
 }
 */
-    public class SqlCheckpointVM : INotifyPropertyChanged
+
+    public interface ICheckPoint
+    {
+        string CheckPointTitle { get; set; }
+        SqlTagRegExM.EnumResult CPStatus { get; }
+        int ErrorSeverity { get; set; }
+    }
+    public class SqlCheckpointVM : INotifyPropertyChanged, ICheckPoint
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;

@@ -135,7 +135,7 @@ namespace AI_Note_Review
 
         public void CheckSegment()
         {
-            passedCPs = new List<SqlCheckpointVM>();
+            passedCPs = new List<ICheckPoint>();
             missedCPs = new List<SqlCheckpointVM>();
             droppedCPs = new List<SqlCheckpointVM>();
             OnPropertyChanged("PassedCPs");
@@ -143,14 +143,14 @@ namespace AI_Note_Review
             OnPropertyChanged("DroppedCPs");
         }
 
-        private List<SqlCheckpointVM> passedCPs;
-        public List<SqlCheckpointVM> PassedCPs
+        private List<ICheckPoint> passedCPs;
+        public List<ICheckPoint> PassedCPs
         {
             get
             {
                 if (passedCPs == null)
                 {
-                    passedCPs = new List<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Pass select c);
+                    passedCPs = new List<ICheckPoint>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Pass select c);
                 }
                 return passedCPs;
             }

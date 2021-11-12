@@ -43,7 +43,7 @@ namespace AI_Note_Review
             sqlProvider = new SqlProvider(); //Change provider for report
             patient = new PatientVM();
             document = new DocumentVM(sqlProvider, patient);
-            passedCPs = new ObservableCollection<SqlCheckpointVM>();
+            passedCPs = new ObservableCollection<ICheckPoint>();
             missedCPs = new ObservableCollection<SqlCheckpointVM>();
             droppedCPs = new ObservableCollection<SqlCheckpointVM>();
             GeneralCheckPointsOnly = false;
@@ -56,7 +56,7 @@ namespace AI_Note_Review
             sqlProvider = new SqlProvider(); //Change provider for report
             patient = new PatientVM();
             document = new DocumentVM(sqlProvider, patient);
-            passedCPs = new ObservableCollection<SqlCheckpointVM>();
+            passedCPs = new ObservableCollection<ICheckPoint>();
             missedCPs = new ObservableCollection<SqlCheckpointVM>();
             droppedCPs = new ObservableCollection<SqlCheckpointVM>();
             GeneralCheckPointsOnly = false;
@@ -146,12 +146,12 @@ namespace AI_Note_Review
         }
         #endregion
 
-        private ObservableCollection<SqlCheckpointVM> passedCPs;
-        public ObservableCollection<SqlCheckpointVM> PassedCPs
+        private ObservableCollection<ICheckPoint> passedCPs;
+        public ObservableCollection<ICheckPoint> PassedCPs
         {
             get
             {
-                    passedCPs = new ObservableCollection<SqlCheckpointVM>();
+                    passedCPs = new ObservableCollection<ICheckPoint>();
                     foreach (var tmpCollection in ICD10Segments)
                     {
                         if (tmpCollection.IncludeSegment)

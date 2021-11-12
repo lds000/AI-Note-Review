@@ -20,7 +20,7 @@
                         <MenuItem Header="Exit" ToolTip="Show the reviews for the selected provider and selected review date."></MenuItem>
                     </MenuItem>
                     <MenuItem Name="masterReviewMI" Header="Master Reviews"
-                              Command="{Binding Path=ShowMasterReview}"
+                              Command="{Binding Path=ShowMasterReviewCommand}"
                                 CommandParameter="{Binding}" >
                     </MenuItem>
                     <MenuItem Name="biMonthReviewMI" Header="Reviews" Command="{Binding Path=ShowBiMonthlyReport}"
