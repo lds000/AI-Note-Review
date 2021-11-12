@@ -81,15 +81,37 @@ public PersonViewModel(PersonModel person) {
         public SqlCheckpointM SqlCheckpoint { get; set; }
         public int CheckPointID { get { return this.SqlCheckpoint.CheckPointID; } set { this.SqlCheckpoint.CheckPointID = value; OnPropertyChangedSave(); } }
         public string CheckPointTitle { get { return this.SqlCheckpoint.CheckPointTitle; } set { this.SqlCheckpoint.CheckPointTitle = value; OnPropertyChangedSave(); } }
-        public int CheckPointType { get { return this.SqlCheckpoint.CheckPointType; } set { this.SqlCheckpoint.CheckPointType = value; OnPropertyChangedSave(); } }
+        public int CheckPointType { get { return this.SqlCheckpoint.CheckPointType; } set { this.SqlCheckpoint.CheckPointType = value; OnPropertyChangedSave(); OnPropertyChanged("StrCheckPointType"); } }
         public string Comment { get { return this.SqlCheckpoint.Comment; } set { this.SqlCheckpoint.Comment = value;  OnPropertyChangedSave(); } }
         public int ErrorSeverity { get { return this.SqlCheckpoint.ErrorSeverity; } set { this.SqlCheckpoint.ErrorSeverity = value; OnPropertyChangedSave(); } }
         public int TargetSection { get { return this.SqlCheckpoint.TargetSection; } set { this.SqlCheckpoint.TargetSection = value; } }
-        public int TargetICD10Segment { get { return this.SqlCheckpoint.TargetICD10Segment; } set { this.SqlCheckpoint.TargetICD10Segment = value; OnPropertyChangedSave(); } }
+        public int TargetICD10Segment { get { return this.SqlCheckpoint.TargetICD10Segment; } 
+            set {
+                this.SqlCheckpoint.TargetICD10Segment = value; 
+                OnPropertyChangedSave();
+                //if this is changed, then the parentSegment needs to be updated...
+                ParentSegment.UpdateCheckPoints();
+            } 
+        }
         public string Action { get { return this.SqlCheckpoint.Action; } set { this.SqlCheckpoint.Action = value; OnPropertyChangedSave(); } }
         public string Link { get { return this.SqlCheckpoint.Link; } set { this.SqlCheckpoint.Link = value; OnPropertyChangedSave(); } }
         public int Expiration { get { return this.SqlCheckpoint.Expiration; } set { this.SqlCheckpoint.Expiration = value; OnPropertyChangedSave(); } }
-        public ObservableCollection<SqlCheckPointImageVM> Images { get { return this.SqlCheckpoint.Images; } }
+        public ObservableCollection<SqlCheckPointImageVM> Images
+        {
+            get
+            {
+                string sql = $"select * from CheckPointImages where CheckPointID = @CheckPointID;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    var tmpList = cnn.Query<SqlCheckPointImageVM>(sql, this).ToList();
+                    foreach (var tmpEl in tmpList)
+                    {
+                        tmpEl.ParentCheckPoint = this;
+                    }
+                    return tmpList.ToObservableCollection();
+                }
+            }
+        }
         public string[] NoteSectionText { get { return ParentDocument.NoteSectionText; } }
 
         private SqlTagRegExM.EnumResult? cPoverideStatus;
@@ -310,6 +332,7 @@ public PersonViewModel(PersonModel person) {
         public void AddImageFromClipBoard()
         {
             this.SqlCheckpoint.AddImageFromClipBoard();
+            OnPropertyChanged("Images");
         }
         /// <summary>
         /// Get the tags associated with the checkpoint
@@ -349,6 +372,7 @@ public PersonViewModel(PersonModel person) {
             {
                 cnn.Execute(sql);
             }
+            tags = null; //reset tags.
             OnPropertyChanged("Tags");
         }
 
@@ -359,6 +383,7 @@ public PersonViewModel(PersonModel person) {
             {
                 cnn.Execute(sql);
             }
+            tags = null; //reset tags.
             OnPropertyChanged("Tags");
         }
 
@@ -549,6 +574,21 @@ public PersonViewModel(PersonModel person) {
         }
         #endregion
 
+        //FollowLink
+        private ICommand mFollowLink;
+        public ICommand FollowLinkCommand
+        {
+            get
+            {
+                if (mFollowLink == null)
+                    mFollowLink = new FollowLink();
+                return mFollowLink;
+            }
+            set
+            {
+                mFollowLink = value;
+            }
+        }
     }
 
     class TagAdder : ICommand
@@ -703,7 +743,7 @@ public PersonViewModel(PersonModel person) {
 
         public void Execute(object parameter)
         {
-            SqlCheckpointM CP = parameter as SqlCheckpointM;
+            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
             CP.AddImageFromClipBoard();
         }
         #endregion
@@ -774,4 +814,32 @@ public PersonViewModel(PersonModel person) {
             CP.OverideStatus(SqlTagRegExM.EnumResult.Hide);
         }
     }
+
+    /// <summary>
+    /// Follow a link
+    /// </summary>
+    class FollowLink : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+        public void Execute(object parameter)
+        {
+            SqlCheckpointVM CP = parameter as SqlCheckpointVM;
+            if (!string.IsNullOrWhiteSpace(CP.Link))
+            System.Diagnostics.Process.Start(CP.Link);
+
+        }
+
+    }
+
 }

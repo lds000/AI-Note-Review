@@ -47,6 +47,8 @@ namespace AI_Note_Review
             sqlICD10Segment = sc;
         }
 
+        public SqlCheckpointVM SelectedCheckPoint { get; set; }
+
         public int ICD10SegmentID { get { return sqlICD10Segment.ICD10SegmentID; } set { sqlICD10Segment.ICD10SegmentID = value; } }
         public string SegmentTitle { get { return sqlICD10Segment.SegmentTitle; } set { sqlICD10Segment.SegmentTitle = value; } }
         public string SegmentComment { get { return sqlICD10Segment.SegmentComment; } set { sqlICD10Segment.SegmentComment = value; } }
@@ -106,7 +108,8 @@ namespace AI_Note_Review
             {
                 if (checkpoints == null)
                 {
-                    string sql = $"Select * from CheckPoints where TargetICD10Segment = {sqlICD10Segment.ICD10SegmentID};";
+
+                    string sql = $"Select cp.CheckPointID,cp.CheckPointTitle,cp.ErrorSeverity,cp.CheckPointType,cp.TargetSection,cp.TargetICD10Segment,cp.Comment,cp.Action,cp.Link,cp.Expiration from CheckPoints cp inner join CheckPointTypes ns on cp.CheckPointType == ns.CheckPointTypeID where TargetICD10Segment == {sqlICD10Segment.ICD10SegmentID} order by ns.ItemOrder;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
                         var tmpList = cnn.Query<SqlCheckpointM>(sql).ToList();
@@ -233,6 +236,7 @@ namespace AI_Note_Review
 
         public void UpdateCheckPoints()
         {
+            checkpoints = null;
             OnPropertyChanged("Checkpoints");
         }
 
@@ -355,9 +359,12 @@ namespace AI_Note_Review
             }
         }
 
-        public void AddCheckPoint(SqlCheckpointM cp)
+        public void AddCheckPoint(SqlCheckpointVM cp)
         {
+            cp.ParentSegment = this;
+            checkpoints.Add(cp);
             OnPropertyChanged("Checkpoints");
+            SelectedCheckPoint = cp;
         }
 
 
@@ -541,7 +548,7 @@ namespace AI_Note_Review
             if (wet.ReturnValue == null) return;
             if (wet.ReturnValue.Trim() != "")
             {
-                sivm.AddCheckPoint(new SqlCheckpointM(wet.ReturnValue, sivm.ICD10SegmentID));
+                sivm.AddCheckPoint(new SqlCheckpointVM(wet.ReturnValue, sivm.ICD10SegmentID));
             }
         }
         #endregion
@@ -680,6 +687,7 @@ namespace AI_Note_Review
 
 
         }
-
     }
+
+
 }

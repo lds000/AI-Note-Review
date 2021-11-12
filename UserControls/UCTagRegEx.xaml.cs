@@ -29,16 +29,7 @@ namespace AI_Note_Review
 
         private void Image_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            WinEnterText wet = new WinEnterText("Edit Regular Expression value", tbRegExSearchTerms.Text);
-            wet.Owner = Window.GetWindow(this);
-            wet.ShowDialog();
-            if (wet.ReturnValue != null)
-            {
-                SqlTagRegExM ParentTagRegEx = DataContext as SqlTagRegExM;
-                ParentTagRegEx.RegExText = wet.ReturnValue;
-                tbRegExSearchTerms.Text = wet.ReturnValue;
-                ParentTagRegEx.SaveToDB();
-            }
+
         }
 
         private void ButtonRemove_Click(object sender, RoutedEventArgs e)

@@ -74,6 +74,7 @@ class PersonViewModel {
         public void RemoveTagRegEx(SqlTagRegExVM str) 
         {
             this.SqlTag.RemoveTagRegEx(str);
+            tagRegExs = null; //reset
             OnPropertyChanged("TagRegExs");
         }
         public void SaveToDB() { this.SqlTag.SaveToDB(); }
@@ -83,6 +84,7 @@ class PersonViewModel {
         {
             SqlTagRegExVM srex = new SqlTagRegExVM(TagID, "Search Text", cp.TargetSection, 1);
             srex.ParentTag = this;
+            tagRegExs = null; //reset
             OnPropertyChanged("TagRegExs");
         }
 
@@ -270,7 +272,7 @@ class PersonViewModel {
         public void Execute(object parameter)
         {
             SqlTagVM st = parameter as SqlTagVM;
-            st.AddTagRegEx(st.ParentCheckPoint); //not sure what this does, so I commented it out.
+            st.AddTagRegEx(st.ParentCheckPoint);
         }
         #endregion
     }

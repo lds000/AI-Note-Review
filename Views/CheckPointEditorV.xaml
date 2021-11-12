@@ -38,24 +38,27 @@
                 <ColumnDefinition Width="2*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <DockPanel>
-                <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">ICD-10</Label>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
                     <Button Command="{Binding AddSegmentCommand}" Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
                 </StackPanel>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <ListBox x:Name="lbMasterReviews"
+                    <Label Grid.Row="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">Master Review Topic</Label>
+                    <Border Grid.Row="1" Margin="5,10,5,10">
+                        <ComboBox x:Name="lbMasterReviews"
                              ItemsSource="{Binding Path=MasterReviewSummaries}"
-                             Style="{StaticResource MyListBox}"
                              SelectedItem="{Binding SelectedMasterReview}"
                              DisplayMemberPath="MasterReviewSummaryTitle">
-
-                    </ListBox>
-                <!-- SqlICD10SegmentVM.NoteICD10Segments-->
-                    <ListBox x:Name="lbICD10" Grid.Row="1" 
+                        </ComboBox>
+                    </Border>
+                    <Label Grid.Row="2" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">ICD-10 List</Label>
+                    <!-- SqlICD10SegmentVM.NoteICD10Segments-->
+                    <ListBox x:Name="lbICD10" Grid.Row="3" 
                              ItemsSource="{Binding Path=MasterReviewSummaryICD10Segments}" 
                              Style="{StaticResource MyListBox}">
                     <ListBox.ItemTemplate>
@@ -102,9 +105,10 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <!--SqlICD10SegmentVM.Checkpoints-->
-                    <ListBox x:Name="lbCheckpoints" ItemsSource="{Binding Checkpoints}" Style="{StaticResource MyListBox}" HorizontalContentAlignment="Stretch">
+                    <ListBox x:Name="lbCheckpoints" ItemsSource="{Binding Checkpoints}" SelectedItem="{Binding SelectedCP}" Style="{StaticResource MyListBox}" HorizontalContentAlignment="Stretch">
                         <ListBox.ContextMenu>
                             <ContextMenu>
+                                <!--SqlICD10SegmentVM-->
                                 <MenuItem Header="Add Checkpoint" Command="{Binding AddCPCommand}" CommandParameter="{Binding}">
                                     <MenuItem.Style>
                                         <Style TargetType="MenuItem">
@@ -222,7 +226,7 @@
                         </SpellCheck.CustomDictionaries>
                     </TextBox>
 
-                    <Button Command="{Binding AddImageCommand}" CommandParameter="{Binding}" 
+                    <Button Command="{Binding AddImageFromClipBoardCommand}" CommandParameter="{Binding}" 
                             ToolTip="Click this button to add image from clipboard."  Margin="5" Grid.Column="0" Grid.Row="6" Style="{StaticResource LinkButton}">
 
                         Images:</Button>
@@ -240,7 +244,9 @@
                             <sys:Uri>pack://application:,,,/MedTerms.lex</sys:Uri>
                         </SpellCheck.CustomDictionaries>
                     </TextBox>
-                    <Button ToolTip="Click here to follow link." Click="btnLinkClick" Margin="5" Grid.Column="0" Grid.Row="8" Style="{StaticResource LinkButton}">Link:</Button>
+                    <Button Command="{Binding FollowLinkCommand}" 
+                            CommandParameter="{Binding}"
+                            ToolTip="Click here to follow link." Margin="5" Grid.Column="0" Grid.Row="8" Style="{StaticResource LinkButton}">Link:</Button>
                     <TextBox Margin="5" x:Name="tbLink" Grid.Row="8" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Link}" ToolTip="{Binding Path=Link}" Grid.ColumnSpan="2" ></TextBox>
 
 
@@ -269,7 +275,6 @@
                     </Border.ContextMenu>
 
                     <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
-
                         <local:UCTag1 DataContext="{Binding}"></local:UCTag1>
                     </ScrollViewer>
                 </Border>

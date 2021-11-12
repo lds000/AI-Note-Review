@@ -60,10 +60,6 @@ namespace AI_Note_Review
         {
             CF.SaveWindowPosition(this);
         }
-        private void btnLinkClick(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(CurrentCheckpoint.Link);
-        }
 
 
         /// <summary>

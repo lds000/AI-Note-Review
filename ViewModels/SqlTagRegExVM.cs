@@ -316,7 +316,7 @@ public PersonViewModel(PersonModel person) {
         {
             get
             {
-                return $"If {TagRegExTypesToString(TagRegExMatchType)} then {TagRegExMatchToString(TagRegExMatchResult)}, otherwise {TagRegExMatchToString(TagRegExMatchNoResult)}.";
+                return $"{TagRegExTypesToString(TagRegExMatchType)} then {TagRegExMatchToString(TagRegExMatchResult)}, otherwise {TagRegExMatchToString(TagRegExMatchNoResult)}.";
             }
         }
 
@@ -467,6 +467,22 @@ public PersonViewModel(PersonModel person) {
                 mDeleteTagRegEx = value;
             }
         }
+
+        private ICommand mEditTagRegEx;
+        public ICommand EditTagRegExCommand
+        {
+            get
+            {
+                if (mEditTagRegEx == null)
+                    mEditTagRegEx = new EditTagRegEx();
+                return mEditTagRegEx;
+            }
+            set
+            {
+                mEditTagRegEx = value;
+            }
+        }
+
         #endregion
     }
 
@@ -510,6 +526,33 @@ public PersonViewModel(PersonModel person) {
         {
             SqlTagRegExVM t = parameter as SqlTagRegExVM;
             t.ParentTag.RemoveTagRegEx(t);
+        }
+        #endregion
+    }
+
+    class EditTagRegEx : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlTagRegExVM t = parameter as SqlTagRegExVM;
+            WinEnterText wet = new WinEnterText("Edit Regular Expression value", t.RegExText);
+            wet.ShowDialog();
+            if (wet.ReturnValue != null)
+            {
+                t.RegExText = wet.ReturnValue;
+            }
         }
         #endregion
     }

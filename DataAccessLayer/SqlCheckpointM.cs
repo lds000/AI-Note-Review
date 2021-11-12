@@ -293,17 +293,7 @@ class PersonViewModel {
             OnPropertyChanged("Images");
         }
 
-        public ObservableCollection<SqlCheckPointImageVM> Images
-        {
-            get
-            {
-                string sql = $"select * from CheckPointImages where CheckPointID = @CheckPointID;";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    return new ObservableCollection<SqlCheckPointImageVM>(cnn.Query<SqlCheckPointImageVM>(sql, this).ToList());
-                }
-            }
-        }
+
 
 
         /// <summary>
