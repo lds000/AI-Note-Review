@@ -19,14 +19,28 @@
                     <MenuItem Header="Program">
                         <MenuItem Header="Exit" ToolTip="Show the reviews for the selected provider and selected review date."></MenuItem>
                     </MenuItem>
+                    <MenuItem Name="masterReviewMI" Header="Master Reviews"
+                              Command="{Binding Path=ShowMasterReview}"
+                                CommandParameter="{Binding}" >
+                    </MenuItem>
                     <MenuItem Name="biMonthReviewMI" Header="Reviews" Command="{Binding Path=ShowBiMonthlyReport}"
                                 CommandParameter="{Binding}" >
                     </MenuItem>
-                    <MenuItem Header="Checkpoint" ToolTip="Edit Checkpoint data."
+                    <MenuItem 
+                        Command="{Binding Path=Document.ShowReport}"
+                                CommandParameter="{Binding}" 
+                        Header="Check!"></MenuItem>
+                    <!--DocumentVM-->
+                    <!--
+                    <MenuItem 
+                        Command="{Binding Path=Document.ShowReportGen}"
+                        CommandParameter="{Binding}">Check X Only</MenuItem>
+                     -->
+                    <MenuItem Header="Edit Checkpoints" ToolTip="Edit Checkpoint data."
                               Command="{Binding Path=CheckPointEditorCommand}"
                               CommandParameter="{Binding}">
                     </MenuItem>
-                    <MenuItem Header="Provider">
+                    <MenuItem Header="Edit Providers">
                         <MenuItem Header="Add Provider" ToolTip="Add new provider."></MenuItem>
                         <MenuItem Header="Remove Provider" ToolTip="Remove existing provider."></MenuItem>
                         <MenuItem Header="Edit Provider Details" ToolTip="Edit provider data."></MenuItem>
@@ -77,14 +91,6 @@
                 </Border>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                     <Button  Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
-                    <Button Margin="100,0,0,0" 
-                        VerticalAlignment="Center" 
-                        Command="{Binding Path=Document.ShowReport}"
-                                CommandParameter="{Binding}" 
-                        Style="{StaticResource LinkButton}" FontSize="20">Check!</Button>
-                    <!--DocumentVM-->
-                    <Button Margin="100,0,0,0" VerticalAlignment="Center"  Command="{Binding Path=Document.ShowReportGen}"
-                                CommandParameter="{Binding}"  Style="{StaticResource LinkButton}" FontSize="20">Check X Only</Button>
                 </StackPanel>
                 <TabControl x:Name="tcNote">
                     <TabItem Foreground="Black" Header="CC">

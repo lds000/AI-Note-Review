@@ -25,6 +25,8 @@ namespace AI_Note_Review
         public DocumentVM ParentDocument { get; set; }
         public VisitReportVM ParentReport { get; set; }
 
+        private MasterReviewSummaryVM masterReviewSummary;
+
         private SqlICD10SegmentM sqlICD10Segment;
 
         public SqlICD10SegmentM SqlICD10Segment
@@ -35,16 +37,19 @@ namespace AI_Note_Review
         public SqlICD10SegmentVM()
         {
             sqlICD10Segment = new SqlICD10SegmentM();
+            masterReviewSummary = new MasterReviewSummaryVM();
         }
 
         public SqlICD10SegmentVM(string strSegmentTitle)
         {
             sqlICD10Segment = new SqlICD10SegmentM(strSegmentTitle);
+            masterReviewSummary = new MasterReviewSummaryVM();
         }
 
         public SqlICD10SegmentVM(SqlICD10SegmentM sc)
         {
             sqlICD10Segment = sc;
+            masterReviewSummary = new MasterReviewSummaryVM();
         }
 
         public SqlCheckpointVM SelectedCheckPoint { get; set; }
@@ -179,45 +184,25 @@ namespace AI_Note_Review
             }
         }
 
-        private ObservableCollection<MasterReviewSummaryVM> masterReviewSummaries;
-        public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaries
+        public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaryList
         {
             get
             {
-                if (masterReviewSummaries == null)
-                {
-                    string sql = $"Select * from MasterReviewSummary";
-                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                    {
-                        var tmpCol = cnn.Query<MasterReviewSummaryVM>(sql).ToList();
-                        masterReviewSummaries = tmpCol.ToObservableCollection();
-                    }
-                }
-                return masterReviewSummaries;
+                return masterReviewSummary.MasterReviewSummaries;
             }
         }
 
-        private MasterReviewSummaryVM masterReviewSummary;
         public MasterReviewSummaryVM SelectedMasterReview
         {
-            get {
-                if (masterReviewSummary == null)
-                {
-                    foreach (MasterReviewSummaryVM mrs in MasterReviewSummaries)
-                    {
-                        
-                        if (DateTime.Now >= mrs.StartDate && DateTime.Now <= mrs.EndDate)
-                        {
-                            masterReviewSummary = mrs;
-                        }
-                    }
-                }
-                return masterReviewSummary; 
+            get 
+            {
+                return masterReviewSummary.SelectedMasterReview;
             }
             set
             {
-                masterReviewSummary = value;
+                masterReviewSummary.SelectedMasterReview = value;
                 OnPropertyChanged("MasterReviewSummaryICD10Segments");
+                OnPropertyChanged();
             }
         }
 
@@ -272,65 +257,17 @@ namespace AI_Note_Review
             UpdateAll();
         }
 
-        private ObservableCollection<SqlICD10SegmentVM> masterReviewSummaryICD10Segments;
         public ObservableCollection<SqlICD10SegmentVM> MasterReviewSummaryICD10Segments
         {
             get
             {
-                if (masterReviewSummaryICD10Segments == null)
-                {
-                    masterReviewSummaryICD10Segments = NoteICD10Segments;
-                }
-                if (SelectedMasterReview != null)
-                {
-                    if (SelectedMasterReview.MasterReviewSummaryID == 3)
-                    {
-                        masterReviewSummaryICD10Segments = NoteICD10Segments; //All
-                        return masterReviewSummaryICD10Segments;
-                    }
-                    if (SelectedMasterReview.MasterReviewSummaryID == 1) //general review with X
-                    {
-                        using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                        {
-                            string sql = "Select * from ICD10Segments where icd10Chapter == 'X' order by icd10Chapter, icd10CategoryStart;";
-                            var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
-                            List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
-                            foreach (SqlICD10SegmentM s in l)
-                            {
-                                SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
-                                lvm.Add(scvm);
-                            }
-                            masterReviewSummaryICD10Segments = lvm.ToObservableCollection();
-                            return masterReviewSummaryICD10Segments;
-                        }
-                    }
-                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                    {
-                        string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {SelectedMasterReview.MasterReviewSummaryID} order by icd10Chapter, icd10CategoryStart;";
-                        var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
-                        List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
-                        foreach (SqlICD10SegmentM s in l)
-                        {
-                            SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
-                            lvm.Add(scvm);
-                        }
-                        masterReviewSummaryICD10Segments = lvm.ToObservableCollection();
-                        return masterReviewSummaryICD10Segments;
-                    }
-                    
-
-                }
-                return masterReviewSummaryICD10Segments;
-            }
-            set
-            {
-                masterReviewSummaryICD10Segments = value;
+                return masterReviewSummary.ICD10Segments;
             }
         }
 
         /// <summary>
         /// A list of all SqlICD10Segments
-        /// </summary>Celica9
+        /// </summary>
         private static ObservableCollection<SqlICD10SegmentVM> noteICD10Segments;
         public static ObservableCollection<SqlICD10SegmentVM> NoteICD10Segments
         {
@@ -412,6 +349,7 @@ namespace AI_Note_Review
             }
         }
 
+        #region commands
         private ICommand mAddCP;
         public ICommand AddCPCommand
         {
@@ -487,9 +425,10 @@ namespace AI_Note_Review
             }
         }
 
-
+        #endregion
     }
 
+    #region command classes
     /// <summary>
     /// Edit segment
     /// </summary>
@@ -689,5 +628,5 @@ namespace AI_Note_Review
         }
     }
 
-
+    #endregion
 }

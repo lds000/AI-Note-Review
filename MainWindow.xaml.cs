@@ -50,6 +50,7 @@ namespace AI_Note_Review
             biMonthlyReviewVM = new BiMonthlyReviewVM();
             this.DataContext = reportVM;
             biMonthReviewMI.DataContext = biMonthlyReviewVM;
+            masterReviewMI.DataContext = new MasterReviewSummaryVM();
 
             //Note hunter test
             /*

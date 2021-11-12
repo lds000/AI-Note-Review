@@ -1,0 +1,33 @@
+﻿<Window x:Class="AI_Note_Review.Views.MasterReviewsV"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AI_Note_Review.Views"
+        mc:Ignorable="d"
+        Title="MasterReviewsV" Height="450" Width="800">
+    <Grid Background="Black">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label Style="{StaticResource MyLblStyle}" FontSize="24" HorizontalAlignment="Center" Grid.ColumnSpan="3">Master Reviews</Label>
+        <Border Grid.Row="1" Margin="5,10,5,10">
+            <ListBox x:Name="lbMasterReviews"
+                             Style="{StaticResource MyListBox}"
+                             ItemsSource="{Binding Path=MasterReviewSummaryList}"
+                             SelectedItem="{Binding SelectedMasterReview}"
+                             DisplayMemberPath="MasterReviewSummaryTitle">
+            </ListBox>
+        </Border>
+
+
+        <Button Style="{StaticResource LinkButton}" FontSize="20" HorizontalAlignment="Center" Grid.ColumnSpan="3" Grid.Row="2" Click="Button_Click">Close</Button>
+    </Grid>
+</Window>

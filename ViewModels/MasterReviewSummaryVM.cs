@@ -5,14 +5,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace AI_Note_Review
 {
@@ -149,16 +143,118 @@ class PersonVM {
             return false;
         }
 
+        public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaries
+        {
+            get
+            {
+                    string sql = $"Select * from MasterReviewSummary";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        var tmpCol = cnn.Query<MasterReviewSummaryVM>(sql).ToList();
+                        return tmpCol.ToObservableCollection();
+                    }
+            }
+        }
+
+        private MasterReviewSummaryVM selectedMasterReview;
+        public MasterReviewSummaryVM SelectedMasterReview
+        {
+            get
+            {
+                if (selectedMasterReview == null)
+                {
+                    foreach (MasterReviewSummaryVM mrs in MasterReviewSummaryList)
+                    {
+
+                        if (DateTime.Now >= mrs.StartDate && DateTime.Now <= mrs.EndDate)
+                        {
+                            selectedMasterReview = mrs;
+                        }
+                    }
+                }
+                return selectedMasterReview;
+            }
+            set
+            {
+                selectedMasterReview = value;
+            }
+        }
+
+        private ObservableCollection<MasterReviewSummaryVM> masterReviewSummaryList;
         public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaryList
         {
             get 
             {
-                string sql = $"Select * from MasterReviewSummary;";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                if (masterReviewSummaryList == null)
                 {
-                    return cnn.Query<MasterReviewSummaryVM>(sql).ToList().ToObservableCollection();
-                }       
+                    string sql = $"Select * from MasterReviewSummary;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        masterReviewSummaryList = cnn.Query<MasterReviewSummaryVM>(sql).ToList().ToObservableCollection();
+                    }
+                }
+                return masterReviewSummaryList;
             }
         }
+
+        private ObservableCollection<SqlICD10SegmentVM> iCD10Segments;
+        /// <summary>
+        /// A list of ICD10 Segments that belong to the current selected MasterReview
+        /// </summary>
+        public ObservableCollection<SqlICD10SegmentVM> ICD10Segments
+        {
+            get
+            {
+                if (iCD10Segments == null)
+                {
+                    iCD10Segments = SqlICD10SegmentVM.NoteICD10Segments;
+                }
+                if (SelectedMasterReview != null)
+                {
+                    if (SelectedMasterReview.MasterReviewSummaryID == 3)
+                    {
+                        iCD10Segments = SqlICD10SegmentVM.NoteICD10Segments; //All
+                        return iCD10Segments;
+                    }
+                    if (SelectedMasterReview.MasterReviewSummaryID == 1) //general review with X
+                    {
+                        using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                        {
+                            string sql = "Select * from ICD10Segments where icd10Chapter == 'X' order by icd10Chapter, icd10CategoryStart;";
+                            var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
+                            List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
+                            foreach (SqlICD10SegmentM s in l)
+                            {
+                                SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
+                                lvm.Add(scvm);
+                            }
+                            iCD10Segments = lvm.ToObservableCollection();
+                            return iCD10Segments;
+                        }
+                    }
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {SelectedMasterReview.MasterReviewSummaryID} order by icd10Chapter, icd10CategoryStart;";
+                        var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
+                        List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
+                        foreach (SqlICD10SegmentM s in l)
+                        {
+                            SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
+                            lvm.Add(scvm);
+                        }
+                        iCD10Segments = lvm.ToObservableCollection();
+                        return iCD10Segments;
+                    }
+
+
+                }
+                return iCD10Segments;
+            }
+            set
+            {
+                iCD10Segments = value;
+            }
+        }
+
     }
 }

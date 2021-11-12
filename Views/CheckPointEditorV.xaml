@@ -51,7 +51,7 @@
                     <Label Grid.Row="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">Master Review Topic</Label>
                     <Border Grid.Row="1" Margin="5,10,5,10">
                         <ComboBox x:Name="lbMasterReviews"
-                             ItemsSource="{Binding Path=MasterReviewSummaries}"
+                             ItemsSource="{Binding Path=MasterReviewSummaryList}"
                              SelectedItem="{Binding SelectedMasterReview}"
                              DisplayMemberPath="MasterReviewSummaryTitle">
                         </ComboBox>
