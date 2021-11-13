@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace AI_Note_Review
 {
@@ -35,6 +36,16 @@ class PersonVM {
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        protected void OnPropertyChangedSave([CallerMemberName] string name = null)
+        {
+            if (PropertyChanged != null)
+            {
+                SaveToDB();
+                Console.WriteLine($"Property {name} was saved from MasterReviewSummaryVM!");
+            }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
@@ -127,13 +138,20 @@ class PersonVM {
 /// </summary>
         private SqlMasterReviewSummaryM masterReviewSummary { get; set; }
         public int MasterReviewSummaryID { get { return masterReviewSummary.MasterReviewSummaryID; } set { masterReviewSummary.MasterReviewSummaryID = value; OnPropertyChanged(); } }
-        public DateTime StartDate { get { return masterReviewSummary.StartDate; } set { masterReviewSummary.StartDate = value; OnPropertyChanged(); } }
-        public DateTime EndDate { get { return masterReviewSummary.EndDate; } set { masterReviewSummary.EndDate = value; OnPropertyChanged(); } }
-        public string MasterReviewSummaryTitle { get { return masterReviewSummary.MasterReviewSummaryTitle; } set { masterReviewSummary.MasterReviewSummaryTitle = value; OnPropertyChanged(); } }
-        public string MasterReviewSummarySubject { get { return masterReviewSummary.MasterReviewSummarySubject; } set { masterReviewSummary.MasterReviewSummarySubject = value; OnPropertyChanged(); } }
-        public string MasterReviewSummaryComment { get { return masterReviewSummary.MasterReviewSummaryComment; } set { masterReviewSummary.MasterReviewSummaryComment = value; OnPropertyChanged(); } }
-        public string MasterReviewSummaryImpression { get { return masterReviewSummary.MasterReviewSummaryImpression; } set { masterReviewSummary.MasterReviewSummaryImpression = value; OnPropertyChanged(); } }
+        public DateTime StartDate { get { return masterReviewSummary.StartDate; } set { masterReviewSummary.StartDate = value; OnPropertyChangedSave(); } }
+        public DateTime EndDate { get { return masterReviewSummary.EndDate; } set { masterReviewSummary.EndDate = value; OnPropertyChangedSave(); } }
+        public string MasterReviewSummaryTitle { get { return masterReviewSummary.MasterReviewSummaryTitle; } set { masterReviewSummary.MasterReviewSummaryTitle = value; OnPropertyChangedSave(); } }
+        public string MasterReviewSummarySubject { get { return masterReviewSummary.MasterReviewSummarySubject; } set { masterReviewSummary.MasterReviewSummarySubject = value; OnPropertyChangedSave(); } }
+        public string MasterReviewSummaryComment {
+            get { return masterReviewSummary.MasterReviewSummaryComment; } 
+            set { masterReviewSummary.MasterReviewSummaryComment = value; OnPropertyChangedSave(); } 
+        }
+        public string MasterReviewSummaryImpression { get { return masterReviewSummary.MasterReviewSummaryImpression; } set { masterReviewSummary.MasterReviewSummaryImpression = value; OnPropertyChangedSave(); } }
 
+        public void SaveToDB()
+        {
+            masterReviewSummary.SaveToDB();
+        }
         public string MasterReviewSummaryToString
         {
             get
@@ -225,7 +243,7 @@ class PersonVM {
 
                         if (DateTime.Now >= mrs.StartDate && DateTime.Now <= mrs.EndDate)
                         {
-                            selectedMasterReview = mrs;
+                                selectedMasterReview = mrs;
                         }
                     }
                 }
@@ -234,6 +252,7 @@ class PersonVM {
             set
             {
                 selectedMasterReview = value;
+                OnPropertyChanged();
             }
         }
 
@@ -313,5 +332,47 @@ class PersonVM {
             }
         }
 
+
+        private ICommand mShowMasterReview;
+        public ICommand ShowMasterReviewCommand
+        {
+            #region Command Def
+            get
+            {
+                if (mShowMasterReview == null)
+                    mShowMasterReview = new ShowMasterReview();
+                return mShowMasterReview;
+            }
+            set
+            {
+                mShowMasterReview = value;
+            }
+            #endregion
+        }
+
+    }
+    class ShowMasterReview : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
+
+            MasterReviewsV wp = new MasterReviewsV();
+            wp.DataContext = mrs;
+            wp.ShowDialog();
+        }
     }
 }

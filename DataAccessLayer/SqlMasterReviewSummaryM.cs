@@ -50,5 +50,21 @@ class PersonVM {
         public string MasterReviewSummaryComment { get; set; }
         public string MasterReviewSummaryImpression { get; set; }
 
+        public void SaveToDB()
+        {
+            string sql = "UPDATE MasterReviewSummary SET " +
+                    "MasterReviewSummaryID=@MasterReviewSummaryID, " +
+                    "StartDate=@StartDate, " +
+                    "EndDate=@EndDate, " +
+                    "MasterReviewSummaryTitle=@MasterReviewSummaryTitle, " +
+                    "MasterReviewSummarySubject=@MasterReviewSummarySubject, " +
+                    "MasterReviewSummaryComment=@MasterReviewSummaryComment, " +
+                    "MasterReviewSummaryImpression=@MasterReviewSummaryImpression " +
+                    "WHERE MasterReviewSummaryID=@MasterReviewSummaryID;";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql, this);
+            }
+        }
     }
 }

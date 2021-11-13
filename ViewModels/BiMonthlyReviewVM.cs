@@ -321,22 +321,6 @@ namespace AI_Note_Review
             #endregion
         }
 
-        private ICommand mShowMasterReview;
-        public ICommand ShowMasterReviewCommand
-        {
-            #region Command Def
-            get
-            {
-                if (mShowMasterReview == null)
-                    mShowMasterReview = new ShowMasterReview();
-                return mShowMasterReview;
-            }
-            set
-            {
-                mShowMasterReview = value;
-            }
-            #endregion
-        }
 
         private ICommand mSendReport;
         public ICommand SendReportCommand
@@ -392,28 +376,7 @@ namespace AI_Note_Review
     }
 
     #region command classes
-    class ShowMasterReview : ICommand
-    {
-        #region ICommand Members  
 
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-        #endregion
-
-        public void Execute(object parameter)
-        {
-            BiMonthlyReviewVM rvm = parameter as BiMonthlyReviewVM;
-            BiMonthlyReviewV wp = new BiMonthlyReviewV(rvm);
-            wp.ShowDialog();
-        }
-    }
 
     class ShowBiMonthlyReport : ICommand
     {
