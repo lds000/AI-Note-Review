@@ -257,19 +257,11 @@ namespace AI_Note_Review
             UpdateAll();
         }
 
-        public ObservableCollection<SqlICD10SegmentVM> MasterReviewSummaryICD10Segments
-        {
-            get
-            {
-                return masterReviewSummary.ICD10Segments;
-            }
-        }
-
         /// <summary>
         /// A list of all SqlICD10Segments
         /// </summary>
-        private static ObservableCollection<SqlICD10SegmentVM> noteICD10Segments;
-        public static ObservableCollection<SqlICD10SegmentVM> NoteICD10Segments
+        private static List<SqlICD10SegmentVM> noteICD10Segments;
+        public static List<SqlICD10SegmentVM> NoteICD10Segments
         {
             get
             {
@@ -285,7 +277,7 @@ namespace AI_Note_Review
                             SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
                             lvm.Add(scvm);
                         }
-                        return lvm.ToObservableCollection();
+                        return lvm;
                     }
                 }
                 return noteICD10Segments;

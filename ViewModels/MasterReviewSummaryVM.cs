@@ -252,7 +252,10 @@ class PersonVM {
             set
             {
                 selectedMasterReview = value;
+                iCD10Segments = null;
+                if (iCD10Segments!=null) SelectedICD10Segment = ICD10Segments.FirstOrDefault();
                 OnPropertyChanged();
+                OnPropertyChanged("ICD10Segments"); 
             }
         }
 
@@ -263,7 +266,7 @@ class PersonVM {
             {
                 if (masterReviewSummaryList == null)
                 {
-                    string sql = $"Select * from MasterReviewSummary;";
+                    string sql = $"Select * from MasterReviewSummary order by StartDate;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
                         masterReviewSummaryList = cnn.Query<MasterReviewSummaryVM>(sql).ToList().ToObservableCollection();
@@ -273,26 +276,42 @@ class PersonVM {
             }
         }
 
-        private ObservableCollection<SqlICD10SegmentVM> iCD10Segments;
-        /// <summary>
-        /// A list of ICD10 Segments that belong to the current selected MasterReview
-        /// </summary>
-        public ObservableCollection<SqlICD10SegmentVM> ICD10Segments
+        private SqlICD10SegmentVM selectedICD10Segment;
+        public SqlICD10SegmentVM SelectedICD10Segment
         {
             get
             {
-                if (iCD10Segments == null)
+                if (selectedICD10Segment == null)
                 {
-                    iCD10Segments = SqlICD10SegmentVM.NoteICD10Segments;
+                    selectedICD10Segment = ICD10Segments.FirstOrDefault();
                 }
+                return selectedICD10Segment;
+            }
+            set
+            {
+                selectedICD10Segment = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private List<SqlICD10SegmentVM> iCD10Segments;
+        /// <summary>
+        /// A list of ICD10 Segments that belong to the current selected MasterReview
+        /// </summary>
+        public List<SqlICD10SegmentVM> ICD10Segments
+        {
+            get
+            {
+                if (iCD10Segments != null) return iCD10Segments;
                 if (SelectedMasterReview != null)
                 {
-                    if (SelectedMasterReview.MasterReviewSummaryID == 3)
+                    int tmpI = SelectedMasterReview.MasterReviewSummaryID;
+                    if (tmpI == 3) //return all
                     {
                         iCD10Segments = SqlICD10SegmentVM.NoteICD10Segments; //All
                         return iCD10Segments;
                     }
-                    if (SelectedMasterReview.MasterReviewSummaryID == 1) //general review with X
+                    if (tmpI == 1) //if MasterReviewSummaryID=1 then return general review withicd10Chapter  X
                     {
                         using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                         {
@@ -304,13 +323,13 @@ class PersonVM {
                                 SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
                                 lvm.Add(scvm);
                             }
-                            iCD10Segments = lvm.ToObservableCollection();
+                            iCD10Segments = lvm;
                             return iCD10Segments;
                         }
                     }
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
-                        string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {SelectedMasterReview.MasterReviewSummaryID} order by icd10Chapter, icd10CategoryStart;";
+                        string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {tmpI} order by icd10Chapter, icd10CategoryStart;";
                         var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
                         List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
                         foreach (SqlICD10SegmentM s in l)
@@ -318,20 +337,37 @@ class PersonVM {
                             SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
                             lvm.Add(scvm);
                         }
-                        iCD10Segments = lvm.ToObservableCollection();
+                        iCD10Segments = lvm;
                         return iCD10Segments;
                     }
-
-
+                }
+                if (iCD10Segments == null)
+                {
+                    iCD10Segments = SqlICD10SegmentVM.NoteICD10Segments;
                 }
                 return iCD10Segments;
             }
             set
             {
                 iCD10Segments = value;
+                OnPropertyChanged();
+                OnPropertyChanged("SelectedICD10Segment");
             }
         }
 
+        private SqlCheckpointVM selectedCP;
+        public SqlCheckpointVM SelectedCP
+        {
+            get
+            {
+                return selectedCP;
+            }
+            set
+            {
+                selectedCP = value;
+                OnPropertyChanged();
+            }
+        }
 
         private ICommand mShowMasterReview;
         public ICommand ShowMasterReviewCommand

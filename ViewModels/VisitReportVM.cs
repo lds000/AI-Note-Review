@@ -416,8 +416,9 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            VisitReportVM rvm = parameter as VisitReportVM;
+            MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
             CheckPointEditorV w = new CheckPointEditorV();
+            w.DataContext = mrs;
             w.Show();
         }
     }

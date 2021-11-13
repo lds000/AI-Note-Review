@@ -50,71 +50,73 @@
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">Master Review Topic</Label>
                     <Border Grid.Row="1" Margin="5,10,5,10">
-                        <ComboBox x:Name="lbMasterReviews"
+                        <ListBox Style="{StaticResource MyListBox}" MinHeight="100" x:Name="lbMasterReviews"
                              ItemsSource="{Binding Path=MasterReviewSummaryList}"
-                             SelectedItem="{Binding SelectedMasterReview}"
+                             SelectedValue="{Binding SelectedMasterReview}"
                              DisplayMemberPath="MasterReviewSummaryTitle">
-                        </ComboBox>
+                        </ListBox>
                     </Border>
                     <Label Grid.Row="2" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">ICD-10 List</Label>
                     <!-- SqlICD10SegmentVM.NoteICD10Segments-->
                     <ListBox x:Name="lbICD10" Grid.Row="3" 
-                             ItemsSource="{Binding Path=MasterReviewSummaryICD10Segments}" 
+                             ItemsSource="{Binding Path=ICD10Segments}" 
+                             SelectedValue="{Binding SelectedICD10Segment}"
                              Style="{StaticResource MyListBox}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid >
-                                <Grid.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Edit" Command="{Binding EditSegmentCommand}" CommandParameter="{Binding}"/>
-                                        <MenuItem Header="Create Index"
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid >
+                                    <Grid.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Edit" Command="{Binding EditSegmentCommand}" CommandParameter="{Binding}"/>
+                                            <MenuItem Header="Create Index"
                                                   Command="{Binding CreateIndexCommand}" CommandParameter="{Binding}"
                                                   ToolTip="Create an index and copy it to the clipboard"/>
-                                        <MenuItem Header="Delete Segment" Command="{Binding DeleteSegmentCommand}" CommandParameter="{Binding}"></MenuItem>
-                                    </ContextMenu>
-                                </Grid.ContextMenu>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80"/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                    <TextBlock Grid.Column="1" Margin="{Binding Icd10Margin}" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10Chapter}" />
-                                    <TextBlock Margin="0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryStart}"/>
-                                    <TextBlock Margin="0" Padding="0" Text="-"/>
-                                    <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryEnd}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                    <TextBlock Grid.Column="1" DockPanel.Dock="Top" Text="{Binding Path=SqlICD10Segment.SegmentTitle}" ToolTip="{Binding Path=SqlICD10Segment.SegmentComment}"/>
-                                    <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
-                                    <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding CheckPointCount}"></TextBlock>
-                                    <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
-                                </StackPanel>
-                            </Grid>
+                                            <MenuItem Header="Delete Segment" Command="{Binding DeleteSegmentCommand}" CommandParameter="{Binding}"></MenuItem>
+                                        </ContextMenu>
+                                    </Grid.ContextMenu>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                        <TextBlock Grid.Column="1" Margin="{Binding Icd10Margin}" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10Chapter}" />
+                                        <TextBlock Margin="0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryStart}"/>
+                                        <TextBlock Margin="0" Padding="0" Text="-"/>
+                                        <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryEnd}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <TextBlock Grid.Column="1" DockPanel.Dock="Top" Text="{Binding Path=SqlICD10Segment.SegmentTitle}" ToolTip="{Binding Path=SqlICD10Segment.SegmentComment}"/>
+                                        <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
+                                        <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding CheckPointCount}"></TextBlock>
+                                        <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
+                                    </StackPanel>
+                                </Grid>
 
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </DockPanel>
             <DockPanel Grid.Column="1">
                 <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">Selected Checkpoints</Label>
-                <Grid DataContext="{Binding ElementName=lbICD10, Path=SelectedValue}">
+                <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="542*"></RowDefinition>
+                        <RowDefinition Height="153*"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <!--SqlICD10SegmentVM.Checkpoints-->
-                    <ListBox x:Name="lbCheckpoints" ItemsSource="{Binding Checkpoints}" SelectedItem="{Binding SelectedCP}" Style="{StaticResource MyListBox}" HorizontalContentAlignment="Stretch">
+                    <ListBox x:Name="lbCheckpoints" ItemsSource="{Binding SelectedICD10Segment.Checkpoints}" SelectedValue="{Binding SelectedCP}" Style="{StaticResource MyListBox}" HorizontalContentAlignment="Stretch" Grid.RowSpan="2">
                         <ListBox.ContextMenu>
                             <ContextMenu>
                                 <!--SqlICD10SegmentVM-->
-                                <MenuItem Header="Add Checkpoint" Command="{Binding AddCPCommand}" CommandParameter="{Binding}">
+                                <MenuItem Header="Add Checkpoint" Command="{Binding SelectedICD10Segment.AddCPCommand}" CommandParameter="{Binding SelectedICD10Segment}">
                                     <MenuItem.Style>
                                         <Style TargetType="MenuItem">
                                             <Setter Property="IsEnabled" Value="True" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedValue, ElementName=lbICD10}" Value="{x:Null}">
+                                                <DataTrigger Binding="{Binding SelectedItem, ElementName=lbICD10}" Value="{x:Null}">
                                                     <Setter Property="IsEnabled" Value="True"></Setter>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -153,10 +155,10 @@
                     </ListBox>
                 </Grid>
             </DockPanel>
-            <DockPanel Grid.Column="2" DataContext="{Binding ElementName=lbCheckpoints, Path=SelectedValue}">
+            <DockPanel Grid.Column="2" DataContext="{Binding SelectedCP}">
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Label Style="{StaticResource MyLblStyle}">Checkpoint:</Label>
-                    <Label  Style="{StaticResource MyLblStyle}" Content="{Binding Path=SqlCheckpoint.CheckPointTitle, FallbackValue=CheckPointTitle}"></Label>
+                    <Label  Style="{StaticResource MyLblStyle}" Content="{Binding CheckPointTitle, FallbackValue=CheckPointTitle}"></Label>
                 </StackPanel>
                 <Grid Margin="5" >
                     <Grid.ColumnDefinitions>

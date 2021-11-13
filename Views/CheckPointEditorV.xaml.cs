@@ -43,7 +43,6 @@ namespace AI_Note_Review
             {
             }
             #endregion  
-            DataContext = new SqlICD10SegmentVM();
         }
 
         private void closeclick(object sender, RoutedEventArgs e)

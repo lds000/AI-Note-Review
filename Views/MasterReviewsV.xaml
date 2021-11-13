@@ -45,7 +45,7 @@
                 <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap"  Style="{StaticResource MyTextBox}" Text="{Binding SelectedMasterReview.MasterReviewSummaryComment}"></TextBox>
             </Grid>
         </Border>
-        <Border Grid.Column="2" Grid.Row="1" BorderBrush="White" BorderThickness="1" >
+        <Border Grid.Column="2" Grid.Row="1" BorderBrush="Blue" BorderThickness="1">
             <Border.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Add ICD10"></MenuItem>
@@ -62,10 +62,27 @@
                         <Border>
                             <Border.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Remove"/>
+                                    <MenuItem Header="Remove Segment"></MenuItem>
                                 </ContextMenu>
                             </Border.ContextMenu>
-                            <TextBlock Text="{Binding SegmentTitle}"></TextBlock>
+                            <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Grid.Column="1" Margin="{Binding Icd10Margin}" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10Chapter}" />
+                                <TextBlock Margin="0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryStart}"/>
+                                <TextBlock Margin="0" Padding="0" Text="-"/>
+                                <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryEnd}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Grid.Column="1" DockPanel.Dock="Top" Text="{Binding Path=SqlICD10Segment.SegmentTitle}" ToolTip="{Binding Path=SqlICD10Segment.SegmentComment}"/>
+                                <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
+                                <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding CheckPointCount}"></TextBlock>
+                                <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
+                            </StackPanel>
+                        </Grid>
                         </Border>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
