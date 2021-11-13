@@ -38,9 +38,21 @@ public PersonViewModel(PersonModel person) {
     public interface ICheckPoint
     {
         string CheckPointTitle { get; set; }
+        DocumentVM ParentDocument { get; set; }
         SqlTagRegExM.EnumResult CPStatus { get; }
+        SqlICD10SegmentVM ParentSegment { get; set; }
+        int CheckPointType { get; set; }
+        string Comment { get; set; }
         int ErrorSeverity { get; set; }
+        int TargetSection { get; set; }
+        int TargetICD10Segment { get; set; }
+        string Action  {get; set;}
+        string Link    {get; set;}
+        int Expiration { get; set; }
+        ObservableCollection<SqlCheckPointImageVM> Images {get;}
+
     }
+
     public class SqlCheckpointVM : INotifyPropertyChanged, ICheckPoint
     {
         // Declare the event
