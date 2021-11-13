@@ -35,6 +35,7 @@ namespace AI_Note_Review
         private DocumentM document;
         private SqlProvider sqlProvider;
 
+        /*
         /// <summary>
         /// Constructor given provider and patient, I don't think this is necessary, as Provider and patient are derived from the document model
         /// </summary>
@@ -44,6 +45,15 @@ namespace AI_Note_Review
         {
             sqlProvider = prov;
             patient = pvm;
+            document = SampleDocument; //New DocumentM() called under this.
+            SetUpNote(); //todo: might be better way of implementing this.
+        }
+        */
+
+        public DocumentVM(MasterReviewSummaryVM mrs)
+        {
+            sqlProvider = mrs.Provider;
+            patient = mrs.Patient;
             document = SampleDocument; //New DocumentM() called under this.
             SetUpNote(); //todo: might be better way of implementing this.
         }
@@ -61,7 +71,7 @@ namespace AI_Note_Review
         /// Constructor used in notehunter.
         /// </summary>
         /// <param name="doc"></param>
-        public DocumentVM(HtmlDocument doc)
+        public DocumentVM(HtmlDocument doc) //used by document hunter
         {
             document = new DocumentM();
             patient = new PatientVM();
@@ -1096,10 +1106,10 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            VisitReportVM rvm = parameter as VisitReportVM;
-            rvm.GeneralCheckPointsOnly = false;
-            rvm.NewEcWDocument(); //reset document
-            VisitReportV wp = new VisitReportV(rvm);
+            MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
+            mrs.VisitReport.GeneralCheckPointsOnly = false;
+            mrs.VisitReport.NewEcWDocument(); //reset document
+            VisitReportV wp = new VisitReportV(mrs.VisitReport);
             wp.ShowDialog();
         }
     }

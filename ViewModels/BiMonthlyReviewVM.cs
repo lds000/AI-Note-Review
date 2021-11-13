@@ -26,13 +26,13 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         private BiMonthlyReviewM biMonthlyReviewM;
-        private MasterReviewSummaryVM biMonthlyReviews;
+        private MasterReviewSummaryVM MasterReview;
 
-        public BiMonthlyReviewVM()
+        public BiMonthlyReviewVM(MasterReviewSummaryVM mrv)
         {
             biMonthlyReviewM = new BiMonthlyReviewM();
-            biMonthlyReviews = new MasterReviewSummaryVM();
-            masterReviewSummaryVM = biMonthlyReviews.MasterReviewSummaryList;
+            MasterReview = mrv;
+            masterReviewSummaryVM = MasterReview.MasterReviewSummaryList;
             //todo: set selected reviewmodel to one with today's date.
             SelectedMasterReviewSummary = masterReviewSummaryVM.First();
         }
@@ -50,7 +50,7 @@ namespace AI_Note_Review
         {
             get
             {
-                return biMonthlyReviews;
+                return MasterReview;
             }
         }
 
@@ -74,8 +74,11 @@ namespace AI_Note_Review
             set
             {
                 selectedMasterReviewSummary = value;
+                myPeeps = null; //reset;
                 OnPropertyChanged("MyPeeps");
                 SelectedProviderForBiMonthlyReview = MyPeeps.First();
+                OnPropertyChanged("SelectedProviderForBiMonthlyReview");
+                OnPropertyChanged("ListOfDocumentReviews");
             }
         }
 
@@ -92,33 +95,41 @@ namespace AI_Note_Review
             {
                 selectedProviderForBiMonthlyReview = value;
                 OnPropertyChanged("ListOfDocumentReviews");
+                if (value == null) return;
                 //when the provider is changed, set the selected document for review to the first item in the list.
+                listOfDocumentReviews = null; //reset
                 SelectedDocumentReview = ListOfDocumentReviews.FirstOrDefault();
                 OnPropertyChanged("SelectedDocumentReview");
+                OnPropertyChanged("SelectedProviderForBiMonthlyReview");
             }
         }
 
         /// <summary>
         /// Populates a class containing PtID and Dates for a time period (usually two months)
         /// </summary>
+        private ObservableCollection<SqlDocumentReviewSummaryVM> listOfDocumentReviews;
         public ObservableCollection<SqlDocumentReviewSummaryVM> ListOfDocumentReviews
         {
             get
             {
-                if (selectedProviderForBiMonthlyReview == null) return null;
-                if (SelectedMasterReviewSummary == null) return null;
-                string sql = "";
-                sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={selectedProviderForBiMonthlyReview.ProviderID} and VisitDate Between '{SelectedMasterReviewSummary.StartDate.ToString("yyyy-MM-dd")}' and '{SelectedMasterReviewSummary.EndDate.ToString("yyyy-MM-dd")}';";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                if (listOfDocumentReviews == null)
                 {
-                    ObservableCollection<SqlDocumentReviewSummaryVM> tmpL = new ObservableCollection<SqlDocumentReviewSummaryVM>(cnn.Query<SqlDocumentReviewSummaryVM>(sql).ToList().OrderBy(c=>c.VisitDate));
-                    foreach (var l in tmpL)
+                    if (selectedProviderForBiMonthlyReview == null) return null;
+                    if (SelectedMasterReviewSummary == null) return null;
+                    string sql = "";
+                    sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={selectedProviderForBiMonthlyReview.ProviderID} and VisitDate Between '{SelectedMasterReviewSummary.StartDate.ToString("yyyy-MM-dd")}' and '{SelectedMasterReviewSummary.EndDate.ToString("yyyy-MM-dd")}';";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
-                        l.ParentProvider = selectedProviderForBiMonthlyReview;
-                        ReportToTextVM r = new ReportToTextVM(selectedProviderForBiMonthlyReview, l.VisitDate, l.PtID);
+                        ObservableCollection<SqlDocumentReviewSummaryVM> tmpL = new ObservableCollection<SqlDocumentReviewSummaryVM>(cnn.Query<SqlDocumentReviewSummaryVM>(sql).ToList().OrderBy(c => c.VisitDate));
+                        foreach (var l in tmpL)
+                        {
+                            l.ParentProvider = selectedProviderForBiMonthlyReview;
+                            ReportToTextVM r = new ReportToTextVM(selectedProviderForBiMonthlyReview, l.VisitDate, l.PtID);
+                        }
+                        listOfDocumentReviews = tmpL;
                     }
-                    return tmpL;
                 }
+                return listOfDocumentReviews;
             }
         }
 
@@ -134,6 +145,7 @@ namespace AI_Note_Review
             {
                 selectedDocumentReview = value;
                 OnPropertyChanged("ReviewHTML");
+                OnPropertyChanged("SelectedDocumentReview");
             }
         }
 
@@ -147,23 +159,27 @@ namespace AI_Note_Review
         }
 
 
-
+        public ObservableCollection<SqlProvider> myPeeps;
         public ObservableCollection<SqlProvider> MyPeeps
         {
             get
             {
-                Console.WriteLine($"getting west side pod and assigning {SelectedMasterReviewSummary.MasterReviewSummaryTitle} to provider.");
-                string sql = "";
-                sql += $"Select * from Providers where IsWestSidePod == '1' order by FullName;"; //this part is to get the ID of the newly created phrase
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                if (myPeeps == null)
                 {
-                    var tmpPeeps = cnn.Query<SqlProvider>(sql).ToList();
-                    foreach(var tmpPeep in tmpPeeps)
+                    Console.WriteLine($"getting west side pod and assigning {SelectedMasterReviewSummary.MasterReviewSummaryTitle} to provider.");
+                    string sql = "";
+                    sql += $"Select * from Providers where IsWestSidePod == '1' order by FullName;"; //this part is to get the ID of the newly created phrase
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
-                        tmpPeep.ParentMasterReviewSummary = selectedMasterReviewSummary;
+                        var tmpPeeps = cnn.Query<SqlProvider>(sql).ToList();
+                        foreach (var tmpPeep in tmpPeeps)
+                        {
+                            tmpPeep.ParentMasterReviewSummary = selectedMasterReviewSummary;
+                        }
+                        myPeeps = tmpPeeps.ToObservableCollection();
                     }
-                    return tmpPeeps.ToObservableCollection();
                 }
+                return myPeeps;
             }
         }
 
@@ -416,8 +432,8 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            BiMonthlyReviewVM rvm = parameter as BiMonthlyReviewVM;
-            BiMonthlyReviewV wp = new BiMonthlyReviewV(rvm);
+            MasterReviewSummaryVM rvm = parameter as MasterReviewSummaryVM;
+            BiMonthlyReviewV wp = new BiMonthlyReviewV(rvm.BiMonthlyReviewVM);
             wp.ShowDialog();
         }
     }

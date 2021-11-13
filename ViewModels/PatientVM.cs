@@ -39,6 +39,11 @@ namespace AI_Note_Review
             patient = _patient;
         }
 
+        public PatientVM(MasterReviewSummaryVM mrs)
+        {
+            patient = SamplePatient;
+        }
+
         public PatientM SamplePatient
         {
             get

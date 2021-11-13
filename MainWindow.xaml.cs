@@ -38,19 +38,22 @@ namespace AI_Note_Review
     {
         //string strApikey = "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"; //for AI
 
-        VisitReportVM reportVM;
-        BiMonthlyReviewVM biMonthlyReviewVM;
+        //VisitReportVM reportVM;
+        //BiMonthlyReviewVM biMonthlyReviewVM;
+        private MasterReviewSummaryVM mrs;
 
         public MainWindow()
         {
             ProgramInit();
             InitializeComponent();
 
-            reportVM = new VisitReportVM();
-            biMonthlyReviewVM = new BiMonthlyReviewVM();
-            this.DataContext = reportVM;
-            biMonthReviewMI.DataContext = biMonthlyReviewVM;
-            masterReviewMI.DataContext = new MasterReviewSummaryVM();
+            //reportVM = new VisitReportVM();
+            //biMonthlyReviewVM = new BiMonthlyReviewVM();
+            //this.DataContext = reportVM;
+            //biMonthReviewMI.DataContext = biMonthlyReviewVM;
+            
+            mrs = new MasterReviewSummaryVM();
+            DataContext = mrs;
 
             //Note hunter test
             /*
@@ -244,14 +247,14 @@ namespace AI_Note_Review
                                     {
                                         try
                                         {
-                                            reportVM.Document.ProcessDocument(h.EcwHTMLDocument);
+                                           mrs.VisitReport.Document.ProcessDocument(h.EcwHTMLDocument);
                                         }
                                         catch (Exception e)
                                         {
                                             Console.WriteLine(e.Message);
                                             break;
                                         }
-                                        if (reportVM.Patient.PtName != "") break;
+                                        if (mrs.VisitReport.Patient.PtName != "") break;
                                     }
                         }
                         Thread.Sleep(200);

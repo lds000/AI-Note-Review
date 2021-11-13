@@ -29,6 +29,8 @@ class PersonVM {
 */
     public class MasterReviewSummaryVM : INotifyPropertyChanged
     {
+
+        private BiMonthlyReviewVM biMonthlyReviewVM;
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -41,7 +43,62 @@ class PersonVM {
             masterReviewSummary = new SqlMasterReviewSummaryM();
             providerBiMonthlyReview = new SqlRelProviderMasterReviewSummaryM();
         }
+        public SqlMasterReviewSummaryM MasterReviewSummary { get; set; }
 
+        public SqlICD10SegmentVM SqlICD10SegmentVM { get; set; }
+
+        public BiMonthlyReviewVM BiMonthlyReviewVM
+        {
+            get {
+                if (biMonthlyReviewVM == null) { BiMonthlyReviewVM = new BiMonthlyReviewVM(this); }
+                return biMonthlyReviewVM; 
+            }
+            set 
+            { 
+                biMonthlyReviewVM = value; 
+            }
+        }
+
+        private DocumentVM document;
+        public DocumentVM Document
+        {
+            get
+            {
+                if (document == null) document = new DocumentVM(this);
+                    return document;
+            }
+        }
+
+        private PatientVM patient;
+        public PatientVM Patient
+        {
+            get
+            {
+                if (patient == null) patient = new PatientVM(this);
+                return patient;
+            }
+        }
+
+        private SqlProvider provider;
+        public SqlProvider Provider
+        {
+            get
+            {
+                if (provider == null) provider = new SqlProvider(this);
+                return provider;
+            }
+        }
+
+        private VisitReportVM visitReport;
+        public VisitReportVM VisitReport
+        {
+            get 
+            {
+                if (visitReport == null) { visitReport = new VisitReportVM(this); }
+                return visitReport; 
+            }
+            private set { visitReport = value; } 
+        }
 
         /// <summary>
         /// review for provider submitted every two months

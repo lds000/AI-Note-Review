@@ -23,7 +23,7 @@
                               Command="{Binding Path=ShowMasterReviewCommand}"
                                 CommandParameter="{Binding}" >
                     </MenuItem>
-                    <MenuItem Name="biMonthReviewMI" Header="Reviews" Command="{Binding Path=ShowBiMonthlyReport}"
+                    <MenuItem Name="biMonthReviewMI" Header="Reviews" Command="{Binding Path=BiMonthlyReviewVM.ShowBiMonthlyReport}"
                                 CommandParameter="{Binding}" >
                     </MenuItem>
                     <MenuItem 
@@ -37,8 +37,8 @@
                         CommandParameter="{Binding}">Check X Only</MenuItem>
                      -->
                     <MenuItem Header="Edit Checkpoints" ToolTip="Edit Checkpoint data."
-                              Command="{Binding Path=CheckPointEditorCommand}"
-                              CommandParameter="{Binding}">
+                              Command="{Binding Path=VisitReport.CheckPointEditorCommand}"
+                              CommandParameter="{Binding VisitReport}">
                     </MenuItem>
                     <MenuItem Header="Edit Providers">
                         <MenuItem Header="Add Provider" ToolTip="Add new provider."></MenuItem>

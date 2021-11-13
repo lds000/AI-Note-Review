@@ -37,12 +37,13 @@ namespace AI_Note_Review
         private SqlProvider sqlProvider;
         private MasterReviewSummaryVM masterReviewSummary;
 
-        public VisitReportVM()
+        public VisitReportVM(MasterReviewSummaryVM mrs)
         {
+            masterReviewSummary = mrs;
             report = new VisitReportM(); //1st executed command in program
-            sqlProvider = new SqlProvider(); //Change provider for report
-            patient = new PatientVM();
-            document = new DocumentVM(sqlProvider, patient);
+            sqlProvider = mrs.Provider; //Change provider for report
+            patient = mrs.Patient;
+            document = mrs.Document;
             passedCPs = new ObservableCollection<ICheckPoint>();
             missedCPs = new ObservableCollection<SqlCheckpointVM>();
             droppedCPs = new ObservableCollection<SqlCheckpointVM>();
@@ -50,6 +51,7 @@ namespace AI_Note_Review
             NewEcWDocument();
         }
 
+        /*
         public VisitReportVM(List<SqlRelCPProvider> cplist)
         {
             report = new VisitReportM(); //1st executed command in program
@@ -62,7 +64,7 @@ namespace AI_Note_Review
             GeneralCheckPointsOnly = false;
             NewEcWDocument();
         }
-
+        */
         //not sure I need this.
         public void NewEcWDocument()
         {

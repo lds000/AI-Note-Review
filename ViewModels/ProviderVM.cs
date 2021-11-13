@@ -15,7 +15,7 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    class ProviderVM : INotifyPropertyChanged
+    public class ProviderVM : INotifyPropertyChanged
     {
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -24,6 +24,11 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         private ProviderM provider;
+
+        public ProviderVM(MasterReviewSummaryVM mrs)
+        {
+
+        }
 
         public ProviderM Provider
         {

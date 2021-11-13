@@ -112,6 +112,10 @@ namespace AI_Note_Review
         {
         }
 
+        public SqlProvider(MasterReviewSummaryVM mrs)
+        {
+        }
+
         public SqlProvider(string strFirstName, string strLastName, string strCert, string strHomeClinic, int intReviewInterval, string strFullName)
         {
             string sql = "";
