@@ -201,7 +201,7 @@ namespace AI_Note_Review
         private void MainWindow_ActiveWindowChanged(object sender, string windowHeader, IntPtr hwnd)
         {
 
-            Console.WriteLine($"Window ({windowHeader}) focused.");
+            mrs.AddLog($"Window ({windowHeader}) focused.");
             //Console.WriteLine($"Header: {windowHeader}");
             //Get window data (top, left, size)
             RECT rct;

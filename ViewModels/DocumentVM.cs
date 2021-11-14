@@ -34,6 +34,7 @@ namespace AI_Note_Review
         private PatientVM patient;
         private DocumentM document;
         private SqlProvider sqlProvider;
+        private MasterReviewSummaryVM masterReview;
 
         /*
         /// <summary>
@@ -52,6 +53,7 @@ namespace AI_Note_Review
 
         public DocumentVM(MasterReviewSummaryVM mrs)
         {
+            masterReview = mrs;
             sqlProvider = mrs.Provider;
             patient = mrs.Patient;
             document = SampleDocument; //New DocumentM() called under this.
@@ -194,6 +196,7 @@ namespace AI_Note_Review
         /// </summary>
         public void SetUpNote()
         {
+            masterReview.AddLog($"SetUpNote() being executed for {patient.PtName}");
             //add hashtags here. #Hash
             HashTags = "";
             if (patient.PtAgeYrs > 65) AddHashTag("@Elderly");             //75	X	5	5	Elderly
@@ -412,9 +415,11 @@ namespace AI_Note_Review
             Clear();
             if (HDoc.Body.InnerHtml.StartsWith("<LINK"))
             {
+                masterReview.AddLog("Processing unlocked chart");
                 processUnlocked(HDoc);
                 return;
             }
+            masterReview.AddLog("Processing locked chart");
             #region Process locked document magic
             var watch = System.Diagnostics.Stopwatch.StartNew();
 

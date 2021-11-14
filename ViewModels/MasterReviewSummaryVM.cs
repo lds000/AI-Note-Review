@@ -44,7 +44,6 @@ class PersonVM {
             if (PropertyChanged != null)
             {
                 SaveToDB();
-                Console.WriteLine($"Property {name} was saved from MasterReviewSummaryVM!");
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
@@ -53,6 +52,7 @@ class PersonVM {
         {
             masterReviewSummary = new SqlMasterReviewSummaryM();
             providerBiMonthlyReview = new SqlRelProviderMasterReviewSummaryM();
+            AddLog("MasterReviewSummaryVM() executed.");
         }
         public SqlMasterReviewSummaryM MasterReviewSummary { get; set; }
 
@@ -61,7 +61,11 @@ class PersonVM {
         public BiMonthlyReviewVM BiMonthlyReviewVM
         {
             get {
-                if (biMonthlyReviewVM == null) { BiMonthlyReviewVM = new BiMonthlyReviewVM(this); }
+                if (biMonthlyReviewVM == null) 
+                {
+                    BiMonthlyReviewVM = new BiMonthlyReviewVM(this);
+                    AddLog("Creating BiMonthlyReviewVM.");
+                }
                 return biMonthlyReviewVM; 
             }
             set 
@@ -353,6 +357,26 @@ class PersonVM {
                 OnPropertyChanged();
                 OnPropertyChanged("SelectedICD10Segment");
             }
+        }
+
+        private string mainLog;
+        public string MainLog 
+        {
+            get
+            {
+                if (mainLog == null) mainLog = "";
+                return mainLog; 
+            }
+            set
+            {
+                mainLog += value;
+                OnPropertyChanged("MainLog");
+            }
+        }
+        public void AddLog(string str)
+        {
+            mainLog += $"-{str}\n";
+            OnPropertyChanged("MainLog");
         }
 
         private SqlCheckpointVM selectedCP;

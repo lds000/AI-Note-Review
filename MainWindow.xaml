@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
         Loaded="Window_Loaded"        
+        WindowState="Maximized"
         Closing="Window_Closing"
         Title="MainWindow" Height="450" Width="900">
     <Border BorderBrush="White" BorderThickness="2">
@@ -92,75 +93,90 @@
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                     <Button  Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
                 </StackPanel>
-                <TabControl x:Name="tcNote">
-                    <TabItem Foreground="Black" Header="CC">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CC}"></TextBox>
-                    </TabItem>
-                    <TabItem Foreground="Black" Header="HPI">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.HPI}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="ROS">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ROS}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Meds">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CurrentMeds}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Prn Meds">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CurrentPrnMeds}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Problems">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ProblemList}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="PMHx">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.PMHx}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="SocHx">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.SocHx}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Allergies">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Allergies}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Vital">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Vitals}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Exam">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Exam}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Meds" Foreground="Black">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.MedsStarted}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Labs">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.LabsOrdered}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Imaging">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ImagesOrdered}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Treatment">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Treatment}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Procedure">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ProcedureNote}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Assessments">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Assessments}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="FollowUp">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.FollowUp}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Visit Codes">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.VisitCodes}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="PrevMed">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.PreventiveMed}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="HTML">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.NoteHTML}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="HashTags">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.HashTags}"></TextBox>
-                    </TabItem>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TabControl x:Name="tcNote">
+                        <TabItem Foreground="Black" Header="CC">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CC}"></TextBox>
+                        </TabItem>
+                        <TabItem Foreground="Black" Header="HPI">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.HPI}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="ROS">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ROS}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Meds">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CurrentMeds}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Prn Meds">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CurrentPrnMeds}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Problems">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ProblemList}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="PMHx">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.PMHx}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="SocHx">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.SocHx}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Allergies">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Allergies}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Vital">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Vitals}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Exam">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Exam}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Meds" Foreground="Black">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.MedsStarted}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Labs">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.LabsOrdered}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Imaging">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ImagesOrdered}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Treatment">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Treatment}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Procedure">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ProcedureNote}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Assessments">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Assessments}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="FollowUp">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.FollowUp}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Visit Codes">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.VisitCodes}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="PrevMed">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.PreventiveMed}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="HTML">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.NoteHTML}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="HashTags">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.HashTags}"></TextBox>
+                        </TabItem>
 
-                </TabControl>
+                    </TabControl>
+                    <Border BorderBrush="White" BorderThickness="1" Grid.Column="1">
+                        <StackPanel>
+                            <Label Style="{StaticResource MyLblStyle}">Log:</Label>
+                            <TextBlock Margin="5" Style="{StaticResource MyTbStyle}" Name="MainLog" Text="{Binding MainLog, FallbackValue=No Text}" TextWrapping="Wrap">
+                                    
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                            
+                </Grid>
             </DockPanel>
         </Grid>
     </Border>

@@ -50,7 +50,6 @@ public PersonViewModel(PersonModel person) {
         string Link    {get; set;}
         int Expiration { get; set; }
         ObservableCollection<SqlCheckPointImageVM> Images {get;}
-
     }
 
     public class SqlCheckpointVM : INotifyPropertyChanged, ICheckPoint
