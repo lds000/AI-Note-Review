@@ -191,6 +191,7 @@ namespace AI_Note_Review
             }
         }
 
+        string strLastDoc = "";
         #region window functions
         /// <summary>
         /// Monitors windows as the focus is changed.
@@ -201,7 +202,7 @@ namespace AI_Note_Review
         private void MainWindow_ActiveWindowChanged(object sender, string windowHeader, IntPtr hwnd)
         {
 
-            mrs.AddLog($"Window ({windowHeader}) focused.");
+            //mrs.AddLog($"Window ({windowHeader}) focused.");
             //Console.WriteLine($"Header: {windowHeader}");
             //Get window data (top, left, size)
             RECT rct;
@@ -247,7 +248,13 @@ namespace AI_Note_Review
                                     {
                                         try
                                         {
-                                           mrs.VisitReport.Document.ProcessDocument(h.EcwHTMLDocument);
+                                            if (h.EcwHTMLDocument.Body.InnerText == strLastDoc)
+                                            {
+                                                return;
+                                            }
+                                            strLastDoc = h.EcwHTMLDocument.Body.InnerText;
+                                            mrs.AddLog("Document Found....");
+                                            mrs.VisitReport.Document.ProcessDocument(h.EcwHTMLDocument);
                                         }
                                         catch (Exception e)
                                         {

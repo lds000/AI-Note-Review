@@ -233,6 +233,7 @@ class PersonViewModel {
 
         public void SaveToDB()
         {
+
             string sql = "UPDATE CheckPoints SET " +
                     "CheckPointID=@CheckPointID, " +
                     "CheckPointTitle=@CheckPointTitle, " +

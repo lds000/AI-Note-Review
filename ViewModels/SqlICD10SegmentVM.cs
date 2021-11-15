@@ -29,6 +29,57 @@ namespace AI_Note_Review
 
         private SqlICD10SegmentM sqlICD10Segment;
 
+        public AlternativeICD10VM AlternativeICD10 { get; set; }
+
+        private List<AlternativeICD10VM> alternativeICD10s;
+        public List<AlternativeICD10VM> AlternativeICD10s
+        {
+            get
+            {
+                if (alternativeICD10s == null)
+                {
+                    string sql = $"Select * from  RelAlternativeICD10 where TargetICD10Segment == {ICD10SegmentID};";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        var tmpList = cnn.Query<AlternativeICD10VM>(sql).ToList();
+                        foreach (var item in tmpList)
+                        {
+                            //item.ParentSegment = ;
+                        }
+                        alternativeICD10s = tmpList;
+                    }
+
+                }
+                return alternativeICD10s;
+            }
+        }
+
+        public void AddAlternativeICD10()
+        {
+            string strTitle = "";
+            string strICD10 = "";
+            WinEnterText wet = new WinEnterText("Please input new title.");
+            wet.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            wet.ShowDialog();
+            if (wet.ReturnValue == null) return;
+            if (wet.ReturnValue.Trim() != "")
+            {
+                strTitle = wet.ReturnValue;
+            }
+
+            WinEnterText wet2 = new WinEnterText($"Please input new ICD10 Code for {strTitle}.");
+            wet2.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            wet2.ShowDialog();
+            if (wet2.ReturnValue == null) return;
+            if (wet2.ReturnValue.Trim() != "")
+            {
+                strICD10 = wet2.ReturnValue;
+                var tmpreturn = new AlternativeICD10VM(strTitle, strICD10, ICD10SegmentID);
+                alternativeICD10s = null;
+                OnPropertyChanged("AlternativeICD10s");
+            }
+        }
+
         public SqlICD10SegmentM SqlICD10Segment
         {
             get { return sqlICD10Segment; }
@@ -131,6 +182,11 @@ namespace AI_Note_Review
                 }
                 return checkpoints;
             }
+        }
+
+        public void RemoveCheckPoint(SqlCheckpointVM cp)
+        {
+            cp.DeleteFromDB();
         }
 
         public void CheckSegment()
@@ -296,6 +352,68 @@ namespace AI_Note_Review
             SelectedCheckPoint = cp;
         }
 
+        private string indexHtml;
+        public string IndexHtml
+        {
+            get
+            {
+                if (indexHtml == null)
+                {
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        SqlCheckpointVM cpvm = new SqlCheckpointVM();
+                        ObservableCollection<SqlCheckpointVM> lcp = Checkpoints;
+                        List<SqlCheckPointType> lcpt = cpvm.CheckPointTypes;
+                        string strSummary = "";// @"<style type=""text / css"">< !--.tab { margin - left: 40px; }--></ style >";
+                        strSummary += $"<h1>{SegmentTitle}</h1><br>";
+                        foreach (SqlCheckPointType cpt in lcpt)
+                        {
+                            string strTempOut = "<ol>";
+                            foreach (SqlCheckpointVM cp in lcp)
+                            {
+                                if (cp.CheckPointType == cpt.CheckPointTypeID)
+                                {
+                                    strTempOut += $"<dl><li><dt><font size='+1'>{cp.CheckPointTitle}</font>" + Environment.NewLine;
+                                    if (cp.Comment != null)
+                                    {
+                                        string strEncoded = cp.Comment.Replace(Environment.NewLine, "<br style='display: block; margin: 0px; line-height:0px'>");
+                                        strTempOut += $"<dd><i>{strEncoded}</i>" + Environment.NewLine;
+                                        if (cp.Link != null)
+                                        {
+                                            strTempOut += $"<br><a href='{cp.Link}'>[Link to source]</a>";
+                                        }
+                                        if (cp.Images.Count > 0)
+                                        {
+                                            foreach (var imgCPimage in cp.Images)
+                                            {
+                                                var b64String = Convert.ToBase64String(imgCPimage.ImageData);
+                                                var dataUrl = "data:image/bmp;base64," + b64String;
+                                                strTempOut += $"<br><img src=\"{dataUrl}" + "\" />";
+                                            }
+                                        }
+                                        strTempOut += "";
+                                    }
+                                    strTempOut += "</dl></li>";
+                                }
+                            }
+                            if (strTempOut != "<ol>")
+                            {
+                                strSummary += $"<font size='+2'><B  style='margin-left: 10px'>{cpt.Title} </B></font>" + Environment.NewLine;
+                                strSummary += strTempOut + "</ol>";
+                                strSummary += Environment.NewLine;
+                            }
+                            else
+                            {
+                                strTempOut = "";
+                            }
+                        }
+                       indexHtml = strSummary;
+                    }
+                }
+                return indexHtml;
+            }
+        }
+
 
         /// <summary>
         /// Calculate the indent amount for each ICD10 segment and save it to the database.
@@ -402,6 +520,8 @@ namespace AI_Note_Review
             }
         }
 
+
+
         private ICommand mDeleteSegment;
         public ICommand DeleteSegmentCommand
         {
@@ -414,6 +534,22 @@ namespace AI_Note_Review
             set
             {
                 mDeleteSegment = value;
+            }
+        }
+
+        //AddAlternativeCommand
+        private ICommand mAddAlternative;
+        public ICommand AddAlternativeCommand
+        {
+            get
+            {
+                if (mAddAlternative == null)
+                    mAddAlternative = new AddAlternative();
+                return mAddAlternative;
+            }
+            set
+            {
+                mAddAlternative = value;
             }
         }
 
@@ -558,67 +694,35 @@ namespace AI_Note_Review
         public void Execute(object parameter)
         {
             SqlICD10SegmentVM seg = parameter as SqlICD10SegmentVM;
-            if (seg != null)
-            {
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    SqlCheckpointVM cpvm = new SqlCheckpointVM();
-                    ObservableCollection<SqlCheckpointVM> lcp = seg.Checkpoints;
-                    List<SqlCheckPointType> lcpt = cpvm.CheckPointTypes;
-                    string strSummary = "";// @"<style type=""text / css"">< !--.tab { margin - left: 40px; }--></ style >";
-                    strSummary += $"<h1>{seg.SegmentTitle}</h1><br>";
-                    foreach (SqlCheckPointType cpt in lcpt)
-                    {
-                        string strTempOut = "<ol>";
-                        foreach (SqlCheckpointVM cp in lcp)
-                        {
-                            if (cp.CheckPointType == cpt.CheckPointTypeID)
-                            {
-                                strTempOut += $"<dl><li><dt><font size='+1'>{cp.CheckPointTitle}</font>" + Environment.NewLine;
-                                if (cp.Comment != null)
-                                {
-                                    string strEncoded = cp.Comment.Replace(Environment.NewLine, "<br style='display: block; margin: 0px; line-height:0px'>");
-                                    strTempOut += $"<dd><i>{strEncoded}</i>" + Environment.NewLine;
-                                    if (cp.Link != null)
-                                    {
-                                        strTempOut += $"<br><a href='{cp.Link}'>[Link to source]</a>";
-                                    }
-                                    if (cp.Images.Count > 0)
-                                    {
-                                        foreach (var imgCPimage in cp.Images)
-                                        {
-                                            var b64String = Convert.ToBase64String(imgCPimage.ImageData);
-                                            var dataUrl = "data:image/bmp;base64," + b64String;
-                                            strTempOut += $"<br><img src=\"{dataUrl}" + "\" />";
-                                        }
-                                    }
-                                    strTempOut += "";
-                                }
-                                strTempOut += "</dl></li>";
-                            }
-                        }
-                        if (strTempOut != "<ol>")
-                        {
-                            strSummary += $"<font size='+2'><B  style='margin-left: 10px'>{cpt.Title} </B></font>" + Environment.NewLine;
-                            strSummary += strTempOut + "</ol>";
-                            strSummary += Environment.NewLine;
-                        }
-                        else
-                        {
-                            strTempOut = "";
-                        }
-                    }
-                    //Clipboard.SetText(strSummary, TextDataFormat.Html);
-                    ClipboardHelper.CopyToClipboard(strSummary, "");
-                    WinPreviewHTML wp = new WinPreviewHTML();
-                    wp.MyWB.NavigateToString(HtmlLittlerHelper.FixHtml(strSummary));
-                    wp.ShowDialog();
-                }
-            }
+            ClipboardHelper.CopyToClipboard(seg.IndexHtml, "");
+            WinPreviewHTML wp = new WinPreviewHTML();
+            wp.MyWB.NavigateToString(HtmlLittlerHelper.FixHtml(seg.IndexHtml));
+            wp.ShowDialog();
+        }
+    }
 
+    //AddAlternative
+    class AddAlternative : ICommand
+    {
+        #region ICommand Members  
 
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+        public void Execute(object parameter)
+        {
+            SqlICD10SegmentVM seg = parameter as SqlICD10SegmentVM;
+            seg.AddAlternativeICD10();
         }
     }
 
     #endregion
+
 }

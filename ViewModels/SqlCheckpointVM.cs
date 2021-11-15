@@ -607,6 +607,22 @@ public PersonViewModel(PersonModel person) {
                 mFollowLink = value;
             }
         }
+
+        //RemoveCheckPoint
+        private ICommand mRemoveCheckPoint;
+        public ICommand RemoveCheckPointCommand
+        {
+            get
+            {
+                if (mRemoveCheckPoint == null)
+                    mRemoveCheckPoint = new RemoveCheckPoint();
+                return mRemoveCheckPoint;
+            }
+            set
+            {
+                mRemoveCheckPoint = value;
+            }
+        }
     }
 
     class TagAdder : ICommand
@@ -860,4 +876,28 @@ public PersonViewModel(PersonModel person) {
 
     }
 
+    /// <summary>
+    /// CreateIndex
+    /// </summary>
+    class RemoveCheckPoint : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+        public void Execute(object parameter)
+        {
+            SqlCheckpointVM cp = parameter as SqlCheckpointVM;
+            cp.DeleteFromDB();
+            cp.ParentSegment.UpdateCheckPoints();
+        }
+    }
 }

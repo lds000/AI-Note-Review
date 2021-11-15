@@ -72,11 +72,11 @@ public PersonViewModel(PersonModel person) {
         /// <param name="dMaxAge"></param>
         /// <param name="bMale"></param>
         /// <param name="bFemale"></param>
-        public SqlTagRegExVM(long intTargetTag, string strRegExText, long intTargetSection, long iTagRegExType = 1, long iTagRegExMatchType = 0, long iTagRegExMatchResult = 0, double dMinAge = 0, double dMaxAge = 99, bool bMale = true, bool bFemale = true)
+        public SqlTagRegExVM(long intTargetTag, string strRegExText, long intTargetSection, long iTagRegExType = 1, long iTagRegExMatchType = 1, long iTagRegExMatchResult = 1,long iTagRegExMatchNoResult=3, double dMinAge = 0, double dMaxAge = 99, bool bMale = true, bool bFemale = true)
         {
             strRegExText = strRegExText.Replace("'", "''"); //used to avoid errors in titles with ' character
             string sql = "";
-            sql = $"INSERT INTO TagRegEx (TargetTag, RegExText, TargetSection, TagRegExType, TagRegExMatchType, TagRegExMatchResult, MinAge, MaxAge, Male, Female) VALUES ({intTargetTag}, '{strRegExText}', {intTargetSection}, {iTagRegExType}, {iTagRegExMatchType}, {iTagRegExMatchResult}, {dMinAge},{dMaxAge},{bMale},{bFemale});SELECT last_insert_rowid();";
+            sql = $"INSERT INTO TagRegEx (TargetTag, RegExText, TargetSection, TagRegExType, TagRegExMatchType, TagRegExMatchResult, TagRegExMatchNoResult, MinAge, MaxAge, Male, Female) VALUES ({intTargetTag}, '{strRegExText}', {intTargetSection}, {iTagRegExType}, {iTagRegExMatchType}, {iTagRegExMatchResult}, {iTagRegExMatchNoResult}, {dMinAge},{dMaxAge},{bMale},{bFemale});SELECT last_insert_rowid();";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 int lastID = cnn.ExecuteScalar<int>(sql); //find ID of the insert tag and retreive it.

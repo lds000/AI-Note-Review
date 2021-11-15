@@ -88,6 +88,14 @@
                                 </ListBox>
                             </StackPanel>
                         </Border>
+                        <Border Margin="3" Padding="3" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" >
+                            <StackPanel>
+                                <Label Style="{StaticResource MyLblStyle}">Top Mission Diagnosis:</Label>
+                                <ListBox ItemsSource="{Binding TopMissingDxs}">
+                                    
+                                </ListBox>
+                            </StackPanel>
+                        </Border>
                     </DockPanel>
                 </Border>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
@@ -169,8 +177,15 @@
                     </TabControl>
                     <Border BorderBrush="White" BorderThickness="1" Grid.Column="1">
                         <StackPanel>
-                            <Label Style="{StaticResource MyLblStyle}">Log:</Label>
-                            <TextBlock Margin="5" Style="{StaticResource MyTbStyle}" Name="MainLog" Text="{Binding MainLog, FallbackValue=No Text}" TextWrapping="Wrap">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource MyLblStyle}">Log:</Label>
+                                <Button Grid.Column="1" Style="{StaticResource LinkButton}" Command="{Binding ClearLogCommand}" CommandParameter="{Binding}">Clear</Button>
+                            </Grid>
+                            <TextBlock Foreground="Gray" Margin="5" Style="{StaticResource MyTbStyle}" Name="MainLog" Text="{Binding MainLog, FallbackValue=No Text}" TextWrapping="Wrap">
                                     
                             </TextBlock>
                         </StackPanel>

@@ -728,8 +728,8 @@ namespace AI_Note_Review
                 throw;
             }
             #endregion
-            SetUpNote();
             parseVitalsString(Vitals);
+            SetUpNote();
         }
         private void parseVitalsString(string strVitals)
         {
@@ -854,10 +854,6 @@ namespace AI_Note_Review
                     ICD10s.Add(strCode);
                 }
             }
-
-            SetUpNote();
-
-
         }
 
         public void processUnlocked(HtmlDocument HDoc)

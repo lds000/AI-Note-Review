@@ -359,6 +359,53 @@ class PersonVM {
             }
         }
 
+        private string indexHtml;
+        public string IndexHtml
+        {
+            get
+            {
+                if (indexHtml == null)
+                {
+                    string strSummary = $"<font size='+4'><b>Index for review: {MasterReviewSummaryTitle}</b></font><br>";
+                    strSummary += $"<font size='+1'>{MasterReviewSummarySubject}</font><br>";
+                    strSummary += $"<font size='+1'>Dates: {StartDate.ToString("MM/dd/yyyy")}-{EndDate.ToString("MM/dd/yyyy")}</font><br>";
+                    strSummary += $"<font size='+0'>{MasterReviewSummaryComment}</font><br><br>";
+                    strSummary += $"<font size='+1'>ICD-10 Breakdown:</font><br>";
+                    foreach (var seg in ICD10Segments)
+                    {
+                        if (seg.LeftOffset == 10)
+                        {
+                            strSummary += $"<span style='padding-left: 15px;'>";
+                        }
+                        else
+                        {
+                            strSummary += $"<span style='padding-left: 5px;'>";
+                        }
+                        strSummary += $"{seg.SegmentTitle} {seg.icd10Chapter}{seg.icd10CategoryStart}-{seg.icd10CategoryEnd}";
+                        if (seg.AlternativeICD10s.Count > 0)
+                        {
+                            strSummary += " also includes (";
+                            foreach (var tmpAlt in seg.AlternativeICD10s)
+                            {
+                                strSummary += $"{tmpAlt.AlternativeICD10} {tmpAlt.AlternativeICD10Title}, ";
+                            }
+                            strSummary = strSummary.Trim().TrimEnd(',');
+                            strSummary += ")";
+                        }
+                        if (seg.LeftOffset == 10) strSummary += $"</span>";
+                        strSummary += "<br>";
+                    }
+
+                    foreach (var seg in ICD10Segments)
+                    {
+                        strSummary += seg.IndexHtml;
+                    }
+                    indexHtml = strSummary;
+                }
+                return indexHtml;
+            }
+        }
+
         private string mainLog;
         public string MainLog 
         {
@@ -376,6 +423,12 @@ class PersonVM {
         public void AddLog(string str)
         {
             mainLog += $"-{str}\n";
+            OnPropertyChanged("MainLog");
+        }
+
+        public void ClearLog()
+        {
+            mainLog = "";
             OnPropertyChanged("MainLog");
         }
 
@@ -410,6 +463,41 @@ class PersonVM {
             #endregion
         }
 
+        private ICommand mClearLog;
+        public ICommand ClearLogCommand
+        {
+            #region Command Def
+            get
+            {
+                if (mClearLog == null)
+                    mClearLog = new ClearLog();
+                return mClearLog;
+            }
+            set
+            {
+                mClearLog = value;
+            }
+            #endregion
+        }
+
+        //CreateMasterIndexCommand
+        private ICommand mCreateMasterIndex;
+        public ICommand CreateMasterIndexCommand
+        {
+            #region Command Def
+            get
+            {
+                if (mCreateMasterIndex == null)
+                    mCreateMasterIndex = new CreateMasterIndex();
+                return mCreateMasterIndex;
+            }
+            set
+            {
+                mCreateMasterIndex = value;
+            }
+            #endregion
+        }
+
     }
     class ShowMasterReview : ICommand
     {
@@ -435,4 +523,53 @@ class PersonVM {
             wp.ShowDialog();
         }
     }
+
+    class ClearLog : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
+            mrs.ClearLog();
+        }
+    }
+
+    //CreateMasterIndexCommand
+    class CreateMasterIndex : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
+            ClipboardHelper.CopyToClipboard(mrs.IndexHtml, "");
+            WinPreviewHTML wp = new WinPreviewHTML();
+            wp.MyWB.NavigateToString(HtmlLittlerHelper.FixHtml(mrs.IndexHtml));
+            wp.ShowDialog();
+        }
+    }
+
 }

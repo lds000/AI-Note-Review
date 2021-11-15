@@ -53,7 +53,19 @@
                         <ListBox Style="{StaticResource MyListBox}" MinHeight="100" x:Name="lbMasterReviews"
                              ItemsSource="{Binding Path=MasterReviewSummaryList}"
                              SelectedValue="{Binding SelectedMasterReview}"
-                             DisplayMemberPath="MasterReviewSummaryTitle">
+                                 HorizontalContentAlignment="Stretch" >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border>
+                                        <Border.ContextMenu>
+                                            <ContextMenu>
+                                            <MenuItem Command="{Binding CreateMasterIndexCommand}" CommandParameter="{Binding}" Header="Create Index to ClipBoard"/>
+                                        </ContextMenu>
+                                        </Border.ContextMenu>
+                                        <TextBlock Text="{Binding MasterReviewSummaryTitle}"></TextBlock>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
                         </ListBox>
                     </Border>
                     <Label Grid.Row="2" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">ICD-10 List</Label>
@@ -72,6 +84,7 @@
                                                   Command="{Binding CreateIndexCommand}" CommandParameter="{Binding}"
                                                   ToolTip="Create an index and copy it to the clipboard"/>
                                             <MenuItem Header="Delete Segment" Command="{Binding DeleteSegmentCommand}" CommandParameter="{Binding}"></MenuItem>
+                                            <MenuItem Header="Add Alternative" Command="{Binding AddAlternativeCommand}" CommandParameter="{Binding}"/>
                                         </ContextMenu>
                                     </Grid.ContextMenu>
                                     <Grid.ColumnDefinitions>
@@ -111,19 +124,7 @@
                         <ListBox.ContextMenu>
                             <ContextMenu>
                                 <!--SqlICD10SegmentVM-->
-                                <MenuItem Header="Add Checkpoint" Command="{Binding SelectedICD10Segment.AddCPCommand}" CommandParameter="{Binding SelectedICD10Segment}">
-                                    <MenuItem.Style>
-                                        <Style TargetType="MenuItem">
-                                            <Setter Property="IsEnabled" Value="True" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedItem, ElementName=lbICD10}" Value="{x:Null}">
-                                                    <Setter Property="IsEnabled" Value="True"></Setter>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </MenuItem.Style>
-
-                                </MenuItem>
+                                <MenuItem Header="Add Checkpoint" Command="{Binding SelectedICD10Segment.AddCPCommand}" CommandParameter="{Binding SelectedICD10Segment}"/>
                                 <MenuItem Header="Summary to Clipboard"></MenuItem>
                             </ContextMenu>
                         </ListBox.ContextMenu>
@@ -137,7 +138,7 @@
                                 <Border>
                                     <Border.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Header="Remove checkpoint." Command="{Binding RemoveCPCommand}" CommandParameter="{Binding}">
+                                            <MenuItem Header="Remove checkpoint." Command="{Binding RemoveCheckPointCommand}" CommandParameter="{Binding}">
                                                 <!--todo: a minor annoyance, have this stretch across entire listbox-->
 
                                             </MenuItem>
@@ -256,23 +257,13 @@
 
             </DockPanel>
             <!--from SqlICD10SegmentVM.Checkpoints the selected SqlCheckpointVM-->
-            <DockPanel  DataContext="{Binding ElementName=lbCheckpoints, Path=SelectedValue}" Grid.Column="3" Margin="3">
+            <DockPanel  DataContext="{Binding SelectedCP}" Grid.Column="3" Margin="3">
                 <Label Style="{StaticResource MyLblStyle}" DockPanel.Dock="Top" HorizontalAlignment="Center">Tags</Label>
                 <Border BorderBrush="White" BorderThickness="1">
                     <Border.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Add Tag" Command="{Binding AddTagCommand}" CommandParameter="{Binding}">
-                                <MenuItem.Style>
-                                    <Style TargetType="MenuItem">
-                                        <Setter Property="IsEnabled" Value="True" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=lbCheckpoints}" Value="{x:Null}">
-                                                <Setter Property="IsEnabled" Value="True"></Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </MenuItem.Style>
-                            </MenuItem>
+                            <MenuItem Header="Add Tag" Command="{Binding AddTagCommand}" CommandParameter="{Binding}"/>
+
                         </ContextMenu>
                     </Border.ContextMenu>
 
