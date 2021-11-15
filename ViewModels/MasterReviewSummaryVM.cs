@@ -446,6 +446,24 @@ class PersonVM {
             }
         }
 
+        private List<SqlMissingICD10CodesM> topMissingDxs;
+        public List<SqlMissingICD10CodesM> TopMissingDxs
+        {
+            get
+            {
+                if (topMissingDxs == null)
+                {
+                    string sql = $"SELECT StrCode, count(StrCode) as Count FROM MissingICD10Codes group by StrCode ORDER BY count(StrCode) DESC;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        topMissingDxs = cnn.Query<SqlMissingICD10CodesM>(sql).ToList();
+                    }
+
+                }
+                return topMissingDxs;
+            }
+        }
+
         private ICommand mShowMasterReview;
         public ICommand ShowMasterReviewCommand
         {
@@ -497,6 +515,8 @@ class PersonVM {
             }
             #endregion
         }
+
+
 
     }
     class ShowMasterReview : ICommand
@@ -571,5 +591,7 @@ class PersonVM {
             wp.ShowDialog();
         }
     }
+
+
 
 }

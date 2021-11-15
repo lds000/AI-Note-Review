@@ -345,6 +345,10 @@ namespace AI_Note_Review
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string strTest = value as string;
+            if (strTest.Contains("(Primary)"))
+            {
+                strTest = strTest.Split('(')[0].Trim();
+            }
             List<string> _ICD10Segments = new List<string>();
             string strAlphaCode = strTest.Substring(0, 1);
             string str = "";

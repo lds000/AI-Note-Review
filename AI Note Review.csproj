@@ -83,6 +83,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DataAccessLayer\SqlMasterReviewSummaryM.cs" />
+    <Compile Include="DataAccessLayer\SqlMissingICD10CodesM.cs" />
     <Compile Include="DataAccessLayer\SqlRelAlternativeICD10M.cs" />
     <Compile Include="DataAccessLayer\SqlRelProviderMasterReviewSummaryM.cs" />
     <Compile Include="Models\ReportToHtmlM.cs" />

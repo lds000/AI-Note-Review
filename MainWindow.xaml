@@ -91,8 +91,19 @@
                         <Border Margin="3" Padding="3" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" >
                             <StackPanel>
                                 <Label Style="{StaticResource MyLblStyle}">Top Mission Diagnosis:</Label>
-                                <ListBox ItemsSource="{Binding TopMissingDxs}">
-                                    
+                                <ListBox Style="{StaticResource MyListBox}" ItemsSource="{Binding TopMissingDxs}" HorizontalContentAlignment="Stretch" MaxHeight="200">
+                                    <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                            <Border>
+                                                <Border.ContextMenu>
+                                                    <ContextMenu>
+                                                        <MenuItem Header="Look-up in browser" Command="{Binding LinkToICD10Command}" CommandParameter="{Binding}"/>
+                                                    </ContextMenu>
+                                                </Border.ContextMenu>
+                                                <TextBlock Text="{Binding StringResult}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
                                 </ListBox>
                             </StackPanel>
                         </Border>
