@@ -54,30 +54,35 @@ namespace AI_Note_Review
             }
         }
 
-        public void AddAlternativeICD10()
+        public void AddAlternativeICD10(string strICD10 = "")
         {
             string strTitle = "";
-            string strICD10 = "";
-            WinEnterText wet = new WinEnterText("Please input new title.");
-            wet.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            wet.ShowDialog();
-            if (wet.ReturnValue == null) return;
-            if (wet.ReturnValue.Trim() != "")
+
+                WinEnterText wet = new WinEnterText("Please input new title.");
+                wet.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                wet.ShowDialog();
+                if (wet.ReturnValue == null) return;
+                if (wet.ReturnValue.Trim() != "")
+                {
+                    strTitle = wet.ReturnValue;
+                }
+
+            if (strICD10 == "")
             {
-                strTitle = wet.ReturnValue;
+                WinEnterText wet2 = new WinEnterText($"Please input new ICD10 Code for {strTitle}.");
+                wet2.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                wet2.ShowDialog();
+                if (wet2.ReturnValue == null) return;
+                if (wet2.ReturnValue.Trim() != "")
+                {
+                    strICD10 = wet2.ReturnValue.Trim();
+                }
             }
 
-            WinEnterText wet2 = new WinEnterText($"Please input new ICD10 Code for {strTitle}.");
-            wet2.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            wet2.ShowDialog();
-            if (wet2.ReturnValue == null) return;
-            if (wet2.ReturnValue.Trim() != "")
-            {
-                strICD10 = wet2.ReturnValue;
-                var tmpreturn = new AlternativeICD10VM(strTitle, strICD10, ICD10SegmentID);
-                alternativeICD10s = null;
-                OnPropertyChanged("AlternativeICD10s");
-            }
+            var tmpreturn = new AlternativeICD10VM(strTitle, strICD10, ICD10SegmentID);
+            alternativeICD10s = null;
+            OnPropertyChanged("AlternativeICD10s");
+            masterReviewSummary.ResetMissingDx(); //repopulate
         }
 
         public SqlICD10SegmentM SqlICD10Segment

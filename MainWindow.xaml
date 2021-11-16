@@ -89,23 +89,6 @@
                             </StackPanel>
                         </Border>
                         <Border Margin="3" Padding="3" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" >
-                            <StackPanel>
-                                <Label Style="{StaticResource MyLblStyle}">Top Mission Diagnosis:</Label>
-                                <ListBox Style="{StaticResource MyListBox}" ItemsSource="{Binding TopMissingDxs}" HorizontalContentAlignment="Stretch" MaxHeight="200">
-                                    <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                            <Border>
-                                                <Border.ContextMenu>
-                                                    <ContextMenu>
-                                                        <MenuItem Header="Look-up in browser" Command="{Binding LinkToICD10Command}" CommandParameter="{Binding}"/>
-                                                    </ContextMenu>
-                                                </Border.ContextMenu>
-                                                <TextBlock Text="{Binding StringResult}"/>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </StackPanel>
                         </Border>
                     </DockPanel>
                 </Border>
@@ -114,10 +97,29 @@
                 </StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="3*"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TabControl x:Name="tcNote">
+                    <StackPanel>
+                        <Label Style="{StaticResource MyLblStyle}">Top Mission Diagnosis:</Label>
+                        <ListBox Style="{StaticResource MyListBox}" ItemsSource="{Binding TopMissingDxs}" HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border>
+                                        <Border.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Look-up in browser" Command="{Binding LinkToICD10Command}" CommandParameter="{Binding}"/>
+                                                <MenuItem Header="Create ICD10 Alternate" Command="{Binding CreateAlternateICD10Command}" CommandParameter="{Binding}"/>
+                                            </ContextMenu>
+                                        </Border.ContextMenu>
+                                        <TextBlock Text="{Binding StringResult}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                    <TabControl x:Name="tcNote" Grid.Column="1">
                         <TabItem Foreground="Black" Header="CC">
                             <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CC}"></TextBox>
                         </TabItem>
@@ -186,7 +188,7 @@
                         </TabItem>
 
                     </TabControl>
-                    <Border BorderBrush="White" BorderThickness="1" Grid.Column="1">
+                    <Border BorderBrush="White" BorderThickness="1" Grid.Column="2">
                         <StackPanel>
                             <Grid>
                                 <Grid.ColumnDefinitions>

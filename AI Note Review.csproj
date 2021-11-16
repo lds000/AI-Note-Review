@@ -86,6 +86,9 @@
     <Compile Include="DataAccessLayer\SqlMissingICD10CodesM.cs" />
     <Compile Include="DataAccessLayer\SqlRelAlternativeICD10M.cs" />
     <Compile Include="DataAccessLayer\SqlRelProviderMasterReviewSummaryM.cs" />
+    <Compile Include="Dialog Windows\WinChooseSegment.xaml.cs">
+      <DependentUpon>WinChooseSegment.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\ReportToHtmlM.cs" />
     <Compile Include="Models\NoteHunterM.cs" />
     <Compile Include="ViewModels\AlternativeICD10VM.cs" />
@@ -180,6 +183,10 @@
     <Compile Include="Dialog Windows\WinShowRegExYesNo.xaml.cs">
       <DependentUpon>WinShowRegExYesNo.xaml</DependentUpon>
     </Compile>
+    <Page Include="Dialog Windows\WinChooseSegment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

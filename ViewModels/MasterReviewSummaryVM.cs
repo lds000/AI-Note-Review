@@ -453,15 +453,25 @@ class PersonVM {
             {
                 if (topMissingDxs == null)
                 {
-                    string sql = $"SELECT StrCode, count(StrCode) as Count FROM MissingICD10Codes group by StrCode ORDER BY count(StrCode) DESC;";
+                    //Select all records in missingICD10Codes that do not exist in RelAlternativeICD10
+                    string sql = $"SELECT StrCode, count(StrCode) as Count FROM MissingICD10Codes t1 LEFT JOIN RelAlternativeICD10 t2 ON t2.AlternativeICD10 = t1.StrCode WHERE AlternativeICD10 IS NULL group by StrCode ORDER BY count(StrCode) DESC;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
                         topMissingDxs = cnn.Query<SqlMissingICD10CodesM>(sql).ToList();
                     }
-
+                    foreach (var tmpCode in topMissingDxs)
+                    {
+                        tmpCode.ParentMasterReviewSummary = this;
+                    }
                 }
                 return topMissingDxs;
             }
+        }
+
+        public void ResetMissingDx()
+        {
+            topMissingDxs = null;
+            OnPropertyChanged("TopMissingDxs");
         }
 
         private ICommand mShowMasterReview;
