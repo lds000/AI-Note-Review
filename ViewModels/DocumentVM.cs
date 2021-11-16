@@ -19,52 +19,37 @@ namespace AI_Note_Review
 {
     public class DocumentVM : INotifyPropertyChanged
     {
+        #region INotify
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        
+        #endregion
+
         /// <summary>
         ///Used for the 1st check point 
         /// </summary>
         public bool GeneralCheckPointsOnly { get; set; }
 
-        private PatientVM patient;
+        //ViewModels declared locally for convenience
+        private MasterReviewSummaryVM masterReviewVM;
+        private PatientVM patientVM;
+        private SqlProvider sqlProviderVM; //todo make ProviderVM
+
+        //Models
         private DocumentM document;
-        private SqlProvider sqlProvider;
-        private MasterReviewSummaryVM masterReview;
 
-        /*
         /// <summary>
-        /// Constructor given provider and patient, I don't think this is necessary, as Provider and patient are derived from the document model
+        /// Constructor used in MasterReviewSummary, get masterreview, provider, patient, and create a document based on SampleDocument
         /// </summary>
-        /// <param name="prov"></param>
-        /// <param name="pvm"></param>
-        public DocumentVM(SqlProvider prov, PatientVM pvm)
-        {
-            sqlProvider = prov;
-            patient = pvm;
-            document = SampleDocument; //New DocumentM() called under this.
-            SetUpNote(); //todo: might be better way of implementing this.
-        }
-        */
-
+        /// <param name="mrs"></param>
         public DocumentVM(MasterReviewSummaryVM mrs)
         {
-            masterReview = mrs;
-            sqlProvider = mrs.Provider;
-            patient = mrs.Patient;
-            document = SampleDocument; //New DocumentM() called under this.
-            SetUpNote(); //todo: might be better way of implementing this.
-        }
-
-        /// <summary>
-        /// Default constructor, may be used in the future to save the Document object with Dapper
-        /// </summary>
-        public DocumentVM()
-        {
+            masterReviewVM = mrs;
+            sqlProviderVM = mrs.Provider;
+            patientVM = mrs.Patient;
             document = SampleDocument; //New DocumentM() called under this.
             SetUpNote(); //todo: might be better way of implementing this.
         }
@@ -76,7 +61,7 @@ namespace AI_Note_Review
         public DocumentVM(HtmlDocument doc) //used by document hunter
         {
             document = new DocumentM();
-            patient = new PatientVM();
+            patientVM = new PatientVM();
             ProcessDocument(doc);
             SetUpNote(); //todo: might be better way of implementing this.
         }
@@ -129,7 +114,7 @@ namespace AI_Note_Review
         {
             get
             {
-                return patient;
+                return patientVM;
             }
         }
 
@@ -140,7 +125,7 @@ namespace AI_Note_Review
         {
             get
             {
-                return sqlProvider;
+                return sqlProviderVM;
             }
         }
 
@@ -196,27 +181,27 @@ namespace AI_Note_Review
         /// </summary>
         public void SetUpNote()
         {
-            masterReview.AddLog($"SetUpNote() being executed for {patient.PtName}");
+            masterReviewVM.AddLog($"SetUpNote() being executed for {patientVM.PtName}");
             //add hashtags here. #Hash
             HashTags = "";
-            if (patient.PtAgeYrs > 65) AddHashTag("@Elderly");             //75	X	5	5	Elderly
-            if (patient.PtSex.StartsWith("F")) AddHashTag("@Female");
-            if (patient.PtAgeYrs < 4) AddHashTag("@Child");             //80	X	7	7	Children
-            if (patient.PtAgeYrs < 2) AddHashTag("@Infant");             //76	X	6	6	Infant
-            if (patient.IsHTNUrgency) AddHashTag("!HTNUrgency");             //40	X	1	1	Hypertensive Urgency
-            if (patient.isO2Abnormal) AddHashTag("!Hypoxic");
-            if (patient.IsPregCapable) AddHashTag("@pregnantcapable");            //82	X	9	9	Possible Pregnant State
-            if (patient.PtAgeYrs >= 13) AddHashTag("@sexuallyActiveAge");
-            if (patient.PtAgeYrs >= 16) AddHashTag("@DrinkingAge");
-            if (patient.PtAgeYrs >= 2) AddHashTag("@SpeakingAge");
-            if (patient.PtAgeYrs < 1) AddHashTag("@Age<1");
-            if (patient.PtAgeYrs < 2) AddHashTag("@Age<2");
-            if (patient.PtAgeYrs < 4) AddHashTag("@Age<4");
-            if (patient.GetAgeInDays < 183) AddHashTag("@Age<6mo");
-            if (patient.isRRHigh) AddHashTag("!RRHigh");             //72	X	2	2	Rapid Respiratory Rate
-            if (patient.isTempHigh) AddHashTag("!HighFever");             //73	X	3	3	High Fever
-            if (patient.isHRHigh) AddHashTag("!Tachycardia");             //74	X	4	4	Tachycardia
-            if (patient.GetAgeInDays <= 90 && patient.VitalsTemp > 100.4)
+            if (patientVM.PtAgeYrs > 65) AddHashTag("@Elderly");             //75	X	5	5	Elderly
+            if (patientVM.PtSex.StartsWith("F")) AddHashTag("@Female");
+            if (patientVM.PtAgeYrs < 4) AddHashTag("@Child");             //80	X	7	7	Children
+            if (patientVM.PtAgeYrs < 2) AddHashTag("@Infant");             //76	X	6	6	Infant
+            if (patientVM.IsHTNUrgency) AddHashTag("!HTNUrgency");             //40	X	1	1	Hypertensive Urgency
+            if (patientVM.isO2Abnormal) AddHashTag("!Hypoxic");
+            if (patientVM.IsPregCapable) AddHashTag("@pregnantcapable");            //82	X	9	9	Possible Pregnant State
+            if (patientVM.PtAgeYrs >= 13) AddHashTag("@sexuallyActiveAge");
+            if (patientVM.PtAgeYrs >= 16) AddHashTag("@DrinkingAge");
+            if (patientVM.PtAgeYrs >= 2) AddHashTag("@SpeakingAge");
+            if (patientVM.PtAgeYrs < 1) AddHashTag("@Age<1");
+            if (patientVM.PtAgeYrs < 2) AddHashTag("@Age<2");
+            if (patientVM.PtAgeYrs < 4) AddHashTag("@Age<4");
+            if (patientVM.GetAgeInDays < 183) AddHashTag("@Age<6mo");
+            if (patientVM.isRRHigh) AddHashTag("!RRHigh");             //72	X	2	2	Rapid Respiratory Rate
+            if (patientVM.isTempHigh) AddHashTag("!HighFever");             //73	X	3	3	High Fever
+            if (patientVM.isHRHigh) AddHashTag("!Tachycardia");             //74	X	4	4	Tachycardia
+            if (patientVM.GetAgeInDays <= 90 && patientVM.VitalsTemp > 100.4)
             {
                 //MessageBoxResult mr = MessageBox.Show($"This patient is {patient.GetAgeInDays()} days old and has a fever of {patient.VitalsTemp}.  Was the patient sent to an ED or appropriate workup performed?", "Infant Fever", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 //if (mr == MessageBoxResult.No) DocumentM.HashTags += "#NeonteNotSentToED";
@@ -224,7 +209,7 @@ namespace AI_Note_Review
             HashTags = HashTags.TrimEnd().TrimEnd(',');
 
             //not happy with this, set notesection texts.
-            NoteSectionText[0] = $"{patient.PtAgeYrs} Sex{patient.PtSex}"; //Demographics 
+            NoteSectionText[0] = $"{patientVM.PtAgeYrs} Sex{patientVM.PtSex}"; //Demographics 
             NoteSectionText[1] = HPI + ROS; //HPI
             NoteSectionText[2] = CurrentMeds + CurrentPrnMeds; //CurrentMeds
             NoteSectionText[3] = ProblemList; //Active Problem List
@@ -344,12 +329,12 @@ namespace AI_Note_Review
                     }
                     if (ns.SqlICD10Segment.ICD10SegmentID == 72) //Adult rapid RR
                     {
-                        if (patient.PtAgeYrs <= 17) ns.IncludeSegment = false; //do not include children in 72
+                        if (patientVM.PtAgeYrs <= 17) ns.IncludeSegment = false; //do not include children in 72
                         if (!HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
                     }
                     if (ns.SqlICD10Segment.ICD10SegmentID == 91) //Peds rapid RR
                     {
-                        if (patient.PtAgeYrs >= 18) ns.IncludeSegment = false;
+                        if (patientVM.PtAgeYrs >= 18) ns.IncludeSegment = false;
                         if (!HashTags.Contains("!RRHigh")) ns.IncludeSegment = false; //do not include children in 72
                     }
                     if (!HashTags.Contains("@Elderly") && ns.SqlICD10Segment.ICD10SegmentID == 75) //if htnurgency is not present
@@ -415,11 +400,11 @@ namespace AI_Note_Review
             Clear();
             if (HDoc.Body.InnerHtml.StartsWith("<LINK"))
             {
-                masterReview.AddLog("Processing unlocked chart");
+                masterReviewVM.AddLog("Processing unlocked chart");
                 processUnlocked(HDoc);
                 return;
             }
-            masterReview.AddLog("Processing locked chart");
+            masterReviewVM.AddLog("Processing locked chart");
             #region Process locked document magic
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -478,7 +463,7 @@ namespace AI_Note_Review
                         }
                         if (strClass == "PtHeading")
                         {
-                            patient.PtName = TempEl.InnerText.Replace("\n", "").Replace("\r", "");  //set first name
+                            patientVM.PtName = TempEl.InnerText.Replace("\n", "").Replace("\r", "");  //set first name
                         }
                         if (strClass == "PtData") //field has note informaition
                         {
@@ -487,19 +472,19 @@ namespace AI_Note_Review
                             {
                                 continue;
                             }
-                            if (strInnerText.Contains("Account Number:")) patient.PtID = strInnerText.Split(':')[1].Trim();
+                            if (strInnerText.Contains("Account Number:")) patientVM.PtID = strInnerText.Split(':')[1].Trim();
                             if (strInnerText.Contains("Appointment Facility:")) document.Facility = strInnerText.Split(':')[1].Trim();
                             if (strInnerText.Contains("DOB:"))
                             {
                                 //   PtAge = strInnerText.Split(':')[0].TrimEnd("DOB");
-                                patient.DOB = DateTime.Parse(strInnerText.Split(':')[1].Trim());
+                                patientVM.DOB = DateTime.Parse(strInnerText.Split(':')[1].Trim());
                                 if (strInnerText.Contains("Female"))
                                 {
-                                    patient.PtSex = "F";
+                                    patientVM.PtSex = "F";
                                 }
                                 else
                                 {
-                                    patient.PtSex = "M";
+                                    patientVM.PtSex = "M";
                                 }
                             }
                             continue;
@@ -733,14 +718,14 @@ namespace AI_Note_Review
         }
         private void parseVitalsString(string strVitals)
         {
-            patient.VitalsRR = 0;
-            patient.VitalsHR = 0;
-            patient.VitalsSystolic = 0;
-            patient.VitalsDiastolic = 0;
-            patient.VitalsTemp = 0;
-            patient.VitalsO2 = 0;
-            patient.VitalsWt = 0;
-            patient.VitalsBMI = 0;
+            patientVM.VitalsRR = 0;
+            patientVM.VitalsHR = 0;
+            patientVM.VitalsSystolic = 0;
+            patientVM.VitalsDiastolic = 0;
+            patientVM.VitalsTemp = 0;
+            patientVM.VitalsO2 = 0;
+            patientVM.VitalsWt = 0;
+            patientVM.VitalsBMI = 0;
 
             if (strVitals == null) return;
 
@@ -750,8 +735,8 @@ namespace AI_Note_Review
                 {
                     try
                     {
-                        patient.VitalsSystolic = int.Parse(strPartVital.Trim().Split(' ')[1].Split('/')[0]);
-                        patient.VitalsDiastolic = int.Parse(strPartVital.Trim().Split(' ')[1].Split('/')[1]);
+                        patientVM.VitalsSystolic = int.Parse(strPartVital.Trim().Split(' ')[1].Split('/')[0]);
+                        patientVM.VitalsDiastolic = int.Parse(strPartVital.Trim().Split(' ')[1].Split('/')[1]);
                     }
                     catch
                     {
@@ -765,7 +750,7 @@ namespace AI_Note_Review
                 {
                     try
                     {
-                        patient.VitalsHR = int.Parse(strPartVital.Trim().Split(' ')[1].Trim());
+                        patientVM.VitalsHR = int.Parse(strPartVital.Trim().Split(' ')[1].Trim());
                     }
                     catch
                     {
@@ -778,7 +763,7 @@ namespace AI_Note_Review
                 {
                     try
                     {
-                        patient.VitalsRR = int.Parse(strPartVital.Trim().Split(' ')[1].Trim());
+                        patientVM.VitalsRR = int.Parse(strPartVital.Trim().Split(' ')[1].Trim());
                     }
                     catch
                     {
@@ -791,7 +776,7 @@ namespace AI_Note_Review
                 {
                     try
                     {
-                        patient.VitalsWt = double.Parse(strPartVital.Trim().Split(' ')[1].Trim());
+                        patientVM.VitalsWt = double.Parse(strPartVital.Trim().Split(' ')[1].Trim());
                     }
                     catch
                     {
@@ -803,7 +788,7 @@ namespace AI_Note_Review
                 {
                     try
                     {
-                        patient.VitalsBMI = double.Parse(strPartVital.Trim().Split(' ')[1].Trim());
+                        patientVM.VitalsBMI = double.Parse(strPartVital.Trim().Split(' ')[1].Trim());
                     }
                     catch
                     {
@@ -817,7 +802,7 @@ namespace AI_Note_Review
                 {
                     try
                     {
-                        patient.VitalsO2 = int.Parse(strPartVital.Trim().Split('%')[1].Trim());
+                        patientVM.VitalsO2 = int.Parse(strPartVital.Trim().Split('%')[1].Trim());
                     }
                     catch
                     {
@@ -830,7 +815,7 @@ namespace AI_Note_Review
                 {
                     try
                     {
-                        patient.VitalsTemp = double.Parse(strPartVital.Trim().Split(' ')[1].Trim());
+                        patientVM.VitalsTemp = double.Parse(strPartVital.Trim().Split(' ')[1].Trim());
                     }
                     catch
                     {
@@ -872,10 +857,10 @@ namespace AI_Note_Review
                     strPtInfo = strPtInfo.Replace("DOB:", "|");
                     strPtInfo = strPtInfo.Replace("Age:", "|");
                     strPtInfo = strPtInfo.Replace("Sex:", "|");
-                    patient.PtName = strPtInfo.Split('|')[0].Trim();
-                    patient.PtSex = strPtInfo.Split('|')[3].Trim();
+                    patientVM.PtName = strPtInfo.Split('|')[0].Trim();
+                    patientVM.PtSex = strPtInfo.Split('|')[3].Trim();
                     string strDOB = strPtInfo.Split('|')[1];
-                    patient.DOB = DateTime.Parse(strDOB);
+                    patientVM.DOB = DateTime.Parse(strDOB);
                 }
 
 
@@ -894,7 +879,7 @@ namespace AI_Note_Review
 
                 if (myString.StartsWith("Account Number:"))
                 {
-                    patient.PtID = myString.Split(':')[1];
+                    patientVM.PtID = myString.Split(':')[1];
                 }
 
 
