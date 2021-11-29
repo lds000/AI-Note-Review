@@ -526,7 +526,20 @@ class PersonVM {
             #endregion
         }
 
-
+        private ICommand mAddSegment;
+        public ICommand AddSegmentCommand
+        {
+            get
+            {
+                if (mAddSegment == null)
+                    mAddSegment = new SegmentAdder();
+                return mAddSegment;
+            }
+            set
+            {
+                mAddSegment = value;
+            }
+        }
 
     }
     class ShowMasterReview : ICommand
@@ -602,6 +615,32 @@ class PersonVM {
         }
     }
 
+    /// <summary>
+    /// Add Segment
+    /// </summary>
+    class SegmentAdder : ICommand
+    {
+        #region ICommand Members  
 
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+        #endregion
+        public void Execute(object parameter)
+        {
+            MasterReviewSummaryVM mr = parameter as MasterReviewSummaryVM;
+            SqlICD10SegmentVM seg = new SqlICD10SegmentVM("Enter Segment Title");
+            WinEditSegment wes = new WinEditSegment(seg);
+            wes.ShowDialog();
+            seg.UpdateAll();
+        }
+
+    }
 
 }

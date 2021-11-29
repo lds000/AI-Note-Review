@@ -155,6 +155,10 @@ namespace AI_Note_Review
                 ParentReport.ClearCPs(); //now recalculate all checkpoints.
             }
         }
+
+        /// <summary>
+        /// Calculate all left offsets, property change NoteICD10Segments after setting null.
+        /// </summary>
         public void UpdateAll()
         {
             CalculateLeftOffsets();
@@ -495,20 +499,7 @@ namespace AI_Note_Review
             }
         }
 
-        private ICommand mAddSegment;
-        public ICommand AddSegmentCommand
-        {
-            get
-            {
-                if (mAddSegment == null)
-                    mAddSegment = new SegmentAdder();
-                return mAddSegment;
-            }
-            set
-            {
-                mAddSegment = value;
-            }
-        }
+
 
         private ICommand mCreateIndex;
         public ICommand CreateIndexCommand
@@ -626,33 +617,7 @@ namespace AI_Note_Review
         #endregion
     }
 
-    /// <summary>
-    /// Add Segment
-    /// </summary>
-    class SegmentAdder : ICommand
-    {
-        #region ICommand Members  
 
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-        #endregion
-        public void Execute(object parameter)
-        {
-            SqlICD10SegmentVM sivm = parameter as SqlICD10SegmentVM;
-            SqlICD10SegmentVM seg = new SqlICD10SegmentVM("Enter Segment Title");
-            WinEditSegment wes = new WinEditSegment(seg);
-            wes.ShowDialog();
-            seg.UpdateAll();
-        }
-
-    }
 
     /// <summary>
     /// Add Segment
