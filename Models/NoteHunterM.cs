@@ -93,7 +93,7 @@ namespace AI_Note_Review
                             string[] strArray = line.Split('\t');
                             string strVisitType = strArray[2];
                             if (strVisitType == "UC" || strVisitType == "Resp") //only respiratory or UC visits
-                                if (strArray[7].ToLower().Contains("sore"))
+                                if (strArray[7].ToLower().Contains("sinus"))
                                 {
                                     VisitCount++;
                                     AutoIt.AutoItX.MouseClick("LEFT", 1900, 235); //reset the horizontal slide bar

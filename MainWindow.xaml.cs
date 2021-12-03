@@ -289,5 +289,14 @@ namespace AI_Note_Review
             ws.Owner = this;
             ws.ShowDialog();
         }
+
+        private void Test_Click(object sender, RoutedEventArgs e)
+        {
+            //AutoIt.AutoItX.WinActivate("Select Provider(s)");
+            AutoIt.AutoItX.MouseClick("LEFT", 330, 165);
+            AutoIt.AutoItX.Send("{TAB}");
+            AutoIt.AutoItX.Send("{DOWN}");
+            string nextName = AutoIt.AutoItX.WinGetText("Select Provider(s)");
+        }
     }
 }

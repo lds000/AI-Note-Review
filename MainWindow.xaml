@@ -94,6 +94,7 @@
                 </Border>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                     <Button  Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
+                    <Button Margin="20,0,0,0"  Click="Test_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Test</Button>
                 </StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
