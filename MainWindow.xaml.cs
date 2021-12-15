@@ -129,10 +129,11 @@ namespace AI_Note_Review
             string strUserName = Environment.GetEnvironmentVariable("USERNAME");
 
             SqlLiteDataAccess.SQLiteDBLocation = Properties.Settings.Default.DataFolder;
+            //C:\Users\lds00\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db
 
-            if (File.Exists(@"C:\Users\Lloyd\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db"))
+            if (File.Exists(@"C:\Users\lds00\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db"))
             {
-                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\Lloyd\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db";
+                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\lds00\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db";
             }
             else
             {
