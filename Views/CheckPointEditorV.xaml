@@ -209,7 +209,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Slider Margin="5"  Name="slideSeverity"
-                            Value="{Binding SqlCheckpoint.ErrorSeverity, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                            Value="{Binding SqlCheckpoint.ErrorSeverity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                             Minimum="0" Maximum="10"
                             TickFrequency="1" 
                             IsSnapToTickEnabled="True" 

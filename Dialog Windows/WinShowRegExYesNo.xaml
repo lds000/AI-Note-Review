@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
         SizeToContent="Height"
-        Title="WinShowRegExYesNo" Height="500" Width="800">
+        Title="WinShowRegExYesNo" MinHeight="500" Width="800">
     <Grid Background="Black">
         <Grid.Resources>
             <local:SqlTagRegExToXamlConverter x:Key="mySqlTagRegExToXamlConverter"/>

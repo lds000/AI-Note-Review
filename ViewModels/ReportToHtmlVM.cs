@@ -144,8 +144,7 @@ namespace AI_Note_Review
             examScore = Scores[1] / 100 * 2;
             dxScore = Scores[2] / 100 * 2;
             rxScore = Scores[3] / 100 * 4;
-            totalScore = hPIScore + examScore + dxScore + rxScore;
-
+            totalScore = hPIScore + examScore + rxScore + dxScore;
         }
 
         public double? hPIScore;
@@ -190,8 +189,8 @@ namespace AI_Note_Review
         {
             get
             {
-                if (examScore == null) calculateScores();
-                return ((double)examScore).ToString("0.##");
+                if (totalScore == null) calculateScores();
+                return ((double)totalScore).ToString("0.##");
             }
         }
         public string CheckPointsSummaryHTML

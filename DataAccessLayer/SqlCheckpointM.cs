@@ -94,7 +94,7 @@ class PersonViewModel {
                 if (errorSeverity != 0)
                 {
                     errorSeverity = value; //set this now for the update to work.
-                    string sql = "UPDATE CheckPoints SET ErrorSeverity=@ErrorSeverity WHERE CheckPointID=@CheckPointID;";
+                    string sql = $"UPDATE CheckPoints SET ErrorSeverity={errorSeverity} WHERE CheckPointID=@CheckPointID;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
                         cnn.Execute(sql, this);
