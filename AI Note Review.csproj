@@ -89,6 +89,7 @@
     <Compile Include="Dialog Windows\WinChooseSegment.xaml.cs">
       <DependentUpon>WinChooseSegment.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helper Classes\Encrypt.cs" />
     <Compile Include="Models\ReportToHtmlM.cs" />
     <Compile Include="Models\NoteHunterM.cs" />
     <Compile Include="ViewModels\AlternativeICD10VM.cs" />
