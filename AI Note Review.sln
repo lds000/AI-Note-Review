@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29613.14
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32002.185
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI Note Review", "AI Note Review.csproj", "{DC2FF4F7-FE78-4CC3-B526-682DE407F0EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{60D89D31-13B0-437A-8FBE-5B33065F781F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
