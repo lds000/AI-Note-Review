@@ -1095,6 +1095,7 @@ namespace AI_Note_Review
             MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
             mrs.VisitReport.GeneralCheckPointsOnly = false;
             mrs.VisitReport.NewEcWDocument(); //reset document
+            mrs.VisitReport.PopulateCPStatuses();
             VisitReportV wp = new VisitReportV(mrs.VisitReport);
             wp.ShowDialog();
         }

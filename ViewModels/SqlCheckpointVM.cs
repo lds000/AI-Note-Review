@@ -102,13 +102,14 @@ public PersonViewModel(PersonModel person) {
         public int CheckPointType { get { return this.SqlCheckpoint.CheckPointType; } set { this.SqlCheckpoint.CheckPointType = value; OnPropertyChangedSave(); OnPropertyChanged("StrCheckPointType"); } }
         public string Comment { get { return this.SqlCheckpoint.Comment; } set { this.SqlCheckpoint.Comment = value;  OnPropertyChangedSave(); } }
         public int ErrorSeverity { get { return this.SqlCheckpoint.ErrorSeverity; } set { this.SqlCheckpoint.ErrorSeverity = value; OnPropertyChangedSave(); } }
-        public int TargetSection { get { return this.SqlCheckpoint.TargetSection; } set { this.SqlCheckpoint.TargetSection = value; } }
+        public int TargetSection { get { return this.SqlCheckpoint.TargetSection; } set { this.SqlCheckpoint.TargetSection = value; this.cPStatus = null; OnPropertyChanged("CPStatus"); } }
         public int TargetICD10Segment { get { return this.SqlCheckpoint.TargetICD10Segment; } 
             set {
                 this.SqlCheckpoint.TargetICD10Segment = value; 
                 OnPropertyChangedSave();
                 //if this is changed, then the parentSegment needs to be updated...
                 ParentSegment.UpdateCheckPoints();
+                this.cPStatus = null; OnPropertyChanged("CPStatus");
             } 
         }
         public string Action { get { return this.SqlCheckpoint.Action; } set { this.SqlCheckpoint.Action = value; OnPropertyChangedSave(); } }
@@ -392,6 +393,7 @@ public PersonViewModel(PersonModel person) {
             }
             tags = null; //reset tags.
             OnPropertyChanged("Tags");
+            UpdateCPStatus();
         }
 
         public void RemoveTag(SqlTagVM st)
@@ -403,6 +405,7 @@ public PersonViewModel(PersonModel person) {
             }
             tags = null; //reset tags.
             OnPropertyChanged("Tags");
+            UpdateCPStatus();
         }
 
         /// <summary>

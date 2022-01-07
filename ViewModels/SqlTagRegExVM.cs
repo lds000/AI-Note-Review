@@ -89,7 +89,7 @@ public PersonViewModel(PersonModel person) {
         public int TagRegExID { get { return this.SqlTagRegEx.TagRegExID; } set { this.SqlTagRegEx.TagRegExID = value; OnPropertyChangedSave(); } }
         public int TargetTag { get { return this.SqlTagRegEx.TargetTag; } set { SqlTagRegEx.TargetTag = value; OnPropertyChangedSave(); } }
         public int TargetSection { get { return this.SqlTagRegEx.TargetSection; } set { SqlTagRegEx.TargetSection = value; OnPropertyChangedSave(); } }
-        public string RegExText { get { return this.SqlTagRegEx.RegExText; } set { SqlTagRegEx.RegExText = value; OnPropertyChangedSave(); } }
+        public string RegExText { get { return this.SqlTagRegEx.RegExText; } set { SqlTagRegEx.RegExText = value; OnPropertyChangedSave();  } }
         public int TagRegExType { get { return this.SqlTagRegEx.TagRegExType; } set { SqlTagRegEx.TagRegExType = value; OnPropertyChangedSave(); OnPropertyChanged("TagRegExMatchTypeDescription"); } }
         public double MinAge
         {
@@ -104,6 +104,13 @@ public PersonViewModel(PersonModel person) {
         public bool Male { get { return this.SqlTagRegEx.Male; } set { SqlTagRegEx.Male = value; OnPropertyChangedSave(); } }
         public bool Female { get { return this.SqlTagRegEx.Female; } set { SqlTagRegEx.Female = value; OnPropertyChangedSave(); } }
         #endregion
+
+        public void UpdateParentCP()
+        {
+            if (ParentTag != null)
+            if (ParentTag.ParentCheckPoint != null)
+            ParentTag.ParentCheckPoint.UpdateCPStatus();
+        }
 
         //process all,none,any match condition
         //Cycle through the list of terms and search through section of note if term is a match or not

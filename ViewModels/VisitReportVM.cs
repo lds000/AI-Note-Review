@@ -71,6 +71,7 @@ namespace AI_Note_Review
             passedCPs = null;
             missedCPs = null;
             droppedCPs = null;
+            document.ICD10Segments = null; //reset segments
             iCD10Segments = null; //reset segments
         }
 
@@ -166,6 +167,20 @@ namespace AI_Note_Review
             set
             {
                 passedCPs = value;
+            }
+        }
+
+        /// <summary>
+        /// Evaluate each relavent checkpoint and get the status, this is used to sequentially evaluate each checkpoint avoiding the stacked Yes/No Question issue.
+        /// </summary>
+        public void PopulateCPStatuses()
+        {
+            foreach (var tmpCollection in ICD10Segments)
+            {
+                if (tmpCollection.IncludeSegment)
+                {
+                    var tmpP = PassedCPs; //only run the passedCPs, as this evaluates all CPs to determine which are passed status.
+                }
             }
         }
 
