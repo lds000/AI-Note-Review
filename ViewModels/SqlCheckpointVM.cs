@@ -35,6 +35,7 @@ public PersonViewModel(PersonModel person) {
 }
 */
 
+    //not used yet
     public interface ICheckPoint
     {
         string CheckPointTitle { get; set; }
@@ -70,21 +71,51 @@ public PersonViewModel(PersonModel person) {
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        public void UpdateCheckPointProperties(bool UpdateStatausAlso)
+        {
+            if (UpdateStatausAlso)
+            {
+                this.cPStatus = null;
+                ParentSegment.UpdateCheckPoints();
+                Console.WriteLine("Setting CPStatus to null on SqlCheckpointVM");
+                OnPropertyChanged("CPStatus");
+                //push this upstream to report to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
+                ParentSegment.UpdateCPs();
+            }
+        }
+
+        /// <summary>
+        /// parameterless constructor
+        /// </summary>
         public SqlCheckpointVM()
         {
             SqlCheckpoint = new SqlCheckpointM();
         }
 
+        /// <summary>
+        /// Create viewmodel based on an existing model
+        /// </summary>
+        /// <param name="cp"></param>
         public SqlCheckpointVM(SqlCheckpointM cp)
         {
             this.SqlCheckpoint = cp;
         }
 
+        /// <summary>
+        /// Create a new checkpoint
+        /// </summary>
+        /// <param name="strCheckPointTitle">Title, does not have to be unique</param>
+        /// <param name="iTargetICD10Segment">TargetSegment, only one</param>
         public SqlCheckpointVM(string strCheckPointTitle, int iTargetICD10Segment)
         {
             this.SqlCheckpoint = new SqlCheckpointM(strCheckPointTitle, iTargetICD10Segment);
         }
 
+        /// <summary>
+        /// Load SqlCheckpoint from database
+        /// </summary>
+        /// <param name="cpID"></param>
         public SqlCheckpointVM(int cpID)
         {
             string sql = $"Select * from CheckPoints WHERE CheckPointID={cpID};";
@@ -94,22 +125,25 @@ public PersonViewModel(PersonModel person) {
             }
         }
 
+        //Properties Section
+
+        /// <summary>
+        /// Usuallly assigned once and not changed, unless reassigning to a different segment
+        /// </summary>
         public SqlICD10SegmentVM ParentSegment { get; set; }
         public DocumentVM ParentDocument { get; set; }
         public SqlCheckpointM SqlCheckpoint { get; set; }
         public int CheckPointID { get { return this.SqlCheckpoint.CheckPointID; } set { this.SqlCheckpoint.CheckPointID = value; OnPropertyChangedSave(); } }
-        public string CheckPointTitle { get { return this.SqlCheckpoint.CheckPointTitle; } set { this.SqlCheckpoint.CheckPointTitle = value; OnPropertyChangedSave(); } }
-        public int CheckPointType { get { return this.SqlCheckpoint.CheckPointType; } set { this.SqlCheckpoint.CheckPointType = value; OnPropertyChangedSave(); OnPropertyChanged("StrCheckPointType"); } }
-        public string Comment { get { return this.SqlCheckpoint.Comment; } set { this.SqlCheckpoint.Comment = value;  OnPropertyChangedSave(); } }
-        public int ErrorSeverity { get { return this.SqlCheckpoint.ErrorSeverity; } set { this.SqlCheckpoint.ErrorSeverity = value; OnPropertyChangedSave(); } }
-        public int TargetSection { get { return this.SqlCheckpoint.TargetSection; } set { this.SqlCheckpoint.TargetSection = value; this.cPStatus = null; OnPropertyChanged("CPStatus"); } }
+        public string CheckPointTitle { get { return this.SqlCheckpoint.CheckPointTitle; } set { this.SqlCheckpoint.CheckPointTitle = value; OnPropertyChangedSave(); UpdateCheckPointProperties(false); } }
+        public int CheckPointType { get { return this.SqlCheckpoint.CheckPointType; } set { this.SqlCheckpoint.CheckPointType = value; OnPropertyChangedSave(); OnPropertyChanged("StrCheckPointType"); UpdateCheckPointProperties(true); } }
+        public string Comment { get { return this.SqlCheckpoint.Comment; } set { this.SqlCheckpoint.Comment = value;  OnPropertyChangedSave(); OnPropertyChanged("Comment"); UpdateCheckPointProperties(false); } }
+        public int ErrorSeverity { get { return this.SqlCheckpoint.ErrorSeverity; } set { this.SqlCheckpoint.ErrorSeverity = value; OnPropertyChangedSave(); OnPropertyChanged("ErrorSeverity"); UpdateCheckPointProperties(true); } }
+        public int TargetSection { get { return this.SqlCheckpoint.TargetSection; } set { this.SqlCheckpoint.TargetSection = value; this.cPStatus = null; OnPropertyChangedSave(); OnPropertyChanged("CPStatus"); UpdateCheckPointProperties(true); } }
         public int TargetICD10Segment { get { return this.SqlCheckpoint.TargetICD10Segment; } 
             set {
                 this.SqlCheckpoint.TargetICD10Segment = value; 
                 OnPropertyChangedSave();
-                //if this is changed, then the parentSegment needs to be updated...
-                ParentSegment.UpdateCheckPoints();
-                this.cPStatus = null; OnPropertyChanged("CPStatus");
+                UpdateCheckPointProperties(true);
             } 
         }
         public string Action { get { return this.SqlCheckpoint.Action; } set { this.SqlCheckpoint.Action = value; OnPropertyChangedSave(); } }
@@ -180,19 +214,13 @@ public PersonViewModel(PersonModel person) {
         public void OverideStatus(SqlTagRegExM.EnumResult newStatus)
         {
             cPoverideStatus = newStatus;
-            UpdateCPStatus();
+            UpdateCheckPointProperties(true);
         }
+
         public void CalculateStatus()
         {
         }
 
-        public void UpdateCPStatus()
-        {
-            //push this upstream to report to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
-            cPStatus = null;
-            Console.WriteLine("Setting CPStatus to null on SqlCheckpointVM");
-            ParentSegment.UpdateCPs();
-        }
 
         /// <summary>
         /// Holds the current review's Yes/No SqlRegex's
@@ -336,23 +364,28 @@ public PersonViewModel(PersonModel person) {
                 return (from c in CheckPointTypes where c.CheckPointTypeID == CheckPointType select c).FirstOrDefault().Title;
             }
         }
+
         public void SaveToDB()
         {
             this.SqlCheckpoint.SaveToDB();
         }
+
         public void DeleteFromDB()
         {
             this.SqlCheckpoint.DeleteFromDB();
         }
+
         public void UpdateImages()
         {
             OnPropertyChanged("Images");
         }
+
         public void AddImageFromClipBoard()
         {
             this.SqlCheckpoint.AddImageFromClipBoard();
             OnPropertyChanged("Images");
         }
+
         /// <summary>
         /// Get the tags associated with the checkpoint
         /// </summary>
@@ -393,7 +426,7 @@ public PersonViewModel(PersonModel person) {
             }
             tags = null; //reset tags.
             OnPropertyChanged("Tags");
-            UpdateCPStatus();
+            UpdateCheckPointProperties(true);
         }
 
         public void RemoveTag(SqlTagVM st)
@@ -405,7 +438,7 @@ public PersonViewModel(PersonModel person) {
             }
             tags = null; //reset tags.
             OnPropertyChanged("Tags");
-            UpdateCPStatus();
+            UpdateCheckPointProperties(true);
         }
 
         /// <summary>
