@@ -263,7 +263,7 @@ namespace AI_Note_Review
             }
         }
 
-        public void ClearCPs()
+        public void UpdateCPs()
             {
             OnPropertyChanged("MissedCPs");
             OnPropertyChanged("DroppedCPs");

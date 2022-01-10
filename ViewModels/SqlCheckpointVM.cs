@@ -74,12 +74,16 @@ public PersonViewModel(PersonModel person) {
 
         public void UpdateCheckPointProperties(bool UpdateStatausAlso)
         {
+
             if (UpdateStatausAlso)
             {
-                this.cPStatus = null;
-                ParentSegment.UpdateCheckPoints();
-                Console.WriteLine("Setting CPStatus to null on SqlCheckpointVM");
-                OnPropertyChanged("CPStatus");
+                if (cPoverideStatus == null)
+                {
+                    Console.WriteLine("Setting CPStatus to null on SqlCheckpointVM");
+                    this.cPStatus = null;  //do not reset if it has been overidden.
+                    ParentSegment.UpdateCheckPoints();
+                    OnPropertyChanged("CPStatus");
+                }
                 //push this upstream to report to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
                 ParentSegment.UpdateCPs();
             }
@@ -740,7 +744,7 @@ public PersonViewModel(PersonModel person) {
             WinCheckPointEditor wce = new WinCheckPointEditor(cp);
             wce.DataContext = cp.ParentSegment.ParentReport;
             wce.Show();
-            cp.ParentSegment.ParentReport.ClearCPs();
+            cp.ParentSegment.ParentReport.UpdateCPs();
         }
         #endregion
     }

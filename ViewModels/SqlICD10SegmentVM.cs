@@ -152,7 +152,7 @@ namespace AI_Note_Review
                 includeSegment = value;
                 OnPropertyChanged("IncludeSegment");
                 OnPropertyChanged("CBIncludeSegment");
-                ParentReport.ClearCPs(); //now recalculate all checkpoints.
+                ParentReport.UpdateCPs(); //now recalculate all checkpoints.
             }
         }
 
@@ -280,7 +280,7 @@ namespace AI_Note_Review
                 missedCPs = null;
                 droppedCPs = null;
                 Console.WriteLine($"Setting passed, missed, and droppedCPs to null for segment {SegmentTitle}.");
-                ParentReport.ClearCPs();
+                ParentReport.UpdateCPs();
             }
         }
 

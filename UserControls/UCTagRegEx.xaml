@@ -106,7 +106,7 @@
             <TextBox Grid.Column="0" 
                      Margin="10,0,5,0"
                      Padding="2"
-                     Text="{Binding RegExText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding RegExText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                      x:Name="tbRegExSearchTerms" 
                      Style="{StaticResource MyTextBox}" 
                      >

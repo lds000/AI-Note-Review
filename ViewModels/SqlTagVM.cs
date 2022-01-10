@@ -66,7 +66,12 @@ class PersonViewModel {
         }
 
         private SqlTagM SqlTag { get; set; }
-        public int TagID { get { return this.SqlTag.TagID; } set { this.SqlTag.TagID = value; } }
+        public int TagID { 
+            get { return this.SqlTag.TagID; } 
+            set { 
+                this.SqlTag.TagID = value;
+            }
+        }
         public string TagText { get { return this.SqlTag.TagText; } set { this.SqlTag.TagText = value;} }
 
 
@@ -76,6 +81,7 @@ class PersonViewModel {
             this.SqlTag.RemoveTagRegEx(str);
             tagRegExs = null; //reset
             OnPropertyChanged("TagRegExs");
+            UpdateCPStatus();
         }
         public void SaveToDB() { this.SqlTag.SaveToDB(); }
         public void DeleteFromDB() { this.SqlTag.DeleteFromDB(); }
@@ -86,6 +92,7 @@ class PersonViewModel {
             srex.ParentTag = this;
             tagRegExs = null; //reset
             OnPropertyChanged("TagRegExs");
+            UpdateCPStatus();
         }
 
         private SqlTagRegExM.EnumResult? matchResult;
@@ -158,7 +165,8 @@ class PersonViewModel {
         public void UpdateCPStatus()
         {
             //push this upstream to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
-            ParentCheckPoint.UpdateCPStatus();
+            if (ParentCheckPoint != null)
+                ParentCheckPoint.UpdateCheckPointProperties(true);
         }
 
         public void EditTagText()
@@ -170,6 +178,7 @@ class PersonViewModel {
                 TagText = wet.ReturnValue;
                 SaveToDB();
                 OnPropertyChanged("TagText");
+                UpdateCPStatus();
             }
         }
 

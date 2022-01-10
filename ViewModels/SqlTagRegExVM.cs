@@ -87,10 +87,10 @@ public PersonViewModel(PersonModel person) {
 
         #region Mirror the Model properties
         public int TagRegExID { get { return this.SqlTagRegEx.TagRegExID; } set { this.SqlTagRegEx.TagRegExID = value; OnPropertyChangedSave(); } }
-        public int TargetTag { get { return this.SqlTagRegEx.TargetTag; } set { SqlTagRegEx.TargetTag = value; OnPropertyChangedSave(); } }
-        public int TargetSection { get { return this.SqlTagRegEx.TargetSection; } set { SqlTagRegEx.TargetSection = value; OnPropertyChangedSave(); } }
-        public string RegExText { get { return this.SqlTagRegEx.RegExText; } set { SqlTagRegEx.RegExText = value; OnPropertyChangedSave();  } }
-        public int TagRegExType { get { return this.SqlTagRegEx.TagRegExType; } set { SqlTagRegEx.TagRegExType = value; OnPropertyChangedSave(); OnPropertyChanged("TagRegExMatchTypeDescription"); } }
+        public int TargetTag { get { return this.SqlTagRegEx.TargetTag; } set { SqlTagRegEx.TargetTag = value; OnPropertyChangedSave(); UpdateParentCP(); } }
+        public int TargetSection { get { return this.SqlTagRegEx.TargetSection; } set { SqlTagRegEx.TargetSection = value; OnPropertyChangedSave(); UpdateParentCP(); } }
+        public string RegExText { get { return this.SqlTagRegEx.RegExText; } set { SqlTagRegEx.RegExText = value; OnPropertyChangedSave(); UpdateParentCP(); } }
+        public int TagRegExType { get { return this.SqlTagRegEx.TagRegExType; } set { SqlTagRegEx.TagRegExType = value; OnPropertyChangedSave(); OnPropertyChanged("TagRegExMatchTypeDescription"); UpdateParentCP(); } }
         public double MinAge
         {
             get { return (double)this.SqlTagRegEx.MinAge; }
@@ -98,18 +98,19 @@ public PersonViewModel(PersonModel person) {
             {
                 SqlTagRegEx.MinAge = value;
                 OnPropertyChangedSave();
+                UpdateParentCP();
             }
         }
-        public double MaxAge { get { return this.SqlTagRegEx.MaxAge; } set { SqlTagRegEx.MaxAge = value; OnPropertyChangedSave(); } }
-        public bool Male { get { return this.SqlTagRegEx.Male; } set { SqlTagRegEx.Male = value; OnPropertyChangedSave(); } }
-        public bool Female { get { return this.SqlTagRegEx.Female; } set { SqlTagRegEx.Female = value; OnPropertyChangedSave(); } }
+        public double MaxAge { get { return this.SqlTagRegEx.MaxAge; } set { SqlTagRegEx.MaxAge = value; OnPropertyChangedSave(); UpdateParentCP(); } }
+        public bool Male { get { return this.SqlTagRegEx.Male; } set { SqlTagRegEx.Male = value; OnPropertyChangedSave(); UpdateParentCP(); } }
+        public bool Female { get { return this.SqlTagRegEx.Female; } set { SqlTagRegEx.Female = value; OnPropertyChangedSave(); UpdateParentCP(); } }
         #endregion
 
         public void UpdateParentCP()
         {
             if (ParentTag != null)
             if (ParentTag.ParentCheckPoint != null)
-            ParentTag.ParentCheckPoint.UpdateCPStatus();
+            ParentTag.ParentCheckPoint.UpdateCheckPointProperties(true);
         }
 
         //process all,none,any match condition
