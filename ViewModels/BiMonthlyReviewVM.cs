@@ -34,7 +34,7 @@ namespace AI_Note_Review
             MasterReview = mrv;
             masterReviewSummaryVM = MasterReview.MasterReviewSummaryList;
             //todo: set selected reviewmodel to one with today's date.
-            SelectedMasterReviewSummary = masterReviewSummaryVM.First();
+            SelectedMasterReviewSummary = masterReviewSummaryVM.Last();
         }
 
 
@@ -79,6 +79,7 @@ namespace AI_Note_Review
                 SelectedProviderForBiMonthlyReview = MyPeeps.First();
                 OnPropertyChanged("SelectedProviderForBiMonthlyReview");
                 OnPropertyChanged("ListOfDocumentReviews");
+                OnPropertyChanged("StrBimonthlyReviewComment");
             }
         }
 
@@ -101,6 +102,7 @@ namespace AI_Note_Review
                 SelectedDocumentReview = ListOfDocumentReviews.FirstOrDefault();
                 OnPropertyChanged("SelectedDocumentReview");
                 OnPropertyChanged("SelectedProviderForBiMonthlyReview");
+                OnPropertyChanged("StrBimonthlyReviewComment");
             }
         }
 
@@ -133,6 +135,40 @@ namespace AI_Note_Review
             }
         }
 
+        private string strBimonthlyReviewComment;
+        public string StrBimonthlyReviewComment
+        {
+            get
+            {
+                if (selectedProviderForBiMonthlyReview == null)
+                    return null;
+                if (SelectedMasterReviewSummary == null)
+                    return null;
+                string sql = "";
+                sql += $"Select RelComment from RelProviderMasterReviewSummary where RelProviderID={selectedProviderForBiMonthlyReview.ProviderID} and RelProviderMasterReviewSummaryID={SelectedMasterReviewSummary.MasterReviewSummaryID};";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    strBimonthlyReviewComment = cnn.ExecuteScalar<string>(sql);
+                }
+                return strBimonthlyReviewComment;
+            }
+            set
+            {
+                if (selectedProviderForBiMonthlyReview == null)
+                    return;
+                if (SelectedMasterReviewSummary == null)
+                    return;
+                string sql = "";
+                sql = $"Delete from RelProviderMasterReviewSummary Where RelProviderID={selectedProviderForBiMonthlyReview.ProviderID} and RelProviderMasterReviewSummaryID={SelectedMasterReviewSummary.MasterReviewSummaryID};";
+                sql += $"Insert INTO RelProviderMasterReviewSummary (RelComment,RelProviderID,RelProviderMasterReviewSummaryID) VALUES ('{value}',{selectedProviderForBiMonthlyReview.ProviderID},{SelectedMasterReviewSummary.MasterReviewSummaryID});";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    strBimonthlyReviewComment = cnn.ExecuteScalar<string>(sql);
+                }
+                strBimonthlyReviewComment = value;
+            }
+        }
+
 
         private SqlDocumentReviewSummaryVM selectedDocumentReview;
         public SqlDocumentReviewSummaryVM SelectedDocumentReview
@@ -154,7 +190,7 @@ namespace AI_Note_Review
             get
             {
                 if (selectedDocumentReview == null) return "Select a review";
-                return selectedDocumentReview.ReviewHTML;
+                return "<head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'></head><body>" + selectedDocumentReview.ReviewHTML + "</body>";
             }
         }
 

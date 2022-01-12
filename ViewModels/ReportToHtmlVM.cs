@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -273,7 +274,12 @@ namespace AI_Note_Review
         public string GetReport(ReportToHtmlM sqlCheckpoint)
         {
             string strReturn = "";
-            strReturn += $"<li><dt><font size='+1'>{sqlCheckpoint.CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{sqlCheckpoint.ErrorSeverity}/10)</font></dt><dd><i>{sqlCheckpoint.Comment}</i></dd></li>" + Environment.NewLine;
+
+            //var bytes = Encoding.Default.GetBytes(WebUtility.HtmlEncode(sqlCheckpoint.Comment));
+            //var result = Encoding.UTF8.GetString(bytes);
+            var result = sqlCheckpoint.Comment;
+
+            strReturn += $"<li><dt><font size='+1'>{sqlCheckpoint.CheckPointTitle}</font><font size='-1'> (Score Weight<sup>**</sup>:{sqlCheckpoint.ErrorSeverity}/10)</font></dt><dd><i>{result}</i></dd></li>" + Environment.NewLine;
             if (sqlCheckpoint.RelComment != "" && sqlCheckpoint.RelComment != null)
             {
                 strReturn += $"<b>Comment: {sqlCheckpoint.RelComment}</b><br>";

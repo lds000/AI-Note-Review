@@ -181,9 +181,11 @@ namespace AI_Note_Review
 
             SqlLiteDataAccess.SQLiteDBLocation = Properties.Settings.Default.DataFolder;
 
-            if (File.Exists(@"C:\Users\Lloyd\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db"))
+            //C:\Users\lds00\source\repos\lds000\AI-Note-Review
+
+            if (File.Exists(@"C:\Users\lds00\source\repos\lds000\AI-Note-Review\NoteReviewDB.db"))
             {
-                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\Lloyd\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db";
+                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\lds00\source\repos\lds000\AI-Note-Review\NoteReviewDB.db";
             }
             else
             {
