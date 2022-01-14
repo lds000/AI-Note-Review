@@ -80,6 +80,7 @@ namespace AI_Note_Review
                 OnPropertyChanged("SelectedProviderForBiMonthlyReview");
                 OnPropertyChanged("ListOfDocumentReviews");
                 OnPropertyChanged("StrBimonthlyReviewComment");
+                OnPropertyChanged("StrBimonthlyReviewSummary");
             }
         }
 
@@ -95,14 +96,16 @@ namespace AI_Note_Review
             set
             {
                 selectedProviderForBiMonthlyReview = value;
-                OnPropertyChanged("ListOfDocumentReviews");
-                if (value == null) return;
-                //when the provider is changed, set the selected document for review to the first item in the list.
+                OnPropertyChanged("SelectedProviderForBiMonthlyReview");
                 listOfDocumentReviews = null; //reset
+                OnPropertyChanged("ListOfDocumentReviews");
+                if (value == null)
+                    return;
+                //when the provider is changed, set the selected document for review to the first item in the list.
                 SelectedDocumentReview = ListOfDocumentReviews.FirstOrDefault();
                 OnPropertyChanged("SelectedDocumentReview");
-                OnPropertyChanged("SelectedProviderForBiMonthlyReview");
                 OnPropertyChanged("StrBimonthlyReviewComment");
+                OnPropertyChanged("StrBimonthlyReviewSummary");
             }
         }
 
@@ -193,6 +196,33 @@ namespace AI_Note_Review
                 return "<head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'></head><body>" + selectedDocumentReview.ReviewHTML + "</body>";
             }
         }
+
+        public string StrBimonthlyReviewSummary
+        {
+            get
+            {
+                foreach (var tmpReview in ListOfDocumentReviews)
+                {
+                    string sqlCheck = $"Select r.*, cp.CheckPointTitle from RelCPPRovider r inner join Providers pr on r.ProviderID == pr.ProviderID inner join CheckPoints cp on cp.CheckPointID == r.CheckPointID where pr.IsWestSidePod == 1 " +
+                         $"and r.VisitDate >= '{mrs.StartDate.ToString("yyyy-MM-dd")}' and r.VisitDate <= '{mrs.EndDate.ToString("yyyy-MM-dd")}';";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        lReportToHtmlM = cnn.Query<ReportToHtmlM>(sqlCheck).ToList();
+                    }
+                    List<ReportToHtmlM> PassedCPs = (from c in lReportToHtmlM where c.CheckPointStatus == ReportToHtmlM.CPStates.Pass orderby c.ErrorSeverity descending select c).ToList();
+                    List<ReportToHtmlM> MissedCPs = (from c in lReportToHtmlM where c.CheckPointStatus == ReportToHtmlM.CPStates.Fail orderby c.ErrorSeverity descending select c).ToList();
+                    int ProviderCount = (from c in lReportToHtmlM select c.ProviderID).Distinct().Count();
+                    int totalCPcount = PassedCPs.Count() + MissedCPs.Count();
+                    double missedratio = (double)MissedCPs.Count() / (double)(totalCPcount);
+
+                }
+                return "test review summary.";
+            }
+            set
+            {
+            }
+        }
+
 
 
         public ObservableCollection<SqlProvider> myPeeps;

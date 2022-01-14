@@ -91,16 +91,22 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="0">General Comment</TextBlock>
                         <TextBox Text="{Binding StrBimonthlyReviewComment}" Grid.Row="1" Style="{StaticResource MyTextBox}">
                             
                         </TextBox>
+                        <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="2">Review Summary</TextBlock>
+                        <TextBox Text="{Binding StrBimonthlyReviewSummary}" Grid.Row="3" Style="{StaticResource MyTextBox}">
 
-                        <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="2">Reviews</TextBlock>
+                        </TextBox>
+
+                        <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="4">Reviews</TextBlock>
                         <!-- Contains a list of SqlDocumentReviewSummaryVM from SqlProvider.SqlDocumentReviewsSummaryProperty -->
-                        <ListBox Grid.Row="3" x:Name="lbMonthReview" Style="{StaticResource MyListBox}"
+                        <ListBox Grid.Row="5" x:Name="lbMonthReview" Style="{StaticResource MyListBox}"
                          ItemsSource="{Binding ListOfDocumentReviews}"
                          SelectedItem="{Binding SelectedDocumentReview}">
                             <ListBox.ItemTemplate>

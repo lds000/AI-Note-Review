@@ -66,8 +66,11 @@ namespace AI_Note_Review
         {
             get
             {
-                ReportToHtmlVM r = new ReportToHtmlVM(ParentProvider, VisitDate, PtID);
-                return r.CheckPointsSummaryHTML;
+                if (reportToHtmlVM == null)
+                {
+                    reportToHtmlVM = new ReportToHtmlVM(ParentProvider, VisitDate, PtID);
+                }
+                return reportToHtmlVM.CheckPointsSummaryHTML;
             }
         }
 
