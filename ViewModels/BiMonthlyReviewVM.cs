@@ -201,22 +201,25 @@ namespace AI_Note_Review
         {
             get
             {
-                foreach (var tmpReview in ListOfDocumentReviews)
-                {
-                    string sqlCheck = $"Select r.*, cp.CheckPointTitle from RelCPPRovider r inner join Providers pr on r.ProviderID == pr.ProviderID inner join CheckPoints cp on cp.CheckPointID == r.CheckPointID where pr.IsWestSidePod == 1 " +
-                         $"and r.VisitDate >= '{mrs.StartDate.ToString("yyyy-MM-dd")}' and r.VisitDate <= '{mrs.EndDate.ToString("yyyy-MM-dd")}';";
+                if (selectedProviderForBiMonthlyReview == null)
+                    return "";
+                if (SelectedMasterReviewSummary == null)
+                    return "";
+                    string sqlCheck = $"Select Title as SegmentTitle, count(title) as SegmentCount from (Select distinct icd10.SegmentTitle as Title, relcpp.VisitDate as Date from RelCPPRovider relcpp " +
+                                        "inner join CheckPoints cps on relcpp.CheckPointID == cps.CheckPointID " +
+                                        "inner join ICD10Segments icd10 on icd10.ICD10SegmentID == cps.TargetICD10Segment " +
+                                        "inner join RelICD10SegmentMasterReviewSummary relseg on relseg.ICD10SegmentID == icd10.ICD10SegmentID " +
+                                        $"where relseg.MasterReviewSummaryID == {SelectedMasterReviewSummary.MasterReviewSummaryID} and relcpp.ProviderID == {SelectedProviderForBiMonthlyReview.ProviderID} ) group by Title; ";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
-                        lReportToHtmlM = cnn.Query<ReportToHtmlM>(sqlCheck).ToList();
+                        List<MasterReviewReportM> tmpReturn = cnn.Query<MasterReviewReportM>(sqlCheck).ToList();
+                        string strReturn = "";
+                    foreach (var tmpResult in tmpReturn)
+                        {
+                        strReturn += tmpResult.SegmentCount + ": " + tmpResult.SegmentTitle + "\n";
+                        }
+                    return strReturn;
                     }
-                    List<ReportToHtmlM> PassedCPs = (from c in lReportToHtmlM where c.CheckPointStatus == ReportToHtmlM.CPStates.Pass orderby c.ErrorSeverity descending select c).ToList();
-                    List<ReportToHtmlM> MissedCPs = (from c in lReportToHtmlM where c.CheckPointStatus == ReportToHtmlM.CPStates.Fail orderby c.ErrorSeverity descending select c).ToList();
-                    int ProviderCount = (from c in lReportToHtmlM select c.ProviderID).Distinct().Count();
-                    int totalCPcount = PassedCPs.Count() + MissedCPs.Count();
-                    double missedratio = (double)MissedCPs.Count() / (double)(totalCPcount);
-
-                }
-                return "test review summary.";
             }
             set
             {

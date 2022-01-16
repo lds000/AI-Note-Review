@@ -96,11 +96,11 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="0">General Comment</TextBlock>
-                        <TextBox Text="{Binding StrBimonthlyReviewComment}" Grid.Row="1" Style="{StaticResource MyTextBox}">
+                        <TextBox Padding="3" Text="{Binding StrBimonthlyReviewComment}" Grid.Row="1" Style="{StaticResource MyTextBox}" TextWrapping="Wrap">
                             
                         </TextBox>
                         <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="2">Review Summary</TextBlock>
-                        <TextBox Text="{Binding StrBimonthlyReviewSummary}" Grid.Row="3" Style="{StaticResource MyTextBox}">
+                        <TextBox Padding="3" Text="{Binding StrBimonthlyReviewSummary}" Grid.Row="3" Style="{StaticResource MyTextBox}">
 
                         </TextBox>
 
