@@ -446,8 +446,8 @@ public PersonViewModel(PersonModel person) {
                 //}
 
 
-                //This boolean shortens the execution, set to true for miss or hide, as these statuses when met obviate the need for any further testing
-                bool StopIfMissOrHide = TagRegEx.TagRegExMatchResult != SqlTagRegExM.EnumResult.Pass;
+                //This boolean shortens the execution, set to true for miss, pass, or hide, as these statuses when met obviate the need for any further testing
+                bool StopIfMissOrHide = TagRegEx.TagRegExMatchResult != SqlTagRegExM.EnumResult.Continue;
 
                 // check demographic limits and return result if met.
                 //If any TagRegEx fails due to demographics, the entire series fails
@@ -517,6 +517,15 @@ public PersonViewModel(PersonModel person) {
                     }
                 }
 
+                string strTextToMatch = "";
+                if (ParentDocument.NoteSectionText[TagRegEx.TargetSection] != null)
+                    strTextToMatch = ParentDocument.NoteSectionText[TagRegEx.TargetSection].ToLower();
+
+                //process Regex match condition
+                if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Regex)
+                {
+                    //execute Regex under
+                }
 
 
                 //process all,none,any match condition
@@ -524,9 +533,6 @@ public PersonViewModel(PersonModel person) {
                 bool AllTermsMatch = true;
                 bool NoTermsMatch = true;
 
-                string strTextToMatch = "";
-                if (ParentDocument.NoteSectionText[TagRegEx.TargetSection] != null)
-                    strTextToMatch = ParentDocument.NoteSectionText[TagRegEx.TargetSection].ToLower();
                 foreach (string strRegEx in TagRegEx.RegExText.Split(','))
                 {
                     if (strRegEx.Trim() != "")

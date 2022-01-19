@@ -37,11 +37,11 @@ namespace AI_Note_Review
         public string RegExText { get; set; }
         public int TagRegExType { get; set; }
 
-        //1 pass, 2 Hide, 3 Miss
-        public enum EnumResult { Pass = 1, Hide = 2, Miss = 3 }
+        //1 pass, 2 Hide, 3 Miss, 4 Continue
+        public enum EnumResult { Pass = 1, Hide = 2, Miss = 3, Continue = 4 }
 
-        //1 any, 2 all, 3 None, 4 Ask
-        public enum EnumMatch { Any = 1, All = 2, None = 3, Ask = 4 }
+        //1 any, 2 all, 3 None, 4 Ask, 5 Regex
+        public enum EnumMatch { Any = 1, All = 2, None = 3, Ask = 4, Regex = 5 }
 
         public EnumMatch TagRegExMatchType { get => tagRegExMatchType; set => tagRegExMatchType = value; }
         public EnumResult TagRegExMatchResult { get => tagRegExMatchResult; set => tagRegExMatchResult = value; }
