@@ -300,5 +300,23 @@ namespace AI_Note_Review
             AutoIt.AutoItX.Send("{DOWN}");
             string nextName = AutoIt.AutoItX.WinGetText("Select Provider(s)");
         }
+
+        private void Lookup_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string strNum = myTbLookup.Text.Split(' ')[0];
+                AutoIt.AutoItX.ClipPut(strNum);
+                AutoIt.AutoItX.MouseClick("LEFT", 300, 75);
+                AutoIt.AutoItX.WinWaitActive("Patient Lookup");
+                AutoIt.AutoItX.MouseClick("LEFT", 500, 65);
+                AutoIt.AutoItX.Send("^V{ENTER}");
+            }
+            catch
+            {
+            
+            }
+
+        }
     }
 }

@@ -382,6 +382,20 @@ namespace AI_Note_Review
                     tmpICD10Segments.Add(ns);
                 }
             }
+
+            AlternativeICD10VM tmp = new AlternativeICD10VM();
+            foreach (string strICD10 in ICD10s)
+            {
+                foreach (AlternativeICD10VM ns in tmp.AlternativeICD10List)
+                {
+                    if (ns.AlternativeICD10 == strICD10)
+                    {
+                        SqlICD10SegmentVM tmpSeg = (from c in SqlICD10SegmentVM.NoteICD10Segments where c.ICD10SegmentID == ns.TargetICD10Segment select c).FirstOrDefault();
+                        tmpSeg.IncludeSegment = true;
+                        tmpICD10Segments.Add(tmpSeg);
+                    }
+                }
+            }
             #endregion
             document.ICD10Segments = tmpICD10Segments;
             //OnPropertyChanged("ICD10Segments");
