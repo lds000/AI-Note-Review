@@ -386,9 +386,12 @@ namespace AI_Note_Review
             AlternativeICD10VM tmp = new AlternativeICD10VM();
             foreach (string strICD10 in ICD10s)
             {
+                string tmpStr = strICD10;
+                if (strICD10.Contains(" "))
+                    tmpStr = strICD10.Split(' ')[0];
                 foreach (AlternativeICD10VM ns in tmp.AlternativeICD10List)
                 {
-                    if (ns.AlternativeICD10 == strICD10)
+                    if (ns.AlternativeICD10 == tmpStr)
                     {
                         SqlICD10SegmentVM tmpSeg = (from c in SqlICD10SegmentVM.NoteICD10Segments where c.ICD10SegmentID == ns.TargetICD10Segment select c).FirstOrDefault();
                         tmpSeg.IncludeSegment = true;
