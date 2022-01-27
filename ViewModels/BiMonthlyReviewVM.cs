@@ -166,7 +166,7 @@ namespace AI_Note_Review
                 sql += $"Insert INTO RelProviderMasterReviewSummary (RelComment,RelProviderID,RelProviderMasterReviewSummaryID) VALUES ('{value}',{selectedProviderForBiMonthlyReview.ProviderID},{SelectedMasterReviewSummary.MasterReviewSummaryID});";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    strBimonthlyReviewComment = cnn.ExecuteScalar<string>(sql);
+                    //strBimonthlyReviewComment = cnn.ExecuteScalar<string>(sql);
                 }
                 strBimonthlyReviewComment = value;
             }

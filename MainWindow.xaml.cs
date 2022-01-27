@@ -305,12 +305,16 @@ namespace AI_Note_Review
         {
             try
             {
-                string strNum = myTbLookup.Text.Split(' ')[0];
+                string strNum = AutoIt.AutoItX.ClipGet().Split(' ')[0];
                 AutoIt.AutoItX.ClipPut(strNum);
                 AutoIt.AutoItX.MouseClick("LEFT", 300, 75);
                 AutoIt.AutoItX.WinWaitActive("Patient Lookup");
                 AutoIt.AutoItX.MouseClick("LEFT", 500, 65);
                 AutoIt.AutoItX.Send("^V{ENTER}");
+                Thread.Sleep(1000);
+                AutoIt.AutoItX.WinWaitActive("Patient Hub");
+                AutoIt.AutoItX.Send("!p");
+
             }
             catch
             {

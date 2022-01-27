@@ -88,12 +88,10 @@
                                 </ListBox>
                             </StackPanel>
                         </Border>
-                        <Border Margin="3" Padding="3" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" >
-                        </Border>
+
                     </DockPanel>
                 </Border>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                    <TextBox Width="200" Style="{StaticResource MyTextBox}" Name="myTbLookup">9590418 11/24/2021</TextBox>
                     <Button  Margin="20,0,20,0" Click="Lookup_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Look Up</Button>
                     <Button  Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
                     <Button Margin="20,0,0,0"  Click="Test_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Test</Button>
