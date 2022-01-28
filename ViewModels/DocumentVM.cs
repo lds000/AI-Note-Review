@@ -288,6 +288,7 @@ namespace AI_Note_Review
 
         private void UpdateICD10Segments()
         {
+            //see also the converter that utilizes portions of this function.
             Console.WriteLine("Getting ICD10 Segments");
             ObservableCollection<SqlICD10SegmentVM> tmpICD10Segments = new ObservableCollection<SqlICD10SegmentVM>();
             #region Yikes! ugly, only open if you have to

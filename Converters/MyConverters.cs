@@ -377,6 +377,8 @@ namespace AI_Note_Review
                 Console.WriteLine($"ICD10 Code with no found segment: {strTest}");
 
             }
+
+
             return _ICD10Segments;
         }
 
