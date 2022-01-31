@@ -148,7 +148,7 @@ namespace AI_Note_Review
                 if (SelectedMasterReviewSummary == null)
                     return null;
                 string sql = "";
-                sql += $"Select RelComment from RelProviderMasterReviewSummary where RelProviderID={selectedProviderForBiMonthlyReview.ProviderID} and RelProviderMasterReviewSummaryID={SelectedMasterReviewSummary.MasterReviewSummaryID};";
+                sql += $"Select RelComment from RelProviderMasterReviewSummary where RelProviderID={selectedProviderForBiMonthlyReview.ProviderID} and RelMasterReviewSummaryID={SelectedMasterReviewSummary.MasterReviewSummaryID};";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     strBimonthlyReviewComment = cnn.ExecuteScalar<string>(sql);
@@ -162,11 +162,11 @@ namespace AI_Note_Review
                 if (SelectedMasterReviewSummary == null)
                     return;
                 string sql = "";
-                sql = $"Delete from RelProviderMasterReviewSummary Where RelProviderID={selectedProviderForBiMonthlyReview.ProviderID} and RelProviderMasterReviewSummaryID={SelectedMasterReviewSummary.MasterReviewSummaryID};";
-                sql += $"Insert INTO RelProviderMasterReviewSummary (RelComment,RelProviderID,RelProviderMasterReviewSummaryID) VALUES ('{value}',{selectedProviderForBiMonthlyReview.ProviderID},{SelectedMasterReviewSummary.MasterReviewSummaryID});";
+                sql = $"Delete from RelProviderMasterReviewSummary Where RelProviderID={selectedProviderForBiMonthlyReview.ProviderID} and RelMasterReviewSummaryID={SelectedMasterReviewSummary.MasterReviewSummaryID};";
+                sql += $"Insert INTO RelProviderMasterReviewSummary (RelComment,RelProviderID,RelMasterReviewSummaryID) VALUES ('{value}',{selectedProviderForBiMonthlyReview.ProviderID},{SelectedMasterReviewSummary.MasterReviewSummaryID});";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    //strBimonthlyReviewComment = cnn.ExecuteScalar<string>(sql);
+                    cnn.Execute(sql);
                 }
                 strBimonthlyReviewComment = value;
             }
