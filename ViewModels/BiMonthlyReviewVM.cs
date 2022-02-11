@@ -319,7 +319,8 @@ namespace AI_Note_Review
         public void SendOutlook()
         {
             var l = ListOfDocumentReviews;
-            if (l.Count < 10)
+            /*
+             * if (l.Count < 10)
             {
                 MessageBox.Show("Not going to send until you get 10 reports...");
                 return;
@@ -352,11 +353,12 @@ namespace AI_Note_Review
             strReport += "Footnotes:" + Environment.NewLine;
             strReport += "Total Score = (Total of Score Weights missed) / ((Total of Score Weights missed)+(Total of Score Weights passed)) * 2 + 8<br>" + Environment.NewLine;
             strReport += "Score Weight = An assigned weight of my estimated importance of the checkpoint." + Environment.NewLine;
+            */
 
 
-
+            string strReport = $"Hey {selectedProviderForBiMonthlyReview.FirstName}, just so you know I'm just finishing up your review for November and December and will be getting it to you on Saturday.  Thanks for your patience! Lloyd Stolworthy";
             ClipboardHelper.CopyToClipboard(strReport, "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Sep-Oct 2021", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Nov-Dec 2021", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
         }
