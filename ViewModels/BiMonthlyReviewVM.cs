@@ -319,8 +319,7 @@ namespace AI_Note_Review
         public void SendOutlook()
         {
             var l = ListOfDocumentReviews;
-            /*
-             * if (l.Count < 10)
+            if (l.Count < 10)
             {
                 MessageBox.Show("Not going to send until you get 10 reports...");
                 return;
@@ -344,19 +343,18 @@ namespace AI_Note_Review
                 rxtot += (double)l[i].HtmlReport.rxScore;
                 totaltot += (double)l[i].HtmlReport.totalScore;
             }
-            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I hope things are going well for you.  You are receiving this mail from me because you have been assigned to the 'Westside' pod.  I call it that because likely your home clinic is west of Eagle road in Meridian. Dr. Hamblin asked me to review 10 (or more) charts for you every two months. I'm hoping to make this process as painless, straight forward, and helpful as possible. I have put a lot of effort writing a computer program that helped me analyze your notes.  It basically looks for specific ‘checkpoints’ that I have put together that are relevant to the ICD-10 code you assigned to your clinic note.  Every two months we will change the focus to specific ICD-10 codes.  For September and October we were asked to focus on general note concepts as outlined by Dr. Hamblin in his email introducing the new note review system. I also included general concepts such as BEERS criteria, ED transfer protocol, procedure note content, and documenting non-pregnant state when clinically relevant. I will send out a mailer in a few weeks regarding the topics for November and December.";
-            strReport += $"<br>Generally this last review went very well for everyone. I have a few general comments regarding the notes I saw.  I reviewed over 300 notes, including many of my own. It seems that the providers who dictated notes produced better quality notes that those who relied heavily on templates or the tab presets.  I found quite a few inappropriate applications of templates to the nonspeaking infant/toddler age group and the elderly group. I also noticed quite a few Macrobid prescriptions being given to elderly when safer alternatives are available.  Finally, now that we are writing for more doxycycline for STIs I see notes not confirming absence of pregnant state by history or lab. We certainly don’t want permanent discoloration of teeth (yellow, gray, brown) following in utero exposure.";
-            strReport += $"<br>The following is my note review, please don't hesitated giving feedback by clicking on the feedback link,";
+            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I finally have your review ready.  I apologize for being delayed, the recent Covid has made it difficult for me to find time to get through the charts.";
+            strReport += $"<br>Generally everyone did well with this ENT review. I understand with the recent large case numbers due to Covid that maintaining good documentation is often quite difficult.  It's an unacknowledged aspect of our practice until something unfortunate happens and then documentation becomes the key measurement of our care. As such the focus of my reviews centers around the more medical-legal aspects of the visit to keep us all out of trouble.";
+            strReport += $"<br>The following is my note review, to assist in my review process I use a search algorithm for specific words or phrases.  I understand we all don't use the same terms to express our observations, so there may be some omissions on my part. Please don't hesitated giving feedback by clicking on the feedback link, I won't post the scores to SmartSheets for at least a week to give everyone a chance to review the notes personally.";
+            strReport += $"<br>On a personal note, I send my own notes through these reviews as well and I will be the first to say my notes could be significantly improved.";
             strReport += $"<br><br>Lloyd Stolworthy, M.D.<hr>";
-            strReport += $"<font size='+2'>Total Score: HPI: {hpitot.ToString("0.##")}, Dx: {dxtot.ToString("0.##")}, Exam:  {examtot.ToString("0.##")}, Rx: {rxtot.ToString("0.##")}, Total Score: {totaltot.ToString("0.##")}</font><hr>";
+            strReport += $"<font size='+2'>Combined Total Review Score: HPI: {hpitot.ToString("0.##")}, Dx: {dxtot.ToString("0.##")}, Exam:  {examtot.ToString("0.##")}, Rx: {rxtot.ToString("0.##")}, Total Score: {totaltot.ToString("0.##")}</font><hr>";
             strReport += strTmp;
             strReport += "Footnotes:" + Environment.NewLine;
             strReport += "Total Score = (Total of Score Weights missed) / ((Total of Score Weights missed)+(Total of Score Weights passed)) * 2 + 8<br>" + Environment.NewLine;
             strReport += "Score Weight = An assigned weight of my estimated importance of the checkpoint." + Environment.NewLine;
-            */
 
 
-            string strReport = $"Hey {selectedProviderForBiMonthlyReview.FirstName}, just so you know I'm just finishing up your review for November and December and will be getting it to you on Saturday.  Thanks for your patience! Lloyd Stolworthy";
             ClipboardHelper.CopyToClipboard(strReport, "");
             string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Nov-Dec 2021", "");
             mailto = Uri.EscapeUriString(mailto);
