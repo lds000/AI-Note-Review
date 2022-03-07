@@ -120,6 +120,8 @@ public PersonViewModel(PersonModel person) {
 
             if (UpdateStatausAlso)
             {
+                //This is not working in the edit mode, uncomment for editing during review process
+                /*
                 if (cPoverideStatus == null)
                 {
                     Console.WriteLine("Setting CPStatus to null on SqlCheckpointVM");
@@ -127,6 +129,7 @@ public PersonViewModel(PersonModel person) {
                     ParentSegment.UpdateCheckPoints();
                     OnPropertyChanged("CPStatus");
                 }
+                */
                 //push this upstream to report to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
                 ParentSegment.UpdateCPs();
             }
