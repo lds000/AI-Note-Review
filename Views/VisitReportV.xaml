@@ -89,6 +89,15 @@
                         <Separator Margin="0,5,0,5"/>
                         <Button Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Check All</Button>
                         <CheckBox x:Name="cbShowDropped" Style="{StaticResource MyCBStyle}" IsChecked="False">Show Dropped</CheckBox>
+                        <TextBox Style="{StaticResource MyTextBox}" Text="{Binding SearchICD10Term, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                        <ListBox 
+                            Style="{StaticResource MyListBox}"
+                            ItemsSource="{Binding ICD10SegmentSearchResult}"
+                            DisplayMemberPath="SegmentTitle"
+                            SelectedItem="{Binding CurrentlySelectedSearchICD10}"
+                            >
+                            
+                        </ListBox>
                     </StackPanel>
 
                     <DockPanel Grid.Row="0" Grid.Column="1">

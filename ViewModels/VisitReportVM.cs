@@ -51,20 +51,6 @@ namespace AI_Note_Review
             NewEcWDocument();
         }
 
-        /*
-        public VisitReportVM(List<SqlRelCPProvider> cplist)
-        {
-            report = new VisitReportM(); //1st executed command in program
-            sqlProvider = new SqlProvider(); //Change provider for report
-            patient = new PatientVM();
-            document = new DocumentVM(sqlProvider, patient);
-            passedCPs = new ObservableCollection<ICheckPoint>();
-            missedCPs = new ObservableCollection<SqlCheckpointVM>();
-            droppedCPs = new ObservableCollection<SqlCheckpointVM>();
-            GeneralCheckPointsOnly = false;
-            NewEcWDocument();
-        }
-        */
         //not sure I need this.
         public void NewEcWDocument()
         {
@@ -148,6 +134,52 @@ namespace AI_Note_Review
             }
         }
         #endregion
+
+        private string searchICD10Term;
+        public string SearchICD10Term
+        {
+            get 
+            {
+                return searchICD10Term; 
+            }
+            set
+            {
+                searchICD10Term = value;
+                iCD10SegmentSearchResult = null;
+                OnPropertyChanged();
+                OnPropertyChanged("ICD10SegmentSearchResult");
+            }
+        }
+        private List<SqlICD10SegmentVM> iCD10SegmentSearchResult;
+        public List<SqlICD10SegmentVM> ICD10SegmentSearchResult
+        {
+            get
+            {
+                if (iCD10SegmentSearchResult == null && searchICD10Term != null)
+                {
+                    if (searchICD10Term.Length > 2)
+                    {
+                       iCD10SegmentSearchResult = (from c in SqlICD10SegmentVM.NoteICD10Segments where c.SegmentTitle.ToLower().Contains(searchICD10Term.ToLower()) select c).ToList();
+                    }
+                }
+                return iCD10SegmentSearchResult;
+            }
+        }
+
+        private SqlICD10SegmentVM currentlySelectedSearchICD10;
+        public SqlICD10SegmentVM CurrentlySelectedSearchICD10
+        {
+            get { return currentlySelectedSearchICD10; }
+            set
+            {
+                currentlySelectedSearchICD10 = value;
+                currentlySelectedSearchICD10.ParentReport = this;
+                currentlySelectedSearchICD10.ParentDocument = document;
+
+                ICD10Segments.Add(currentlySelectedSearchICD10);
+                OnPropertyChanged("ICD10Segments");
+            }
+        }
 
         private ObservableCollection<ICheckPoint> passedCPs;
         public ObservableCollection<ICheckPoint> PassedCPs
