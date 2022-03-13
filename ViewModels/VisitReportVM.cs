@@ -150,6 +150,7 @@ namespace AI_Note_Review
                 OnPropertyChanged("ICD10SegmentSearchResult");
             }
         }
+
         private List<SqlICD10SegmentVM> iCD10SegmentSearchResult;
         public List<SqlICD10SegmentVM> ICD10SegmentSearchResult
         {
@@ -178,6 +179,7 @@ namespace AI_Note_Review
 
                 ICD10Segments.Add(currentlySelectedSearchICD10);
                 OnPropertyChanged("ICD10Segments");
+                currentlySelectedSearchICD10.CBIncludeSegment = true;
             }
         }
 
