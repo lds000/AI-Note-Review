@@ -155,7 +155,7 @@
                         <TabItem Header="Exam">
                             <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Exam}"></TextBox>
                         </TabItem>
-                        <TabItem Header="Meds" Foreground="Black">
+                        <TabItem Header="Meds Started" Foreground="Black">
                             <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.MedsStarted}"></TextBox>
                         </TabItem>
                         <TabItem Header="Labs">

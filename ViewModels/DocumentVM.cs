@@ -417,7 +417,7 @@ namespace AI_Note_Review
         {
 
             Clear();
-            if (HDoc.Body.InnerHtml.StartsWith("<LINK"))
+            if (HDoc.Body.InnerHtml.Contains("bootstrap.min.css"))
             {
                 masterReviewVM.AddLog("Processing unlocked chart");
                 processUnlocked(HDoc);
@@ -659,6 +659,7 @@ namespace AI_Note_Review
                                 List<string> lLabsOrdered = new List<string>();
                                 string strMedsSarted = "";
                                 string strLabsOrdered = "";
+                                string strImagesOrdered = "";
                                 foreach (string str in result)
                                 {
                                     if (str.Trim().StartsWith("LAB:"))
@@ -671,7 +672,12 @@ namespace AI_Note_Review
                                         medsStarted.Add(str);
                                         strMedsSarted += str + "\n";
                                     }
+                                    if (str.Trim().StartsWith("IMAGING:"))
+                                    {
+                                        strImagesOrdered += str.Trim() + "\n";
+                                    }
                                 }
+                                ImagesOrdered = strImagesOrdered;
                                 Treatment = strInnerText;
                                 MedsStarted = strMedsSarted;
                                 LabsOrdered = strLabsOrdered;
@@ -999,9 +1005,9 @@ namespace AI_Note_Review
                             PreventiveMed += myString + Environment.NewLine;
                             break;
                         case "Treatment:":
-                            if (myString.StartsWith("         Start")) //may not always work, keep an eye on this.
+                            if (myString.Trim().StartsWith("Start")) //may not always work, keep an eye on this.
                             {
-                                MedsStarted += myString + Environment.NewLine;
+                                MedsStarted += myString.Trim() + Environment.NewLine;
                             }
                             else
                             {
