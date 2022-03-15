@@ -120,7 +120,12 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <!--SqlICD10SegmentVM.Checkpoints-->
-                    <ListBox x:Name="lbCheckpoints" ItemsSource="{Binding SelectedICD10Segment.Checkpoints}" SelectedValue="{Binding SelectedCP}" Style="{StaticResource MyListBox}" HorizontalContentAlignment="Stretch" Grid.RowSpan="2">
+                    <ListBox x:Name="lbCheckpoints" 
+                             ItemsSource="{Binding SelectedICD10Segment.Checkpoints}"
+                             SelectedValue="{Binding SelectedCP}" 
+                             Style="{StaticResource MyListBox}" 
+                             HorizontalContentAlignment="Stretch" 
+                             Grid.RowSpan="2">
                         <ListBox.ContextMenu>
                             <ContextMenu>
                                 <!--SqlICD10SegmentVM-->

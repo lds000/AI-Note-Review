@@ -38,7 +38,7 @@
                         CommandParameter="{Binding}">Check X Only</MenuItem>
                      -->
                     <MenuItem Header="Edit Checkpoints" ToolTip="Edit Checkpoint data."
-                              Command="{Binding Path=VisitReport.CheckPointEditorCommand}"
+                              Command="{Binding Path=CheckPointEditorCommand}"
                               CommandParameter="{Binding}">
                     </MenuItem>
                     <MenuItem Header="Edit Providers">

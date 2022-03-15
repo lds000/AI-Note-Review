@@ -9,7 +9,12 @@
     xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006">
   <Application.Resources>
     <BooleanToVisibilityConverter x:Key="VisConverter" />
-    <Style x:Key="MyListBox" TargetType="ListBox">
+        <!--
+      this is generating an error.
+      -->
+            <local:ViewModelLocator x:Key="Locator" d:IsDataSource="True"/>
+        
+      <Style x:Key="MyListBox" TargetType="ListBox">
       <Setter Property="Foreground" Value="White">
       </Setter>
       <Setter Property="Background" Value="Black">
@@ -69,11 +74,6 @@
       </Style.Resources>
       <Setter Property="MaxWidth" Value="500" />
     </Style>
-      <!--
-      this is generating an error.
-        <ResourceDictionary>
-            <local:ViewModelLocator x:Key="Locator" d:IsDataSource="True"/>
-    </ResourceDictionary>
-      -->
+      
   </Application.Resources>
 </Application>

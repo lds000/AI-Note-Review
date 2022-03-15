@@ -302,32 +302,8 @@ namespace AI_Note_Review
             OnPropertyChanged("MissedCPs");
             OnPropertyChanged("DroppedCPs");
             OnPropertyChanged("PassedCPs");
-            /*
-            missedCPs = null;
-            passedCPs = null;
-            droppedCPs = null;
-            missedCPs.Clear();
-            passedCPs.Clear();
-            droppedCPs.Clear();
-                foreach (var tmpCollection in ICD10Segments) //only run once per report
-                {
-                    if (tmpCollection.IncludeSegment)
-                    {
-                        missedCPs = missedCPs.Union(tmpCollection.MissedCPs).ToObservableCollection(); //run 19 times
-                        passedCPs = passedCPs.Union(tmpCollection.PassedCPs).ToObservableCollection(); //run 19 times
-                        droppedCPs = droppedCPs.Union(tmpCollection.DroppedCPs).ToObservableCollection(); //run 19 times
-                }
-            }
-            missedCPs = missedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
-            passedCPs = passedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
-            droppedCPs = droppedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
-            Console.WriteLine("Setting missed,dropped,passed cp's to null on visit report.");
-            OnPropertyChanged("SelectedItem");
-            */
         }
-        public void SetCPs()
-        {
-        }
+
 
         /// <summary>
         /// Holds the current review's Yes/No SqlRegex's
@@ -409,20 +385,7 @@ namespace AI_Note_Review
             }
         }
 
-        private ICommand mCheckPointEditor;
-        public ICommand CheckPointEditorCommand
-        {
-            get
-            {
-                if (mCheckPointEditor == null)
-                    mCheckPointEditor = new CheckPointEditor();
-                return mCheckPointEditor;
-            }
-            set
-            {
-                mCheckPointEditor = value;
-            }
-        }
+
 
     }
 
@@ -448,27 +411,5 @@ namespace AI_Note_Review
         }
     }
 
-    class CheckPointEditor : ICommand
-    {
-        #region ICommand Members  
 
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-        #endregion
-
-        public void Execute(object parameter)
-        {
-            MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
-            CheckPointEditorV w = new CheckPointEditorV();
-            w.DataContext = mrs;
-            w.Show();
-        }
-    }
 }

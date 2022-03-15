@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -94,19 +95,36 @@ namespace AI_Note_Review
         {
             sqlICD10Segment = new SqlICD10SegmentM();
             masterReviewSummary = new MasterReviewSummaryVM();
+            RegisterEvents();
         }
 
         public SqlICD10SegmentVM(string strSegmentTitle)
         {
             sqlICD10Segment = new SqlICD10SegmentM(strSegmentTitle);
             masterReviewSummary = new MasterReviewSummaryVM();
+            RegisterEvents();
         }
 
         public SqlICD10SegmentVM(SqlICD10SegmentM sc)
         {
             sqlICD10Segment = sc;
             masterReviewSummary = new MasterReviewSummaryVM();
+            RegisterEvents();
         }
+
+        private void RegisterEvents()
+        {
+            Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
+        }
+
+        private void NotifyMe(NotificationMessage obj)
+        {
+            if (obj.Notification == "")
+            {
+                //TEST NOTIFY
+            }
+        }
+
 
         public SqlCheckpointVM SelectedCheckPoint { get; set; }
 
@@ -173,7 +191,6 @@ namespace AI_Note_Review
             {
                 if (checkpoints == null)
                 {
-
                     string sql = $"Select cp.CheckPointID,cp.CheckPointTitle,cp.ErrorSeverity,cp.CheckPointType,cp.TargetSection,cp.TargetICD10Segment,cp.Comment,cp.Action,cp.Link,cp.Expiration from CheckPoints cp inner join CheckPointTypes ns on cp.CheckPointType == ns.CheckPointTypeID where TargetICD10Segment == {sqlICD10Segment.ICD10SegmentID} order by ns.ItemOrder;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {

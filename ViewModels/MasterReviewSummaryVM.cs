@@ -11,23 +11,6 @@ using System.Windows.Input;
 
 namespace AI_Note_Review
 {
-
-    /*
- * Great example I found online.
- class PersonM {
-    public string Name { get; set; }
-  }
-
-class PersonVM {
-    private PersonM Person { get; set;}
-    public string Name { get { return this.Person.Name; } }
-    public bool IsSelected { get; set; } // example of state exposed by view model
-
-    public PersonVM(PersonM person) {
-        this.Person = person;
-    }
-}
-*/
     public class MasterReviewSummaryVM : INotifyPropertyChanged
     {
 
@@ -109,7 +92,10 @@ class PersonVM {
         {
             get 
             {
-                if (visitReport == null) { visitReport = new VisitReportVM(this); }
+                if (visitReport == null) 
+                { 
+                    visitReport = new VisitReportVM(this); 
+                }
                 return visitReport; 
             }
             private set { visitReport = value; } 
@@ -541,6 +527,50 @@ class PersonVM {
             }
         }
 
+        private ICommand mCheckPointEditor;
+        public ICommand CheckPointEditorCommand
+        {
+            get
+            {
+                if (mCheckPointEditor == null)
+                    mCheckPointEditor = new CheckPointEditor();
+                return mCheckPointEditor;
+            }
+            set
+            {
+                mCheckPointEditor = value;
+            }
+        }
+    }
+
+    class CheckPointEditor : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
+            CheckPointEditorV w = new CheckPointEditorV();
+            w.DataContext = mrs;
+            w.Show();
+        }
     }
     class ShowMasterReview : ICommand
     {

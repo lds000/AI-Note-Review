@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -141,6 +142,7 @@ public PersonViewModel(PersonModel person) {
         public SqlCheckpointVM()
         {
             SqlCheckpoint = new SqlCheckpointM();
+            RegisterEvents();
         }
 
         /// <summary>
@@ -150,6 +152,7 @@ public PersonViewModel(PersonModel person) {
         public SqlCheckpointVM(SqlCheckpointM cp)
         {
             this.SqlCheckpoint = cp;
+            RegisterEvents();
         }
 
         /// <summary>
@@ -160,6 +163,7 @@ public PersonViewModel(PersonModel person) {
         public SqlCheckpointVM(string strCheckPointTitle, int iTargetICD10Segment)
         {
             this.SqlCheckpoint = new SqlCheckpointM(strCheckPointTitle, iTargetICD10Segment);
+            RegisterEvents();
         }
 
         /// <summary>
@@ -172,6 +176,19 @@ public PersonViewModel(PersonModel person) {
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 this.SqlCheckpoint = cnn.QueryFirstOrDefault<SqlCheckpointM>(sql);
+            }
+            RegisterEvents();
+        }
+
+        private void RegisterEvents()
+        {
+            //Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
+        }
+
+        private void NotifyMe(NotificationMessage obj)
+        {
+            if (obj.Notification == "")
+            {
             }
         }
 
@@ -222,9 +239,15 @@ public PersonViewModel(PersonModel person) {
             }
             set
             {
-                this.SqlCheckpoint.CheckPointTitle = value;
-                OnPropertyChangedSave();
-                UpdateCheckPointProperties(false);
+                if (this.SqlCheckpoint.CheckPointTitle != value)
+                {
+                    this.SqlCheckpoint.CheckPointTitle = value;
+                    OnPropertyChangedSave();
+                    UpdateCheckPointProperties(false);
+                    var myMessage = new NotificationMessage(this,"CPTitleChanged");
+                
+                    Messenger.Default.Send(myMessage);
+                }
             }
         }
         public int CheckPointType
