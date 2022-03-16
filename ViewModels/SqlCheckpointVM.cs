@@ -19,24 +19,7 @@ using System.Windows.Media.Imaging;
 
 namespace AI_Note_Review
 {
-    /*
-* Great example I found online.
-class PersonModel {
-public string Name { get; set; }
-}
-
-class PersonViewModel {
-private PersonModel Person { get; set;}
-public string Name { get { return this.Person.Name; } }
-public bool IsSelected { get; set; } // example of state exposed by view model
-
-public PersonViewModel(PersonModel person) {
-    this.Person = person;
-}
-}
-*/
-
-    //not used yet
+    //interface is not being used yet.
     #region Interface
     public interface ICheckPoint
     {

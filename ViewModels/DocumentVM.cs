@@ -198,9 +198,9 @@ namespace AI_Note_Review
             if (patientVM.PtAgeYrs < 2) AddHashTag("@Age<2");
             if (patientVM.PtAgeYrs < 4) AddHashTag("@Age<4");
             if (patientVM.GetAgeInDays < 183) AddHashTag("@Age<6mo");
-            if (patientVM.isRRHigh) AddHashTag("!RRHigh");             //72	X	2	2	Rapid Respiratory Rate
+            //if (patientVM.isRRHigh) AddHashTag("!RRHigh");             //72	X	2	2	Rapid Respiratory Rate
             if (patientVM.isTempHigh) AddHashTag("!HighFever");             //73	X	3	3	High Fever
-            if (patientVM.isHRHigh) AddHashTag("!Tachycardia");             //74	X	4	4	Tachycardia
+            //if (patientVM.isHRHigh) AddHashTag("!Tachycardia");             //74	X	4	4	Tachycardia
             if (patientVM.GetAgeInDays <= 90 && patientVM.VitalsTemp > 100.4)
             {
                 //MessageBoxResult mr = MessageBox.Show($"This patient is {patient.GetAgeInDays()} days old and has a fever of {patient.VitalsTemp}.  Was the patient sent to an ED or appropriate workup performed?", "Infant Fever", MessageBoxButton.YesNo, MessageBoxImage.Warning);
