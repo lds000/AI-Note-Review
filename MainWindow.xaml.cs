@@ -250,6 +250,7 @@ namespace AI_Note_Review
                                     {
                                         try
                                         {
+                                            //do not reset the document if it has already been loaded and analyzed
                                             if (h.EcwHTMLDocument.Body.InnerText == strLastDoc)
                                             {
                                                 return;
