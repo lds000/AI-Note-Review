@@ -174,12 +174,15 @@ namespace AI_Note_Review
             set
             {
                 currentlySelectedSearchICD10 = value;
-                currentlySelectedSearchICD10.ParentReport = this;
-                currentlySelectedSearchICD10.ParentDocument = document;
+                if (value != null)
+                {
+                    currentlySelectedSearchICD10.ParentReport = this;
+                    currentlySelectedSearchICD10.ParentDocument = document;
 
-                ICD10Segments.Add(currentlySelectedSearchICD10);
-                OnPropertyChanged("ICD10Segments");
-                currentlySelectedSearchICD10.CBIncludeSegment = true;
+                    ICD10Segments.Add(currentlySelectedSearchICD10);
+                    OnPropertyChanged("ICD10Segments");
+                    currentlySelectedSearchICD10.CBIncludeSegment = true;
+                }
             }
         }
 
