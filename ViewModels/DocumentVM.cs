@@ -363,6 +363,7 @@ namespace AI_Note_Review
                     {
                         ns.IncludeSegment = false;
                     }
+                    // This is getting obnoxious.
                     if (ns.SqlICD10Segment.ICD10SegmentID == 92) //todo: find better way to see if procedure note included.
                     {
                         if (ProcedureNote == null)
@@ -373,7 +374,10 @@ namespace AI_Note_Review
                         {
                             if (ProcedureNote.Length < 100) ns.IncludeSegment = false;
                         }
+                        //don't show
+                        ns.IncludeSegment = false;
                     }
+                    
                     if (ns.SqlICD10Segment.ICD10SegmentID == 90) //never check ED Transfer
                     {
                         ns.IncludeSegment = false;

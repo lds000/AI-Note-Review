@@ -312,7 +312,7 @@ namespace AI_Note_Review
                 AutoIt.AutoItX.WinWaitActive("Patient Lookup");
                 AutoIt.AutoItX.MouseClick("LEFT", 500, 65);
                 AutoIt.AutoItX.Send("^V{ENTER}");
-                Thread.Sleep(1000);
+                Thread.Sleep(3000);
                 AutoIt.AutoItX.WinWaitActive("Patient Hub");
                 AutoIt.AutoItX.Send("!p");
 
