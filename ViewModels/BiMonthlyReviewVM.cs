@@ -163,7 +163,7 @@ namespace AI_Note_Review
                     return;
                 string sql = "";
                 sql = $"Delete from RelProviderMasterReviewSummary Where RelProviderID={selectedProviderForBiMonthlyReview.ProviderID} and RelMasterReviewSummaryID={SelectedMasterReviewSummary.MasterReviewSummaryID};";
-                sql += $"Insert INTO RelProviderMasterReviewSummary (RelComment,RelProviderID,RelMasterReviewSummaryID) VALUES ('{value}',{selectedProviderForBiMonthlyReview.ProviderID},{SelectedMasterReviewSummary.MasterReviewSummaryID});";
+                sql += $"Insert INTO RelProviderMasterReviewSummary (RelComment,RelProviderID,RelMasterReviewSummaryID) VALUES ('{value.Replace("'", "''")}',{selectedProviderForBiMonthlyReview.ProviderID},{SelectedMasterReviewSummary.MasterReviewSummaryID});";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     cnn.Execute(sql);
