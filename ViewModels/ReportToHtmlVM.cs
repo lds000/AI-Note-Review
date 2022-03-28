@@ -66,8 +66,10 @@ namespace AI_Note_Review
 
 
             var newQuery = from cp in MissedCPs 
-                           group cp by cp.CheckPointTitle into newGroup 
-                           orderby ((double)newGroup.Count() / (double)(from c in lReportToHtmlM where c.CheckPointTitle == newGroup.Key select c).Count()) descending select newGroup;
+                           group cp by cp.CheckPointTitle into newGroup
+                           orderby (double)newGroup.Count() descending
+                           orderby ((double)newGroup.Count() / (double)(from c in lReportToHtmlM where c.CheckPointTitle == newGroup.Key select c).Count()) descending 
+                           select newGroup;
 
             r += $"<font size='+3'>Missed Checkpoint Breakdown<br>";
             r += "<font size='+1'><ul>";
@@ -85,7 +87,7 @@ namespace AI_Note_Review
             foreach (var g in newQuery)
             {
                 int iCount = g.Count();
-                r += $"{iCount},{g.Key}<br>";
+                r += $"{iCount};{g.Key}<br>";
             }
             r += "</font>";
             return r; 

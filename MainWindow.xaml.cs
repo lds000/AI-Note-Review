@@ -55,6 +55,8 @@ namespace AI_Note_Review
             mrs = new MasterReviewSummaryVM();
             DataContext = mrs;
 
+            Properties.Settings.Default.PropertyChanged += Default_PropertyChanged;
+
             //Note hunter test
             /*
             NoteHunterM nh = new NoteHunterM();
@@ -98,6 +100,14 @@ namespace AI_Note_Review
                 0, 0, WINEVENT_OUTOFCONTEXT);
             ActiveWindowChanged += MainWindow_ActiveWindowChanged;
 
+        }
+
+        private void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "MonitorActive")
+            {
+                Properties.Settings.Default.Save();
+            }
         }
 
 
@@ -203,7 +213,8 @@ namespace AI_Note_Review
         /// <param name="hwnd"></param>
         private void MainWindow_ActiveWindowChanged(object sender, string windowHeader, IntPtr hwnd)
         {
-
+            if (!Properties.Settings.Default.MonitorActive)
+                return;
             //mrs.AddLog($"Window ({windowHeader}) focused.");
             //Console.WriteLine($"Header: {windowHeader}");
             //Get window data (top, left, size)
@@ -321,6 +332,11 @@ namespace AI_Note_Review
             {
             
             }
+
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
 
         }
     }

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
+        xmlns:properties="clr-namespace:AI_Note_Review.Properties"
         mc:Ignorable="d"
         Loaded="Window_Loaded"        
         WindowState="Maximized"
@@ -48,6 +49,8 @@
                     </MenuItem>
                     <MenuItem Header="Settings" Click="OpenSettings">
                     </MenuItem>
+                    <CheckBox IsChecked="{Binding Source={x:Static properties:Settings.Default},
+                               Path=MonitorActive}">Monitor Active Note</CheckBox>
                 </Menu>
                 <local:UC_PatientConsole x:Name="UCPtConsole" DockPanel.Dock="Top"></local:UC_PatientConsole>
                 <Border BorderBrush="White" DockPanel.Dock="Left">

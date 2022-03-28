@@ -39,6 +39,19 @@ namespace AI_Note_Review
         }
         public SqlMasterReviewSummaryM MasterReviewSummary { get; set; }
 
+        private bool monitorActiveNote;
+        public bool MonitorActiveNote
+        {
+            get
+            {
+                return monitorActiveNote;
+            }
+            set
+            {
+                monitorActiveNote = true;
+            }
+        }
+
         public SqlICD10SegmentVM SqlICD10SegmentVM { get; set; }
 
         public BiMonthlyReviewVM BiMonthlyReviewVM
@@ -357,7 +370,7 @@ namespace AI_Note_Review
                     strSummary += $"<font size='+1'>Dates: {StartDate.ToString("MM/dd/yyyy")}-{EndDate.ToString("MM/dd/yyyy")}</font><br>";
                     strSummary += $"<font size='+0'>{MasterReviewSummaryComment}</font><br><br>";
                     strSummary += $"<font size='+1'>ICD-10 Breakdown:</font><br>";
-                    foreach (var seg in ICD10Segments)
+                    foreach (var seg in ICD10List)
                     {
                         if (seg.LeftOffset == 10)
                         {
@@ -382,7 +395,7 @@ namespace AI_Note_Review
                         strSummary += "<br>";
                     }
 
-                    foreach (var seg in ICD10Segments)
+                    foreach (var seg in ICD10List)
                     {
                         strSummary += seg.IndexHtml;
                     }

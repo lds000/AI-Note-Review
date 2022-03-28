@@ -343,11 +343,10 @@ namespace AI_Note_Review
                 rxtot += (double)l[i].HtmlReport.rxScore;
                 totaltot += (double)l[i].HtmlReport.totalScore;
             }
-            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I finally have your review ready.  I apologize for being delayed, the recent Covid has made it difficult for me to find time to get through the charts. You did great!";
-            strReport += $"<br>Generally everyone did well with this ENT review. I understand with the recent large case numbers due to Covid that maintaining good documentation is often quite difficult.  It's an unacknowledged aspect of our practice until something unfortunate happens and then documentation becomes the key measurement of our care. As such the focus of my reviews centers around the more medical-legal aspects of a visit note.";
-            strReport += $"<br>The following is my note review. To assist in my review process I use a text search algorithm for seeking for specific words or phrases in your notes.  I understand we all don't use the same terms to express our observations, so there may be some omissions on my part. Please don't hesitated giving feedback by clicking on the feedback link, I won't post the scores to SmartSheets for at least a week to give everyone a chance to review the notes personally.";
-            strReport += $"<br>On a personal note, I send my own notes through these reviews as well and I will be the first to say my notes could be significantly improved.";
-            strReport += $"<br><br>Lloyd Stolworthy, M.D.<hr>";
+            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I have your review completed for the months of Jan and Feb 2022!";
+            strReport += $"<br>This review covered conditions of the lower respiratory tract. As you know we saw a lot of respiratory during the peak of the pandemic, so it was difficult finding relevant (non-Covid) charts to review.  ";
+            strReport += $"The following is my note review. As before, to assist in my review process I use a text search algorithm for seeking for specific words or phrases in your notes.  I understand we all don't use the same terms to express our observations, so there may be some omissions on my part. Please don't hesitated giving feedback by clicking on the feedback link. Same as the last review, I won't post the scores to SmartSheets for at least a week to give everyone a chance to review the notes personally.";
+            strReport += $"<br><br>Best Regards,<br>Lloyd Stolworthy, M.D.<hr>";
             strReport += $"<font size='+2'>Combined Total Review Score: HPI: {hpitot.ToString("0.##")}, Dx: {dxtot.ToString("0.##")}, Exam:  {examtot.ToString("0.##")}, Rx: {rxtot.ToString("0.##")}, Total Score: {totaltot.ToString("0.##")}</font><hr>";
             strReport += strTmp;
             strReport += "Footnotes:" + Environment.NewLine;
@@ -356,7 +355,7 @@ namespace AI_Note_Review
 
 
             ClipboardHelper.CopyToClipboard(strReport, "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Nov-Dec 2021", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Jan-Feb 2022", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
         }

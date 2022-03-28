@@ -228,7 +228,8 @@
                     </Grid>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="5" Style="{StaticResource MyTbStyle}">Text:</TextBlock>
-                    <TextBox Margin="5" x:Name="tbComment" Grid.Row="5" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=SqlCheckpoint.Comment}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" SpellCheck.IsEnabled="True" Grid.ColumnSpan="2">
+                    <TextBox Margin="5" x:Name="tbComment" Grid.Row="5" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}"
+                             Text="{Binding Path=SqlCheckpoint.Comment, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" ToolTip="{Binding Path=Comment}" SpellCheck.IsEnabled="True" Grid.ColumnSpan="2">
                         <SpellCheck.CustomDictionaries>
                             <sys:Uri>pack://application:,,,/MedTerms.lex</sys:Uri>
                         </SpellCheck.CustomDictionaries>
@@ -254,8 +255,13 @@
                     </TextBox>
                     <Button Command="{Binding FollowLinkCommand}" 
                             CommandParameter="{Binding}"
-                            ToolTip="Click here to follow link." Margin="5" Grid.Column="0" Grid.Row="8" Style="{StaticResource LinkButton}">Link:</Button>
-                    <TextBox Margin="5" x:Name="tbLink" Grid.Row="8" Grid.Column="1" TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding Path=Link}" ToolTip="{Binding Path=Link}" Grid.ColumnSpan="2" ></TextBox>
+                            ToolTip="Click here to follow link." Margin="5" Grid.Column="0" Grid.Row="8" 
+                            Style="{StaticResource LinkButton}">Link:</Button>
+                    <TextBox Margin="5" x:Name="tbLink" 
+                             Grid.Row="8" Grid.Column="1" 
+                             TextWrapping="WrapWithOverflow" 
+                             Style="{StaticResource MyTextBox}" 
+                             Text="{Binding Path=Link,UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding Path=Link}" Grid.ColumnSpan="2" ></TextBox>
 
 
                 </Grid>
