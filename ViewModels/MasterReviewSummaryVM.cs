@@ -306,9 +306,7 @@ namespace AI_Note_Review
             get
             {
                 if (iCD10Segments != null) return iCD10Segments;
-                if (SelectedMasterReview != null)
-                {
-                    int tmpI = SelectedMasterReview.MasterReviewSummaryID;
+                    int tmpI = MasterReviewSummaryID;
                     if (tmpI == 3) //return all
                     {
                         iCD10Segments = SqlICD10SegmentVM.NoteICD10Segments; //All
@@ -343,12 +341,6 @@ namespace AI_Note_Review
                         iCD10Segments = lvm;
                         return iCD10Segments;
                     }
-                }
-                if (iCD10Segments == null)
-                {
-                    iCD10Segments = SqlICD10SegmentVM.NoteICD10Segments;
-                }
-                return iCD10Segments;
             }
             set
             {
@@ -370,7 +362,8 @@ namespace AI_Note_Review
                     strSummary += $"<font size='+1'>Dates: {StartDate.ToString("MM/dd/yyyy")}-{EndDate.ToString("MM/dd/yyyy")}</font><br>";
                     strSummary += $"<font size='+0'>{MasterReviewSummaryComment}</font><br><br>";
                     strSummary += $"<font size='+1'>ICD-10 Breakdown:</font><br>";
-                    foreach (var seg in ICD10List)
+                    iCD10Segments = null;
+                    foreach (var seg in ICD10Segments)
                     {
                         if (seg.LeftOffset == 10)
                         {
@@ -395,7 +388,7 @@ namespace AI_Note_Review
                         strSummary += "<br>";
                     }
 
-                    foreach (var seg in ICD10List)
+                    foreach (var seg in ICD10Segments)
                     {
                         strSummary += seg.IndexHtml;
                     }

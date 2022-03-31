@@ -135,6 +135,19 @@ namespace AI_Note_Review
         public double icd10CategoryStart { get { return sqlICD10Segment.icd10CategoryStart; } set { sqlICD10Segment.icd10CategoryStart = value; } }
         public double icd10CategoryEnd { get { return sqlICD10Segment.icd10CategoryEnd; } set { sqlICD10Segment.icd10CategoryEnd = value; } }
         public int LeftOffset { get { return sqlICD10Segment.LeftOffset; } set { sqlICD10Segment.LeftOffset = value; } }
+        public int ParentSegment
+        {
+            get
+            {
+                return sqlICD10Segment.ParentSegment;
+            }
+            set
+            {
+                sqlICD10Segment.ParentSegment = value;
+                SaveToDB();
+            }
+        }
+        
 
         public void SaveToDB()
         {
@@ -287,6 +300,8 @@ namespace AI_Note_Review
                 OnPropertyChanged();
             }
         }
+
+
 
         //recheck CPs;
         public void UpdateCPs()

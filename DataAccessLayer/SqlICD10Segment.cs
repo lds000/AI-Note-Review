@@ -38,6 +38,11 @@ namespace AI_Note_Review
         public double icd10CategoryEnd { get; set; }
         public string SegmentTitle { get; set; }
         public string SegmentComment { get; set; }
+        public int ParentSegment 
+        {
+            get; 
+            set;
+        }
 
 
         private string icd10Chapter1;
@@ -84,7 +89,8 @@ namespace AI_Note_Review
                     "icd10CategoryStart=@icd10CategoryStart, " +
                     "icd10CategoryEnd=@icd10CategoryEnd, " +
                     "SegmentTitle=@SegmentTitle, " +
-                    "SegmentComment=@SegmentComment " +
+                    "SegmentComment=@SegmentComment, " +
+                    "ParentSegment=@ParentSegment " +
                     "WHERE ICD10SegmentID=@ICD10SegmentID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
