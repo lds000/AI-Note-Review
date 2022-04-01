@@ -130,12 +130,17 @@ namespace AI_Note_Review
 
         public int ICD10SegmentID { get { return sqlICD10Segment.ICD10SegmentID; } set { sqlICD10Segment.ICD10SegmentID = value; } }
         public string SegmentTitle { get { return sqlICD10Segment.SegmentTitle; } set { sqlICD10Segment.SegmentTitle = value; } }
-        public string SegmentComment { get { return sqlICD10Segment.SegmentComment; } set { sqlICD10Segment.SegmentComment = value; } }
+        public string SegmentComment {
+            get { return sqlICD10Segment.SegmentComment; } 
+            set { 
+                sqlICD10Segment.SegmentComment = value;
+                SaveToDB();
+            } }
         public string icd10Chapter { get { return sqlICD10Segment.icd10Chapter; } set { sqlICD10Segment.icd10Chapter = value; } }
         public double icd10CategoryStart { get { return sqlICD10Segment.icd10CategoryStart; } set { sqlICD10Segment.icd10CategoryStart = value; } }
         public double icd10CategoryEnd { get { return sqlICD10Segment.icd10CategoryEnd; } set { sqlICD10Segment.icd10CategoryEnd = value; } }
         public int LeftOffset { get { return sqlICD10Segment.LeftOffset; } set { sqlICD10Segment.LeftOffset = value; } }
-        public int ParentSegment
+        public int? ParentSegment
         {
             get
             {
@@ -145,6 +150,20 @@ namespace AI_Note_Review
             {
                 sqlICD10Segment.ParentSegment = value;
                 SaveToDB();
+            }
+        }
+
+        private Thickness indent;
+        public Thickness Indent
+        {
+            get
+            {
+                return indent;
+            }
+            set
+            {
+                indent = value;
+                OnPropertyChanged();
             }
         }
         
@@ -220,6 +239,11 @@ namespace AI_Note_Review
                     }
                 }
                 return checkpoints;
+            }
+            set
+            {
+                checkpoints = value;
+                OnPropertyChanged();
             }
         }
 
@@ -390,8 +414,23 @@ namespace AI_Note_Review
             cp.ParentSegment = this;
             checkpoints.Add(cp);
             OnPropertyChanged("Checkpoints");
-            SelectedCheckPoint = cp;
+            SelectedCP = checkpoints.Last();
         }
+
+        private SqlCheckpointVM selectedCP;
+        public SqlCheckpointVM SelectedCP
+        {
+            get
+            {
+                return selectedCP;
+            }
+            set
+            {
+                selectedCP = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private string indexHtml;
         public string IndexHtml

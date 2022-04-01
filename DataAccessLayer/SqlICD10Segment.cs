@@ -38,7 +38,7 @@ namespace AI_Note_Review
         public double icd10CategoryEnd { get; set; }
         public string SegmentTitle { get; set; }
         public string SegmentComment { get; set; }
-        public int ParentSegment 
+        public int? ParentSegment 
         {
             get; 
             set;

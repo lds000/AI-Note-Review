@@ -245,6 +245,8 @@ namespace AI_Note_Review
                 OnPropertyChangedSave();
                 OnPropertyChanged("StrCheckPointType");
                 UpdateCheckPointProperties(true);
+                var myMessage = new NotificationMessage(this, "ReloadCheckPoints");
+                Messenger.Default.Send(myMessage);
             }
         }
         public string Comment
@@ -301,6 +303,8 @@ namespace AI_Note_Review
                 this.SqlCheckpoint.TargetICD10Segment = value;
                 OnPropertyChangedSave();
                 UpdateCheckPointProperties(true);
+                var myMessage = new NotificationMessage(this, "ReloadICD10Segments"); //todo: should be "ICD10Segments" for 
+                Messenger.Default.Send(myMessage);
             }
         }
         public string Action

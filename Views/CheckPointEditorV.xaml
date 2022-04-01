@@ -77,8 +77,8 @@
                              Style="{StaticResource MyListBox}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid >
-                                    <Grid.ContextMenu>
+                                <StackPanel Orientation="Horizontal" >
+                                    <StackPanel.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Edit" Command="{Binding EditSegmentCommand}" CommandParameter="{Binding}"/>
                                             <MenuItem Header="Create Index"
@@ -87,13 +87,9 @@
                                             <MenuItem Header="Delete Segment" Command="{Binding DeleteSegmentCommand}" CommandParameter="{Binding}"></MenuItem>
                                             <MenuItem Header="Add Alternative" Command="{Binding AddAlternativeCommand}" CommandParameter="{Binding}"/>
                                         </ContextMenu>
-                                    </Grid.ContextMenu>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="90"/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                        <TextBlock Grid.Column="1" Margin="{Binding Icd10Margin}" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10Chapter}" />
+                                    </StackPanel.ContextMenu>
+                                    <StackPanel Margin="{Binding Indent}" Grid.Column="0" Orientation="Horizontal">
+                                        <TextBlock Grid.Column="1" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10Chapter}" />
                                         <TextBlock Margin="0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryStart}"/>
                                         <TextBlock Margin="0" Padding="0" Text="-"/>
                                         <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryEnd}"/>
@@ -104,20 +100,26 @@
                                         <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding CheckPointCount}"></TextBlock>
                                         <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
                                     </StackPanel>
-                                </Grid>
+                                </StackPanel>
 
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                     <!--ItemsSource="{Binding SelectedICD10Segment.NoteICD10Segments}"-->
-                    <ComboBox
-                            Grid.Row="5"
+                    <StackPanel Grid.Row="5">
+                        <Label Style="{StaticResource MyLblStyle}">Segment Comment</Label>
+                        <TextBox Margin="5,0,5,5" Style="{StaticResource MyTextBox}" TextWrapping="Wrap"  Text="{Binding SelectedICD10Segment.SegmentComment}" MinHeight="50"></TextBox>
+                        <Label Style="{StaticResource MyLblStyle}">Parent Segment</Label>
+                        <ComboBox
+                            
                                                     ItemsSource="{Binding SelectedMasterReview.ICD10Segments}"
                                                     DisplayMemberPath="SegmentTitle"
                                                     SelectedValuePath="ICD10SegmentID"
                                                     SelectedValue="{Binding SelectedICD10Segment.ParentSegment, Mode=TwoWay}"
                                                     >
-                    </ComboBox>
+                        </ComboBox>
+
+                    </StackPanel>
 
                 </Grid>
             </DockPanel>
@@ -133,7 +135,7 @@
                     <!--SqlICD10SegmentVM.Checkpoints-->
                     <ListBox x:Name="lbCheckpoints" 
                              ItemsSource="{Binding SelectedICD10Segment.Checkpoints}"
-                             SelectedValue="{Binding SelectedCP}" 
+                             SelectedValue="{Binding SelectedICD10Segment.SelectedCP}" 
                              Style="{StaticResource MyListBox}" 
                              HorizontalContentAlignment="Stretch" 
                              Grid.RowSpan="2">
@@ -172,7 +174,7 @@
                     </ListBox>
                 </Grid>
             </DockPanel>
-            <DockPanel Grid.Column="2" DataContext="{Binding SelectedCP}">
+            <DockPanel Grid.Column="2" DataContext="{Binding SelectedICD10Segment.SelectedCP}">
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Label Style="{StaticResource MyLblStyle}">Checkpoint:</Label>
                     <Label  Style="{StaticResource MyLblStyle}" Content="{Binding CheckPointTitle, FallbackValue=CheckPointTitle}"></Label>
@@ -207,15 +209,15 @@
                               Grid.Column="1" Grid.Row="2" Name="cbTargetSection" 
                               DisplayMemberPath="NoteSectionTitle" 
                               SelectedValuePath="SectionID" 
-                              SelectedValue="{Binding SqlCheckpoint.TargetSection}" Grid.ColumnSpan="2"></ComboBox>
+                              SelectedValue="{Binding TargetSection}" Grid.ColumnSpan="2"></ComboBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="3" Style="{StaticResource MyTbStyle}">ICD10:</TextBlock>
                     <ComboBox Margin="5,2,5,2" 
-                              ItemsSource="{Binding Source={StaticResource SqlICD10SegmentVM}, Path=NoteICD10Segments}"  
+                              ItemsSource="{Binding Source={StaticResource SqlICD10SegmentVM}, Path=NoteICD10Segments, UpdateSourceTrigger=PropertyChanged}"  
                               Grid.Column="1" Grid.Row="3" Name="cbTargetICD10" 
                               DisplayMemberPath="SqlICD10Segment.SegmentTitle" 
                               SelectedValuePath="SqlICD10Segment.ICD10SegmentID" 
-                              SelectedValue="{Binding SqlCheckpoint.TargetICD10Segment}" Grid.ColumnSpan="2"></ComboBox>
+                              SelectedValue="{Binding TargetICD10Segment}" Grid.ColumnSpan="2"></ComboBox>
 
                     <TextBlock Margin="5" Grid.Column="0" Grid.Row="4" Style="{StaticResource MyTbStyle}">Severity:</TextBlock>
 
@@ -279,7 +281,7 @@
 
             </DockPanel>
             <!--from SqlICD10SegmentVM.Checkpoints the selected SqlCheckpointVM-->
-            <DockPanel  DataContext="{Binding SelectedCP}" Grid.Column="3" Margin="3">
+            <DockPanel  DataContext="{Binding SelectedICD10Segment.SelectedCP}" Grid.Column="3" Margin="3">
                 <Label Style="{StaticResource MyLblStyle}" DockPanel.Dock="Top" HorizontalAlignment="Center">Tags</Label>
                 <Border BorderBrush="White" BorderThickness="1">
                     <Border.ContextMenu>

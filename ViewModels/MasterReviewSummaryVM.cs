@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,7 +37,33 @@ namespace AI_Note_Review
             masterReviewSummary = new SqlMasterReviewSummaryM();
             providerBiMonthlyReview = new SqlRelProviderMasterReviewSummaryM();
             AddLog("MasterReviewSummaryVM() executed.");
+            RegisterEvents();
         }
+
+        private void RegisterEvents()
+        {
+            Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
+        }
+
+        private void NotifyMe(NotificationMessage obj)
+        {
+            if (obj.Notification == "ReloadCheckPoints")
+            {
+                if (selectedICD10Segment != null)
+                SelectedICD10Segment.Checkpoints = null; //reset checkpoints, forcing an update.
+            }
+            if (obj.Notification == "ReloadICD10Segments")
+            {
+                //todo:this is not working
+                if (SelectedICD10Segment != null)
+                {
+                    int tmpID = SelectedICD10Segment.ICD10SegmentID; //get the currently selected ID
+                    ICD10Segments = null; //reset ICD10Segments
+                    SelectedICD10Segment = (from c in ICD10Segments where c.ICD10SegmentID == tmpID select c).FirstOrDefault(); //now load that ID.
+                }
+            }
+        }
+        
         public SqlMasterReviewSummaryM MasterReviewSummary { get; set; }
 
         private bool monitorActiveNote;
@@ -306,41 +333,81 @@ namespace AI_Note_Review
             get
             {
                 if (iCD10Segments != null) return iCD10Segments;
-                    int tmpI = MasterReviewSummaryID;
-                    if (tmpI == 3) //return all
+
+                int tmpI = MasterReviewSummaryID;
+                List<SqlICD10SegmentM> l = new List<SqlICD10SegmentM>();
+
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    //return all
+                    if (tmpI == 3)
                     {
-                        iCD10Segments = SqlICD10SegmentVM.NoteICD10Segments; //All
-                        return iCD10Segments;
+                        string sql3 = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID order by icd10Chapter, icd10CategoryStart;";
+                        l = cnn.Query<SqlICD10SegmentM>(sql3).ToList();
                     }
-                    if (tmpI == 1) //if MasterReviewSummaryID=1 then return general review withicd10Chapter  X
+                    //if MasterReviewSummaryID=1 then return general review withicd10Chapter  X
+                    else
+                    if (tmpI == 1)
                     {
-                        using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                        {
-                            string sql = "Select * from ICD10Segments where icd10Chapter == 'X' order by icd10Chapter, icd10CategoryStart;";
-                            var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
-                            List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
-                            foreach (SqlICD10SegmentM s in l)
-                            {
-                                SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
-                                lvm.Add(scvm);
-                            }
-                            iCD10Segments = lvm;
-                            return iCD10Segments;
-                        }
+                        string sql1 = "Select * from ICD10Segments where icd10Chapter == 'X' order by icd10Chapter, icd10CategoryStart;";
+                        l = cnn.Query<SqlICD10SegmentM>(sql1).ToList();
                     }
-                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    else
                     {
                         string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {tmpI} order by icd10Chapter, icd10CategoryStart;";
-                        var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
-                        List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
+                        l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
+                    }
+                    //For all others
+                }
+                 
+                var level0 = (from c in l where c.ParentSegment == null select c);
+
+                    List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
+                foreach (SqlICD10SegmentM seg in level0)
+                {
+                    SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(seg);
+                    scvm.Indent = new System.Windows.Thickness(0);
+                    lvm.Add(scvm);
+
+                    var level1 = from c in l where c.ParentSegment == seg.ICD10SegmentID select c;
+                    foreach (SqlICD10SegmentM seg1 in level1)
+                    {
+                        SqlICD10SegmentVM scvm1 = new SqlICD10SegmentVM(seg1);
+                        scvm1.Indent = new System.Windows.Thickness(10, 0, 0, 0);
+                        lvm.Add(scvm1);
+
+                        var level2 = from c in l where c.ParentSegment == seg1.ICD10SegmentID select c;
+                        foreach (SqlICD10SegmentM seg2 in level2)
+                        {
+                            SqlICD10SegmentVM scvm2 = new SqlICD10SegmentVM(seg2);
+                            scvm2.Indent = new System.Windows.Thickness(20, 0, 0, 0);
+                            lvm.Add(scvm2);
+
+                            var level3 = from c in l where c.ParentSegment == seg2.ICD10SegmentID select c;
+                            foreach (SqlICD10SegmentM seg3 in level3)
+                            {
+                                SqlICD10SegmentVM scvm3 = new SqlICD10SegmentVM(seg3);
+                                scvm3.Indent = new System.Windows.Thickness(30, 0, 0, 0);
+                                lvm.Add(scvm3);
+                            }
+                        }
+
+                    }
+
+
+
+
+                    /*
                         foreach (SqlICD10SegmentM s in l)
                         {
                             SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
                             lvm.Add(scvm);
                         }
-                        iCD10Segments = lvm;
-                        return iCD10Segments;
-                    }
+                        */
+                }
+                iCD10Segments = lvm;
+
+                return iCD10Segments;
             }
             set
             {
@@ -422,20 +489,6 @@ namespace AI_Note_Review
         {
             mainLog = "";
             OnPropertyChanged("MainLog");
-        }
-
-        private SqlCheckpointVM selectedCP;
-        public SqlCheckpointVM SelectedCP
-        {
-            get
-            {
-                return selectedCP;
-            }
-            set
-            {
-                selectedCP = value;
-                OnPropertyChanged();
-            }
         }
 
         private List<SqlMissingICD10CodesM> topMissingDxs;
