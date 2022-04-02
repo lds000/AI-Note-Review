@@ -94,6 +94,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\CheckPointEditorCommands.cs" />
     <Compile Include="DataAccessLayer\SqlMasterReviewSummaryM.cs" />
     <Compile Include="DataAccessLayer\SqlMissingICD10CodesM.cs" />
     <Compile Include="DataAccessLayer\SqlRelAlternativeICD10M.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Models\ReportToHtmlM.cs" />
     <Compile Include="Models\NoteHunterM.cs" />
     <Compile Include="ViewModels\AlternativeICD10VM.cs" />
+    <Compile Include="ViewModels\CheckPointEditorVM.cs" />
     <Compile Include="ViewModels\ReportToHtmlVM.cs" />
     <Compile Include="ViewModels\ReportToTextVM.cs" />
     <Compile Include="ViewModels\MasterReviewSummaryVM.cs" />

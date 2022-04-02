@@ -51,11 +51,18 @@ namespace AI_Note_Review
             //biMonthlyReviewVM = new BiMonthlyReviewVM();
             //this.DataContext = reportVM;
             //biMonthReviewMI.DataContext = biMonthlyReviewVM;
-            
+
             mrs = new MasterReviewSummaryVM();
             DataContext = mrs;
 
             Properties.Settings.Default.PropertyChanged += Default_PropertyChanged;
+
+            CheckPointEditorV w = new CheckPointEditorV();
+            //w.DataContext = mrs;
+            w.DataContext = new CheckPointEditorVM();
+            w.ShowDialog();
+            return;
+
 
             //Note hunter test
             /*

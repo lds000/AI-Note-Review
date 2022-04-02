@@ -16,6 +16,8 @@ namespace AI_Note_Review
     {
 
         private BiMonthlyReviewVM biMonthlyReviewVM;
+
+        #region inotify
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -31,6 +33,7 @@ namespace AI_Note_Review
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        #endregion
 
         public MasterReviewSummaryVM()
         {
@@ -40,6 +43,7 @@ namespace AI_Note_Review
             RegisterEvents();
         }
 
+        #region EventManagement (empty)
         private void RegisterEvents()
         {
             Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
@@ -47,23 +51,9 @@ namespace AI_Note_Review
 
         private void NotifyMe(NotificationMessage obj)
         {
-            if (obj.Notification == "ReloadCheckPoints")
-            {
-                if (selectedICD10Segment != null)
-                SelectedICD10Segment.Checkpoints = null; //reset checkpoints, forcing an update.
-            }
-            if (obj.Notification == "ReloadICD10Segments")
-            {
-                //todo:this is not working
-                if (SelectedICD10Segment != null)
-                {
-                    int tmpID = SelectedICD10Segment.ICD10SegmentID; //get the currently selected ID
-                    ICD10Segments = null; //reset ICD10Segments
-                    SelectedICD10Segment = (from c in ICD10Segments where c.ICD10SegmentID == tmpID select c).FirstOrDefault(); //now load that ID.
-                }
-            }
         }
-        
+        #endregion
+
         public SqlMasterReviewSummaryM MasterReviewSummary { get; set; }
 
         private bool monitorActiveNote;
@@ -261,72 +251,9 @@ namespace AI_Note_Review
             }
         }
 
-        private MasterReviewSummaryVM selectedMasterReview;
-        public MasterReviewSummaryVM SelectedMasterReview
-        {
-            get
-            {
-                if (selectedMasterReview == null)
-                {
-                    foreach (MasterReviewSummaryVM mrs in MasterReviewSummaryList)
-                    {
-
-                        if (DateTime.Now >= mrs.StartDate && DateTime.Now <= mrs.EndDate)
-                        {
-                                selectedMasterReview = mrs;
-                        }
-                    }
-                }
-                return selectedMasterReview;
-            }
-            set
-            {
-                selectedMasterReview = value;
-                iCD10Segments = null;
-                if (iCD10Segments!=null) SelectedICD10Segment = ICD10Segments.FirstOrDefault();
-                OnPropertyChanged();
-                OnPropertyChanged("ICD10Segments"); 
-            }
-        }
-
-        private ObservableCollection<MasterReviewSummaryVM> masterReviewSummaryList;
-        public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaryList
-        {
-            get 
-            {
-                if (masterReviewSummaryList == null)
-                {
-                    string sql = $"Select * from MasterReviewSummary order by StartDate;";
-                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                    {
-                        masterReviewSummaryList = cnn.Query<MasterReviewSummaryVM>(sql).ToList().ToObservableCollection();
-                    }
-                }
-                return masterReviewSummaryList;
-            }
-        }
-
-        private SqlICD10SegmentVM selectedICD10Segment;
-        public SqlICD10SegmentVM SelectedICD10Segment
-        {
-            get
-            {
-                if (selectedICD10Segment == null)
-                {
-                    selectedICD10Segment = ICD10Segments.FirstOrDefault();
-                }
-                return selectedICD10Segment;
-            }
-            set
-            {
-                selectedICD10Segment = value;
-                OnPropertyChanged();
-            }
-        }
-
         private List<SqlICD10SegmentVM> iCD10Segments;
         /// <summary>
-        /// A list of ICD10 Segments that belong to the current selected MasterReview
+        /// A list of ICD10 Segments that belong to the MasterReview
         /// </summary>
         public List<SqlICD10SegmentVM> ICD10Segments
         {
@@ -334,33 +261,32 @@ namespace AI_Note_Review
             {
                 if (iCD10Segments != null) return iCD10Segments;
 
-                int tmpI = MasterReviewSummaryID;
                 List<SqlICD10SegmentM> l = new List<SqlICD10SegmentM>();
 
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    //return all
-                    if (tmpI == 3)
+                    //return all for masterreview All ID=3
+                    if (MasterReviewSummaryID == 3)
                     {
                         string sql3 = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID order by icd10Chapter, icd10CategoryStart;";
                         l = cnn.Query<SqlICD10SegmentM>(sql3).ToList();
                     }
-                    //if MasterReviewSummaryID=1 then return general review withicd10Chapter  X
+                    //if MasterReviewSummaryID=1 then return general review withicd10Chapter  X, this is for a general review
                     else
-                    if (tmpI == 1)
+                    if (MasterReviewSummaryID == 1)
                     {
                         string sql1 = "Select * from ICD10Segments where icd10Chapter == 'X' order by icd10Chapter, icd10CategoryStart;";
                         l = cnn.Query<SqlICD10SegmentM>(sql1).ToList();
                     }
                     else
                     {
-                        string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {tmpI} order by icd10Chapter, icd10CategoryStart;";
+                        string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {MasterReviewSummaryID} order by icd10Chapter, icd10CategoryStart;";
                         l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
                     }
                     //For all others
                 }
                  
-                var level0 = (from c in l where c.ParentSegment == null select c);
+                var level0 = (from c in l where c.ParentSegment == 0 select c);
 
                     List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
                 foreach (SqlICD10SegmentM seg in level0)
@@ -571,20 +497,6 @@ namespace AI_Note_Review
             #endregion
         }
 
-        private ICommand mAddSegment;
-        public ICommand AddSegmentCommand
-        {
-            get
-            {
-                if (mAddSegment == null)
-                    mAddSegment = new SegmentAdder();
-                return mAddSegment;
-            }
-            set
-            {
-                mAddSegment = value;
-            }
-        }
 
         private ICommand mCheckPointEditor;
         public ICommand CheckPointEditorCommand
@@ -625,9 +537,10 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
+            //MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
             CheckPointEditorV w = new CheckPointEditorV();
-            w.DataContext = mrs;
+            //w.DataContext = mrs;
+            w.DataContext = new SqlCheckPointImageVM();
             w.Show();
         }
     }
@@ -704,32 +617,6 @@ namespace AI_Note_Review
         }
     }
 
-    /// <summary>
-    /// Add Segment
-    /// </summary>
-    class SegmentAdder : ICommand
-    {
-        #region ICommand Members  
 
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-        #endregion
-        public void Execute(object parameter)
-        {
-            MasterReviewSummaryVM mr = parameter as MasterReviewSummaryVM;
-            SqlICD10SegmentVM seg = new SqlICD10SegmentVM("Enter Segment Title");
-            WinEditSegment wes = new WinEditSegment(seg);
-            wes.ShowDialog();
-            seg.UpdateAll();
-        }
-
-    }
 
 }

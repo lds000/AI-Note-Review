@@ -245,10 +245,11 @@ namespace AI_Note_Review
                 OnPropertyChangedSave();
                 OnPropertyChanged("StrCheckPointType");
                 UpdateCheckPointProperties(true);
-                var myMessage = new NotificationMessage(this, "ReloadCheckPoints");
+                var myMessage = new NotificationMessage(this, "ReorderCheckPoints");
                 Messenger.Default.Send(myMessage);
             }
         }
+
         public string Comment
         {
             get
@@ -275,6 +276,8 @@ namespace AI_Note_Review
                 OnPropertyChangedSave();
                 OnPropertyChanged("ErrorSeverity");
                 UpdateCheckPointProperties(true);
+                var myMessage = new NotificationMessage(this, "ReorderCheckPoints");
+                Messenger.Default.Send(myMessage);
             }
         }
         public int TargetSection
@@ -300,6 +303,8 @@ namespace AI_Note_Review
             }
             set
             {
+                if (this.SqlCheckpoint.TargetICD10Segment == value)
+                    return;
                 this.SqlCheckpoint.TargetICD10Segment = value;
                 OnPropertyChangedSave();
                 UpdateCheckPointProperties(true);
@@ -725,6 +730,16 @@ namespace AI_Note_Review
             get; set;
         }
 
+        public int CheckPointTypeOrder
+        {
+            get
+            {
+                var t = (from c in CheckPointTypes where c.CheckPointTypeID == CheckPointType select c).FirstOrDefault();
+                return t.ItemOrder;
+            }
+        }
+
+        private List<SqlCheckPointType> checkPointTypes;
         /// <summary>
         /// A list of the check point types from database
         /// </summary>
@@ -732,6 +747,10 @@ namespace AI_Note_Review
         {
             get
             {
+                if (checkPointTypes != null)
+                {
+                    return checkPointTypes;
+                }
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     string sql = "Select * from CheckPointTypes order by ItemOrder;";

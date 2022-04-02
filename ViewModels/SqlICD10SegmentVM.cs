@@ -140,7 +140,8 @@ namespace AI_Note_Review
         public double icd10CategoryStart { get { return sqlICD10Segment.icd10CategoryStart; } set { sqlICD10Segment.icd10CategoryStart = value; } }
         public double icd10CategoryEnd { get { return sqlICD10Segment.icd10CategoryEnd; } set { sqlICD10Segment.icd10CategoryEnd = value; } }
         public int LeftOffset { get { return sqlICD10Segment.LeftOffset; } set { sqlICD10Segment.LeftOffset = value; } }
-        public int? ParentSegment
+
+        public int ParentSegment
         {
             get
             {
@@ -247,6 +248,12 @@ namespace AI_Note_Review
             }
         }
 
+        public void ReorderCheckPoints()
+        {
+            checkpoints = new ObservableCollection<SqlCheckpointVM>(checkpoints.OrderByDescending(x => x.ErrorSeverity).OrderBy(x => x.CheckPointTypeOrder).ToList());
+            OnPropertyChanged("Checkpoints");
+        }
+
         public void RemoveCheckPoint(SqlCheckpointVM cp)
         {
             cp.DeleteFromDB();
@@ -311,19 +318,7 @@ namespace AI_Note_Review
             }
         }
 
-        public MasterReviewSummaryVM SelectedMasterReview
-        {
-            get 
-            {
-                return masterReviewSummary.SelectedMasterReview;
-            }
-            set
-            {
-                masterReviewSummary.SelectedMasterReview = value;
-                OnPropertyChanged("MasterReviewSummaryICD10Segments");
-                OnPropertyChanged();
-            }
-        }
+
 
 
 

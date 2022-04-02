@@ -32,9 +32,8 @@ namespace AI_Note_Review
         {
             biMonthlyReviewM = new BiMonthlyReviewM();
             MasterReview = mrv;
-            masterReviewSummaryVM = MasterReview.MasterReviewSummaryList;
             //todo: set selected reviewmodel to one with today's date.
-            SelectedMasterReviewSummary = masterReviewSummaryVM.Last();
+            SelectedMasterReviewSummary = MasterReviewSummaryList.Last();
         }
 
 
@@ -54,12 +53,20 @@ namespace AI_Note_Review
             }
         }
 
-        private ObservableCollection<MasterReviewSummaryVM> masterReviewSummaryVM;
+        private ObservableCollection<MasterReviewSummaryVM> masterReviewSummaryList;
         public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaryList
         {
             get
             {
-                return masterReviewSummaryVM;
+                if (masterReviewSummaryList == null)
+                {
+                    string sql = $"Select * from MasterReviewSummary order by StartDate;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        masterReviewSummaryList = cnn.Query<MasterReviewSummaryVM>(sql).ToList().ToObservableCollection();
+                    }
+                }
+                return masterReviewSummaryList;
             }
         }
 
