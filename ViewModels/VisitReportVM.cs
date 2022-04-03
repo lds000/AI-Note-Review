@@ -35,7 +35,20 @@ namespace AI_Note_Review
         private DocumentVM document;
         private PatientVM patient;
         private SqlProvider sqlProvider;
+
         private MasterReviewSummaryVM masterReviewSummary;
+        public MasterReviewSummaryVM MasterReviewSummary
+        {
+            get
+            {
+                return masterReviewSummary;
+            }
+            set
+            {
+                masterReviewSummary = value;
+                OnPropertyChanged();
+            }
+        }
 
         public VisitReportVM(MasterReviewSummaryVM mrs)
         {
@@ -58,6 +71,20 @@ namespace AI_Note_Review
             droppedCPs = null;
             document.ICD10Segments = null; //reset segments
             iCD10Segments = null; //reset segments
+        }
+
+        private SqlCheckpointVM selectedCheckPoint;
+        public SqlCheckpointVM SelectedCheckPoint
+        {
+            get
+            {
+                return selectedCheckPoint;
+            }
+            set
+            {
+                selectedCheckPoint = value;
+                OnPropertyChanged();
+            }
         }
 
         #region Report VM definitions - boring stuff
@@ -99,6 +126,7 @@ namespace AI_Note_Review
                 if (iCD10Segments == null)
                 {
                     iCD10Segments = document.ICD10Segments;
+                        //new ObservableCollection<SqlICD10SegmentVM>(document.ICD10Segments.OrderByDescending(c => c.Checkpoints.Count));
                     foreach (var tmpSeg in iCD10Segments)
                     {
                         tmpSeg.ParentDocument = document;
@@ -136,6 +164,8 @@ namespace AI_Note_Review
             }
         }
         #endregion
+
+
 
         private string searchICD10Term;
         public string SearchICD10Term

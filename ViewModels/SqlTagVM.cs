@@ -121,52 +121,38 @@ class PersonViewModel {
         {
             get
             {
-                if (tagRegExs == null) tagRegExs = GetTagRegExs();
+                if (tagRegExs == null)
+                {
+                    string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        var tmpList = cnn.Query<SqlTagRegExVM>(sql).ToList();
+                        foreach (var tmp in tmpList)
+                        {
+                            tmp.ParentTag = this;
+                            tmp.ParentDocumentVM = ParentDocument;
+                            tmp.PropertyChanged += Tmp_PropertyChanged;
+                        }
+                        tagRegExs = tmpList;
+                    }
+                }
                 return tagRegExs;
             }
         }
 
-        /*
-        public List<SqlTagRegExVM> TagRegExs
+        private void Tmp_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            get
+            if (e.PropertyName == "CPStatusChanged")
             {
-                string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    var tmpList = cnn.Query<SqlTagRegExVM>(sql).ToList();
-                    foreach (var tmp in tmpList)
-                    {
-                        tmp.ParentTag = this;
-                    }
-                    return tmpList;
-                }
+                OnPropertyChanged("CPStatusChanged");
+                //if (ParentCheckPoint != null) ParentCheckPoint.UpdateCheckPointProperties(true);
             }
-
-        }
-        */
-
-        private List<SqlTagRegExVM> GetTagRegExs()
-        {
-            string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                var tmpList = cnn.Query<SqlTagRegExVM>(sql).ToList();
-                foreach (var tmp in tmpList)
-                {
-                    tmp.ParentTag = this;
-                    tmp.ParentDocumentVM = ParentDocument;
-                }
-                return tmpList;
-            }
-
         }
 
         public void UpdateCPStatus()
         {
             //push this upstream to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
-            if (ParentCheckPoint != null)
-                ParentCheckPoint.UpdateCheckPointProperties(true);
+
         }
 
         public void EditTagText()

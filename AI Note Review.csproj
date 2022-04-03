@@ -95,6 +95,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\CheckPointEditorCommands.cs" />
+    <Compile Include="Commands\TagRegExCommands.cs" />
     <Compile Include="Commands\VisitReportCommands.cs" />
     <Compile Include="DataAccessLayer\SqlMasterReviewSummaryM.cs" />
     <Compile Include="DataAccessLayer\SqlMissingICD10CodesM.cs" />
@@ -108,6 +109,9 @@
     <Compile Include="Models\NoteSectionM.cs" />
     <Compile Include="Models\ReportToHtmlM.cs" />
     <Compile Include="Models\NoteHunterM.cs" />
+    <Compile Include="UserControls\UCSegmentCheckpoints.xaml.cs">
+      <DependentUpon>UCSegmentCheckpoints.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\AlternativeICD10VM.cs" />
     <Compile Include="ViewModels\CheckPointEditorVM.cs" />
     <Compile Include="ViewModels\ReportToHtmlVM.cs" />
@@ -221,6 +225,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UserControls\UCPatientConsole.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UCSegmentCheckpoints.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

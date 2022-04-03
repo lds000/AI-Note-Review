@@ -201,7 +201,7 @@ namespace AI_Note_Review
             }
         }
 
-
+        //not sure this is used.
         private List<SqlICD10SegmentVM> iCD10List;
         public List<SqlICD10SegmentVM> ICD10List
         {
@@ -216,7 +216,7 @@ namespace AI_Note_Review
                         List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
                         foreach (SqlICD10SegmentM s in l)
                         {
-                            SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
+                            SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s, this);
                             lvm.Add(scvm);
                         }
                         iCD10List = lvm;
@@ -238,6 +238,9 @@ namespace AI_Note_Review
             return false;
         }
 
+        /// <summary>
+        /// A list of all masterreviewsummaries
+        /// </summary>
         public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaries
         {
             get
@@ -250,6 +253,8 @@ namespace AI_Note_Review
                     }
             }
         }
+
+
 
         private List<SqlICD10SegmentVM> iCD10Segments;
         /// <summary>
@@ -291,28 +296,28 @@ namespace AI_Note_Review
                     List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
                 foreach (SqlICD10SegmentM seg in level0)
                 {
-                    SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(seg);
+                    SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(seg, this);
                     scvm.Indent = new System.Windows.Thickness(0);
                     lvm.Add(scvm);
 
                     var level1 = from c in l where c.ParentSegment == seg.ICD10SegmentID select c;
                     foreach (SqlICD10SegmentM seg1 in level1)
                     {
-                        SqlICD10SegmentVM scvm1 = new SqlICD10SegmentVM(seg1);
+                        SqlICD10SegmentVM scvm1 = new SqlICD10SegmentVM(seg1, this);
                         scvm1.Indent = new System.Windows.Thickness(10, 0, 0, 0);
                         lvm.Add(scvm1);
 
                         var level2 = from c in l where c.ParentSegment == seg1.ICD10SegmentID select c;
                         foreach (SqlICD10SegmentM seg2 in level2)
                         {
-                            SqlICD10SegmentVM scvm2 = new SqlICD10SegmentVM(seg2);
+                            SqlICD10SegmentVM scvm2 = new SqlICD10SegmentVM(seg2, this);
                             scvm2.Indent = new System.Windows.Thickness(20, 0, 0, 0);
                             lvm.Add(scvm2);
 
                             var level3 = from c in l where c.ParentSegment == seg2.ICD10SegmentID select c;
                             foreach (SqlICD10SegmentM seg3 in level3)
                             {
-                                SqlICD10SegmentVM scvm3 = new SqlICD10SegmentVM(seg3);
+                                SqlICD10SegmentVM scvm3 = new SqlICD10SegmentVM(seg3, this);
                                 scvm3.Indent = new System.Windows.Thickness(30, 0, 0, 0);
                                 lvm.Add(scvm3);
                             }

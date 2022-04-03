@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AI_Note_Review
 {
-    internal class NoteSectionM
+    public class NoteSectionM
     {
         public NoteSectionM()
         {

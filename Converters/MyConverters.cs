@@ -162,7 +162,7 @@ namespace AI_Note_Review
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             SqlTagRegExVM s = value as SqlTagRegExVM;
-            string str = CF.ClinicNote.NoteSectionText[s.TargetSection];
+            string str = s.TargetSectionText;
             return str;
         }
 

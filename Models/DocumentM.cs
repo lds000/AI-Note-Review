@@ -461,7 +461,6 @@ namespace AI_Note_Review
         /// </summary>
         DateTime dOB;
         private ObservableCollection<SqlICD10SegmentVM> iCD10Segments;
-        public string[] NoteSectionText = new string[30];
         public int ptAgeYrs;
         private int providerID;
         private string ptName;

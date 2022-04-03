@@ -27,8 +27,49 @@ namespace AI_Note_Review
         public VisitReportVM ParentReport { get; set; }
 
         private MasterReviewSummaryVM masterReviewSummary;
+        public MasterReviewSummaryVM MasterReviewSummary
+        {
+            get
+            {
+                return masterReviewSummary;
+            }
+            set
+            {
+                masterReviewSummary = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private SqlICD10SegmentM sqlICD10Segment;
+
+        /*
+        public SqlICD10SegmentVM()
+        {
+            sqlICD10Segment = new SqlICD10SegmentM();
+            masterReviewSummary = new MasterReviewSummaryVM();
+            RegisterEvents();
+        }
+        */
+
+            /// <summary>
+            /// Used only one instance, creating a new segment.
+            /// </summary>
+            /// <param name="strSegmentTitle"></param>
+        public SqlICD10SegmentVM(string strSegmentTitle, MasterReviewSummaryVM m)
+        {
+            sqlICD10Segment = new SqlICD10SegmentM(strSegmentTitle);
+            MasterReviewSummary = m;
+            RegisterEvents();
+        }
+
+        public SqlICD10SegmentVM(SqlICD10SegmentM sc, MasterReviewSummaryVM m)
+        {
+            sqlICD10Segment = sc;
+            MasterReviewSummary = m;
+            RegisterEvents();
+        }
+
 
         public AlternativeICD10VM AlternativeICD10 { get; set; }
 
@@ -83,7 +124,7 @@ namespace AI_Note_Review
             var tmpreturn = new AlternativeICD10VM(strTitle, strICD10, ICD10SegmentID);
             alternativeICD10s = null;
             OnPropertyChanged("AlternativeICD10s");
-            masterReviewSummary.ResetMissingDx(); //repopulate
+            MasterReviewSummary.ResetMissingDx(); //repopulate
         }
 
         public SqlICD10SegmentM SqlICD10Segment
@@ -91,26 +132,7 @@ namespace AI_Note_Review
             get { return sqlICD10Segment; }
         }
 
-        public SqlICD10SegmentVM()
-        {
-            sqlICD10Segment = new SqlICD10SegmentM();
-            masterReviewSummary = new MasterReviewSummaryVM();
-            RegisterEvents();
-        }
 
-        public SqlICD10SegmentVM(string strSegmentTitle)
-        {
-            sqlICD10Segment = new SqlICD10SegmentM(strSegmentTitle);
-            masterReviewSummary = new MasterReviewSummaryVM();
-            RegisterEvents();
-        }
-
-        public SqlICD10SegmentVM(SqlICD10SegmentM sc)
-        {
-            sqlICD10Segment = sc;
-            masterReviewSummary = new MasterReviewSummaryVM();
-            RegisterEvents();
-        }
 
         private void RegisterEvents()
         {
@@ -314,7 +336,7 @@ namespace AI_Note_Review
         {
             get
             {
-                return masterReviewSummary.MasterReviewSummaries;
+                return MasterReviewSummary.MasterReviewSummaries;
             }
         }
 
@@ -390,7 +412,7 @@ namespace AI_Note_Review
                         List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
                         foreach (SqlICD10SegmentM s in l)
                         {
-                            SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
+                            SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s, null);
                             lvm.Add(scvm);
                         }
                         return lvm;

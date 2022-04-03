@@ -366,17 +366,7 @@ namespace AI_Note_Review
         }
         #endregion
 
-        /// <summary>
-        /// An array of strings representing each section of the parent document note
-        /// </summary>
-        public string[] NoteSectionText
-        {
-            get
-            {
-                return ParentDocument.NoteSectionText;
-            }
-        }
-        
+
         /// <summary>
         /// Holds a status that is manually set, ie the reviewer wants the status to be set to pass instead of miss.  This will overide any checking.
         /// </summary>
@@ -431,6 +421,7 @@ namespace AI_Note_Review
             set
             {
                 cPStatus = value;
+                OnPropertyChanged();
             }
         }
 
@@ -535,9 +526,8 @@ namespace AI_Note_Review
                     }
                 }
 
-                string strTextToMatch = "";
-                if (ParentDocument.NoteSectionText[TagRegEx.TargetSection] != null)
-                    strTextToMatch = ParentDocument.NoteSectionText[TagRegEx.TargetSection].ToLower();
+                string strTextToMatch = TagRegEx.TargetSectionText;
+                    strTextToMatch = TagRegEx.TargetSectionText;
 
                 //process Regex match condition
                 if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Regex)
@@ -648,26 +638,32 @@ namespace AI_Note_Review
             get
             {
                 if (tags == null)
-                    tags = GetTags();
+                {
+                    string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID} order by RelTagCheckPointID;";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        var tmpList = cnn.Query<SqlTagVM>(sql, this).ToList();
+                        foreach (var tmp in tmpList)
+                        {
+                            tmp.ParentCheckPoint = this;
+                            tmp.ParentDocument = ParentDocument; //maybe move this into the constructor
+                            tmp.PropertyChanged += Tmp_PropertyChanged;
+                        }
+                        tags = tmpList;
+                    }
+                }
                 return tags;
             }
         }
 
-        public List<SqlTagVM> GetTags()
+        private void Tmp_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            string sql = $"select t.TagID, TagText from Tags t inner join RelTagCheckPoint relTC on t.TagID = relTC.TagID where CheckPointID = {CheckPointID} order by RelTagCheckPointID;";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            if (e.PropertyName == "CPStatusChanged")
             {
-                var tmpList = cnn.Query<SqlTagVM>(sql, this).ToList();
-                foreach (var tmp in tmpList)
-                {
-                    tmp.ParentCheckPoint = this;
-                    tmp.ParentDocument = ParentDocument; //maybe move this into the constructor
-                }
-                return tmpList;
+                cPStatus = null;
+                OnPropertyChanged("CPStatus");
             }
         }
-
 
         public void AddTag(SqlTagVM tg)
         {

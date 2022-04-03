@@ -51,7 +51,10 @@ namespace AI_Note_Review
         {
         }
 
-
+        /// <summary>
+        /// Create a new ICD10Segment given a title.
+        /// </summary>
+        /// <param name="strSegmentTitle"></param>
         public SqlICD10SegmentM(string strSegmentTitle)
         {
             strSegmentTitle = strSegmentTitle.Replace("'", "''"); //used to avoid errors in titles with ' character

@@ -53,8 +53,8 @@ namespace AI_Note_Review
             }
         }
 
-        List<NoteSectionM> noteSections;
-        List<NoteSectionM> NoteSections
+        private List<NoteSectionM> noteSections;
+        public List<NoteSectionM> NoteSections
         {
             get
             {
@@ -95,8 +95,6 @@ namespace AI_Note_Review
         public DateTime VisitDate { get { return document.VisitDate; } set { document.VisitDate = value; OnPropertyChanged(); } }
         public string HashTags { get { return document.HashTags; } set { document.HashTags = value; OnPropertyChanged(); } }
         public ObservableCollection<string> ICD10s { get { return document.ICD10s; } set { document.ICD10s = value; OnPropertyChanged(); } }
-        //try to get rid of these!!!
-        public string[] NoteSectionText { get { return document.NoteSectionText; } }
         public string NoteHTML { get { return document.NoteHTML; } set { document.NoteHTML = value; OnPropertyChanged(); } }
         public string ReasonForAppt { get { return document.ReasonForAppt; } set { document.ReasonForAppt = value; OnPropertyChanged(); } }
         public string CC { get { return document.CC; } set { document.CC = value; OnPropertyChanged();             }        }
@@ -225,55 +223,6 @@ namespace AI_Note_Review
                 //if (mr == MessageBoxResult.No) DocumentM.HashTags += "#NeonteNotSentToED";
             }
             HashTags = HashTags.TrimEnd().TrimEnd(',');
-
-            /*
-From Database NoteSections:
-0	Demographrics
-1	History of Present Illness
-2	Current Medications
-3	Active Problem List
-4	Past Medical History
-5	Social History
-6	Allergies
-7	Vital Signs
-8	Examination
-9	Assessments
-10	Treatment
-11	Labs
-12	Imaging
-13	Review of Systems
-15	Prescribed Medications
-16	Family Hx
-17	Surgical Hx
-18	HashTags
-19	Chief Complaint
-20	Procedure Note
-21	Preventive Medicine
-             */
-
-            //not happy with this, set notesection texts.
-            NoteSectionText[0] = $"{patientVM.PtAgeYrs} Sex{patientVM.PtSex}"; //Demographics 
-            NoteSectionText[1] = HPI + ROS + PMHx + SocHx; //All obtained information
-            NoteSectionText[2] = CurrentMeds + CurrentPrnMeds; //CurrentMeds
-            NoteSectionText[3] = ProblemList; //Active Problem List
-            NoteSectionText[4] = PMHx; //Past Medical History
-            NoteSectionText[5] = SocHx; //Social History
-            NoteSectionText[6] = Allergies; //Allergies
-            NoteSectionText[7] = Vitals; //Vital Signs
-            NoteSectionText[8] = Exam; //Examination
-            NoteSectionText[9] = Assessments; //Assessments
-            NoteSectionText[10] = Treatment; //Treatment
-            NoteSectionText[11] = LabsOrdered; //Labs
-            NoteSectionText[12] = ImagesOrdered; //Imaging
-            NoteSectionText[13] = ROS; //Review of Systems
-            NoteSectionText[14] = Assessments; //Assessments
-            NoteSectionText[15] = MedsStarted; //Prescribed Medications
-            NoteSectionText[16] = FamHx;
-            NoteSectionText[17] = SurgHx;
-            NoteSectionText[18] = HashTags;
-            NoteSectionText[19] = CC;
-            NoteSectionText[20] = ProcedureNote;
-            NoteSectionText[21] = PreventiveMed;
             OnPropertyChanged("Patient");
         }
 

@@ -33,7 +33,7 @@ namespace AI_Note_Review
             public void Execute(object parameter)
             {
                 MasterReviewSummaryVM mr = parameter as MasterReviewSummaryVM;
-                SqlICD10SegmentVM seg = new SqlICD10SegmentVM("Enter Segment Title");
+                SqlICD10SegmentVM seg = new SqlICD10SegmentVM("Enter Segment Title", mr);
                 WinEditSegment wes = new WinEditSegment(seg);
                 wes.ShowDialog();
                 seg.UpdateAll();
