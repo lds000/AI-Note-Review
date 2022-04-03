@@ -67,6 +67,9 @@ namespace AI_Note_Review
         #endregion
 
         private ObservableCollection<MasterReviewSummaryVM> masterReviewSummaryList;
+        /// <summary>
+        /// Contains a list of all the master reviews
+        /// </summary>
         public ObservableCollection<MasterReviewSummaryVM> MasterReviewSummaryList
         {
             get
@@ -84,6 +87,9 @@ namespace AI_Note_Review
         }
 
         private MasterReviewSummaryVM selectedMasterReview;
+        /// <summary>
+        /// Binds to the SelectedValue of the Listbox containing the MasterReviewList, when initiated selects the review with the current date
+        /// </summary>
         public MasterReviewSummaryVM SelectedMasterReview
         {
             get
@@ -109,11 +115,13 @@ namespace AI_Note_Review
                 {
                     selectedMasterReview = value;
                     OnPropertyChanged();
+                    //Now select the first ICD10 Segment
                     if (SelectedMasterReview != null)
                     {
                         selectedICD10Segment = SelectedMasterReview.ICD10Segments.FirstOrDefault();
                         OnPropertyChanged("SelectedICD10Segment");
                     }
+                    //then the 1st checkpoint
                     if (SelectedICD10Segment != null)
                     {
                         selectedCheckPoint = SelectedICD10Segment.Checkpoints.FirstOrDefault();
@@ -124,6 +132,9 @@ namespace AI_Note_Review
         }
 
         private SqlICD10SegmentVM selectedICD10Segment;
+        /// <summary>
+        /// Binds to the Selected ICD10 Segment
+        /// </summary>
         public SqlICD10SegmentVM SelectedICD10Segment
         {
             get
@@ -136,6 +147,7 @@ namespace AI_Note_Review
                 {
                     selectedICD10Segment = value;
                     OnPropertyChanged();
+                    //Select the 1st checkpoint
                     if (SelectedICD10Segment != null)
                     {
                         selectedCheckPoint = SelectedICD10Segment.Checkpoints.FirstOrDefault();
@@ -146,6 +158,9 @@ namespace AI_Note_Review
         }
 
         private SqlCheckpointVM selectedCheckPoint;
+        /// <summary>
+        /// Binds to the Selected Checkpoint
+        /// </summary>
         public SqlCheckpointVM SelectedCheckPoint
         {
             get

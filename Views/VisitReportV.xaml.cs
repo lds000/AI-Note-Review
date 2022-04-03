@@ -37,16 +37,12 @@ namespace AI_Note_Review
         }
         #endregion
 
-        public VisitReportV(bool GeneralCheckPointsOnly = false)
+        public VisitReportV()
         {
             InitializeComponent();
         }
 
-        public VisitReportV(VisitReportVM rvm)
-        {
-            InitializeComponent();
-            DataContext = rvm;
-        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

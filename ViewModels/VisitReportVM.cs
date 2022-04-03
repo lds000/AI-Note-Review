@@ -44,10 +44,9 @@ namespace AI_Note_Review
             sqlProvider = mrs.Provider; //Change provider for report
             patient = mrs.Patient;
             document = mrs.Document;
-            passedCPs = new ObservableCollection<ICheckPoint>();
+            passedCPs = new ObservableCollection<ICheckPoint>(); //use interface for compatability with the merge observablecollection
             missedCPs = new ObservableCollection<SqlCheckpointVM>();
             droppedCPs = new ObservableCollection<SqlCheckpointVM>();
-            GeneralCheckPointsOnly = false;
             NewEcWDocument();
         }
 
@@ -62,6 +61,9 @@ namespace AI_Note_Review
         }
 
         #region Report VM definitions - boring stuff
+        /// <summary>
+        /// The VisitReport Model
+        /// </summary>
         public VisitReportM Report
         {
             get
@@ -264,22 +266,6 @@ namespace AI_Note_Review
             }
         }
 
-        /// <summary>
-        /// used for the 1st review
-        /// </summary>
-        private bool generalCheckPointsOnly;
-        public bool GeneralCheckPointsOnly { 
-            get
-            {
-                return generalCheckPointsOnly;
-            }
-            set
-            {
-                generalCheckPointsOnly = value;
-                document.GeneralCheckPointsOnly = value;
-            }
-        }
-
         private SqlCheckpointVM selectedItem;
         public SqlCheckpointVM SelectedItem
         {
@@ -301,7 +287,7 @@ namespace AI_Note_Review
         }
 
         public void UpdateCPs()
-            {
+        {
             OnPropertyChanged("MissedCPs");
             OnPropertyChanged("DroppedCPs");
             OnPropertyChanged("PassedCPs");
@@ -312,8 +298,13 @@ namespace AI_Note_Review
         /// Holds the current review's Yes/No SqlRegex's
         /// </summary>
         private Dictionary<int, bool> YesNoSqlRegExIndex = new Dictionary<int, bool>();
+        
+        /// <summary>
+        /// Save visit report as a review with overides and comments
+        /// </summary>
         public void CommitReport()
         {
+            //todo: move this up sooner to avoid extra work
             string sqlCheck = $"Select Count() from RelCPPRovider where PtID={patient.PtID} AND VisitDate='{document.VisitDate.ToString("yyyy-MM-dd")}';";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
@@ -360,19 +351,6 @@ namespace AI_Note_Review
             MessageBox.Show($"{document.ProviderSql.CurrentReviewCount}/10 reports committed.");
         }
 
-
-        public void Commit(SqlCheckpointVM sqlCheckpoint, DocumentVM doc, PatientM pt, VisitReportM rpt, SqlRelCPProvider.MyCheckPointStates cpState)
-        {
-            if (sqlCheckpoint.CustomComment == null) sqlCheckpoint.CustomComment = "";
-            string sql = $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({doc.ProviderID}, {sqlCheckpoint.CheckPointID}, {pt.PtID}, '{rpt.ReviewDate.ToString("yyyy-MM-dd")}', '{doc.VisitDate.ToString("yyyy-MM-dd")}', {(int)cpState}, '{sqlCheckpoint.CustomComment}');";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
-                cnn.Execute(sql);
-            }
-
-        }
-
-
         private ICommand mCommitReport;
         public ICommand CommitMyReportCommand
         {
@@ -392,27 +370,6 @@ namespace AI_Note_Review
 
     }
 
-    class CommitMyReport : ICommand
-    {
-        #region ICommand Members  
-
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-        #endregion
-
-        public void Execute(object parameter)
-        {
-            VisitReportVM rvm = parameter as VisitReportVM;
-            rvm.CommitReport();
-        }
-    }
 
 
 }

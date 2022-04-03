@@ -75,7 +75,7 @@
                     </Grid.RowDefinitions>
                     <StackPanel DockPanel.Dock="Left" HorizontalAlignment="Center">
                         <Label Margin="0,10,0,10" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" Padding="0" FontSize="18">Included Groups</Label>
-                        <ItemsControl x:Name="lbSegmentsCheck" ItemsSource="{Binding ICD10Segments}">
+                        <ItemsControl MinHeight="100" x:Name="lbSegmentsCheck" ItemsSource="{Binding ICD10Segments}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel x:Name="spTemplate" Orientation="Horizontal">

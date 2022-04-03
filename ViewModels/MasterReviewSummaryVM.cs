@@ -540,7 +540,7 @@ namespace AI_Note_Review
             //MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
             CheckPointEditorV w = new CheckPointEditorV();
             //w.DataContext = mrs;
-            w.DataContext = new SqlCheckPointImageVM();
+            w.DataContext = new CheckPointEditorVM();
             w.Show();
         }
     }

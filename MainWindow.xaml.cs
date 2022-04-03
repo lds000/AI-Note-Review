@@ -55,13 +55,22 @@ namespace AI_Note_Review
             mrs = new MasterReviewSummaryVM();
             DataContext = mrs;
 
+
+            //Test VisitReport
+            mrs.VisitReport.NewEcWDocument(); //reset document
+            mrs.VisitReport.PopulateCPStatuses();
+            VisitReportV wp = new VisitReportV();
+            wp.DataContext = mrs.VisitReport;
+            wp.ShowDialog();
+            return;
+
             Properties.Settings.Default.PropertyChanged += Default_PropertyChanged;
 
-            CheckPointEditorV w = new CheckPointEditorV();
+            //CheckPointEditorV w = new CheckPointEditorV();
             //w.DataContext = mrs;
-            w.DataContext = new CheckPointEditorVM();
-            w.ShowDialog();
-            return;
+            //w.DataContext = new CheckPointEditorVM();
+            //w.ShowDialog();
+            //return;
 
 
             //Note hunter test

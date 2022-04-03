@@ -33,6 +33,7 @@ public PersonViewModel(PersonModel person) {
     public class SqlTagRegExVM : INotifyPropertyChanged
     {
         // Declare the event
+        #region Inotify
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
@@ -48,6 +49,7 @@ public PersonViewModel(PersonModel person) {
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        #endregion
 
         private SqlTagRegExM SqlTagRegEx { get; set; }
 

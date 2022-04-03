@@ -95,6 +95,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\CheckPointEditorCommands.cs" />
+    <Compile Include="Commands\VisitReportCommands.cs" />
     <Compile Include="DataAccessLayer\SqlMasterReviewSummaryM.cs" />
     <Compile Include="DataAccessLayer\SqlMissingICD10CodesM.cs" />
     <Compile Include="DataAccessLayer\SqlRelAlternativeICD10M.cs" />
@@ -104,6 +105,7 @@
     </Compile>
     <Compile Include="Helper Classes\Encrypt.cs" />
     <Compile Include="Models\MasterReviewReportM.cs" />
+    <Compile Include="Models\NoteSectionM.cs" />
     <Compile Include="Models\ReportToHtmlM.cs" />
     <Compile Include="Models\NoteHunterM.cs" />
     <Compile Include="ViewModels\AlternativeICD10VM.cs" />

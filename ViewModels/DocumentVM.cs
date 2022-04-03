@@ -28,11 +28,6 @@ namespace AI_Note_Review
         }
         #endregion
 
-        /// <summary>
-        ///Used for the 1st check point 
-        /// </summary>
-        public bool GeneralCheckPointsOnly { get; set; }
-
         //ViewModels declared locally for convenience
         private MasterReviewSummaryVM masterReviewVM;
         private PatientVM patientVM;
@@ -52,6 +47,32 @@ namespace AI_Note_Review
             patientVM = mrs.Patient;
             document = SampleDocument; //New DocumentM() called under this.
             SetUpNote(); //todo: might be better way of implementing this.
+            foreach (var tmpSection in NoteSections)
+            {
+                Console.WriteLine(tmpSection.NoteSectionTitle + ":" + tmpSection.NoteSectionContent);
+            }
+        }
+
+        List<NoteSectionM> noteSections;
+        List<NoteSectionM> NoteSections
+        {
+            get
+            {
+                if (noteSections == null)
+                {
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        string strSql = "Select * from NoteSections;";
+                        noteSections = cnn.Query<NoteSectionM>(strSql).ToList();
+                    }
+                    foreach (var tmps in noteSections)
+                    {
+                        tmps.InitiateSection(document, patientVM);
+                    }
+
+                }
+                return noteSections;
+            }
         }
 
         /// <summary>
@@ -105,8 +126,6 @@ namespace AI_Note_Review
         public string ProcedureNote { get { return document.ProcedureNote; } set { document.ProcedureNote = value; OnPropertyChanged(); } }
         #endregion  
 
-        //{ get {return document.;} set{document. = value;} }
-
         /// <summary>
         /// The patient that is extracted from the document
         /// </summary>
@@ -148,12 +167,11 @@ namespace AI_Note_Review
             {
                 document = new DocumentM();
                 Provider = "Devin Hansen"; //Provider ID comes from this.
-                VisitDate = new DateTime(2021, 10, 14);
+                VisitDate = new DateTime(2022, 3, 14);
                 CC = "Abdominal pain for 10 days";
                 Facility = "Meridian UC";
                 ICD10s.Add("R10.10");
                 ICD10s.Add("I10");
-                //DateTime.Now;
 
                 HPI = "Mark is a 30yo male who presents today complaining of right lower quadrant abdominal pain that began two days ago and acutely worse today. " +
                     "He denies diarrhea or constipation.  He states he cannot tolerate a full meal due to the pain.  " +
@@ -208,9 +226,34 @@ namespace AI_Note_Review
             }
             HashTags = HashTags.TrimEnd().TrimEnd(',');
 
+            /*
+From Database NoteSections:
+0	Demographrics
+1	History of Present Illness
+2	Current Medications
+3	Active Problem List
+4	Past Medical History
+5	Social History
+6	Allergies
+7	Vital Signs
+8	Examination
+9	Assessments
+10	Treatment
+11	Labs
+12	Imaging
+13	Review of Systems
+15	Prescribed Medications
+16	Family Hx
+17	Surgical Hx
+18	HashTags
+19	Chief Complaint
+20	Procedure Note
+21	Preventive Medicine
+             */
+
             //not happy with this, set notesection texts.
             NoteSectionText[0] = $"{patientVM.PtAgeYrs} Sex{patientVM.PtSex}"; //Demographics 
-            NoteSectionText[1] = HPI + ROS; //HPI
+            NoteSectionText[1] = HPI + ROS + PMHx + SocHx; //All obtained information
             NoteSectionText[2] = CurrentMeds + CurrentPrnMeds; //CurrentMeds
             NoteSectionText[3] = ProblemList; //Active Problem List
             NoteSectionText[4] = PMHx; //Past Medical History
@@ -293,7 +336,6 @@ namespace AI_Note_Review
             ObservableCollection<SqlICD10SegmentVM> tmpICD10Segments = new ObservableCollection<SqlICD10SegmentVM>();
             #region Yikes! ugly, only open if you have to
             //get icd10 segments
-            if (!GeneralCheckPointsOnly)
             foreach (string strICD10 in ICD10s)
             {
                 string strAlphaCode = strICD10.Substring(0, 1);
@@ -1102,57 +1144,4 @@ namespace AI_Note_Review
         }
         #endregion
     }
-
-    #region Command Classes
-    class ShowReport : ICommand
-    {
-        #region ICommand Members  
-
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-        #endregion
-
-        public void Execute(object parameter)
-        {
-            MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
-            mrs.VisitReport.GeneralCheckPointsOnly = false;
-            mrs.VisitReport.NewEcWDocument(); //reset document
-            mrs.VisitReport.PopulateCPStatuses();
-            VisitReportV wp = new VisitReportV(mrs.VisitReport);
-            wp.ShowDialog();
-        }
-    }
-
-    class ShowReportGen : ICommand
-    {
-        #region ICommand Members  
-
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-        #endregion
-
-        public void Execute(object parameter)
-        {
-            VisitReportVM rvm = parameter as VisitReportVM;
-            rvm.GeneralCheckPointsOnly = true;
-            rvm.NewEcWDocument(); //reset document
-            VisitReportV wp = new VisitReportV(rvm);
-            wp.ShowDialog();
-        }
-    }
-    #endregion
 }
