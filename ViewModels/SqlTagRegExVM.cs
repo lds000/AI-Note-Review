@@ -538,12 +538,6 @@ namespace AI_Note_Review
             return SqlTagRegEx.DeleteFromDB();
         }
 
-        public void UpdateTagRegExCPStatus()
-        {
-            //push this upstream to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
-            ParentTag.UpdateCPStatus();
-        }
-
         public static List<SqlNoteSection> NoteSections //todo, move this out to a common function.
         {
             get
@@ -554,7 +548,6 @@ namespace AI_Note_Review
                     return cnn.Query<SqlNoteSection>(sql).ToList();
                 }
             }
-
         }
 
         #region Commands

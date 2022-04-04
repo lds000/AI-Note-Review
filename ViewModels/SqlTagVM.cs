@@ -16,22 +16,6 @@ using System.Windows.Media;
 namespace AI_Note_Review
 {
 
-    /*
- * Great example I found online.
- class PersonModel {
-    public string Name { get; set; }
-  }
-
-class PersonViewModel {
-    private PersonModel Person { get; set;}
-    public string Name { get { return this.Person.Name; } }
-    public bool IsSelected { get; set; } // example of state exposed by view model
-
-    public PersonViewModel(PersonModel person) {
-        this.Person = person;
-    }
-}
-*/
     public class SqlTagVM : INotifyPropertyChanged
     {
         // Declare the event
@@ -81,7 +65,7 @@ class PersonViewModel {
             this.SqlTag.RemoveTagRegEx(str);
             tagRegExs = null; //reset
             OnPropertyChanged("TagRegExs");
-            UpdateCPStatus();
+            OnPropertyChanged("CPStatusChanged");
         }
         public void SaveToDB() { this.SqlTag.SaveToDB(); }
         public void DeleteFromDB() { this.SqlTag.DeleteFromDB(); }
@@ -92,7 +76,7 @@ class PersonViewModel {
             srex.ParentTag = this;
             tagRegExs = null; //reset
             OnPropertyChanged("TagRegExs");
-            UpdateCPStatus();
+            OnPropertyChanged("CPStatusChanged");
         }
 
         private SqlTagRegExM.EnumResult? matchResult;
@@ -144,15 +128,8 @@ class PersonViewModel {
         {
             if (e.PropertyName == "CPStatusChanged")
             {
-                OnPropertyChanged("CPStatusChanged");
-                //if (ParentCheckPoint != null) ParentCheckPoint.UpdateCheckPointProperties(true);
+                OnPropertyChanged("CPStatusChanged"); //is there a better way to bubble event?
             }
-        }
-
-        public void UpdateCPStatus()
-        {
-            //push this upstream to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
-
         }
 
         public void EditTagText()
@@ -164,7 +141,7 @@ class PersonViewModel {
                 TagText = wet.ReturnValue;
                 SaveToDB();
                 OnPropertyChanged("TagText");
-                UpdateCPStatus();
+                OnPropertyChanged("CPStatusChanged");
             }
         }
 

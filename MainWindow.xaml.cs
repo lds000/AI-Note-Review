@@ -56,7 +56,8 @@ namespace AI_Note_Review
             DataContext = mrs;
 
 
-            //Test VisitReport
+            /*Test VisitReport
+             */
             mrs.VisitReport.NewEcWDocument(); //reset document
             mrs.VisitReport.PopulateCPStatuses();
             VisitReportV wp = new VisitReportV();
@@ -64,14 +65,15 @@ namespace AI_Note_Review
             wp.ShowDialog();
             return;
 
+
+            //Test checkpointeditor
+            CheckPointEditorV w = new CheckPointEditorV();
+            w.DataContext = mrs;
+            w.DataContext = new CheckPointEditorVM();
+            w.ShowDialog();
+            return;
+
             Properties.Settings.Default.PropertyChanged += Default_PropertyChanged;
-
-            //CheckPointEditorV w = new CheckPointEditorV();
-            //w.DataContext = mrs;
-            //w.DataContext = new CheckPointEditorVM();
-            //w.ShowDialog();
-            //return;
-
 
             //Note hunter test
             /*

@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -43,14 +42,13 @@ namespace AI_Note_Review
 
         private SqlICD10SegmentM sqlICD10Segment;
 
-        /*
+        
         public SqlICD10SegmentVM()
         {
             sqlICD10Segment = new SqlICD10SegmentM();
             masterReviewSummary = new MasterReviewSummaryVM();
-            RegisterEvents();
         }
-        */
+        
 
             /// <summary>
             /// Used only one instance, creating a new segment.
@@ -60,16 +58,13 @@ namespace AI_Note_Review
         {
             sqlICD10Segment = new SqlICD10SegmentM(strSegmentTitle);
             MasterReviewSummary = m;
-            RegisterEvents();
         }
 
         public SqlICD10SegmentVM(SqlICD10SegmentM sc, MasterReviewSummaryVM m)
         {
             sqlICD10Segment = sc;
             MasterReviewSummary = m;
-            RegisterEvents();
         }
-
 
         public AlternativeICD10VM AlternativeICD10 { get; set; }
 
@@ -134,18 +129,7 @@ namespace AI_Note_Review
 
 
 
-        private void RegisterEvents()
-        {
-            Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
-        }
 
-        private void NotifyMe(NotificationMessage obj)
-        {
-            if (obj.Notification == "")
-            {
-                //TEST NOTIFY
-            }
-        }
 
 
         public SqlCheckpointVM SelectedCheckPoint { get; set; }
@@ -240,6 +224,9 @@ namespace AI_Note_Review
         }
 
         private ObservableCollection<SqlCheckpointVM> checkpoints;
+        /// <summary>
+        /// Contains a list of all the checkpoints (passed, missed, dropped) for segment.
+        /// </summary>
         public ObservableCollection<SqlCheckpointVM> Checkpoints
         {
             get
@@ -256,6 +243,7 @@ namespace AI_Note_Review
                             SqlCheckpointVM cpvm = new SqlCheckpointVM(item);
                             cpvm.ParentSegment = this;
                             cpvm.ParentDocument = this.ParentDocument;
+                            cpvm.PropertyChanged += CheckPointVM_PropertyChanged;
                             tmpCol.Add(cpvm);
                         }
                         checkpoints = tmpCol;
@@ -267,44 +255,65 @@ namespace AI_Note_Review
             {
                 checkpoints = value;
                 OnPropertyChanged();
+                MissedCPs = null;
+                PassedCPs = null;
+                DroppedCPs = null;
             }
         }
 
-        public void ReorderCheckPoints()
+        private void CheckPointVM_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            checkpoints = new ObservableCollection<SqlCheckpointVM>(checkpoints.OrderByDescending(x => x.ErrorSeverity).OrderBy(x => x.CheckPointTypeOrder).ToList());
-            OnPropertyChanged("Checkpoints");
+            if (e.PropertyName == "ReorderCheckPoints")
+            {
+                checkpoints = new ObservableCollection<SqlCheckpointVM>(checkpoints.OrderByDescending(x => x.ErrorSeverity).OrderBy(x => x.CheckPointTypeOrder).ToList());
+                OnPropertyChanged("Checkpoints");
+            }
+
+            if (e.PropertyName == "ReloadICD10Segments")
+            {
+                OnPropertyChanged("ReloadICD10Segments"); //todo: should be "ICD10Segments" for 
+            }
+
+            if (e.PropertyName == "CPStatus")
+            {
+                OnPropertyChanged("CPStatus"); //bubble up for VisitReportVM to recalculate checkpoint
+            }
         }
 
+        /*
         public void RemoveCheckPoint(SqlCheckpointVM cp)
         {
             cp.DeleteFromDB();
         }
+        */
 
+        /*
         public void CheckSegment()
         {
-            passedCPs = new List<ICheckPoint>();
+            passedCPs = new List<SqlCheckpointVM>();
             missedCPs = new List<SqlCheckpointVM>();
             droppedCPs = new List<SqlCheckpointVM>();
             OnPropertyChanged("PassedCPs");
             OnPropertyChanged("MissedCPs");
             OnPropertyChanged("DroppedCPs");
         }
+        */
 
-        private List<ICheckPoint> passedCPs;
-        public List<ICheckPoint> PassedCPs
+        private List<SqlCheckpointVM> passedCPs;
+        public List<SqlCheckpointVM> PassedCPs
         {
             get
             {
                 if (passedCPs == null)
                 {
-                    passedCPs = new List<ICheckPoint>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Pass select c);
+                    passedCPs = new List<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Pass orderby c.ErrorSeverity descending orderby c.CheckPointTypeOrder  select c);
                 }
                 return passedCPs;
             }
             set
             {
-
+                passedCPs = value;
+                OnPropertyChanged();
             }
         }
         private List<SqlCheckpointVM> missedCPs;
@@ -318,6 +327,11 @@ namespace AI_Note_Review
                 }
                 return missedCPs;
             }
+            set
+            {
+                missedCPs = value;
+                OnPropertyChanged();
+            }
         }
         private List<SqlCheckpointVM> droppedCPs;
         public List<SqlCheckpointVM> DroppedCPs
@@ -329,6 +343,12 @@ namespace AI_Note_Review
                     droppedCPs = new List<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Hide select c);
                 }
                 return droppedCPs;
+            }
+            set
+            {
+                droppedCPs = value;
+                OnPropertyChanged();
+
             }
         }
 
@@ -424,7 +444,7 @@ namespace AI_Note_Review
             {
                 NoteICD10Segments = value;
             }
-        }
+        } //static NoteICD10Segments! Move this
 
         public void AddCheckPoint(SqlCheckpointVM cp)
         {

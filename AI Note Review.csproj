@@ -104,6 +104,7 @@
     <Compile Include="Dialog Windows\WinChooseSegment.xaml.cs">
       <DependentUpon>WinChooseSegment.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ExtensionMethods\ObservableCollection.cs" />
     <Compile Include="Helper Classes\Encrypt.cs" />
     <Compile Include="Models\MasterReviewReportM.cs" />
     <Compile Include="Models\NoteSectionM.cs" />

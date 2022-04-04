@@ -179,6 +179,11 @@ namespace AI_Note_Review
         {
 
         }
+
+        private void ImageCPStatus_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 
 }

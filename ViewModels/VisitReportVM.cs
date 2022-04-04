@@ -23,12 +23,14 @@ namespace AI_Note_Review
     /// </summary>
     public class VisitReportVM : INotifyPropertyChanged
     {
+        #region inotify
         // Declare the event
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        #endregion
 
         //key entities
         private VisitReportM report;
@@ -66,11 +68,11 @@ namespace AI_Note_Review
         //not sure I need this.
         public void NewEcWDocument()
         {
+            document.ICD10Segments = null; //reset segments
+            iCD10Segments = null; //reset segments
             passedCPs = null;
             missedCPs = null;
             droppedCPs = null;
-            document.ICD10Segments = null; //reset segments
-            iCD10Segments = null; //reset segments
         }
 
         private SqlCheckpointVM selectedCheckPoint;
@@ -131,6 +133,7 @@ namespace AI_Note_Review
                     {
                         tmpSeg.ParentDocument = document;
                         tmpSeg.ParentReport = this;
+                        tmpSeg.PropertyChanged += ICD10Segment_PropertyChanged;
                     }
                 }
                 return iCD10Segments;
@@ -138,6 +141,20 @@ namespace AI_Note_Review
             set
             {
                 iCD10Segments = value;
+            }
+        }
+
+        private void ICD10Segment_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "CPStatus")
+            {
+                SqlICD10SegmentVM tmpSeg = sender as SqlICD10SegmentVM;
+                if (tmpSeg != null)
+                {
+                    int tmpCPID = SelectedCheckPoint.CheckPointID; //get selected CP ID
+                    tmpSeg.Checkpoints = null; //reset checkpoints
+                    SelectedCheckPoint = (from c in tmpSeg.Checkpoints where c.CheckPointID == tmpCPID select c).FirstOrDefault();
+                }
             }
         }
 
@@ -293,26 +310,6 @@ namespace AI_Note_Review
             set
             {
                 droppedCPs = value;
-            }
-        }
-
-        private SqlCheckpointVM selectedItem;
-        public SqlCheckpointVM SelectedItem
-        {
-            get { return selectedItem; }
-            set
-            {
-                if (value == selectedItem)
-                    return;
-                if (value == null)
-                    return;
-                selectedItem = value;
-
-                OnPropertyChanged("SelectedItem");
-                if (selectedItem != null)
-                Console.WriteLine($"Current checkpoint is '{selectedItem.CheckPointTitle}'");
-
-                // selection changed - do something special
             }
         }
 

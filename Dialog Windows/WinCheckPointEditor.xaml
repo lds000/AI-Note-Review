@@ -10,7 +10,7 @@
         Closing="Window_Closing"
         WindowStartupLocation="CenterOwner"
         Title="WinCheckPointEditor" Height="850" Width="1000">
-    <Border BorderBrush="White" BorderThickness="1" Background="Black" DataContext="{Binding SelectedItem}">
+    <Border BorderBrush="White" BorderThickness="1" Background="Black" DataContext="{Binding SelectedCheckPoint}">
         <DockPanel Name="dpCheckpoint">
             <DockPanel.Resources>
                 <local:ICD10Margin x:Key="ICD10Margin"/>

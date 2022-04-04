@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,14 +27,9 @@ namespace AI_Note_Review
         #region Events
         public CheckPointEditorVM()
         {
-            RegisterEvents();
         }
 
-        private void RegisterEvents()
-        {
-            Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
-        }
-
+        /*
         private void NotifyMe(NotificationMessage obj)
         {
             if (obj.Notification == "ReloadCheckPoints")
@@ -55,15 +49,8 @@ namespace AI_Note_Review
             }
 
             //ReorderICD10
-
-            //ReorderCheckPoints
-            if (obj.Notification == "ReorderCheckPoints")
-            {
-                if (selectedICD10Segment != null)
-                SelectedICD10Segment.ReorderCheckPoints();
-            }
         }
-
+        */
         #endregion
 
         private ObservableCollection<MasterReviewSummaryVM> masterReviewSummaryList;
@@ -118,14 +105,12 @@ namespace AI_Note_Review
                     //Now select the first ICD10 Segment
                     if (SelectedMasterReview != null)
                     {
-                        selectedICD10Segment = SelectedMasterReview.ICD10Segments.FirstOrDefault();
-                        OnPropertyChanged("SelectedICD10Segment");
+                        SelectedICD10Segment = SelectedMasterReview.ICD10Segments.FirstOrDefault();
                     }
                     //then the 1st checkpoint
                     if (SelectedICD10Segment != null)
                     {
-                        selectedCheckPoint = SelectedICD10Segment.Checkpoints.FirstOrDefault();
-                        OnPropertyChanged("SelectedCheckPoint");
+                        SelectedCheckPoint = SelectedICD10Segment.Checkpoints.FirstOrDefault();
                     }
                 }
             }
@@ -147,14 +132,22 @@ namespace AI_Note_Review
                 {
                     selectedICD10Segment = value;
                     OnPropertyChanged();
+                    if (selectedICD10Segment != null)
+                    {
+                        SelectedICD10Segment.PropertyChanged += SelectedICD10Segment_PropertyChanged;
+                    }
                     //Select the 1st checkpoint
                     if (SelectedICD10Segment != null)
                     {
-                        selectedCheckPoint = SelectedICD10Segment.Checkpoints.FirstOrDefault();
-                        OnPropertyChanged("SelectedCheckPoint");
+                        SelectedCheckPoint = SelectedICD10Segment.Checkpoints.FirstOrDefault();
                     }
                 }
             }
+        }
+
+        private void SelectedICD10Segment_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+
         }
 
         private SqlCheckpointVM selectedCheckPoint;
@@ -173,7 +166,30 @@ namespace AI_Note_Review
                 {
                     selectedCheckPoint = value;
                     OnPropertyChanged();
+                    if (selectedCheckPoint != null)
+                    {
+                        SelectedCheckPoint.PropertyChanged += SelectedCheckPoint_PropertyChanged;
+                    }
                 }
+            }
+        }
+
+        private void SelectedCheckPoint_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ReloadCheckPoints")
+            {
+                if (SelectedCheckPoint != null)
+                {
+                    int tmpID = SelectedCheckPoint.CheckPointID; //get the currently selected ID
+                    SelectedICD10Segment.Checkpoints = null; //reset ICD10Segments due to changes.
+                    SelectedCheckPoint = (from c in SelectedICD10Segment.Checkpoints where c.CheckPointID == tmpID select c).FirstOrDefault(); //now load that ID.
+                }
+            }
+            if (e.PropertyName == "ReloadICD10Segments")
+            {
+                int tmpID = SelectedICD10Segment.ICD10SegmentID; //get the currently selected ID
+                SelectedMasterReview.ICD10Segments = null; //reset ICD10Segments due to changes.
+                SelectedICD10Segment = (from c in SelectedMasterReview.ICD10Segments where c.ICD10SegmentID == tmpID select c).FirstOrDefault(); //now load that ID.
             }
         }
 

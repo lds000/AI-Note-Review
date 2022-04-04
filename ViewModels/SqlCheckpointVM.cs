@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -125,7 +124,6 @@ namespace AI_Note_Review
         public SqlCheckpointVM()
         {
             SqlCheckpoint = new SqlCheckpointM();
-            RegisterEvents();
         }
 
         /// <summary>
@@ -135,7 +133,6 @@ namespace AI_Note_Review
         public SqlCheckpointVM(SqlCheckpointM cp)
         {
             this.SqlCheckpoint = cp;
-            RegisterEvents();
         }
 
         /// <summary>
@@ -146,7 +143,6 @@ namespace AI_Note_Review
         public SqlCheckpointVM(string strCheckPointTitle, int iTargetICD10Segment)
         {
             this.SqlCheckpoint = new SqlCheckpointM(strCheckPointTitle, iTargetICD10Segment);
-            RegisterEvents();
         }
 
         /// <summary>
@@ -159,19 +155,6 @@ namespace AI_Note_Review
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 this.SqlCheckpoint = cnn.QueryFirstOrDefault<SqlCheckpointM>(sql);
-            }
-            RegisterEvents();
-        }
-
-        private void RegisterEvents()
-        {
-            //Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
-        }
-
-        private void NotifyMe(NotificationMessage obj)
-        {
-            if (obj.Notification == "")
-            {
             }
         }
 
@@ -227,9 +210,7 @@ namespace AI_Note_Review
                     this.SqlCheckpoint.CheckPointTitle = value;
                     OnPropertyChangedSave();
                     UpdateCheckPointProperties(false);
-                    var myMessage = new NotificationMessage(this,"CPTitleChanged");
-                
-                    Messenger.Default.Send(myMessage);
+                    OnPropertyChanged("CPTitleChanged");
                 }
             }
         }
@@ -245,8 +226,7 @@ namespace AI_Note_Review
                 OnPropertyChangedSave();
                 OnPropertyChanged("StrCheckPointType");
                 UpdateCheckPointProperties(true);
-                var myMessage = new NotificationMessage(this, "ReorderCheckPoints");
-                Messenger.Default.Send(myMessage);
+                OnPropertyChanged("ReorderCheckPoints");
             }
         }
 
@@ -276,8 +256,7 @@ namespace AI_Note_Review
                 OnPropertyChangedSave();
                 OnPropertyChanged("ErrorSeverity");
                 UpdateCheckPointProperties(true);
-                var myMessage = new NotificationMessage(this, "ReorderCheckPoints");
-                Messenger.Default.Send(myMessage);
+                OnPropertyChanged("ReorderCheckPoints");
             }
         }
         public int TargetSection
@@ -308,8 +287,7 @@ namespace AI_Note_Review
                 this.SqlCheckpoint.TargetICD10Segment = value;
                 OnPropertyChangedSave();
                 UpdateCheckPointProperties(true);
-                var myMessage = new NotificationMessage(this, "ReloadICD10Segments"); //todo: should be "ICD10Segments" for 
-                Messenger.Default.Send(myMessage);
+                OnPropertyChanged("ReloadICD10Segments"); //todo: should be "ICD10Segments" for 
             }
         }
         public string Action
@@ -1032,7 +1010,7 @@ namespace AI_Note_Review
         {
             SqlCheckpointVM cp = parameter as SqlCheckpointVM;
             //set current CP to this one.
-            cp.ParentSegment.ParentReport.SelectedItem = cp;
+            cp.ParentSegment.ParentReport.SelectedCheckPoint = cp;
             WinCheckPointEditor wce = new WinCheckPointEditor(cp);
             wce.DataContext = cp.ParentSegment.ParentReport;
             wce.Show();
@@ -1066,7 +1044,7 @@ namespace AI_Note_Review
         {
             SqlCheckpointVM cp = parameter as SqlCheckpointVM;
             //set the selectedCP to this one.
-            cp.ParentSegment.ParentReport.SelectedItem = cp;
+            cp.ParentSegment.ParentReport.SelectedCheckPoint = cp;
             WinShowCheckPointRichText scp = new WinShowCheckPointRichText();
             scp.DataContext = cp.ParentSegment.ParentReport;
             //scp.ImChanged += Scp_AddMe;

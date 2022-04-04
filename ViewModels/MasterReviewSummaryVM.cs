@@ -224,7 +224,13 @@ namespace AI_Note_Review
                 }
                 return iCD10List;
             }
+            set
+            {
+                ICD10List = value;
+                OnPropertyChanged();
+            }
         }
+
 
         public bool ContainsDocument(DocumentVM d)
         {
@@ -258,7 +264,7 @@ namespace AI_Note_Review
 
         private List<SqlICD10SegmentVM> iCD10Segments;
         /// <summary>
-        /// A list of ICD10 Segments that belong to the MasterReview
+        /// A list of ICD10 Segments that belong to the MasterReview, used for the CheckPointEditor
         /// </summary>
         public List<SqlICD10SegmentVM> ICD10Segments
         {
@@ -336,6 +342,10 @@ namespace AI_Note_Review
                         }
                         */
                 }
+                foreach (var seg in lvm)
+                {
+                    seg.PropertyChanged += SqlICD10SegmentVM_PropertyChanged;
+                }
                 iCD10Segments = lvm;
 
                 return iCD10Segments;
@@ -346,6 +356,14 @@ namespace AI_Note_Review
                 OnPropertyChanged();
                 OnPropertyChanged("SelectedICD10Segment");
             }
+        }
+
+        private void SqlICD10SegmentVM_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+                if (e.PropertyName == "ReloadICD10Segments")
+                {
+
+                }
         }
 
         private string indexHtml;

@@ -36,7 +36,7 @@ namespace AI_Note_Review
                 SqlICD10SegmentVM seg = new SqlICD10SegmentVM("Enter Segment Title", mr);
                 WinEditSegment wes = new WinEditSegment(seg);
                 wes.ShowDialog();
-                seg.UpdateAll();
+                mr.ICD10Segments = null; //reset segments.
             }
 
         }
