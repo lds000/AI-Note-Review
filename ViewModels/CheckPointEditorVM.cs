@@ -193,6 +193,27 @@ namespace AI_Note_Review
             }
         }
 
+        private List<SqlCheckPointType> checkPointTypes;
+        /// <summary>
+        /// A list of the check point types from database
+        /// </summary>
+        public List<SqlCheckPointType> CheckPointTypes
+        {
+            get
+            {
+                if (checkPointTypes != null)
+                {
+                    return checkPointTypes;
+                }
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = "Select * from CheckPointTypes order by ItemOrder;";
+                    return cnn.Query<SqlCheckPointType>(sql).ToList();
+                }
+            }
+
+        }
+
         #region commands
         private ICommand mAddSegment;
         public ICommand AddSegmentCommand

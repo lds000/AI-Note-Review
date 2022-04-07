@@ -13,6 +13,7 @@
         <DockPanel.Resources>
             <local:ICD10Margin x:Key="ICD10Margin"/>
             <local:ImageConverter x:Key="ImageConverter"/>
+            <local:CheckpointsFromType x:Key="CheckpointsFromType"/>
             <local:CF x:Key="cf"/>
             <local:SqlICD10SegmentVM x:Key="SqlICD10SegmentVM"/>
             <local:SqlNoteSection x:Key="SqlNoteSection"/>
@@ -123,8 +124,9 @@
 
                 </Grid>
             </DockPanel>
-            <DockPanel Grid.Column="1">
+            <DockPanel x:Name="dpCheckPoints" Grid.Column="1">
                 <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center">Selected Checkpoints</Label>
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="542*"></RowDefinition>
@@ -133,7 +135,61 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <!--SqlICD10SegmentVM.Checkpoints-->
-                    <ListBox x:Name="lbCheckpoints" 
+                    <ItemsControl ItemsSource="{Binding CheckPointTypes}" Grid.RowSpan="2">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=lbCheckpoints, Path=ItemsSource.Count}" Value="0">
+                                                    <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Label FontSize="16" Style="{StaticResource MyLblStyle}" Content="{Binding Title}"></Label>
+                                    <ListBox x:Name="lbCheckpoints" 
+                                             Margin="5,0,5,5"
+                                             SelectedValue="{Binding ElementName=dpCheckPoints, Path=DataContext.SelectedCheckPoint}" 
+                                             Style="{StaticResource MyListBox}" 
+                                             HorizontalContentAlignment="Stretch">
+                                        <ListBox.ItemsSource>
+                                            <MultiBinding Converter="{StaticResource CheckpointsFromType}">
+                                                <Binding ElementName="dpCheckPoints" Path="DataContext.SelectedICD10Segment.Checkpoints"/>
+                                                <!--SelectedICD10Segment.Checkpoints-->
+                                                <Binding Path="CheckPointTypeID" />
+                                            </MultiBinding>
+                                        </ListBox.ItemsSource>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border>
+                                                    <Border.ContextMenu>
+                                                        <ContextMenu>
+                                                            <MenuItem Header="Remove checkpoint." Command="{Binding RemoveCheckPointCommand}" CommandParameter="{Binding}">
+                                                            </MenuItem>
+                                                        </ContextMenu>
+                                                    </Border.ContextMenu>
+                                                    <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
+                                                            <BulletDecorator>
+                                                                <BulletDecorator.Bullet>
+                                                                    <Ellipse Height="6" Width="6" Fill="White"/>
+                                                                </BulletDecorator.Bullet>
+                                                                <TextBlock Margin="3,0,0,0" Grid.Column="1" Text="{Binding Path=CheckPointTitle}" ToolTip="{Binding Path=Comment}"/>
+                                                            </BulletDecorator>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        
+                    </ItemsControl>
+<!--
+
+                             <ListBox x:Name="lbCheckpoints" 
                              ItemsSource="{Binding SelectedICD10Segment.Checkpoints}"
                              SelectedValue="{Binding SelectedCheckPoint}" 
                              Style="{StaticResource MyListBox}" 
@@ -141,38 +197,37 @@
                              Grid.RowSpan="2">
                         <ListBox.ContextMenu>
                             <ContextMenu>
-                                <!--SqlICD10SegmentVM-->
-                                <MenuItem Header="Add Checkpoint" Command="{Binding SelectedICD10Segment.AddCPCommand}" CommandParameter="{Binding SelectedICD10Segment}"/>
-                                <MenuItem Header="Summary to Clipboard"></MenuItem>
-                            </ContextMenu>
-                        </ListBox.ContextMenu>
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border>
-                                    <Border.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Remove checkpoint." Command="{Binding RemoveCheckPointCommand}" CommandParameter="{Binding}">
-                                                <!--todo: a minor annoyance, have this stretch across entire listbox-->
-
-                                            </MenuItem>
-                                        </ContextMenu>
-                                    </Border.ContextMenu>
-                                    <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
-                                        <TextBlock Margin="0,0,0,0" Padding="0,0,0,0" Grid.Column="1" Text="{Binding Path=CheckPointTitle}" ToolTip="{Binding Path=Comment}"/>
-                                        <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
-                                        <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding Path=StrCheckPointType}" ToolTip="{Binding Path=Comment}"/>
-                                        <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
+                    <MenuItem Header="Add Checkpoint" Command="{Binding SelectedICD10Segment.AddCPCommand}" CommandParameter="{Binding SelectedICD10Segment}"/>
+                    <MenuItem Header="Summary to Clipboard"></MenuItem>
+                    </ContextMenu>
+                    </ListBox.ContextMenu>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <Border.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Remove checkpoint." Command="{Binding RemoveCheckPointCommand}" CommandParameter="{Binding}">
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </Border.ContextMenu>
+                                <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
+                                    <TextBlock Margin="0,0,0,0" Padding="0,0,0,0" Grid.Column="1" Text="{Binding Path=CheckPointTitle}" ToolTip="{Binding Path=Comment}"/>
+                                    <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
+                                    <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding Path=StrCheckPointType}" ToolTip="{Binding Path=Comment}"/>
+                                    <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                     </ListBox>
+                    -->
                 </Grid>
+                </ScrollViewer>
             </DockPanel>
             <DockPanel Grid.Column="2" DataContext="{Binding SelectedCheckPoint}">
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">

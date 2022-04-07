@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
@@ -155,6 +156,33 @@ namespace AI_Note_Review
             throw new NotImplementedException();
         }
     }
+
+    public class CheckpointsFromType : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values == null)
+                return null;
+            if (values[0] == DependencyProperty.UnsetValue)
+                return null;
+            try
+            {
+                var tmpList = (IEnumerable<SqlCheckpointVM>)values[0];
+                int rType = (int)values[1];
+                return (from c in tmpList where c.CheckPointType == rType select c).ToList();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 
     [ValueConversion(typeof(SqlTagRegExVM), typeof(string))]
     public class SqlTagRegExToString : IValueConverter

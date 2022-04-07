@@ -55,6 +55,12 @@ namespace AI_Note_Review
             mrs = new MasterReviewSummaryVM();
             DataContext = mrs;
 
+            //Test checkpointeditor
+            CheckPointEditorV w = new CheckPointEditorV();
+            w.DataContext = mrs;
+            w.DataContext = new CheckPointEditorVM();
+            w.ShowDialog();
+            return;
 
             /*Test VisitReport
              */
@@ -66,12 +72,7 @@ namespace AI_Note_Review
             return;
 
 
-            //Test checkpointeditor
-            CheckPointEditorV w = new CheckPointEditorV();
-            w.DataContext = mrs;
-            w.DataContext = new CheckPointEditorVM();
-            w.ShowDialog();
-            return;
+
 
             Properties.Settings.Default.PropertyChanged += Default_PropertyChanged;
 
