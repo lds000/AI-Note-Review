@@ -281,7 +281,9 @@
 
             </DockPanel>
             <!--from SqlICD10SegmentVM.Checkpoints the selected SqlCheckpointVM-->
-            <DockPanel  DataContext="{Binding SelectedICD10Segment.SelectedCP}" Grid.Column="3" Margin="3">
+            <DockPanel  DataContext="{Binding SelectedCheckPoint}" Grid.Column="3" Margin="3">
+                <Button DockPanel.Dock="Bottom" Style="{StaticResource LinkButton}"
+                        Command="{Binding AddTagCommand}" CommandParameter="{Binding}">Add Tag</Button>
                 <Label Style="{StaticResource MyLblStyle}" DockPanel.Dock="Top" HorizontalAlignment="Center">Tags</Label>
                 <Border BorderBrush="White" BorderThickness="1">
                     <Border.ContextMenu>

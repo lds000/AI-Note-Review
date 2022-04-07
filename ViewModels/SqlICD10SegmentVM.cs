@@ -278,6 +278,11 @@ namespace AI_Note_Review
             {
                 OnPropertyChanged("CPStatus"); //bubble up for VisitReportVM to recalculate checkpoint
             }
+
+            if (e.PropertyName == "CheckPointCount")
+            {
+                OnPropertyChanged("CheckPointCount");
+            }
         }
 
         /*
@@ -451,6 +456,7 @@ namespace AI_Note_Review
             cp.ParentSegment = this;
             checkpoints.Add(cp);
             OnPropertyChanged("Checkpoints");
+            OnPropertyChanged("CheckPointCount");
             SelectedCP = checkpoints.Last();
         }
 

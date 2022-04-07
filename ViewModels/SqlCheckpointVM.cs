@@ -593,6 +593,7 @@ namespace AI_Note_Review
         public void DeleteFromDB()
         {
             this.SqlCheckpoint.DeleteFromDB();
+            OnPropertyChanged("CheckPointCount");
         }
 
         public void UpdateImages()
