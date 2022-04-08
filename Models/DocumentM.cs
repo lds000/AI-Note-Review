@@ -15,23 +15,8 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class DocumentM : INotifyPropertyChanged
+    public class DocumentM
     {
-
-        #region inotify
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // This method is called by the Set accessor of each property.  
-        // The CallerMemberName attribute that is applied to the optional propertyName  
-        // parameter causes the property name of the caller to be substituted as an argument.  
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            //Console.WriteLine($"iNotify property {propertyName}");
-        }
-
-        #endregion
 
         public DocumentM()
         {
@@ -48,7 +33,7 @@ namespace AI_Note_Review
             set
             {
                 facility = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string Provider
@@ -63,7 +48,7 @@ namespace AI_Note_Review
                 provider = p.FullName;
                 ProviderID = p.ProviderID;
                 ProviderSql = p;
-                NotifyPropertyChanged();
+                
             }
         }
 
@@ -77,7 +62,7 @@ namespace AI_Note_Review
             set
             {
                 providerSql = value;
-                NotifyPropertyChanged();
+                
             }
         }
 
@@ -87,7 +72,7 @@ namespace AI_Note_Review
             set
             {
                 providerID = value;
-                NotifyPropertyChanged();
+                
 
             }
         }
@@ -100,7 +85,7 @@ namespace AI_Note_Review
             set
             {
                 visitDate = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string HashTags
@@ -112,7 +97,7 @@ namespace AI_Note_Review
             set
             {
                 hashTags = value;
-                NotifyPropertyChanged();
+                
             }
         }
 
@@ -126,7 +111,7 @@ namespace AI_Note_Review
             set
             {
                 iCD10s = value;
-                NotifyPropertyChanged();
+                
             }
         }
 
@@ -139,7 +124,7 @@ namespace AI_Note_Review
             set
             {
                 iCD10Segments = value;
-                NotifyPropertyChanged();
+                
             }
         }
 
@@ -157,7 +142,7 @@ namespace AI_Note_Review
             set
             {
                 noteHTML = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string ReasonForAppt
@@ -169,7 +154,7 @@ namespace AI_Note_Review
             set
             {
                 reasonForAppt = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string CC
@@ -181,7 +166,7 @@ namespace AI_Note_Review
             set
             {
                 cC = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string HPI
@@ -193,7 +178,7 @@ namespace AI_Note_Review
             set
             {
                 hPI = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string Allergies
@@ -205,7 +190,7 @@ namespace AI_Note_Review
             set
             {
                 allergies = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string SurgHx
@@ -217,7 +202,7 @@ namespace AI_Note_Review
             set
             {
                 surgHx = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string FamHx
@@ -229,7 +214,7 @@ namespace AI_Note_Review
             set
             {
                 famHx = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string CurrentMeds
@@ -241,7 +226,7 @@ namespace AI_Note_Review
             set
             {
                 currentMeds = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string CurrentPrnMeds
@@ -253,7 +238,7 @@ namespace AI_Note_Review
             set
             {
                 currentPrnMeds = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string ProblemList
@@ -265,7 +250,7 @@ namespace AI_Note_Review
             set
             {
                 problemList = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string ROS
@@ -277,7 +262,7 @@ namespace AI_Note_Review
             set
             {
                 rOS = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string PMHx
@@ -289,7 +274,7 @@ namespace AI_Note_Review
             set
             {
                 pMHx = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string SocHx
@@ -301,7 +286,7 @@ namespace AI_Note_Review
             set
             {
                 socHx = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string GeneralHx
@@ -313,7 +298,7 @@ namespace AI_Note_Review
             set
             {
                 generalHx = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string Vitals
@@ -325,7 +310,7 @@ namespace AI_Note_Review
             set
             {
                 vitals = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string Exam
@@ -337,7 +322,7 @@ namespace AI_Note_Review
             set
             {
                 exam = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string Treatment
@@ -349,7 +334,7 @@ namespace AI_Note_Review
             set
             {
                 treatment = value;
-                NotifyPropertyChanged();
+                
             }
         }
 
@@ -362,7 +347,7 @@ namespace AI_Note_Review
             set
             {
                 procedureNote = value;
-                NotifyPropertyChanged();
+                
             }
         }
 
@@ -375,7 +360,7 @@ namespace AI_Note_Review
             set
             {
                 preventiveMed = value;
-                NotifyPropertyChanged();
+                
             }
         }
 
@@ -388,7 +373,7 @@ namespace AI_Note_Review
             set
             {
                 medsStarted = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string ImagesOrdered
@@ -400,7 +385,7 @@ namespace AI_Note_Review
             set
             {
                 imagesOrdered = value;
-                NotifyPropertyChanged();
+                
             }
         }
 
@@ -413,7 +398,7 @@ namespace AI_Note_Review
             set
             {
                 visitCodes = value;
-                NotifyPropertyChanged();
+                
             }
         }
 
@@ -426,7 +411,7 @@ namespace AI_Note_Review
             set
             {
                 labsOrdered = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string Assessments
@@ -438,7 +423,7 @@ namespace AI_Note_Review
             set
             {
                 assessments = value;
-                NotifyPropertyChanged();
+                
             }
         }
         public string FollowUp
@@ -450,7 +435,7 @@ namespace AI_Note_Review
             set
             {
                 followUp = value;
-                NotifyPropertyChanged();
+                
             }
         }
         #endregion
