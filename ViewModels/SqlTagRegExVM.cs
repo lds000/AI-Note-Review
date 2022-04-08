@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,7 +41,23 @@ namespace AI_Note_Review
         public SqlTagRegExVM()
         {
             this.SqlTagRegEx = new SqlTagRegExM();
+            RegisterEvents();
         }
+
+        #region EventManagement (empty)
+        private void RegisterEvents()
+        {
+            Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
+        }
+
+        private void NotifyMe(NotificationMessage obj)
+        {
+            if (obj.Notification == "NewDocument") //used to reset the document: todo:
+            {
+                TargetSectionText = null;
+            }
+        }
+        #endregion
 
         private SqlTagRegExM SqlTagRegEx { get; set; }
         public DocumentVM ParentDocumentVM { get; set; }
@@ -208,6 +225,14 @@ namespace AI_Note_Review
                 if (targetSecionText == null)
                     targetSecionText = "";
                 return targetSecionText;
+            }
+            set
+            {
+                if (targetSecionText != value)
+                {
+                    targetSecionText = value;
+                    OnPropertyChanged();
+                }
             }
         }
 

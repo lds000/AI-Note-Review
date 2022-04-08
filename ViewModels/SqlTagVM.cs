@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -48,6 +49,20 @@ namespace AI_Note_Review
         {
             this.SqlTag = new SqlTagM();
         }
+
+        #region EventManagement (empty)
+        private void RegisterEvents()
+        {
+            Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
+        }
+
+        private void NotifyMe(NotificationMessage obj)
+        {
+            if (obj.Notification == "NewDocument")
+            {
+            }
+        }
+        #endregion
 
         private SqlTagM SqlTag { get; set; }
         public int TagID { 

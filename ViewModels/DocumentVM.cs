@@ -47,10 +47,12 @@ namespace AI_Note_Review
             patientVM = mrs.Patient;
             document = SampleDocument; //New DocumentM() called under this.
             SetUpNote(); //todo: might be better way of implementing this.
+            /*
             foreach (var tmpSection in NoteSections)
             {
                 Console.WriteLine(tmpSection.NoteSectionTitle + ":" + tmpSection.NoteSectionContent);
             }
+            */
         }
 
         private List<NoteSectionM> noteSections;
@@ -224,6 +226,12 @@ namespace AI_Note_Review
             }
             HashTags = HashTags.TrimEnd().TrimEnd(',');
             OnPropertyChanged("Patient");
+
+            foreach (var tmpSection in NoteSections)
+            {
+                tmpSection.NoteSectionContent = null;
+
+            }
         }
 
         /// <summary>

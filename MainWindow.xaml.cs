@@ -55,6 +55,7 @@ namespace AI_Note_Review
             mrs = new MasterReviewSummaryVM();
             DataContext = mrs;
 
+            /*
             //Test checkpointeditor
             CheckPointEditorV w = new CheckPointEditorV();
             w.DataContext = mrs;
@@ -63,14 +64,14 @@ namespace AI_Note_Review
             return;
 
             /*Test VisitReport
-             */
+            
             mrs.VisitReport.NewEcWDocument(); //reset document
             mrs.VisitReport.PopulateCPStatuses();
             VisitReportV wp = new VisitReportV();
             wp.DataContext = mrs.VisitReport;
             wp.ShowDialog();
             return;
-
+            */
 
 
 
