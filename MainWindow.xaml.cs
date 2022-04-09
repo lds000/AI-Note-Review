@@ -288,7 +288,7 @@ namespace AI_Note_Review
                                             }
                                             strLastDoc = h.EcwHTMLDocument.Body.InnerText;
                                             mrs.AddLog("Document Found....");
-                                            mrs.VisitReport.Document.ProcessDocument(h.EcwHTMLDocument);
+                                            mrs.VisitReport.Document.NoteHTML = h.EcwHTMLDocument;
                                         }
                                         catch (Exception e)
                                         {

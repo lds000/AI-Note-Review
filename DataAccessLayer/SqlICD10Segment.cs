@@ -26,7 +26,7 @@ namespace AI_Note_Review
         public int ICD10SegmentID { get; set; }
 
         public int LeftOffset { get; set; }
-        public string icd10Chapter
+        public char icd10Chapter
         {
             get => icd10Chapter1;
             set
@@ -45,7 +45,7 @@ namespace AI_Note_Review
         }
 
 
-        private string icd10Chapter1;
+        private char icd10Chapter1;
 
         public SqlICD10SegmentM()
         {

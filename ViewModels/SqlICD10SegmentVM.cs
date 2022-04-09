@@ -142,7 +142,7 @@ namespace AI_Note_Review
                 sqlICD10Segment.SegmentComment = value;
                 SaveToDB();
             } }
-        public string icd10Chapter { get { return sqlICD10Segment.icd10Chapter; } set { sqlICD10Segment.icd10Chapter = value; } }
+        public char icd10Chapter { get { return sqlICD10Segment.icd10Chapter; } set { sqlICD10Segment.icd10Chapter = value; } }
         public double icd10CategoryStart { get { return sqlICD10Segment.icd10CategoryStart; } set { sqlICD10Segment.icd10CategoryStart = value; } }
         public double icd10CategoryEnd { get { return sqlICD10Segment.icd10CategoryEnd; } set { sqlICD10Segment.icd10CategoryEnd = value; } }
         public int LeftOffset { get { return sqlICD10Segment.LeftOffset; } set { sqlICD10Segment.LeftOffset = value; } }
@@ -552,7 +552,7 @@ namespace AI_Note_Review
             {
                 iOffset = 0;
                 if (ns.SqlICD10Segment.icd10Chapter == null) continue;
-                if (charChapter == char.Parse(ns.SqlICD10Segment.icd10Chapter))
+                if (charChapter == ns.SqlICD10Segment.icd10Chapter)
                 {
                     if ((ns.SqlICD10Segment.icd10CategoryStart >= CodeStart) && (ns.SqlICD10Segment.icd10CategoryEnd <= CodeEnd))
                     {
@@ -562,12 +562,12 @@ namespace AI_Note_Review
                     {
                         CodeStart = ns.SqlICD10Segment.icd10CategoryStart;
                         CodeEnd = ns.SqlICD10Segment.icd10CategoryEnd;
-                        charChapter = char.Parse(ns.SqlICD10Segment.icd10Chapter);
+                        charChapter = ns.SqlICD10Segment.icd10Chapter;
                     }
                 }
                 else
                 {
-                    charChapter = char.Parse(ns.SqlICD10Segment.icd10Chapter);
+                    charChapter = ns.SqlICD10Segment.icd10Chapter;
                     CodeStart = 0;
                     CodeEnd = 0;
                 }

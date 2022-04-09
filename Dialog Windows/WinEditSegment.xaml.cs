@@ -37,7 +37,7 @@ namespace AI_Note_Review
             try
             {
                 parentSeg.SegmentTitle = tbTitle.Text;
-                parentSeg.icd10Chapter = tbChapter.Text;
+                parentSeg.icd10Chapter =char.Parse(tbChapter.Text);
                 parentSeg.icd10CategoryStart = double.Parse(tbStart.Text);
                 parentSeg.icd10CategoryEnd = double.Parse(tbEnd.Text);
                 parentSeg.SegmentComment = tbComment.Text;

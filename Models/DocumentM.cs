@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
 
 namespace AI_Note_Review
@@ -133,7 +134,7 @@ namespace AI_Note_Review
         #endregion
 
         #region Note Raw Text
-        public string NoteHTML
+        public HtmlDocument NoteHTML
         {
             get
             {
@@ -142,7 +143,7 @@ namespace AI_Note_Review
             set
             {
                 noteHTML = value;
-                
+                ResetAll(); //When NoteHTML is set, reset everything.
             }
         }
         public string ReasonForAppt
@@ -456,7 +457,7 @@ namespace AI_Note_Review
         private string provider;
         private string reasonForAppt;
         private string allergies;
-        private string noteHTML;
+        private HtmlDocument noteHTML;
         private string vitals;
         private string cC;
         private string hPI;
@@ -491,6 +492,43 @@ namespace AI_Note_Review
         private ObservableCollection<string> iCD10s = new ObservableCollection<string>();
         #endregion
 
+        /// <summary>
+        /// Clear Note Values
+        /// </summary>
+        public void ResetAll()
+        {
+            //demographics
+            Facility = "";
+            VisitDate = new DateTime(2020, 1, 1);
+            Provider = "";
+            ProviderID = 0;
+            ReasonForAppt = "";
+            Allergies = "";
+            NoteHTML = null;
+            Vitals = "";
+            CC = "";
+            HPI = "";
+            CurrentMeds = "";
+            ProcedureNote = "";
+            PreventiveMed = "";
+            CurrentPrnMeds = "";
+            ProblemList = "";
+            ROS = "";
+            PMHx = "";
+            SocHx = "";
+            GeneralHx = "";
+            Exam = "";
+            Treatment = "";
+            MedsStarted = "";
+            ImagesOrdered = "";
+            LabsOrdered = "";
+            Assessments = "";
+            FollowUp = "";
+            SurgHx = "";
+            FamHx = "";
+            VisitCodes = "";
+            ICD10s.Clear();
+        }
 
     }
 }

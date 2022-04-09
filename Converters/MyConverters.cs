@@ -297,7 +297,7 @@ namespace AI_Note_Review
             double CodeEnd = 0;
             foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
             {
-                if (charChapter == char.Parse(ns.SqlICD10Segment.icd10Chapter))
+                if (charChapter == ns.SqlICD10Segment.icd10Chapter)
                 {
                     if ((ns.SqlICD10Segment.icd10CategoryStart >= CodeStart) && (ns.SqlICD10Segment.icd10CategoryEnd <= CodeEnd))
                     {
@@ -308,11 +308,11 @@ namespace AI_Note_Review
                     }
                     CodeStart = ns.SqlICD10Segment.icd10CategoryStart;
                     CodeEnd = ns.SqlICD10Segment.icd10CategoryEnd;
-                    charChapter = char.Parse(ns.SqlICD10Segment.icd10Chapter);
+                    charChapter = ns.SqlICD10Segment.icd10Chapter;
                 }
                 else
                 {
-                    charChapter = char.Parse(ns.SqlICD10Segment.icd10Chapter);
+                    charChapter = ns.SqlICD10Segment.icd10Chapter;
                     CodeStart = 0;
                     CodeEnd = 0;
                 }
@@ -378,7 +378,7 @@ namespace AI_Note_Review
                 strTest = strTest.Split('(')[0].Trim();
             }
             List<string> _ICD10Segments = new List<string>();
-            string strAlphaCode = strTest.Substring(0, 1);
+            char strAlphaCode = char.Parse(strTest.Substring(0, 1));
             string str = "";
             foreach (char ch in strTest)
             {
