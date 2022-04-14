@@ -7,7 +7,7 @@
         xmlns:properties="clr-namespace:AI_Note_Review.Properties"
         mc:Ignorable="d"
         Loaded="Window_Loaded"        
-        WindowState="Maximized"
+        WindowState="Normal"
         Closing="Window_Closing"
         Title="MainWindow" Height="450" Width="900">
     <Border BorderBrush="White" BorderThickness="2">
@@ -186,7 +186,7 @@
                             <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.PreventiveMed}"></TextBox>
                         </TabItem>
                         <TabItem Header="HTML">
-                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.NoteHTML}"></TextBox>
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.NoteHTML.Body.InnerHtml}"></TextBox>
                         </TabItem>
                         <TabItem Header="HashTags">
                             <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.HashTags}"></TextBox>

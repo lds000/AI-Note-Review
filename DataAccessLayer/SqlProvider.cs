@@ -143,6 +143,9 @@ namespace AI_Note_Review
 
         public static SqlProvider SqlGetProviderByFullName(string strFullName)
         {
+            if (strFullName == "")
+                return new SqlProvider("", "", "", "", 3, "");
+
             string sql = "";
             sql += $"Select * from Providers where FullName = '{strFullName}';"; //this part is to get the ID of the newly created phrase
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))

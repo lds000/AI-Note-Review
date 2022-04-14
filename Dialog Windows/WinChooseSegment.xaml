@@ -19,7 +19,7 @@
                 <Border Grid.Row="1" Margin="5,10,5,10">
                     <ListBox Style="{StaticResource MyListBox}" MinHeight="100" x:Name="lbMasterReviews"
                              ItemsSource="{Binding Path=MasterReviewSummaryList}"
-                             SelectedValue="{Binding SelectedMasterReview}"
+                             SelectedValue="{Binding SelectedMasterReviewSummary}"
                                  HorizontalContentAlignment="Stretch" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>

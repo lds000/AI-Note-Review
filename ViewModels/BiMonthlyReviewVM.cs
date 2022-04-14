@@ -88,6 +88,7 @@ namespace AI_Note_Review
                 OnPropertyChanged("ListOfDocumentReviews");
                 OnPropertyChanged("StrBimonthlyReviewComment");
                 OnPropertyChanged("StrBimonthlyReviewSummary");
+                OnPropertyChanged();
             }
         }
 

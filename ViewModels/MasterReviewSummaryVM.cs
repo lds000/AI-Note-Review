@@ -12,10 +12,11 @@ using System.Windows.Input;
 
 namespace AI_Note_Review
 {
+    /// <summary>
+    /// Class that holds all the view models of the program.
+    /// </summary>
     public class MasterReviewSummaryVM : INotifyPropertyChanged
     {
-
-        private BiMonthlyReviewVM biMonthlyReviewVM;
 
         #region inotify
         // Declare the event
@@ -34,7 +35,10 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
-
+        
+        /// <summary>
+        /// Parameterless constructor
+        /// </summary>
         public MasterReviewSummaryVM()
         {
             masterReviewSummary = new SqlMasterReviewSummaryM();
@@ -54,8 +58,11 @@ namespace AI_Note_Review
         }
         #endregion
 
-        public SqlMasterReviewSummaryM MasterReviewSummary { get; set; }
 
+        //not sure I need this.
+        //public SqlMasterReviewSummaryM MasterReviewSummary { get; set; }
+
+        //todo: not currently used, but consider :)
         private bool monitorActiveNote;
         public bool MonitorActiveNote
         {
@@ -69,8 +76,13 @@ namespace AI_Note_Review
             }
         }
 
-        public SqlICD10SegmentVM SqlICD10SegmentVM { get; set; }
+        //I don't think I need this.
+        //public SqlICD10SegmentVM SqlICD10SegmentVM { get; set; }
 
+        private BiMonthlyReviewVM biMonthlyReviewVM;
+        /// <summary>
+        /// Used for the bimonthly review view
+        /// </summary>
         public BiMonthlyReviewVM BiMonthlyReviewVM
         {
             get {
@@ -88,6 +100,9 @@ namespace AI_Note_Review
         }
 
         private DocumentVM document;
+        /// <summary>
+        /// The VM of the DocumentM
+        /// </summary>
         public DocumentVM Document
         {
             get
@@ -98,6 +113,9 @@ namespace AI_Note_Review
         }
 
         private PatientVM patient;
+        /// <summary>
+        /// PatientVM attatched to masterreviewsummary
+        /// </summary>
         public PatientVM Patient
         {
             get
@@ -108,6 +126,9 @@ namespace AI_Note_Review
         }
 
         private SqlProvider provider;
+        /// <summary>
+        /// The provider associated with the MRS - SqlProvider model
+        /// </summary>
         public SqlProvider Provider
         {
             get
@@ -118,6 +139,9 @@ namespace AI_Note_Review
         }
 
         private VisitReportVM visitReport;
+        /// <summary>
+        /// The VisitReportVM associated with the MRS.
+        /// </summary>
         public VisitReportVM VisitReport
         {
             get 

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
         Title="MasterReviewsV" Height="450" Width="800">
-    <Grid Background="Black">
+    <Grid Background="Black" DataContext="{Binding Path=BiMonthlyReviewVM}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
@@ -22,11 +22,11 @@
             <ListBox x:Name="lbMasterReviews"
                              Style="{StaticResource MyListBox}"
                              ItemsSource="{Binding Path=MasterReviewSummaryList}"
-                             SelectedItem="{Binding SelectedMasterReview}"
+                             SelectedItem="{Binding SelectedMasterReviewSummary}"
                              DisplayMemberPath="MasterReviewSummaryTitle">
             </ListBox>
         </Border>
-        <Border Grid.Row="1" Grid.Column="1" BorderBrush="White" BorderThickness="1">
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="White" BorderThickness="1" DataContext="{Binding SelectedMasterReviewSummary}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -40,18 +40,18 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource MyLblStyle}">Title</Label>
-                <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource MyTextBox}" Text="{Binding SelectedMasterReview.MasterReviewSummaryTitle}"></TextBox>
+                <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummaryTitle}"></TextBox>
                 <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource MyLblStyle}">Comment</Label>
-                <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap"  Style="{StaticResource MyTextBox}" Text="{Binding SelectedMasterReview.MasterReviewSummaryComment}"></TextBox>
+                <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap"  Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummaryComment}"></TextBox>
             </Grid>
         </Border>
-        <Border Grid.Column="2" Grid.Row="1" BorderBrush="Blue" BorderThickness="1">
+        <Border Grid.Column="2" Grid.Row="1" BorderBrush="Blue" BorderThickness="1" DataContext="{Binding SelectedMasterReviewSummary}">
             <Border.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Add ICD10"></MenuItem>
                 </ContextMenu>
             </Border.ContextMenu>
-            <ListBox Style="{StaticResource MyListBox}" ItemsSource="{Binding SelectedMasterReview.ICD10List}">
+            <ListBox Style="{StaticResource MyListBox}" ItemsSource="{Binding ICD10List}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>

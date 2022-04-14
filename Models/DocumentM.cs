@@ -37,6 +37,8 @@ namespace AI_Note_Review
                 
             }
         }
+
+
         public string Provider
         {
             get
@@ -46,10 +48,9 @@ namespace AI_Note_Review
             set
             {
                 SqlProvider p = SqlProvider.SqlGetProviderByFullName(value);
-                provider = p.FullName;
-                ProviderID = p.ProviderID;
-                ProviderSql = p;
-                
+                    provider = p.FullName;
+                    ProviderID = p.ProviderID;
+                    ProviderSql = p;
             }
         }
 
@@ -89,6 +90,8 @@ namespace AI_Note_Review
                 
             }
         }
+
+
         public string HashTags
         {
             get
@@ -143,9 +146,9 @@ namespace AI_Note_Review
             set
             {
                 noteHTML = value;
-                ResetAll(); //When NoteHTML is set, reset everything.
             }
         }
+
         public string ReasonForAppt
         {
             get
@@ -194,6 +197,7 @@ namespace AI_Note_Review
                 
             }
         }
+
         public string SurgHx
         {
             get
@@ -206,6 +210,7 @@ namespace AI_Note_Review
                 
             }
         }
+
         public string FamHx
         {
             get
@@ -302,6 +307,7 @@ namespace AI_Note_Review
                 
             }
         }
+
         public string Vitals
         {
             get
@@ -314,6 +320,7 @@ namespace AI_Note_Review
                 
             }
         }
+
         public string Exam
         {
             get
@@ -492,43 +499,6 @@ namespace AI_Note_Review
         private ObservableCollection<string> iCD10s = new ObservableCollection<string>();
         #endregion
 
-        /// <summary>
-        /// Clear Note Values
-        /// </summary>
-        public void ResetAll()
-        {
-            //demographics
-            Facility = "";
-            VisitDate = new DateTime(2020, 1, 1);
-            Provider = "";
-            ProviderID = 0;
-            ReasonForAppt = "";
-            Allergies = "";
-            NoteHTML = null;
-            Vitals = "";
-            CC = "";
-            HPI = "";
-            CurrentMeds = "";
-            ProcedureNote = "";
-            PreventiveMed = "";
-            CurrentPrnMeds = "";
-            ProblemList = "";
-            ROS = "";
-            PMHx = "";
-            SocHx = "";
-            GeneralHx = "";
-            Exam = "";
-            Treatment = "";
-            MedsStarted = "";
-            ImagesOrdered = "";
-            LabsOrdered = "";
-            Assessments = "";
-            FollowUp = "";
-            SurgHx = "";
-            FamHx = "";
-            VisitCodes = "";
-            ICD10s.Clear();
-        }
 
     }
 }
