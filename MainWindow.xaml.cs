@@ -38,17 +38,98 @@ namespace AI_Note_Review
     {
         //string strApikey = "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"; //for AI
 
-        VisitReportVM reportVM;
-        BiMonthlyReviewVM biMonthlyReviewVM;
+        //VisitReportVM reportVM;
+        //BiMonthlyReviewVM biMonthlyReviewVM;
+        private MasterReviewSummaryVM mrs;
+
         public MainWindow()
         {
             ProgramInit();
             InitializeComponent();
-            reportVM = new VisitReportVM();
-            biMonthlyReviewVM = new BiMonthlyReviewVM();
-            this.DataContext = reportVM;
-            biMonthReviewMI.DataContext = biMonthlyReviewVM;
+
+            //reportVM = new VisitReportVM();
+            //biMonthlyReviewVM = new BiMonthlyReviewVM();
+            //this.DataContext = reportVM;
+            //biMonthReviewMI.DataContext = biMonthlyReviewVM;
+
+            mrs = new MasterReviewSummaryVM();
+            DataContext = mrs;
+
+            /*
+            //Test checkpointeditor
+            CheckPointEditorV w = new CheckPointEditorV();
+            w.DataContext = mrs;
+            w.DataContext = new CheckPointEditorVM();
+            w.ShowDialog();
+            return;
+
+            /*Test VisitReport
+            
+            mrs.VisitReport.NewEcWDocument(); //reset document
+            mrs.VisitReport.PopulateCPStatuses();
+            VisitReportV wp = new VisitReportV();
+            wp.DataContext = mrs.VisitReport;
+            wp.ShowDialog();
+            return;
+            */
+
+
+
+            Properties.Settings.Default.PropertyChanged += Default_PropertyChanged;
+
+            //Note hunter test
+            /*
+            NoteHunterM nh = new NoteHunterM();
+            for (int iDay = 7; iDay <= 12; iDay++)
+            {
+                nh.SetDay(new DateTime(2021, 10, iDay));
+            }
+            Console.WriteLine("done");
+            */
+
+            /*
+            Console.WriteLine("sending keys");
+            int i = AutoIt.AutoItX.WinActivate("Encounters");
+            AutoIt.AutoItX.Send("{F2}");
+            Console.WriteLine($"done: {i}");
+            this.Close();
+            
+            /*
+            
+
+            string sqlCheck = $"Select * from MasterReviewSummary;";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                MasterReviewSummaryVM mrs = cnn.Query<MasterReviewSummaryVM>(sqlCheck).FirstOrDefault();
+                ReportToHtmlVM r = new ReportToHtmlVM();
+                WinPreviewHTML wp = new WinPreviewHTML();
+                wp.MyWB.NavigateToString(r.ExecutiveSummary(mrs));
+                wp.ShowDialog();
+                this.Close();
+                
+            }
+            */
+
+            //return; // disable hook
+            //hook up window changed event
+
+
+            _winEventProc = new WinEventDelegate(WinEventProc);
+            m_hhook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND,
+                EVENT_SYSTEM_FOREGROUND, IntPtr.Zero, _winEventProc,
+                0, 0, WINEVENT_OUTOFCONTEXT);
+            ActiveWindowChanged += MainWindow_ActiveWindowChanged;
+
         }
+
+        private void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "MonitorActive")
+            {
+                Properties.Settings.Default.Save();
+            }
+        }
+
 
         #region Monitor active Window
 
@@ -129,27 +210,20 @@ namespace AI_Note_Review
             string strUserName = Environment.GetEnvironmentVariable("USERNAME");
 
             SqlLiteDataAccess.SQLiteDBLocation = Properties.Settings.Default.DataFolder;
-            //C:\Users\lds00\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db
 
-            if (File.Exists(@"C:\Users\lds00\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db"))
+            //C:\Users\lds00\source\repos\lds000\AI-Note-Review
+
+            if (File.Exists(@"C:\Users\lds00\source\repos\lds000\AI-Note-Review\NoteReviewDB.db"))
             {
-                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\lds00\Source\Repos\lds000\AI-Note-Review\NoteReviewDB.db";
+                SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\lds00\source\repos\lds000\AI-Note-Review\NoteReviewDB.db";
             }
             else
             {
                 SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\llostod\source\repos\AI Note Review\NoteReviewDB.db";
             }
-
-            //return; // disable hook
-            //hook up window changed event
-            _winEventProc = new WinEventDelegate(WinEventProc);
-            m_hhook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND,
-                EVENT_SYSTEM_FOREGROUND, IntPtr.Zero, _winEventProc,
-                0, 0, WINEVENT_OUTOFCONTEXT);
-            ActiveWindowChanged += MainWindow_ActiveWindowChanged;
-
         }
 
+        string strLastDoc = "";
         #region window functions
         /// <summary>
         /// Monitors windows as the focus is changed.
@@ -159,8 +233,9 @@ namespace AI_Note_Review
         /// <param name="hwnd"></param>
         private void MainWindow_ActiveWindowChanged(object sender, string windowHeader, IntPtr hwnd)
         {
-
-            //Console.WriteLine($"Window ({windowHeader}) focused.");
+            if (!Properties.Settings.Default.MonitorActive)
+                return;
+            //mrs.AddLog($"Window ({windowHeader}) focused.");
             //Console.WriteLine($"Header: {windowHeader}");
             //Get window data (top, left, size)
             RECT rct;
@@ -204,8 +279,23 @@ namespace AI_Note_Review
                                 if (h.EcwHTMLDocument.Body != null)
                                     if (h.EcwHTMLDocument.Body.InnerHtml != null)
                                     {
-                                        reportVM.Document.processLockedt(h.EcwHTMLDocument);
-                                        if (reportVM.Patient.PtName != "") break;
+                                        try
+                                        {
+                                            //do not reset the document if it has already been loaded and analyzed
+                                            if (h.EcwHTMLDocument.Body.InnerText == strLastDoc)
+                                            {
+                                                return;
+                                            }
+                                            strLastDoc = h.EcwHTMLDocument.Body.InnerText;
+                                            mrs.AddLog("Document Found....");
+                                            mrs.VisitReport.Document.NoteHTML = h.EcwHTMLDocument;
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Console.WriteLine(e.Message);
+                                            break;
+                                        }
+                                        if (mrs.VisitReport.Patient.PtName != "") break;
                                     }
                         }
                         Thread.Sleep(200);
@@ -232,6 +322,42 @@ namespace AI_Note_Review
             WinSettings ws = new WinSettings();
             ws.Owner = this;
             ws.ShowDialog();
+        }
+
+        private void Test_Click(object sender, RoutedEventArgs e)
+        {
+            //AutoIt.AutoItX.WinActivate("Select Provider(s)");
+            AutoIt.AutoItX.MouseClick("LEFT", 330, 165);
+            AutoIt.AutoItX.Send("{TAB}");
+            AutoIt.AutoItX.Send("{DOWN}");
+            string nextName = AutoIt.AutoItX.WinGetText("Select Provider(s)");
+        }
+
+        private void Lookup_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string strNum = AutoIt.AutoItX.ClipGet().Split(' ')[0];
+                AutoIt.AutoItX.ClipPut(strNum);
+                AutoIt.AutoItX.MouseClick("LEFT", 300, 75);
+                AutoIt.AutoItX.WinWaitActive("Patient Lookup");
+                AutoIt.AutoItX.MouseClick("LEFT", 500, 65);
+                AutoIt.AutoItX.Send("^V{ENTER}");
+                Thread.Sleep(3000);
+                AutoIt.AutoItX.WinWaitActive("Patient Hub");
+                AutoIt.AutoItX.Send("!p");
+
+            }
+            catch
+            {
+            
+            }
+
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

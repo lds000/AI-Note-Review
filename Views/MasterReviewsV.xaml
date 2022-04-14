@@ -1,0 +1,94 @@
+﻿<Window x:Class="AI_Note_Review.MasterReviewsV"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AI_Note_Review"
+        mc:Ignorable="d"
+        Title="MasterReviewsV" Height="450" Width="800">
+    <Grid Background="Black" DataContext="{Binding Path=BiMonthlyReviewVM}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label Style="{StaticResource MyLblStyle}" FontSize="24" HorizontalAlignment="Center" Grid.ColumnSpan="3">Master Reviews</Label>
+        <Border Grid.Row="1" Margin="5,10,5,10">
+            <ListBox x:Name="lbMasterReviews"
+                             Style="{StaticResource MyListBox}"
+                             ItemsSource="{Binding Path=MasterReviewSummaryList}"
+                             SelectedItem="{Binding SelectedMasterReviewSummary}"
+                             DisplayMemberPath="MasterReviewSummaryTitle">
+            </ListBox>
+        </Border>
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="White" BorderThickness="1" DataContext="{Binding SelectedMasterReviewSummary}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource MyLblStyle}">Title</Label>
+                <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummaryTitle}"></TextBox>
+                <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource MyLblStyle}">Comment</Label>
+                <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap"  Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummaryComment}"></TextBox>
+            </Grid>
+        </Border>
+        <Border Grid.Column="2" Grid.Row="1" BorderBrush="Blue" BorderThickness="1" DataContext="{Binding SelectedMasterReviewSummary}">
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add ICD10"></MenuItem>
+                </ContextMenu>
+            </Border.ContextMenu>
+            <ListBox Style="{StaticResource MyListBox}" ItemsSource="{Binding ICD10List}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border>
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Remove Segment"></MenuItem>
+                                </ContextMenu>
+                            </Border.ContextMenu>
+                            <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Grid.Column="1" Margin="{Binding Icd10Margin}" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10Chapter}" />
+                                <TextBlock Margin="0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryStart}"/>
+                                <TextBlock Margin="0" Padding="0" Text="-"/>
+                                <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryEnd}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Grid.Column="1" DockPanel.Dock="Top" Text="{Binding Path=SqlICD10Segment.SegmentTitle}" ToolTip="{Binding Path=SqlICD10Segment.SegmentComment}"/>
+                                <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
+                                <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding CheckPointCount}"></TextBlock>
+                                <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
+                            </StackPanel>
+                        </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <Button Style="{StaticResource LinkButton}" FontSize="20" HorizontalAlignment="Center" Grid.ColumnSpan="3" Grid.Row="2" Click="Button_Click">Close</Button>
+    </Grid>
+</Window>

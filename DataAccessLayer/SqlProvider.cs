@@ -24,6 +24,16 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+        private MasterReviewSummaryVM parentMasterReviewSummary;
+        public MasterReviewSummaryVM ParentMasterReviewSummary 
+        {
+            get { return parentMasterReviewSummary; }
+            set {
+                parentMasterReviewSummary = value;
+                OnPropertyChanged();
+                OnPropertyChanged("CurrentReviewCount");
+            }
+        }
         public int ProviderID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -32,6 +42,8 @@ namespace AI_Note_Review
         public int ReviewInterval { get; set; }
         public string FullName { get; set; }
         public bool IsWestSidePod { get; set; }
+
+        public string EMail { get; set; }
 
         public string PersonalNotes { get; set; }
 
@@ -49,26 +61,6 @@ namespace AI_Note_Review
 
         }
 
-        /// <summary>
-        /// Populates a class containing PtID and Dates for a time period (usually two months)
-        /// </summary>
-        public ObservableCollection<SqlDocumentReviewSummaryM> SqlDocumentReviewsSummaryProperty
-        {
-            get
-            {
-                string sql = "";
-                sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{Properties.Settings.Default.StartReviewDate.ToString("yyyy-MM-dd")}' and '{Properties.Settings.Default.EndReviewDate.ToString("yyyy-MM-dd")}';";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    ObservableCollection<SqlDocumentReviewSummaryM> tmpL = new ObservableCollection<SqlDocumentReviewSummaryM>(cnn.Query<SqlDocumentReviewSummaryM>(sql).ToList());
-                    foreach (var l in tmpL)
-                    {
-                        l.ParentProvider = this;
-                    }
-                    return tmpL;
-                }
-            }
-        }
 
         public void UpdateSqlDocumentReviewsSummaryProperty()
         {
@@ -80,15 +72,47 @@ namespace AI_Note_Review
         {
             get
             {
+                if (ParentMasterReviewSummary == null && currentMasterReview == null) return -1;
                 string sql = "";
-                sql += $"Select Count(distinct VisitDate || PtID) from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{Properties.Settings.Default.StartReviewDate.ToString("yyyy-MM-dd")}' and '{Properties.Settings.Default.EndReviewDate.ToString("yyyy-MM-dd")}';";
+                if (currentMasterReview == null)
+                {
+                    currentMasterReview = parentMasterReviewSummary;
+                };
+
+                sql += $"Select Count(distinct VisitDate || PtID) from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{currentMasterReview.StartDate.ToString("yyyy-MM-dd")}' and '{currentMasterReview.EndDate.ToString("yyyy-MM-dd")}';";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     return cnn.ExecuteScalar<int>(sql);
                 }
             }
         }
+
+        private MasterReviewSummaryVM currentMasterReview { get; set; }
+        public void SetCurrentMasterReview(DateTime dt)
+        {
+            string sql = $"Select * from MasterReviewSummary;";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                foreach (var tmpMR in cnn.Query<MasterReviewSummaryVM>(sql).ToList())
+                {
+                    if (dt >= tmpMR.StartDate && dt <= tmpMR.EndDate)
+                    {
+                        currentMasterReview = tmpMR;
+                        return;
+                    }
+                }
+                currentMasterReview = null;
+            }
+
+        }
+
+
+
         public SqlProvider()
+        {
+        }
+
+        public SqlProvider(MasterReviewSummaryVM mrs)
         {
         }
 
@@ -119,6 +143,9 @@ namespace AI_Note_Review
 
         public static SqlProvider SqlGetProviderByFullName(string strFullName)
         {
+            if (strFullName == "")
+                return new SqlProvider("", "", "", "", 3, "");
+
             string sql = "";
             sql += $"Select * from Providers where FullName = '{strFullName}';"; //this part is to get the ID of the newly created phrase
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -176,5 +203,8 @@ namespace AI_Note_Review
             return true;
         }
 
+
     }
+
+
 }

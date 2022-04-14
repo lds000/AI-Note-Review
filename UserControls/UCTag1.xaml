@@ -33,7 +33,7 @@
                                 Margin="10,0,0,0"
                                 x:Name="btnRemoveTag" 
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Style="{StaticResource LinkButton}" Click="btnRemoveTag_Click" >Remove Tag</Button>
+                                Style="{StaticResource LinkButton}" Command="{Binding RemoveTagCommand}" CommandParameter="{Binding}" >Remove Tag</Button>
                         </StackPanel>
                             <ItemsControl Margin="20,0,10,0" Grid.Row="1"  ItemsSource="{Binding TagRegExs}">
                                 <ItemsControl.ItemTemplate>
@@ -44,7 +44,7 @@
                             </ItemsControl>
                         <Button Grid.Row="2"
                                 Margin="10,0,0,20"
-                                Style="{StaticResource LinkButton}" Click="Button_Click">Add Search Term</Button>
+                                Style="{StaticResource LinkButton}" Command="{Binding AddTagRegExCommand}" CommandParameter="{Binding}">Add Search Term</Button>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

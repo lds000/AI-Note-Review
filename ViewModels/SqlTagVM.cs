@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,22 +17,6 @@ using System.Windows.Media;
 namespace AI_Note_Review
 {
 
-    /*
- * Great example I found online.
- class PersonModel {
-    public string Name { get; set; }
-  }
-
-class PersonViewModel {
-    private PersonModel Person { get; set;}
-    public string Name { get { return this.Person.Name; } }
-    public bool IsSelected { get; set; } // example of state exposed by view model
-
-    public PersonViewModel(PersonModel person) {
-        this.Person = person;
-    }
-}
-*/
     public class SqlTagVM : INotifyPropertyChanged
     {
         // Declare the event
@@ -40,6 +25,8 @@ class PersonViewModel {
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        public DocumentVM ParentDocument { get; set; }
 
         public SqlTagVM(string strTagText)
         {
@@ -63,8 +50,27 @@ class PersonViewModel {
             this.SqlTag = new SqlTagM();
         }
 
+        #region EventManagement (empty)
+        private void RegisterEvents()
+        {
+            Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
+        }
+
+        private void NotifyMe(NotificationMessage obj)
+        {
+            if (obj.Notification == "NewDocument")
+            {
+            }
+        }
+        #endregion
+
         private SqlTagM SqlTag { get; set; }
-        public int TagID { get { return this.SqlTag.TagID; } set { this.SqlTag.TagID = value; } }
+        public int TagID { 
+            get { return this.SqlTag.TagID; } 
+            set { 
+                this.SqlTag.TagID = value;
+            }
+        }
         public string TagText { get { return this.SqlTag.TagText; } set { this.SqlTag.TagText = value;} }
 
 
@@ -72,7 +78,9 @@ class PersonViewModel {
         public void RemoveTagRegEx(SqlTagRegExVM str) 
         {
             this.SqlTag.RemoveTagRegEx(str);
+            tagRegExs = null; //reset
             OnPropertyChanged("TagRegExs");
+            OnPropertyChanged("CPStatusChanged");
         }
         public void SaveToDB() { this.SqlTag.SaveToDB(); }
         public void DeleteFromDB() { this.SqlTag.DeleteFromDB(); }
@@ -80,28 +88,63 @@ class PersonViewModel {
         public void AddTagRegEx(SqlCheckpointVM cp)
         {
             SqlTagRegExVM srex = new SqlTagRegExVM(TagID, "Search Text", cp.TargetSection, 1);
+            srex.ParentTag = this;
+            tagRegExs = null; //reset
             OnPropertyChanged("TagRegExs");
+            OnPropertyChanged("CPStatusChanged");
         }
 
-        public List<SqlTagRegExVM> GetTagRegExs()
+        private SqlTagRegExM.EnumResult? matchResult;
+        public SqlTagRegExM.EnumResult MatchResult
         {
-            string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            get
             {
-                var tmpList = cnn.Query<SqlTagRegExVM>(sql).ToList();
-                foreach (var tmp in tmpList)
+                if (matchResult == null)
                 {
-                    tmp.ParentTag = this;
+                    matchResult = SqlTagRegExM.EnumResult.Pass;
+                    foreach (var tmpTagRegEx in TagRegExs)
+                    {
+                        if (tmpTagRegEx.MatchStatus != SqlTagRegExM.EnumResult.Pass)
+                        {
+                            matchResult = tmpTagRegEx.MatchStatus;
+                            break;
+                        }
+                    }
                 }
-                return tmpList;
+                return (SqlTagRegExM.EnumResult)matchResult;
             }
-
         }
 
-        public void UpdateCPStatus()
+        private List<SqlTagRegExVM> tagRegExs;
+        public List<SqlTagRegExVM> TagRegExs
         {
-            //push this upstream to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
-            ParentCheckPoint.UpdateCPStatus();
+            get
+            {
+                if (tagRegExs == null)
+                {
+                    string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        var tmpList = cnn.Query<SqlTagRegExVM>(sql).ToList();
+                        foreach (var tmp in tmpList)
+                        {
+                            tmp.ParentTag = this;
+                            tmp.ParentDocumentVM = ParentDocument;
+                            tmp.PropertyChanged += Tmp_PropertyChanged;
+                        }
+                        tagRegExs = tmpList;
+                    }
+                }
+                return tagRegExs;
+            }
+        }
+
+        private void Tmp_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "CPStatusChanged")
+            {
+                OnPropertyChanged("CPStatusChanged"); //is there a better way to bubble event?
+            }
         }
 
         public void EditTagText()
@@ -113,6 +156,7 @@ class PersonViewModel {
                 TagText = wet.ReturnValue;
                 SaveToDB();
                 OnPropertyChanged("TagText");
+                OnPropertyChanged("CPStatusChanged");
             }
         }
 
@@ -141,23 +185,6 @@ class PersonViewModel {
 
                 tb.Foreground = Brushes.White;
                 return tb;
-            }
-
-        }
-        public List<SqlTagRegExVM> TagRegExs
-        {
-            get
-            {
-                string sql = $"Select * from TagRegEx where TargetTag = {TagID};";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    var tmpList = cnn.Query<SqlTagRegExVM>(sql).ToList();
-                    foreach (var tmp in tmpList)
-                    {
-                        tmp.ParentTag = this;
-                    }
-                    return tmpList;
-                }
             }
 
         }
@@ -232,7 +259,7 @@ class PersonViewModel {
         public void Execute(object parameter)
         {
             SqlTagVM st = parameter as SqlTagVM;
-            st.AddTagRegEx(st.ParentCheckPoint); //not sure what this does, so I commented it out.
+            st.AddTagRegEx(st.ParentCheckPoint);
         }
         #endregion
     }

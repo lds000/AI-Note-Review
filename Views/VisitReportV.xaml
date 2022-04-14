@@ -22,9 +22,9 @@
                     <Grid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Add/Edit Comment" Click="AddCommentCP"></MenuItem>
-                            <MenuItem Header="Move to passed" Click="MovePassedCP"></MenuItem>
-                            <MenuItem Header="Move to missed" Click="MoveMissedCP"></MenuItem>
-                            <MenuItem Header="Drop" Click="DropCP"></MenuItem>
+                            <MenuItem Header="Move to passed" Command="{Binding MovePassedCommand}" CommandParameter="{Binding}"></MenuItem>
+                            <MenuItem Header="Move to missed" Command="{Binding MoveMissedCommand}" CommandParameter="{Binding}"></MenuItem>
+                            <MenuItem Header="Drop" Command="{Binding MoveDroppedCommand}" CommandParameter="{Binding}"></MenuItem>
                             <MenuItem Header="Edit Checkpoint Properties" Command="{Binding EditCheckPointCommand}" CommandParameter="{Binding}"></MenuItem>
                             <MenuItem Header="Show Checkpoint Report" Command="{Binding ShowCPRichTextCommand}" CommandParameter="{Binding}"></MenuItem>
                         </ContextMenu>
@@ -55,15 +55,11 @@
         <DockPanel Background="Black" Margin="5,7,5,3">
             <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="20" HorizontalAlignment="Center">Note Report</Label>
             <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal">
-                <Button Margin="0,0,20,0" Click="Button_Click_Recheck"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Recheck</Button>
-                <Button Click="Button_Click"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Close</Button>
-                <Button Margin="20,0,0,0" Click="Button_CopyReportClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Report</Button>
-                <Button Margin="20,0,0,0" Click="Button_CopyIndexClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Copy Index</Button>
-                <Button Margin="20,0,0,0"
+                <Button FontSize="20" Click="Button_Click"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Close</Button>
+                <!-- -->
+                <Button FontSize="20" Margin="20,0,0,0"
                         Command="{Binding CommitMyReportCommand}" CommandParameter="{Binding}"
                         Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Commit Review</Button>
-                <Button Margin="20,0,0,0" Click="Button_CheckpointAuditClick"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Checkpoint Audit</Button>
-                <Button Margin="20,0,0,0" Click="Button_ResetYesNo"  Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Reset Yes/No Answers</Button>
             </StackPanel>
             <ScrollViewer>
                 <Grid>
@@ -78,38 +74,168 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel DockPanel.Dock="Left" HorizontalAlignment="Center">
+
                         <Label Margin="0,10,0,10" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" Padding="0" FontSize="18">Included Groups</Label>
-                        <ItemsControl x:Name="lbSegmentsCheck" ItemsSource="{Binding ICD10Segments}">
+                        <ItemsControl MinHeight="100" x:Name="lbSegmentsCheck" ItemsSource="{Binding ICD10Segments}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel x:Name="spTemplate" Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding CBIncludeSegment}" Command="{Binding SegIncludeCheckedCommand}" CommandParameter="{Binding}">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsChecked, ElementName=cbShowAll}" Value="false"/>
+                                                            <Condition  Binding="{Binding CBIncludeSegment}" Value="false"/>
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
+                                                    </MultiDataTrigger>
+                                                    <DataTrigger Binding="{Binding CBIncludeSegment}" Value="true">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding CBIncludeSegment}" Value="false">
+                                                        <Setter Property="StackPanel.Opacity" Value="0.5"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <CheckBox IsChecked="{Binding CBIncludeSegment}">
                                             <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding SegmentTitle}"></TextBlock>
                                         </CheckBox>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                        <CheckBox Margin="0,10,0,0" x:Name="cbShowAll" Style="{StaticResource MyCBStyle}">Show All</CheckBox>
                         <Separator Margin="0,5,0,5"/>
                         <Button Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Check All</Button>
                         <CheckBox x:Name="cbShowDropped" Style="{StaticResource MyCBStyle}" IsChecked="False">Show Dropped</CheckBox>
+                        <TextBox Style="{StaticResource MyTextBox}" Text="{Binding SearchICD10Term, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                        <ListBox 
+                            Style="{StaticResource MyListBox}"
+                            ItemsSource="{Binding ICD10SegmentSearchResult}"
+                            DisplayMemberPath="SegmentTitle"
+                            SelectedItem="{Binding CurrentlySelectedSearchICD10}"
+                            >
+                            
+                        </ListBox>
                     </StackPanel>
 
                     <DockPanel Grid.Row="0" Grid.Column="1">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Missed Checkpoints</Label>
-                        <ListBox x:Name="lbFail" SelectedItem="{Binding SelectedItem}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" HorizontalContentAlignment="Stretch"
+                        <!--
+                        <ListBox x:Name="lbFail" 
+                                 SelectedItem="{Binding SelectedItem}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" HorizontalContentAlignment="Stretch"
                                  ItemsSource="{Binding MissedCPs}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
                         </ListBox>
+                        -->
+                        <ItemsControl ItemsSource="{Binding ICD10Segments}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=MissedCPs.Count}" Value="0">
+                                                        <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=IncludeSegment}" Value="false">
+                                                        <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                    <Label Style="{StaticResource MyLblStyle}" Content="{Binding SegmentTitle}" FontWeight="Bold" FontSize="16" Margin="10,10,0,0" Padding="0">
+                                       
+                                    </Label>
+                                    <ListBox x:Name="lbFail" 
+                                         SelectedValue="{Binding ParentReport.SelectedCheckPoint}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" HorizontalContentAlignment="Stretch"
+                                         ItemsSource="{Binding MissedCPs}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
+                                    </ListBox>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </DockPanel>
                     <DockPanel Grid.Row="1" Grid.Column="1">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Dropped Checkpoints</Label>
-                        <ListBox x:Name="lbDrop" SelectedItem="{Binding SelectedItem}" ItemsSource="{Binding DroppedCPs}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5"  HorizontalContentAlignment="Stretch"
-                                 Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
+                        <ItemsControl ItemsSource="{Binding ICD10Segments}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=DroppedCPs.Count}" Value="0">
+                                                        <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=IncludeSegment}" Value="false">
+                                                        <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <Label Style="{StaticResource MyLblStyle}" Content="{Binding SegmentTitle}" FontWeight="Bold" FontSize="16" Margin="10,10,0,0" Padding="0">
+
+                                        </Label>
+                                        <ListBox x:Name="lbFail" 
+                                         SelectedValue="{Binding ParentReport.SelectedCheckPoint}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" HorizontalContentAlignment="Stretch"
+                                         ItemsSource="{Binding DroppedCPs}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
+                                        </ListBox>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </DockPanel>
                     <DockPanel Grid.Row="0" Grid.Column="2">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Passed Checkpoints</Label>
-                        <ListBox x:Name="lbPassed" SelectedItem="{Binding SelectedItem}" ItemsSource="{Binding PassedCPs}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5"  HorizontalContentAlignment="Stretch"
-                                 Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick"/>
+                        <ItemsControl ItemsSource="{Binding ICD10Segments}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=PassedCPs.Count}" Value="0">
+                                                        <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=IncludeSegment}" Value="false">
+                                                        <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <Label Style="{StaticResource MyLblStyle}" Content="{Binding SegmentTitle}" FontWeight="Bold" FontSize="16" Margin="10,10,0,0" Padding="0">
+
+                                        </Label>
+                                        <ListBox x:Name="lbFail" 
+                                         SelectedValue="{Binding ParentReport.SelectedCheckPoint}" ItemTemplate="{StaticResource myCheckPointDataTemplate}" Margin="5" HorizontalContentAlignment="Stretch"
+                                         ItemsSource="{Binding PassedCPs}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
+                                        </ListBox>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </DockPanel>
+                    <DockPanel  DataContext="{Binding SelectedCheckPoint}"
+                                Grid.Column="2"
+                                Grid.Row="1"
+                                Margin="3">
+                        <Label Style="{StaticResource MyLblStyle}" DockPanel.Dock="Top" HorizontalAlignment="Center">Tags</Label>
+                        <Border 
+                            BorderBrush="White" 
+                            BorderThickness="1" >
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Add Tag" Command="{Binding AddTagCommand}" CommandParameter="{Binding}"/>
+
+                                </ContextMenu>
+                            </Border.ContextMenu>
+
+                            <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
+                                <local:UCTag1 DataContext="{Binding}"></local:UCTag1>
+                            </ScrollViewer>
+                        </Border>
                     </DockPanel>
                 </Grid>
 

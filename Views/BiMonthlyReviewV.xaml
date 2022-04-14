@@ -4,12 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
-                xmlns:properties="clr-namespace:AI_Note_Review.Properties"
+        xmlns:properties="clr-namespace:AI_Note_Review.Properties"
         Loaded="Window_Loaded"
         Closing="Window_Closing"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="BiMonthlyReviewView" Height="450" Width="1000">
+        WindowState="Maximized"
+        Title="BiMonthlyReviewView">
     <!--Datacontext is BiMonthlyReviewVM-->
     <DockPanel Background="Black">
         <DockPanel.Resources>
@@ -30,9 +31,37 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="White" BorderThickness="1" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                <!--List source:BiMonthlyReviewList, SelectedValue=SelectedReview-->
+                <ListBox Style="{StaticResource MyListBox}" x:Name="lbReviews" 
+                         SelectedValue="{Binding SelectedMasterReviewSummary}"  ItemsSource="{Binding MasterReviewSummaryList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel x:Name="spTemplate" Orientation="Horizontal">
+                                <!--SqlProvider-->
+                                <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding MasterReviewSummaryToString}"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ListBox>
+                    <Border BorderBrush="White" BorderThickness="1" Margin="2" Grid.Row="1">
+                        <StackPanel>
+                            <Label Style="{StaticResource MyLblStyle}">General Comment:</Label>
+                            <TextBox Style="{StaticResource MyTextBox}"></TextBox>
+                        </StackPanel>
+
+                    </Border>
+                </Grid>
+            </Border>
+            <Border BorderBrush="White" Grid.Column="1" BorderThickness="1" Margin="5">
                 <!--List source:MyPeeps, SelectedValue=SelectedProviderForBiMonthlyReview-->
                 <ListBox Style="{StaticResource MyListBox}" x:Name="lbProviders" 
                          SelectedValue="{Binding SelectedProviderForBiMonthlyReview}"  ItemsSource="{Binding MyPeeps}">
@@ -49,27 +78,61 @@
                     </ItemsControl.ItemTemplate>
                 </ListBox>
             </Border>
-            <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="1">
-                <!-- Contains a list of SqlDocumentReviewSummaryM from SqlProvider.SqlDocumentReviewsSummaryProperty -->
-                <ListBox x:Name="lbMonthReview" Grid.Row="1" Style="{StaticResource MyListBox}" ItemsSource="{Binding ElementName=lbProviders, Path=SelectedValue.SqlDocumentReviewsSummaryProperty}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <StackPanel.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Delete This Review" Command="{Binding DeleteThisReviewCommand}" CommandParameter="{Binding}"/>
-                                    </ContextMenu>
-                                </StackPanel.ContextMenu>
-                                <TextBlock Margin="0,0,10,0" Style="{StaticResource MyTbStyle}" Text="{Binding VisitDate, StringFormat=d}"></TextBlock>
-                                <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding PtID}"></TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+            <Grid  Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Border BorderBrush="White" BorderThickness="1" Margin="5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="0">General Comment</TextBlock>
+                        <TextBox Padding="3" Text="{Binding StrBimonthlyReviewComment}" Grid.Row="1" Style="{StaticResource MyTextBox}" TextWrapping="Wrap">
+                            
+                        </TextBox>
+                        <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="2">Review Summary</TextBlock>
+                        <TextBox Padding="3" Text="{Binding StrBimonthlyReviewSummary}" Grid.Row="3" Style="{StaticResource MyTextBox}">
+
+                        </TextBox>
+
+                        <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="4">Reviews</TextBlock>
+                        <!-- Contains a list of SqlDocumentReviewSummaryVM from SqlProvider.SqlDocumentReviewsSummaryProperty -->
+                        <ListBox Grid.Row="5" x:Name="lbMonthReview" Style="{StaticResource MyListBox}"
+                         ItemsSource="{Binding ListOfDocumentReviews}"
+                         SelectedItem="{Binding SelectedDocumentReview}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <StackPanel.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Delete This Review" Command="{Binding DeleteThisReviewCommand}" CommandParameter="{Binding}"/>
+                                            </ContextMenu>
+                                        </StackPanel.ContextMenu>
+                                        <TextBlock Margin="0,0,10,0" Style="{StaticResource MyTbStyle}" Text="{Binding VisitDate, StringFormat=d}"></TextBlock>
+                                        <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding PtID}"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                    </Grid>
             </Border>
+                <Button Grid.Row="1" Command="{Binding SendExecutiveSummaryCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}">Send Executive Summary</Button>
+                <Button Grid.Row="2" Command="{Binding SendOutlookCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}">Send To Outlook</Button>
+                <Button Grid.Row="3" Command="{Binding SendReportCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}">Send To Chrome</Button>
+            </Grid>
             <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="3">
-                <!-- Binds to lbMonthReview.selecteditem, which is a SqlDocumentReviewSummaryM -->
-                <WebBrowser local:WebBrowserHelper.Body="{Binding ElementName=lbMonthReview, Path=SelectedItem.CheckPointsSummaryHTML}">
+                <!-- Binds to lbMonthReview.selecteditem, which is a SqlDocumentReviewSummaryVM -->
+                <WebBrowser local:WebBrowserHelper.Body="{Binding ReviewHTML}">
 
                 </WebBrowser>
             </Border>

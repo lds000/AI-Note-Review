@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using AutoIt;
+
 
 namespace AI_Note_Review
 {
@@ -22,7 +24,7 @@ namespace AI_Note_Review
         public BiMonthlyReviewV(BiMonthlyReviewVM bmrvm)
         {
             InitializeComponent();
-            lbProviders.DataContext = bmrvm;
+            DataContext = bmrvm;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -41,5 +43,15 @@ namespace AI_Note_Review
             CF.SaveWindowPosition(this);
         }
         #endregion
+
+        private void webSend(object sender, RoutedEventArgs e)
+        {
+            AutoIt.AutoItX.WinActivate("Monthly");
+            AutoIt.AutoItX.Send("thi");
+            AutoIt.AutoItX.Send("{Tab 2}");
+            AutoIt.AutoItX.Send("stolw");
+            AutoIt.AutoItX.Send("{Tab 2}");
+        }
     }
+    
 }

@@ -26,7 +26,7 @@ namespace AI_Note_Review
         public int ICD10SegmentID { get; set; }
 
         public int LeftOffset { get; set; }
-        public string icd10Chapter
+        public char icd10Chapter
         {
             get => icd10Chapter1;
             set
@@ -38,14 +38,23 @@ namespace AI_Note_Review
         public double icd10CategoryEnd { get; set; }
         public string SegmentTitle { get; set; }
         public string SegmentComment { get; set; }
+        public int ParentSegment 
+        {
+            get; 
+            set;
+        }
 
 
-        private string icd10Chapter1;
+        private char icd10Chapter1;
 
         public SqlICD10SegmentM()
         {
         }
 
+        /// <summary>
+        /// Create a new ICD10Segment given a title.
+        /// </summary>
+        /// <param name="strSegmentTitle"></param>
         public SqlICD10SegmentM(string strSegmentTitle)
         {
             strSegmentTitle = strSegmentTitle.Replace("'", "''"); //used to avoid errors in titles with ' character
@@ -60,6 +69,21 @@ namespace AI_Note_Review
             }
         }
 
+        public void DeleteSegment()
+        {
+            MessageBoxResult mr = MessageBox.Show("Are you sure you want to remove this segment? This is permenant and will delete all content.", "Confirm Delete", MessageBoxButton.YesNo);
+            if (mr != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            string sql = $"Delete from ICD10Segments where ICD10SegmentID = {ICD10SegmentID};"; //this part is to get the ID of the newly created phrase
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
+            }
+        }
+
         public void SaveToDB()
         {
             string sql = "UPDATE ICD10Segments SET " +
@@ -68,7 +92,8 @@ namespace AI_Note_Review
                     "icd10CategoryStart=@icd10CategoryStart, " +
                     "icd10CategoryEnd=@icd10CategoryEnd, " +
                     "SegmentTitle=@SegmentTitle, " +
-                    "SegmentComment=@SegmentComment " +
+                    "SegmentComment=@SegmentComment, " +
+                    "ParentSegment=@ParentSegment " +
                     "WHERE ICD10SegmentID=@ICD10SegmentID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {

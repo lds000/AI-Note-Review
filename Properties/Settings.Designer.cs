@@ -80,5 +80,17 @@ namespace AI_Note_Review.Properties {
                 this["AskYesNo"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MonitorActive {
+            get {
+                return ((bool)(this["MonitorActive"]));
+            }
+            set {
+                this["MonitorActive"] = value;
+            }
+        }
     }
 }

@@ -4,8 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
+        xmlns:properties="clr-namespace:AI_Note_Review.Properties"
         mc:Ignorable="d"
         Loaded="Window_Loaded"        
+        WindowState="Normal"
         Closing="Window_Closing"
         Title="MainWindow" Height="450" Width="900">
     <Border BorderBrush="White" BorderThickness="2">
@@ -19,20 +21,36 @@
                     <MenuItem Header="Program">
                         <MenuItem Header="Exit" ToolTip="Show the reviews for the selected provider and selected review date."></MenuItem>
                     </MenuItem>
-                    <MenuItem Name="biMonthReviewMI" Header="Reviews" Command="{Binding Path=ShowBiMonthlyReport}"
+                    <MenuItem Name="masterReviewMI" Header="Master Reviews"
+                              Command="{Binding Path=ShowMasterReviewCommand}"
                                 CommandParameter="{Binding}" >
                     </MenuItem>
-                    <MenuItem Header="Checkpoint" ToolTip="Edit Checkpoint data."
+                    <MenuItem Name="biMonthReviewMI" Header="Reviews" Command="{Binding Path=BiMonthlyReviewVM.ShowBiMonthlyReport}"
+                                CommandParameter="{Binding}" >
+                    </MenuItem>
+                    <MenuItem 
+                        Command="{Binding Path=Document.ShowReport}"
+                                CommandParameter="{Binding}" 
+                        Header="Check!"></MenuItem>
+                    <!--DocumentVM-->
+                    <!--
+                    <MenuItem 
+                        Command="{Binding Path=Document.ShowReportGen}"
+                        CommandParameter="{Binding}">Check X Only</MenuItem>
+                     -->
+                    <MenuItem Header="Edit Checkpoints" ToolTip="Edit Checkpoint data."
                               Command="{Binding Path=CheckPointEditorCommand}"
                               CommandParameter="{Binding}">
                     </MenuItem>
-                    <MenuItem Header="Provider">
+                    <MenuItem Header="Edit Providers">
                         <MenuItem Header="Add Provider" ToolTip="Add new provider."></MenuItem>
                         <MenuItem Header="Remove Provider" ToolTip="Remove existing provider."></MenuItem>
                         <MenuItem Header="Edit Provider Details" ToolTip="Edit provider data."></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Settings" Click="OpenSettings">
                     </MenuItem>
+                    <CheckBox IsChecked="{Binding Source={x:Static properties:Settings.Default},
+                               Path=MonitorActive}">Monitor Active Note</CheckBox>
                 </Menu>
                 <local:UC_PatientConsole x:Name="UCPtConsole" DockPanel.Dock="Top"></local:UC_PatientConsole>
                 <Border BorderBrush="White" DockPanel.Dock="Left">
@@ -52,7 +70,7 @@
                                 <Label Grid.Row="0" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Document.Provider, FallbackValue=Provider Name}" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
                                 <Label Grid.Row="1" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Document.Facility, FallbackValue=Clinic Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
                                 <Image Grid.Row="2" Grid.ColumnSpan="2" 
-                                       Visibility="{Binding SqlProvider.IsWestSidePod, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                       Visibility="{Binding Provider.IsWestSidePod, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                        VerticalAlignment="Center" Source="Icons\westside.jpg" HorizontalAlignment="Center"></Image>
                                 <Label Grid.Row="3" Grid.Column="0" Margin="0" Padding="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Left" FontSize="12">Visit Date:</Label>
                                 <Label Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Padding="0" Content="{Binding Document.VisitDate, FallbackValue=6/23/2021}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
@@ -73,87 +91,125 @@
                                 </ListBox>
                             </StackPanel>
                         </Border>
+
                     </DockPanel>
                 </Border>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                    <Button  Margin="20,0,20,0" Click="Lookup_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Look Up</Button>
                     <Button  Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
-                    <Button Margin="100,0,0,0" 
-                        VerticalAlignment="Center" 
-                        Command="{Binding Path=Document.ShowReport}"
-                                CommandParameter="{Binding}" 
-                        Style="{StaticResource LinkButton}" FontSize="20">Check!</Button>
-                    <Button Margin="100,0,0,0" VerticalAlignment="Center"  Command="{Binding Path=Document.ShowReportGen}"
-                                CommandParameter="{Binding}"  Style="{StaticResource LinkButton}" FontSize="20">Check X Only</Button>
+                    <Button Margin="20,0,0,0"  Click="Test_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Test</Button>
+                    
                 </StackPanel>
-                <TabControl x:Name="tcNote">
-                    <TabItem Foreground="Black" Header="CC">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CC}"></TextBox>
-                    </TabItem>
-                    <TabItem Foreground="Black" Header="HPI">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.HPI}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="ROS">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ROS}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Meds">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CurrentMeds}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Prn Meds">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CurrentPrnMeds}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Problems">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ProblemList}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="PMHx">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.PMHx}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="SocHx">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.SocHx}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Allergies">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Allergies}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Vital">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Vitals}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Exam">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Exam}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Meds" Foreground="Black">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.MedsStarted}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Labs">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.LabsOrdered}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Imaging">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ImagesOrdered}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Treatment">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Treatment}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Procedure">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ProcedureNote}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Assessments">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Assessments}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="FollowUp">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.FollowUp}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="Visit Codes">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.VisitCodes}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="PrevMed">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.PreventiveMed}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="HTML">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.NoteHTML}"></TextBox>
-                    </TabItem>
-                    <TabItem Header="HashTags">
-                        <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.HashTags}"></TextBox>
-                    </TabItem>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <Label Style="{StaticResource MyLblStyle}">Top Mission Diagnosis:</Label>
+                        <ListBox Style="{StaticResource MyListBox}" ItemsSource="{Binding TopMissingDxs}" HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border>
+                                        <Border.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Look-up in browser" Command="{Binding LinkToICD10Command}" CommandParameter="{Binding}"/>
+                                                <MenuItem Header="Create ICD10 Alternate" Command="{Binding CreateAlternateICD10Command}" CommandParameter="{Binding}"/>
+                                            </ContextMenu>
+                                        </Border.ContextMenu>
+                                        <TextBlock Text="{Binding StringResult}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                    <TabControl x:Name="tcNote" Grid.Column="1">
+                        <TabItem Foreground="Black" Header="CC">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CC}"></TextBox>
+                        </TabItem>
+                        <TabItem Foreground="Black" Header="HPI">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.HPI}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="ROS">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ROS}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Meds">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CurrentMeds}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Prn Meds">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CurrentPrnMeds}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Problems">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ProblemList}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="PMHx">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.PMHx}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="SocHx">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.SocHx}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Allergies">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Allergies}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Vital">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Vitals}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Exam">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Exam}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Meds Started" Foreground="Black">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.MedsStarted}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Labs">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.LabsOrdered}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Imaging">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ImagesOrdered}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Treatment">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Treatment}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Procedure">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.ProcedureNote}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Assessments">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.Assessments}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="FollowUp">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.FollowUp}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="Visit Codes">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.VisitCodes}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="PrevMed">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.PreventiveMed}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="HTML">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.NoteHTML.Body.InnerHtml}"></TextBox>
+                        </TabItem>
+                        <TabItem Header="HashTags">
+                            <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.HashTags}"></TextBox>
+                        </TabItem>
 
-                </TabControl>
+                    </TabControl>
+                    <Border BorderBrush="White" BorderThickness="1" Grid.Column="2">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource MyLblStyle}">Log:</Label>
+                                <Button Grid.Column="1" Style="{StaticResource LinkButton}" Command="{Binding ClearLogCommand}" CommandParameter="{Binding}">Clear</Button>
+                            </Grid>
+                            <TextBlock Foreground="Gray" Margin="5" Style="{StaticResource MyTbStyle}" Name="MainLog" Text="{Binding MainLog, FallbackValue=No Text}" TextWrapping="Wrap">
+                                    
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                            
+                </Grid>
             </DockPanel>
         </Grid>
     </Border>

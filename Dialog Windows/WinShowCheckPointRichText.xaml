@@ -10,7 +10,7 @@
         Closing="Window_Closing"
         PreviewKeyDown="Window_PreviewKeyDown"
         Title="WinShowCheckPointRichText" Height="450" Width="1400">
-    <Grid Background="Black" DataContext="{Binding SelectedItem}">
+    <Grid Background="Black" DataContext="{Binding SelectedCheckPoint}">
         <Grid.Resources>
             <local:SqlTagRegExToString x:Key="mySqlTagRegExToString"/>
             <local:SqlTagRegExToXamlConverter x:Key="mySqlTagRegExToXamlConverter"/>
@@ -77,7 +77,7 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center">
                                                                 <MultiBinding Converter="{StaticResource mySqlTagRegExToXamlConverter}">
-                                                                    <Binding Path="NoteSectionText"/>
+                                                                    <Binding Path="TargetSectionText"/>
                                                                     <Binding Path="TagRegExMatchType" />
                                                                     <Binding Path="RegExText" />
                                                                 </MultiBinding>

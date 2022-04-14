@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
-        Title="WinShowRegExYesNo" Height="450" Width="800">
+        SizeToContent="Height"
+        Title="WinShowRegExYesNo" MinHeight="500" Width="800">
     <Grid Background="Black">
         <Grid.Resources>
             <local:SqlTagRegExToXamlConverter x:Key="mySqlTagRegExToXamlConverter"/>
@@ -28,8 +29,14 @@
         <Border BorderBrush="White" BorderThickness="2" Margin="5" Grid.ColumnSpan="2" Grid.Row="3" Padding="5" >
             <ContentControl Margin="10"
                                                     HorizontalAlignment="Left"
-                                                    VerticalAlignment="Center"
-                                                    Content="{Binding Converter={StaticResource mySqlTagRegExToXamlConverter}}">
+                                                    VerticalAlignment="Center">
+                <ContentControl.Content>
+                    <MultiBinding Converter="{StaticResource mySqlTagRegExToXamlConverter}">
+                        <Binding Path="DocumentNoteSectionTextToMatch"/>
+                        <Binding Path="TagRegExMatchType" />
+                        <Binding Path="RegExText" />
+                    </MultiBinding>
+                </ContentControl.Content>
             </ContentControl>
         </Border>
         <Button Margin="10" Grid.Row="4" FontSize="24" Click="clickYes">Yes</Button>

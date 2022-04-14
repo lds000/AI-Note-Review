@@ -19,7 +19,7 @@ namespace AI_Note_Review
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         SqlCheckPointImage checkPointImage;
-        SqlCheckpointVM parentCheckPoint;
+        public SqlCheckpointVM ParentCheckPoint;
 
 
         public SqlCheckPointImage CheckPointImageVM
@@ -28,24 +28,27 @@ namespace AI_Note_Review
             set { checkPointImage = value; }
         }
 
-        public SqlCheckPointImageVM() { } //paramaterless constructor for dapper
+        public SqlCheckPointImageVM()
+        {
+            checkPointImage = new SqlCheckPointImage();
+        } //paramaterless constructor for dapper
 
         public SqlCheckPointImageVM(SqlCheckpointVM parentCheckpoint, int iCheckPointID, BitmapSource bs)
         {
             checkPointImage = new SqlCheckPointImage(iCheckPointID, bs);
-            parentCheckPoint = parentCheckpoint;
+            ParentCheckPoint = parentCheckpoint;
         }
 
         public SqlCheckPointImageVM(SqlCheckpointVM parentCheckpoint)
         {
             checkPointImage = new SqlCheckPointImage();
-            parentCheckPoint = parentCheckpoint;
+            ParentCheckPoint = parentCheckpoint;
         }
 
         public void DeleteFromDB()
         {
             checkPointImage.DeleteFromDB();
-            parentCheckPoint.UpdateImages();
+            ParentCheckPoint.UpdateImages();
         }
 
         public int ImageID { get { return checkPointImage.ImageID; } set { checkPointImage.ImageID = value; } }
@@ -89,7 +92,7 @@ namespace AI_Note_Review
 
         public void Execute(object parameter)
         {
-            SqlCheckPointImage sc = parameter as SqlCheckPointImage;
+            SqlCheckPointImageVM sc = parameter as SqlCheckPointImageVM;
             sc.DeleteFromDB();
         }
         #endregion

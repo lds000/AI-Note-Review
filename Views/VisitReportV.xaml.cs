@@ -37,16 +37,12 @@ namespace AI_Note_Review
         }
         #endregion
 
-        public VisitReportV(bool GeneralCheckPointsOnly = false)
+        public VisitReportV()
         {
             InitializeComponent();
         }
 
-        public VisitReportV(VisitReportVM rvm, bool GeneralCheckPointsOnly = false)
-        {
-            InitializeComponent();
-            DataContext = rvm;
-        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -180,6 +176,11 @@ namespace AI_Note_Review
         }
 
         private void Button_CommittReportClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ImageCPStatus_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
         }

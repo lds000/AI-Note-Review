@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
@@ -73,7 +74,7 @@ namespace AI_Note_Review
     }
 
         public class SqlTagRegExToXamlConverter : IMultiValueConverter
-    {
+        {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {
             if (values == null) return null;
@@ -150,9 +151,30 @@ namespace AI_Note_Review
             return null;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException("This converter cannot be used in two-way binding.");
+            throw new NotImplementedException();
+        }
+    }
+
+    public class CheckpointsFromType : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values == null)
+                return null;
+            if (values[0] == DependencyProperty.UnsetValue)
+                return null;
+            try
+            {
+                var tmpList = (IEnumerable<SqlCheckpointVM>)values[0];
+                int rType = (int)values[1];
+                return (from c in tmpList where c.CheckPointType == rType select c).ToList();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -161,13 +183,14 @@ namespace AI_Note_Review
         }
     }
 
+
     [ValueConversion(typeof(SqlTagRegExVM), typeof(string))]
     public class SqlTagRegExToString : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             SqlTagRegExVM s = value as SqlTagRegExVM;
-            string str = CF.ClinicNote.NoteSectionText[s.TargetSection];
+            string str = s.TargetSectionText;
             return str;
         }
 
@@ -245,7 +268,8 @@ namespace AI_Note_Review
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            SqlCheckPointImage si = value as SqlCheckPointImage;
+            SqlCheckPointImageVM si = value as SqlCheckPointImageVM;
+            if (si == null) return null;
             using (var memoryStream = new System.IO.MemoryStream(si.ImageData))
             {
                 var image = new BitmapImage();
@@ -273,7 +297,7 @@ namespace AI_Note_Review
             double CodeEnd = 0;
             foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
             {
-                if (charChapter == char.Parse(ns.SqlICD10Segment.icd10Chapter))
+                if (charChapter == ns.SqlICD10Segment.icd10Chapter)
                 {
                     if ((ns.SqlICD10Segment.icd10CategoryStart >= CodeStart) && (ns.SqlICD10Segment.icd10CategoryEnd <= CodeEnd))
                     {
@@ -284,11 +308,11 @@ namespace AI_Note_Review
                     }
                     CodeStart = ns.SqlICD10Segment.icd10CategoryStart;
                     CodeEnd = ns.SqlICD10Segment.icd10CategoryEnd;
-                    charChapter = char.Parse(ns.SqlICD10Segment.icd10Chapter);
+                    charChapter = ns.SqlICD10Segment.icd10Chapter;
                 }
                 else
                 {
-                    charChapter = char.Parse(ns.SqlICD10Segment.icd10Chapter);
+                    charChapter = ns.SqlICD10Segment.icd10Chapter;
                     CodeStart = 0;
                     CodeEnd = 0;
                 }
@@ -349,8 +373,12 @@ namespace AI_Note_Review
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string strTest = value as string;
+            if (strTest.Contains("(Primary)"))
+            {
+                strTest = strTest.Split('(')[0].Trim();
+            }
             List<string> _ICD10Segments = new List<string>();
-            string strAlphaCode = strTest.Substring(0, 1);
+            char strAlphaCode = char.Parse(strTest.Substring(0, 1));
             string str = "";
             foreach (char ch in strTest)
             {
@@ -377,6 +405,8 @@ namespace AI_Note_Review
                 Console.WriteLine($"ICD10 Code with no found segment: {strTest}");
 
             }
+
+
             return _ICD10Segments;
         }
 

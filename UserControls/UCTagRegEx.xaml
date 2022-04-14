@@ -106,7 +106,7 @@
             <TextBox Grid.Column="0" 
                      Margin="10,0,5,0"
                      Padding="2"
-                     Text="{Binding RegExText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding RegExText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                      x:Name="tbRegExSearchTerms" 
                      Style="{StaticResource MyTextBox}" 
                      >
@@ -117,7 +117,11 @@
                 </i:Interaction.Triggers>
 
             </TextBox>
-            <Image ToolTip="Expand search term to a larger text box." Grid.Column="1" Tag="{Binding}" Source="/Icons/edit_notes.png" Width="15" MouseDown="Image_MouseDown" />
+            <Button  Grid.Column="1" Padding="0" Margin="0" Background="Black" BorderBrush="Black" Command="{Binding EditTagRegExCommand}" CommandParameter="{Binding}">
+                <Button.Content>
+                    <Image Margin="0" ToolTip="Expand search term to a larger text box." Tag="{Binding}" Source="/Icons/edit_notes.png" Width="15"/>
+                </Button.Content>
+            </Button>
         </Grid>
         <TextBlock Grid.Row="4" Margin="5,0,0,0" Style="{StaticResource MyTbStyle}" FontSize="16">Demographics</TextBlock>
         <StackPanel Orientation="Horizontal" Grid.Row="5"  Margin="5,5,0,0" HorizontalAlignment="Left">

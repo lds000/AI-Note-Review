@@ -38,13 +38,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoItX3.Assembly">
-      <HintPath>..\..\..\..\Downloads\autoit-v3\install\AutoItX\AutoItX3.Assembly.dll</HintPath>
+      <HintPath>..\..\..\Desktop\MemStick\ecMonkey\ecMonkey\bin\Debug\AutoItX3.Assembly.dll</HintPath>
     </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>packages\CommonServiceLocator.2.0.2\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
     <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Dapper.2.0.90\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
+      <HintPath>packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.4.1.0, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
+      <HintPath>packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
+      <HintPath>packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -64,6 +73,9 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -82,9 +94,32 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\CheckPointEditorCommands.cs" />
+    <Compile Include="Commands\TagRegExCommands.cs" />
+    <Compile Include="Commands\VisitReportCommands.cs" />
+    <Compile Include="DataAccessLayer\SqlMasterReviewSummaryM.cs" />
+    <Compile Include="DataAccessLayer\SqlMissingICD10CodesM.cs" />
+    <Compile Include="DataAccessLayer\SqlRelAlternativeICD10M.cs" />
+    <Compile Include="DataAccessLayer\SqlRelProviderMasterReviewSummaryM.cs" />
+    <Compile Include="Dialog Windows\WinChooseSegment.xaml.cs">
+      <DependentUpon>WinChooseSegment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ExtensionMethods\ObservableCollection.cs" />
+    <Compile Include="Helper Classes\Encrypt.cs" />
+    <Compile Include="Models\MasterReviewReportM.cs" />
+    <Compile Include="Models\NoteSectionM.cs" />
     <Compile Include="Models\ReportToHtmlM.cs" />
+    <Compile Include="Models\NoteHunterM.cs" />
+    <Compile Include="UserControls\UCSegmentCheckpoints.xaml.cs">
+      <DependentUpon>UCSegmentCheckpoints.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\AlternativeICD10VM.cs" />
+    <Compile Include="ViewModels\CheckPointEditorVM.cs" />
     <Compile Include="ViewModels\ReportToHtmlVM.cs" />
+    <Compile Include="ViewModels\ReportToTextVM.cs" />
+    <Compile Include="ViewModels\MasterReviewSummaryVM.cs" />
     <Compile Include="ViewModels\SqlCheckPointImageVM.cs" />
+    <Compile Include="ViewModels\SqlDocumentReviewSummaryVM.cs" />
     <Compile Include="ViewModels\SqlTagVM.cs" />
     <Compile Include="Helper Classes\CF.cs" />
     <Compile Include="Helper Classes\ClipboardClass.cs" />
@@ -138,6 +173,8 @@
     <Compile Include="Dialog Windows\WinCheckPointEditor.xaml.cs">
       <DependentUpon>WinCheckPointEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Views\CheckPointEditorV.xaml.cs">
       <DependentUpon>CheckPointEditorV.xaml</DependentUpon>
     </Compile>
@@ -156,6 +193,9 @@
     <Compile Include="Views\BiMonthlyReviewV.xaml.cs">
       <DependentUpon>BiMonthlyReviewV.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MasterReviewsV.xaml.cs">
+      <DependentUpon>MasterReviewsV.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\VisitReportV.xaml.cs">
       <DependentUpon>VisitReportV.xaml</DependentUpon>
     </Compile>
@@ -168,6 +208,10 @@
     <Compile Include="Dialog Windows\WinShowRegExYesNo.xaml.cs">
       <DependentUpon>WinShowRegExYesNo.xaml</DependentUpon>
     </Compile>
+    <Page Include="Dialog Windows\WinChooseSegment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -182,6 +226,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UserControls\UCPatientConsole.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UCSegmentCheckpoints.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -222,6 +270,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\BiMonthlyReviewV.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MasterReviewsV.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -276,6 +328,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Documentation\AINoteReviewPP.pptx" />
+    <None Include="Documentation\Presentation.pptx" />
     <None Include="NoteReviewDB.db" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

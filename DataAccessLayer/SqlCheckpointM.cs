@@ -94,7 +94,7 @@ class PersonViewModel {
                 if (errorSeverity != 0)
                 {
                     errorSeverity = value; //set this now for the update to work.
-                    string sql = "UPDATE CheckPoints SET ErrorSeverity=@ErrorSeverity WHERE CheckPointID=@CheckPointID;";
+                    string sql = $"UPDATE CheckPoints SET ErrorSeverity={errorSeverity} WHERE CheckPointID=@CheckPointID;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
                         cnn.Execute(sql, this);
@@ -149,10 +149,13 @@ class PersonViewModel {
             get => comment;
             set
             {
+                if (comment == value)
+                    return;
                 if (comment != null)
                 {
                     comment = value; //set this now for the update to work.
                     string sql = "UPDATE CheckPoints SET Comment=@Comment WHERE CheckPointID=@CheckPointID;";
+                    Console.WriteLine($"writing to {CheckPointTitle}: {value}");
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
                         cnn.Execute(sql, this);
@@ -186,6 +189,8 @@ class PersonViewModel {
             get => link;
             set
             {
+                if (link == value)
+                    return;
                 if (link != null)
                 {
                     link = value; //set this now for the update to work.
@@ -233,6 +238,7 @@ class PersonViewModel {
 
         public void SaveToDB()
         {
+
             string sql = "UPDATE CheckPoints SET " +
                     "CheckPointID=@CheckPointID, " +
                     "CheckPointTitle=@CheckPointTitle, " +
@@ -249,6 +255,8 @@ class PersonViewModel {
             {
                 cnn.Execute(sql, this);
             }
+            Console.WriteLine($"Saving entire checkpoint to {CheckPointTitle}: {Comment}");
+
         }
 
         public bool DeleteFromDB()
@@ -293,17 +301,7 @@ class PersonViewModel {
             OnPropertyChanged("Images");
         }
 
-        public ObservableCollection<SqlCheckPointImageVM> Images
-        {
-            get
-            {
-                string sql = $"select * from CheckPointImages where CheckPointID = @CheckPointID;";
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    return new ObservableCollection<SqlCheckPointImageVM>(cnn.Query<SqlCheckPointImageVM>(sql, this).ToList());
-                }
-            }
-        }
+
 
 
         /// <summary>
