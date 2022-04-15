@@ -42,13 +42,12 @@ namespace AI_Note_Review
 
         private SqlICD10SegmentM sqlICD10Segment;
 
-        
+        #region Constructors
         public SqlICD10SegmentVM()
         {
             sqlICD10Segment = new SqlICD10SegmentM();
             masterReviewSummary = new MasterReviewSummaryVM();
         }
-        
 
             /// <summary>
             /// Used only one instance, creating a new segment.
@@ -65,6 +64,7 @@ namespace AI_Note_Review
             sqlICD10Segment = sc;
             MasterReviewSummary = m;
         }
+        #endregion
 
         public AlternativeICD10VM AlternativeICD10 { get; set; }
 
@@ -134,6 +134,7 @@ namespace AI_Note_Review
 
         public SqlCheckpointVM SelectedCheckPoint { get; set; }
 
+        #region mirror ICD10Segment Table
         public int ICD10SegmentID { get { return sqlICD10Segment.ICD10SegmentID; } set { sqlICD10Segment.ICD10SegmentID = value; } }
         public string SegmentTitle { get { return sqlICD10Segment.SegmentTitle; } set { sqlICD10Segment.SegmentTitle = value; } }
         public string SegmentComment {
@@ -146,6 +147,7 @@ namespace AI_Note_Review
         public double icd10CategoryStart { get { return sqlICD10Segment.icd10CategoryStart; } set { sqlICD10Segment.icd10CategoryStart = value; } }
         public double icd10CategoryEnd { get { return sqlICD10Segment.icd10CategoryEnd; } set { sqlICD10Segment.icd10CategoryEnd = value; } }
         public int LeftOffset { get { return sqlICD10Segment.LeftOffset; } set { sqlICD10Segment.LeftOffset = value; } }
+        #endregion
 
         public int ParentSegment
         {
@@ -197,6 +199,7 @@ namespace AI_Note_Review
                 OnPropertyChanged("DroppedCPs");
             }
         }
+
         //used to track manual changes to textbox
         public bool CBIncludeSegment
         {
@@ -265,8 +268,8 @@ namespace AI_Note_Review
         {
             if (e.PropertyName == "ReorderCheckPoints")
             {
-                checkpoints = new ObservableCollection<SqlCheckpointVM>(checkpoints.OrderByDescending(x => x.ErrorSeverity).OrderBy(x => x.CheckPointTypeOrder).ToList());
-                OnPropertyChanged("Checkpoints");
+                OnPropertyChanged("ReorderCheckPoints");
+
             }
 
             if (e.PropertyName == "ReloadICD10Segments")
@@ -274,9 +277,12 @@ namespace AI_Note_Review
                 OnPropertyChanged("ReloadICD10Segments"); //todo: should be "ICD10Segments" for 
             }
 
-            if (e.PropertyName == "CPStatus")
+            if (e.PropertyName == "RecalculateCPStatus")
             {
-                OnPropertyChanged("CPStatus"); //bubble up for VisitReportVM to recalculate checkpoint
+                MissedCPs = null;
+                PassedCPs = null;
+                DroppedCPs = null;
+                OnPropertyChanged("RecalculateCPStatus"); //bubble up for VisitReportVM to recalculate checkpoint
             }
 
             if (e.PropertyName == "CheckPointCount")
@@ -285,24 +291,11 @@ namespace AI_Note_Review
             }
         }
 
-        /*
-        public void RemoveCheckPoint(SqlCheckpointVM cp)
+        public void ReorderCheckPoints()
         {
-            cp.DeleteFromDB();
+            checkpoints = new ObservableCollection<SqlCheckpointVM>(checkpoints.OrderByDescending(x => x.ErrorSeverity).OrderBy(x => x.CheckPointTypeOrder).ToList());
+            OnPropertyChanged("Checkpoints");
         }
-        */
-
-        /*
-        public void CheckSegment()
-        {
-            passedCPs = new List<SqlCheckpointVM>();
-            missedCPs = new List<SqlCheckpointVM>();
-            droppedCPs = new List<SqlCheckpointVM>();
-            OnPropertyChanged("PassedCPs");
-            OnPropertyChanged("MissedCPs");
-            OnPropertyChanged("DroppedCPs");
-        }
-        */
 
         private List<SqlCheckpointVM> passedCPs;
         public List<SqlCheckpointVM> PassedCPs
@@ -408,6 +401,7 @@ namespace AI_Note_Review
                 return new Thickness(sqlICD10Segment.LeftOffset, 0, 0, 0);
             }
         }
+
         public void UpdateMargin()
         {
             OnPropertyChanged("Icd10Margin");
@@ -474,6 +468,26 @@ namespace AI_Note_Review
             }
         }
 
+        private List<SqlCheckPointType> checkPointTypes;
+        /// <summary>
+        /// A list of the check point types from database
+        /// </summary>
+        public List<SqlCheckPointType> CheckPointTypes
+        {
+            get
+            {
+                if (checkPointTypes != null)
+                {
+                    return checkPointTypes;
+                }
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    string sql = "Select * from CheckPointTypes order by ItemOrder;";
+                    return cnn.Query<SqlCheckPointType>(sql).ToList();
+                }
+            }
+
+        }
 
         private string indexHtml;
         public string IndexHtml
@@ -486,7 +500,7 @@ namespace AI_Note_Review
                     {
                         SqlCheckpointVM cpvm = new SqlCheckpointVM();
                         ObservableCollection<SqlCheckpointVM> lcp = Checkpoints;
-                        List<SqlCheckPointType> lcpt = cpvm.CheckPointTypes;
+                        List<SqlCheckPointType> lcpt = CheckPointTypes;
                         string strSummary = "";// @"<style type=""text / css"">< !--.tab { margin - left: 40px; }--></ style >";
                         strSummary += $"<h1>{SegmentTitle}</h1><br>";
                         foreach (SqlCheckPointType cpt in lcpt)

@@ -80,7 +80,7 @@ namespace AI_Note_Review
             this.SqlTag.RemoveTagRegEx(str);
             tagRegExs = null; //reset
             OnPropertyChanged("TagRegExs");
-            OnPropertyChanged("CPStatusChanged");
+            OnPropertyChanged("RecalculateCPStatus");
         }
         public void SaveToDB() { this.SqlTag.SaveToDB(); }
         public void DeleteFromDB() { this.SqlTag.DeleteFromDB(); }
@@ -91,11 +91,11 @@ namespace AI_Note_Review
             srex.ParentTag = this;
             tagRegExs = null; //reset
             OnPropertyChanged("TagRegExs");
-            OnPropertyChanged("CPStatusChanged");
+            OnPropertyChanged("RecalculateCPStatus");
         }
 
         private SqlTagRegExM.EnumResult? matchResult;
-        public SqlTagRegExM.EnumResult MatchResult
+        public SqlTagRegExM.EnumResult? MatchResult
         {
             get
             {
@@ -112,6 +112,11 @@ namespace AI_Note_Review
                     }
                 }
                 return (SqlTagRegExM.EnumResult)matchResult;
+            }
+            set
+            {
+                matchResult = value;
+                OnPropertyChanged();
             }
         }
 
@@ -141,9 +146,10 @@ namespace AI_Note_Review
 
         private void Tmp_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "CPStatusChanged")
+            if (e.PropertyName == "RecalculateCPStatus")
             {
-                OnPropertyChanged("CPStatusChanged"); //is there a better way to bubble event?
+                MatchResult = null;
+                OnPropertyChanged("RecalculateCPStatus"); //is there a better way to bubble event?
             }
         }
 
@@ -156,7 +162,7 @@ namespace AI_Note_Review
                 TagText = wet.ReturnValue;
                 SaveToDB();
                 OnPropertyChanged("TagText");
-                OnPropertyChanged("CPStatusChanged");
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
 

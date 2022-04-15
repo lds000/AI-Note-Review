@@ -39,6 +39,7 @@
                     </Grid.ColumnDefinitions>
 
                     <CheckBox Grid.Column="0"  Background="{Binding ErrorSeverity, Converter={StaticResource BrushConverter}}" IsChecked="{Binding IncludeCheckpoint}" Margin="0,0,5,0"/>
+                    <TextBlock Style="{StaticResource MyTbStyle}" Visibility="{Binding OveriddenVisibility}">!</TextBlock>
                     <TextBlock Grid.Column="1" Text="{Binding Path=CheckPointTitle}" Margin="0" Padding="0" Style="{StaticResource MyTbStyle}" />
                     <TextBlock Grid.Column="2" Text="{Binding Path=TargetSection, Converter={StaticResource MultiplyConverter}}"></TextBlock>
                     <Button Command="{Binding ShowCPRichTextCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}" Grid.Column="3">

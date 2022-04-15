@@ -112,7 +112,7 @@ namespace AI_Note_Review
             {
                 SqlTagRegEx.TargetTag = value;
                 OnPropertyChangedSave();
-                OnPropertyChanged("CPStatusChanged");
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
         public int TargetSection
@@ -125,7 +125,7 @@ namespace AI_Note_Review
             {
                 SqlTagRegEx.TargetSection = value;
                 OnPropertyChangedSave();
-                OnPropertyChanged("CPStatusChanged");
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
         public string RegExText
@@ -138,7 +138,8 @@ namespace AI_Note_Review
             {
                 SqlTagRegEx.RegExText = value;
                 OnPropertyChangedSave();
-                OnPropertyChanged("CPStatusChanged");
+                MatchStatus = null;
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
         public int TagRegExType
@@ -152,7 +153,7 @@ namespace AI_Note_Review
                 SqlTagRegEx.TagRegExType = value;
                 OnPropertyChangedSave();
                 OnPropertyChanged("TagRegExMatchTypeDescription");
-                OnPropertyChanged("CPStatusChanged");
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
         public double MinAge
@@ -165,7 +166,7 @@ namespace AI_Note_Review
             {
                 SqlTagRegEx.MinAge = value;
                 OnPropertyChangedSave();
-                OnPropertyChanged("CPStatusChanged");
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
         public double MaxAge
@@ -178,7 +179,7 @@ namespace AI_Note_Review
             {
                 SqlTagRegEx.MaxAge = value;
                 OnPropertyChangedSave();
-                OnPropertyChanged("CPStatusChanged");
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
         public bool Male
@@ -191,7 +192,7 @@ namespace AI_Note_Review
             {
                 SqlTagRegEx.Male = value;
                 OnPropertyChangedSave();
-                OnPropertyChanged("CPStatusChanged");
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
         public bool Female
@@ -204,7 +205,7 @@ namespace AI_Note_Review
             {
                 SqlTagRegEx.Female = value;
                 OnPropertyChangedSave();
-                OnPropertyChanged("CPStatusChanged");
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
         #endregion
@@ -232,13 +233,13 @@ namespace AI_Note_Review
                 {
                     targetSecionText = value;
                     OnPropertyChanged();
+                    //todo:instead of reseting document, should I call "ResetCPStatus"
                 }
             }
         }
 
         //process all,none,any match condition
         //Cycle through the list of terms and search through section of note if term is a match or not
-
         private bool allTermsMatch;
         public bool AllTermsMatch
         {
@@ -335,7 +336,7 @@ namespace AI_Note_Review
         }
 
         private SqlTagRegExM.EnumResult? matchStatus;
-        public SqlTagRegExM.EnumResult MatchStatus
+        public SqlTagRegExM.EnumResult? MatchStatus
         {
             get
             {
@@ -344,6 +345,14 @@ namespace AI_Note_Review
                     matchStatus = getMatchStatus(); //I pulled this complex function out to simplify this property.
                 }
                 return (SqlTagRegExM.EnumResult)matchStatus;
+            }
+            set
+            {
+                if (matchStatus != value)
+                {
+                    matchStatus = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -468,7 +477,7 @@ namespace AI_Note_Review
                 this.SqlTagRegEx.TagRegExMatchResult = value;
                 OnPropertyChangedSave();
                 OnPropertyChanged("TagRegExMatchType");
-                OnPropertyChanged("CPStatusChanged");
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
 

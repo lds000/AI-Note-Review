@@ -146,15 +146,22 @@ namespace AI_Note_Review
 
         private void ICD10Segment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "CPStatus")
+            if (e.PropertyName == "RecalculateCPStatus")
             {
+                //leave comement for now, this re-selects the point after an CPStatus has changed.
+                /*
                 SqlICD10SegmentVM tmpSeg = sender as SqlICD10SegmentVM;
                 if (tmpSeg != null)
                 {
                     int tmpCPID = SelectedCheckPoint.CheckPointID; //get selected CP ID
-                    tmpSeg.Checkpoints = null; //reset checkpoints
+                    //tmpSeg.Checkpoints = null; //reset checkpoints
+                    foreach (var tmpCP in tmpSeg.Checkpoints)//todo: I may not need to set all to null
+                    {
+                        tmpCP.CPStatus = null;
+                    }
                     SelectedCheckPoint = (from c in tmpSeg.Checkpoints where c.CheckPointID == tmpCPID select c).FirstOrDefault();
                 }
+                */
             }
         }
 

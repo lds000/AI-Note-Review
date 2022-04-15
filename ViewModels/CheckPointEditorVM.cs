@@ -24,35 +24,6 @@ namespace AI_Note_Review
         }
         #endregion
 
-        #region Events
-        public CheckPointEditorVM()
-        {
-        }
-
-        /*
-        private void NotifyMe(NotificationMessage obj)
-        {
-            if (obj.Notification == "ReloadCheckPoints")
-            {
-                if (selectedICD10Segment != null)
-                    SelectedICD10Segment.Checkpoints = null; //reset checkpoints, forcing an update.
-            }
-            if (obj.Notification == "ReloadICD10Segments")
-            {
-                //todo:this is not working
-                if (SelectedICD10Segment != null)
-                {
-                    int tmpID = SelectedICD10Segment.ICD10SegmentID; //get the currently selected ID
-                    SelectedMasterReview.ICD10Segments = null; //reset ICD10Segments
-                    SelectedICD10Segment = (from c in SelectedMasterReview.ICD10Segments where c.ICD10SegmentID == tmpID select c).FirstOrDefault(); //now load that ID.
-                }
-            }
-
-            //ReorderICD10
-        }
-        */
-        #endregion
-
         private ObservableCollection<MasterReviewSummaryVM> masterReviewSummaryList;
         /// <summary>
         /// Contains a list of all the master reviews
@@ -147,7 +118,7 @@ namespace AI_Note_Review
 
         private void SelectedICD10Segment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-
+            ///NOT SURE i NEED THIS
         }
 
         private SqlCheckpointVM selectedCheckPoint;
@@ -176,12 +147,12 @@ namespace AI_Note_Review
 
         private void SelectedCheckPoint_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ReloadCheckPoints")
+            if (e.PropertyName == "ReorderCheckPoints")
             {
                 if (SelectedCheckPoint != null)
                 {
                     int tmpID = SelectedCheckPoint.CheckPointID; //get the currently selected ID
-                    SelectedICD10Segment.Checkpoints = null; //reset ICD10Segments due to changes.
+                    SelectedICD10Segment.ReorderCheckPoints(); //reset ICD10Segments due to changes.
                     SelectedCheckPoint = (from c in SelectedICD10Segment.Checkpoints where c.CheckPointID == tmpID select c).FirstOrDefault(); //now load that ID.
                 }
             }

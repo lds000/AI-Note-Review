@@ -30,7 +30,7 @@ namespace AI_Note_Review
         {
             get; set;
         }
-        SqlTagRegExM.EnumResult CPStatus
+        SqlTagRegExM.EnumResult? CPStatus
         {
             get;
         }
@@ -40,7 +40,8 @@ namespace AI_Note_Review
         }
         int CheckPointType
         {
-            get; set;
+            get; 
+            set;
         }
         string Comment
         {
@@ -98,28 +99,9 @@ namespace AI_Note_Review
         }
         #endregion
 
-        public void UpdateCheckPointProperties(bool UpdateStatausAlso)
-        {
-
-            if (UpdateStatausAlso)
-            {
-                //This is not working in the edit mode, uncomment for editing during review process
-                /*
-                if (cPoverideStatus == null)
-                {
-                    Console.WriteLine("Setting CPStatus to null on SqlCheckpointVM");
-                    this.cPStatus = null;  //do not reset if it has been overidden.
-                    ParentSegment.UpdateCheckPoints();
-                    OnPropertyChanged("CPStatus");
-                }
-                */
-                //push this upstream to report to update any pertinent information to the Parenttag, perhaps an event that bubbles up would be better.
-                ParentSegment.UpdateCPs();
-            }
-        }
-
+        #region constructors
         /// <summary>
-        /// parameterless constructor
+        /// parameterless constructor for dapper
         /// </summary>
         public SqlCheckpointVM()
         {
@@ -157,11 +139,10 @@ namespace AI_Note_Review
                 this.SqlCheckpoint = cnn.QueryFirstOrDefault<SqlCheckpointM>(sql);
             }
         }
-
-        //Properties Section
+        #endregion
 
         /// <summary>
-        /// Usuallly assigned once and not changed, unless reassigning to a different segment
+        /// Usuallly assigned once and not changed, unless reassigning to a different segment, used 8 times at least
         /// </summary>
         public SqlICD10SegmentVM ParentSegment
         {
@@ -169,7 +150,7 @@ namespace AI_Note_Review
         }
 
         /// <summary>
-        /// All checkpoints have a parent document
+        /// All checkpoints have a parent document, used in test for status (male, age, etc...)
         /// </summary>
         public DocumentVM ParentDocument
         {
@@ -209,7 +190,6 @@ namespace AI_Note_Review
                 {
                     this.SqlCheckpoint.CheckPointTitle = value;
                     OnPropertyChangedSave();
-                    UpdateCheckPointProperties(false);
                     OnPropertyChanged("CPTitleChanged");
                 }
             }
@@ -225,7 +205,6 @@ namespace AI_Note_Review
                 this.SqlCheckpoint.CheckPointType = value;
                 OnPropertyChangedSave();
                 OnPropertyChanged("StrCheckPointType");
-                UpdateCheckPointProperties(true);
                 OnPropertyChanged("ReorderCheckPoints");
             }
         }
@@ -241,7 +220,6 @@ namespace AI_Note_Review
                 this.SqlCheckpoint.Comment = value;
                 OnPropertyChangedSave();
                 OnPropertyChanged("Comment");
-                UpdateCheckPointProperties(false);
             }
         }
         public int ErrorSeverity
@@ -255,7 +233,6 @@ namespace AI_Note_Review
                 this.SqlCheckpoint.ErrorSeverity = value;
                 OnPropertyChangedSave();
                 OnPropertyChanged("ErrorSeverity");
-                UpdateCheckPointProperties(true);
                 OnPropertyChanged("ReorderCheckPoints");
             }
         }
@@ -271,7 +248,6 @@ namespace AI_Note_Review
                 this.cPStatus = null;
                 OnPropertyChangedSave();
                 OnPropertyChanged("CPStatus");
-                UpdateCheckPointProperties(true);
             }
         }
         public int TargetICD10Segment
@@ -286,7 +262,6 @@ namespace AI_Note_Review
                     return;
                 this.SqlCheckpoint.TargetICD10Segment = value;
                 OnPropertyChangedSave();
-                UpdateCheckPointProperties(true);
                 OnPropertyChanged("ReloadICD10Segments"); //todo: should be "ICD10Segments" for 
             }
         }
@@ -344,17 +319,25 @@ namespace AI_Note_Review
         }
         #endregion
 
+        public Visibility OveriddenVisibility
+        {
+            get
+            {
+                if (cPoverideStatus != null)
+                    return Visibility.Visible;
+                return Visibility.Collapsed;
+            }
+        }
 
         /// <summary>
         /// Holds a status that is manually set, ie the reviewer wants the status to be set to pass instead of miss.  This will overide any checking.
         /// </summary>
         private SqlTagRegExM.EnumResult? cPoverideStatus;
         private SqlTagRegExM.EnumResult? cPStatus;
-
         /// <summary>
         /// The current status of the checkpoint: pass, miss, hide
         /// </summary>
-        public SqlTagRegExM.EnumResult CPStatus
+        public SqlTagRegExM.EnumResult? CPStatus
         {
             get
             {
@@ -381,7 +364,7 @@ namespace AI_Note_Review
                     //todo: consider adding "continue" status
                     foreach (SqlTagVM tagCurrentTag in Tags)
                     {
-                        if (tagCurrentTag.MatchResult != SqlTagRegExM.EnumResult.Pass)
+                        if (tagCurrentTag.MatchResult != SqlTagRegExM.EnumResult.Pass) //If result is pass, do not break, continue to next Tag until all tags process. Later change this to continue
                         {
                             cPStatus = tagCurrentTag.MatchResult;
                             break; //miss or hide condition met, no need to proceed to additional tags.
@@ -392,14 +375,13 @@ namespace AI_Note_Review
                 if (cPStatus == SqlTagRegExM.EnumResult.Miss || cPStatus == SqlTagRegExM.EnumResult.Pass) //include checkpoint is linked to the checkbox button
                 {
                     IncludeCheckpoint = true;
-                    OnPropertyChanged("IncludeCheckpoint");
                 }
                 return (SqlTagRegExM.EnumResult)cPStatus;
             }
             set
             {
                 cPStatus = value;
-                OnPropertyChanged();
+                OnPropertyChanged("CPStatus");
             }
         }
 
@@ -409,8 +391,11 @@ namespace AI_Note_Review
         /// <param name="newStatus">Status to set</param>
         public void OverideStatus(SqlTagRegExM.EnumResult newStatus)
         {
+            //if (SqlCheckpoint.CheckPointID == 28)
+            //    Console.WriteLine($"Changing ID for {SqlCheckpoint.CheckPointTitle}");
             cPoverideStatus = newStatus;
-            UpdateCheckPointProperties(true);
+            OnPropertyChanged("OveriddenVisibility");
+            OnPropertyChanged("RecalculateCPStatus");
         }
 
         /// <summary>
@@ -418,170 +403,11 @@ namespace AI_Note_Review
         /// </summary>
         public Dictionary<int, bool> YesNoSqlRegExIndex = new Dictionary<int, bool>();
 
-
-        /// <summary>
-        /// Run the SqlTagRegExes of a tag and return as result, this is the brains of the whole operation.
-        /// </summary>
-        /// <param name="tmpTagRegExs"></param>
-        /// <returns></returns>
-        private SqlTagRegExM.EnumResult CheckTagRegExs(List<SqlTagRegExVM> tmpTagRegExs)
-        {
-            foreach (SqlTagRegExVM TagRegEx in tmpTagRegExs) //cycle through the TagRegExs, usually one or two, fail or hide stops iteration, if continues returns pass.
-            {
-                //if (TagRegEx.RegExText.Contains("prolonged")) //used to debug
-                //{
-                //}
-
-
-                //This boolean shortens the execution, set to true for miss, pass, or hide, as these statuses when met obviate the need for any further testing
-                bool StopIfMissOrHide = TagRegEx.TagRegExMatchResult != SqlTagRegExM.EnumResult.Continue;
-
-                // check demographic limits and return result if met.
-                //If any TagRegEx fails due to demographics, the entire series fails
-                double age = ParentDocument.Patient.GetAgeInYearsDouble;
-                if (age < TagRegEx.MinAge)
-                    return SqlTagRegExM.EnumResult.Hide;
-                if (age >= TagRegEx.MaxAge)
-                    return SqlTagRegExM.EnumResult.Hide;
-                if (ParentDocument.Patient.isMale && !TagRegEx.Male)
-                    return SqlTagRegExM.EnumResult.Hide;
-                if (!ParentDocument.Patient.isMale && !TagRegEx.Female)
-                    return SqlTagRegExM.EnumResult.Hide;
-
-                //Process each of the tags, if any fail or hide the series stop, otherwise passes.
-                //Process Yes/No Tag
-                if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Ask) //ask question... pass if yes, fail if no
-                {
-                    if (Properties.Settings.Default.AskYesNo) //If Bypass is on then assume answer was yes
-                    {
-                        //check if the "yes" answer result of the askyesno is a miss or hide and stop if that is the case and return miss or hide
-                        //if "yes" result is pass, then continue to the rest of the TagRegExs
-                        if (StopIfMissOrHide)
-                            return TagRegEx.TagRegExMatchResult; //Match result is the result if a positive "yes" or "no" if set as Result (not "noResult") match is met
-                        continue;
-                    }
-                    else
-                    {
-                        bool yn = false;
-                        //Check it this YesNoSqlRegEx has already been asked  (don't ask more than once).
-                        if (YesNoSqlRegExIndex.ContainsKey(TagRegEx.TagRegExID))
-                        {
-                            yn = YesNoSqlRegExIndex[TagRegEx.TagRegExID];
-                        }
-                        else
-                        {
-                            //not asked yet, go ahead and ask.
-                            WinShowRegExYesNo ws = new WinShowRegExYesNo();
-                            if (TagRegEx.RegExText.Contains('|'))
-                            {
-                                ws.tbQuestion.Text = TagRegEx.RegExText.Split('|')[1];
-                            }
-                            else
-                            {
-                                ws.tbQuestion.Text = TagRegEx.RegExText;
-                            }
-                            ws.DataContext = TagRegEx;
-                            ws.ShowDialog();
-                            YesNoSqlRegExIndex.Add(TagRegEx.TagRegExID, ws.YesNoResult);
-                            yn = ws.YesNoResult;
-                        }
-
-                        //now process the result
-                        if (yn == true)
-                        {
-                            //yes evaluates to first condition, if miss or hide then return
-                            if (StopIfMissOrHide)
-                                return TagRegEx.TagRegExMatchResult; //if Yes return 1st Result option if it's fail or hide
-                            continue; //continue to next iteration bacause result is pass.
-                        }
-                        else
-                        {
-                            //check for miss or hide as part of second condition, if miss or hide then return
-                            if (TagRegEx.TagRegExMatchNoResult != SqlTagRegExM.EnumResult.Pass)
-                                return TagRegEx.TagRegExMatchNoResult;
-                            continue;  //continue to next iteration bacause result is pass.
-                        }
-                    }
-                }
-
-                string strTextToMatch = TagRegEx.TargetSectionText;
-                    strTextToMatch = TagRegEx.TargetSectionText;
-
-                //process Regex match condition
-                if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Regex)
-                {
-                    //execute Regex under
-                }
-
-
-                //process all,none,any match condition
-                //Cycle through the list of terms and search through section of note if term is a match or not
-                bool AllTermsMatch = true;
-                bool NoTermsMatch = true;
-
-                foreach (string strRegEx in TagRegEx.RegExText.Split(','))
-                {
-                    if (strRegEx.Trim() != "")
-                    {
-                        //This is original: i took the prefix out, not sure why it was there if (Regex.IsMatch(strTextToMatch, CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase))
-                        if (Regex.IsMatch(strTextToMatch, CF.strRegexPrefix + strRegEx.Trim(), RegexOptions.IgnoreCase)) // /i is lower case directive for regex
-                        {
-                            //Match is found!
-                            //ANY condition is met, so stop if miss or hide if that is the 1st action
-                            if (StopIfMissOrHide)
-                                if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any)
-                                    return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.
-                            NoTermsMatch = false;
-                            if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any)
-                                break; //condition met, no need to check rest
-                        }
-                        else
-                        {
-                            AllTermsMatch = false;
-                        }
-                    }
-                }
-
-
-                //ALL condition met if all terms match
-                if (StopIfMissOrHide)
-                {
-                    if (AllTermsMatch && StopIfMissOrHide)
-                    {
-                        if (TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.All)
-                            return TagRegEx.TagRegExMatchResult; //Contains All return 2nd Result because any clause not reached
-                    }
-                    if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.None)
-                        return TagRegEx.TagRegExMatchResult; //Contains Any return 2nd Result - don't continue if type is "ANY NF" this is a stopper.)
-                    if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any)
-                        return TagRegEx.TagRegExMatchNoResult;
-                }
-                //NONE condition met if no terms match
-
-                if (!NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.Any)
-                    continue;
-
-                if (NoTermsMatch && TagRegEx.TagRegExMatchType == SqlTagRegExM.EnumMatch.None) //none condition met, carry out pass
-                {
-
-                }
-                else
-                {
-                    if (TagRegEx.TagRegExMatchNoResult != SqlTagRegExM.EnumResult.Pass)
-                        return TagRegEx.TagRegExMatchNoResult;
-                }
-                //ASK,ALL, and NONE conditions are note met, so the NoResult condition is the action
-            }
-
-            return SqlTagRegExM.EnumResult.Pass; //default is pass
-        }
-
-
         public string StrCheckPointType
         {
             get
             {
-                return (from c in CheckPointTypes where c.CheckPointTypeID == CheckPointType select c).FirstOrDefault().Title;
+                return (from c in ParentSegment.CheckPointTypes where c.CheckPointTypeID == CheckPointType select c).FirstOrDefault().Title;
             }
         }
 
@@ -637,10 +463,10 @@ namespace AI_Note_Review
 
         private void Tmp_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "CPStatusChanged")
+            if (e.PropertyName == "RecalculateCPStatus")
             {
-                cPStatus = null;
-                OnPropertyChanged("CPStatus");
+                CPStatus = null;
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
 
@@ -654,7 +480,6 @@ namespace AI_Note_Review
             }
             tags = null; //reset tags.
             OnPropertyChanged("Tags");
-            UpdateCheckPointProperties(true);
         }
 
         public void RemoveTag(SqlTagVM st)
@@ -666,7 +491,6 @@ namespace AI_Note_Review
             }
             tags = null; //reset tags.
             OnPropertyChanged("Tags");
-            UpdateCheckPointProperties(true);
         }
 
         private bool includeCheckpoint;
@@ -709,31 +533,12 @@ namespace AI_Note_Review
         {
             get
             {
-                var t = (from c in CheckPointTypes where c.CheckPointTypeID == CheckPointType select c).FirstOrDefault();
+                var t = (from c in ParentSegment.CheckPointTypes where c.CheckPointTypeID == CheckPointType select c).FirstOrDefault();
                 return t.ItemOrder;
             }
         }
 
-        private List<SqlCheckPointType> checkPointTypes;
-        /// <summary>
-        /// A list of the check point types from database
-        /// </summary>
-        public List<SqlCheckPointType> CheckPointTypes
-        {
-            get
-            {
-                if (checkPointTypes != null)
-                {
-                    return checkPointTypes;
-                }
-                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-                {
-                    string sql = "Select * from CheckPointTypes order by ItemOrder;";
-                    return cnn.Query<SqlCheckPointType>(sql).ToList();
-                }
-            }
 
-        }
 
 
 
@@ -754,6 +559,8 @@ namespace AI_Note_Review
             }
         }
         #endregion
+
+
 
         #region EditCheckPoint Command
 
@@ -986,6 +793,7 @@ namespace AI_Note_Review
         #endregion
     }
 
+    #region Commands
     //EditCheckPoint Command
     class EditCheckPoint : ICommand
     {
@@ -1259,4 +1067,5 @@ namespace AI_Note_Review
             cp.ParentSegment.UpdateCheckPoints();
         }
     }
+    #endregion
 }
