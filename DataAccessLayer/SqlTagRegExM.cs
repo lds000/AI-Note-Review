@@ -13,15 +13,8 @@ using System.Windows.Input;
 
 namespace AI_Note_Review
 {
-    public class SqlTagRegExM : INotifyPropertyChanged
+    public class SqlTagRegExM
     {
-        // Declare the event
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         private EnumMatch tagRegExMatchType;
         private EnumResult tagRegExMatchResult;
         private EnumResult tagRegExMatchNoResult;
@@ -59,6 +52,8 @@ namespace AI_Note_Review
         public SqlTagRegExM()
         {
         }
+
+
 
         public void SaveToDB()
         {
