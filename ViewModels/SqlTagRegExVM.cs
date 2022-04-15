@@ -18,6 +18,7 @@ namespace AI_Note_Review
     /// <summary>
     /// The working component, matches text to notesections to pass, miss, or drop checkpoint
     /// Has a parent Tag and belongs to a checkpoint.
+    /// More than one TagRegEx can belong to a Tag.
     /// </summary>
     public class SqlTagRegExVM : INotifyPropertyChanged
     {
@@ -48,7 +49,6 @@ namespace AI_Note_Review
         }
 
         private SqlTagRegExM SqlTagRegEx { get; set; }
-        public DocumentVM ParentDocumentVM { get; set; }
         public SqlTagVM ParentTag { get; set; }
 
         /// <summary>
@@ -209,8 +209,8 @@ namespace AI_Note_Review
             {
                 if (targetSecionText == null)
                 {
-                    if (ParentDocumentVM != null)
-                        targetSecionText = (from c in ParentDocumentVM.NoteSections where c.SectionID == TargetSection select c).FirstOrDefault().NoteSectionContent;
+                    if (ParentTag.ParentDocument != null)
+                        targetSecionText = (from c in ParentTag.ParentDocument.NoteSections where c.SectionID == TargetSection select c).FirstOrDefault().NoteSectionContent;
                 }
                 if (targetSecionText == null)
                     targetSecionText = "";
@@ -297,7 +297,7 @@ namespace AI_Note_Review
                 if (isHidden == null)
                 {
                     isHidden = false;
-                    double age = ParentDocumentVM.Patient.GetAgeInYearsDouble;
+                    double age = ParentTag.ParentDocument.Patient.GetAgeInYearsDouble;
                     if (age < MinAge)
                     {
                         isHidden = true;
@@ -308,12 +308,12 @@ namespace AI_Note_Review
                         isHidden = true;
                         return true;
                     }
-                    if (ParentDocumentVM.Patient.isMale && !Male)
+                    if (ParentTag.ParentDocument.Patient.isMale && !Male)
                     {
                         isHidden = true;
                         return true;
                     }
-                    if (!ParentDocumentVM.Patient.isMale && !Female)
+                    if (!ParentTag.ParentDocument.Patient.isMale && !Female)
                     {
                         isHidden = true;
                         return true;
