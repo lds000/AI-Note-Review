@@ -20,23 +20,14 @@ namespace AI_Note_Review
     public class SqlTagVM : INotifyPropertyChanged
     {
         // Declare the event
-        #region Inotify
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        #endregion
 
-        /// <summary>
-        /// Used to determine age, sex, etc of patient and also get NoteSectionText
-        /// </summary>
         public DocumentVM ParentDocument { get; set; }
 
-        /// <summary>
-        /// Create a Tag
-        /// </summary>
-        /// <param name="strTagText"></param>
         public SqlTagVM(string strTagText)
         {
             strTagText = strTagText.Replace("'", "''"); //used to avoid errors in titles with ' character
@@ -49,71 +40,61 @@ namespace AI_Note_Review
             }
         }
 
+        public SqlTagVM(SqlTagM st)
+        {
+            this.SqlTag = st;
+        }
 
-        /// <summary>
-        /// Parameterless constructor for Dapper
-        /// </summary>
         public SqlTagVM()
         {
             this.SqlTag = new SqlTagM();
         }
 
+        #region EventManagement (empty)
+        private void RegisterEvents()
+        {
+            Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
+        }
+
+        private void NotifyMe(NotificationMessage obj)
+        {
+            if (obj.Notification == "NewDocument")
+            {
+            }
+        }
+        #endregion
+
         private SqlTagM SqlTag { get; set; }
-
-
-        #region Mirror Model properties
         public int TagID { 
             get { return this.SqlTag.TagID; } 
             set { 
                 this.SqlTag.TagID = value;
             }
         }
-        public string TagText { 
-            get {
-                return this.SqlTag.TagText; 
-            } 
-            set 
-            {
-                this.SqlTag.TagText = value;
-                OnPropertyChanged();
-                SaveToDB();
-            } 
-        }
-        #endregion
+        public string TagText { get { return this.SqlTag.TagText; } set { this.SqlTag.TagText = value;} }
+
 
 
         public void RemoveTagRegEx(SqlTagRegExVM str) 
         {
             this.SqlTag.RemoveTagRegEx(str);
-            TagRegExs = null; //reset
+            tagRegExs = null; //reset
+            OnPropertyChanged("TagRegExs");
             OnPropertyChanged("RecalculateCPStatus");
         }
-
         public void SaveToDB() { this.SqlTag.SaveToDB(); }
+        public void DeleteFromDB() { this.SqlTag.DeleteFromDB(); }
 
-        public void DeleteFromDB() 
-        { 
-            this.SqlTag.DeleteFromDB();
-            TagRegExs = null; //reset
-            OnPropertyChanged("RecalculateCPStatus");
-        }
-
-        /// <summary>
-        /// Add new TagRegEx to checkpoint
-        /// </summary>
-        /// <param name="cp">The checkpoint to add the TagRexEx to</param>
         public void AddTagRegEx(SqlCheckpointVM cp)
         {
             SqlTagRegExVM srex = new SqlTagRegExVM(TagID, "Search Text", cp.TargetSection, 1);
             srex.ParentTag = this;
-            TagRegExs = null; //reset
+            tagRegExs = null; //reset
+            OnPropertyChanged("TagRegExs");
             OnPropertyChanged("RecalculateCPStatus");
         }
 
         private SqlTagRegExM.EnumResult? matchResult;
-        /// <summary>
-        /// The match result of the Tag (Pass, Fail, Drop)
-        /// </summary>
         public SqlTagRegExM.EnumResult? MatchResult
         {
             get
@@ -123,7 +104,7 @@ namespace AI_Note_Review
                     matchResult = SqlTagRegExM.EnumResult.Pass;
                     foreach (var tmpTagRegEx in TagRegExs)
                     {
-                        if (tmpTagRegEx.MatchStatus != SqlTagRegExM.EnumResult.Pass) //if any RegEx fails then all fail and no need to continue
+                        if (tmpTagRegEx.MatchStatus != SqlTagRegExM.EnumResult.Pass)
                         {
                             matchResult = tmpTagRegEx.MatchStatus;
                             break;
@@ -134,18 +115,12 @@ namespace AI_Note_Review
             }
             set
             {
-                if (matchResult != value)
-                {
-                    matchResult = value;
-                    OnPropertyChanged();
-                }
+                matchResult = value;
+                OnPropertyChanged();
             }
         }
 
         private List<SqlTagRegExVM> tagRegExs;
-        /// <summary>
-        /// Collection of TagRegExs that belong to this tag
-        /// </summary>
         public List<SqlTagRegExVM> TagRegExs
         {
             get
@@ -159,35 +134,25 @@ namespace AI_Note_Review
                         foreach (var tmp in tmpList)
                         {
                             tmp.ParentTag = this;
-                            tmp.PropertyChanged += RegExVM_PropertyChanged;
+                            tmp.ParentDocumentVM = ParentDocument;
+                            tmp.PropertyChanged += Tmp_PropertyChanged;
                         }
                         tagRegExs = tmpList;
                     }
                 }
                 return tagRegExs;
             }
-            set
-            {
-                if (tagRegExs != value)
-                {
-                    tagRegExs = value;
-                    OnPropertyChanged();
-                }
-            }
         }
 
-        private void RegExVM_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Tmp_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "RecalculateCPStatus")
             {
                 MatchResult = null;
-                OnPropertyChanged("RecalculateCPStatus"); //Bubble event up
+                OnPropertyChanged("RecalculateCPStatus"); //is there a better way to bubble event?
             }
         }
 
-        /// <summary>
-        /// Change the title of the Tag
-        /// </summary>
         public void EditTagText()
         {
             WinEnterText wet = new WinEnterText("Edit Title", TagText);
@@ -195,6 +160,9 @@ namespace AI_Note_Review
             if (wet.ReturnValue != null)
             {
                 TagText = wet.ReturnValue;
+                SaveToDB();
+                OnPropertyChanged("TagText");
+                OnPropertyChanged("RecalculateCPStatus");
             }
         }
 
