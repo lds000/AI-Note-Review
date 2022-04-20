@@ -18,6 +18,7 @@ namespace AI_Note_Review
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
         SqlCheckPointImage checkPointImage;
         public SqlCheckpointVM ParentCheckPoint;
 

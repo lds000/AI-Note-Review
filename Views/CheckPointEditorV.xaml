@@ -173,7 +173,7 @@
                                                     <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
                                                             <BulletDecorator>
                                                                 <BulletDecorator.Bullet>
-                                                                    <Ellipse Height="6" Width="6" Fill="White"/>
+                                                                    <Ellipse Height="6" Width="6" Fill="{Binding SeverityColor}"/>
                                                                 </BulletDecorator.Bullet>
                                                                 <TextBlock Margin="3,0,0,0" Grid.Column="1" Text="{Binding Path=CheckPointTitle}" ToolTip="{Binding Path=Comment}"/>
                                                             </BulletDecorator>

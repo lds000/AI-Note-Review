@@ -79,7 +79,11 @@
                         <Border Margin="3" Padding="3" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" DockPanel.Dock="Top" >
                             <StackPanel>
                                 <Label Foreground="Gray" Margin="0" Padding="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Left" FontSize="12">Checkpoint Templates:</Label>
-                                <ListBox ItemsSource="{Binding Document.ICD10s}" Style="{StaticResource MyListBox}" BorderBrush="Gray">
+                                <ListBox 
+                                    ItemsSource="{Binding Document.ICD10s}" 
+                                    Style="{StaticResource MyListBox}" 
+                                    BorderBrush="Gray"
+                                    MinHeight="50">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel>
@@ -106,7 +110,7 @@
                         <ColumnDefinition Width="3*"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <StackPanel>
+                    <StackPanel Visibility="Collapsed">
                         <Label Style="{StaticResource MyLblStyle}">Top Mission Diagnosis:</Label>
                         <ListBox Style="{StaticResource MyListBox}" ItemsSource="{Binding TopMissingDxs}" HorizontalContentAlignment="Stretch">
                             <ListBox.ItemTemplate>
@@ -124,7 +128,7 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </StackPanel>
-                    <TabControl x:Name="tcNote" Grid.Column="1">
+                    <TabControl x:Name="tcNote" Grid.Column="0" Grid.ColumnSpan="2">
                         <TabItem Foreground="Black" Header="CC">
                             <TextBox Background="Black" Foreground="White" TextWrapping="Wrap" Text="{Binding Document.CC}"></TextBox>
                         </TabItem>

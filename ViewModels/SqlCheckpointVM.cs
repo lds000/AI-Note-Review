@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 
@@ -234,6 +235,7 @@ namespace AI_Note_Review
                 OnPropertyChangedSave();
                 OnPropertyChanged("ErrorSeverity");
                 OnPropertyChanged("ReorderCheckPoints");
+                OnPropertyChanged("SeverityColor");
             }
         }
         public int TargetSection
@@ -318,6 +320,21 @@ namespace AI_Note_Review
             }
         }
         #endregion
+
+        public Brush SeverityColor
+        {
+            get
+            {
+                if (this.ErrorSeverity >= 7)
+                    return Brushes.Red;
+                if (this.ErrorSeverity >= 5)
+                    return Brushes.Yellow;
+                if (this.ErrorSeverity >= 1)
+                    return Brushes.Green;
+                return Brushes.White;
+
+            }
+        }
 
         public Visibility OveriddenVisibility
         {
