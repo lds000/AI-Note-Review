@@ -484,6 +484,12 @@ namespace AI_Note_Review
             #region Process locked document magic
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
+            List<string> medsStarted = new List<string>();
+            List<string> lLabsOrdered = new List<string>();
+            string strMedsSarted = "";
+            string strLabsOrdered = "";
+            string strImagesOrdered = "";
+
             HtmlElementCollection AllTRItems = HDoc.Body.GetElementsByTagName("TR"); //5 ms
             HtmlElementCollection AllTHEADItems = HDoc.Body.GetElementsByTagName("THEAD"); //5 ms
 
@@ -520,7 +526,7 @@ namespace AI_Note_Review
                             {
                                 string strDocname = strInnerText.Split(':')[1].Trim();
                                 strDocname = strDocname.Replace("    ", "|");
-                                document.Provider = strDocname.Split('|')[0];
+                                Provider = strDocname.Split('|')[0];
                             }
                             continue;
 
@@ -532,7 +538,7 @@ namespace AI_Note_Review
                             {
                                 string strDocname = strInnerText.Split(':')[1].Trim();
                                 strDocname = strDocname.Replace("    ", "|");
-                                document.Provider = strDocname.Split('|')[0];
+                                Provider = strDocname.Split('|')[0];
 
                             }
                             continue;
@@ -578,11 +584,25 @@ namespace AI_Note_Review
 
                             if (strCurrentHeading == "Reason for Appointment")
                             {
-                                document.CC = strInnerText.Substring(3);
+                                var result = strInnerText.Split(new[] { '\r', '\n' });
+                                string tmpStr = "";
+                                foreach (string str in result)
+                                {
+                                    if (str.Length >=3)
+                                    tmpStr += str.Substring(3) + "\n";
+                                }
+                                CC = tmpStr;
                             }
                             if (strCurrentHeading == "History of Present Illness")
                             {
-                                document.HPI = strInnerText;
+                                var result = strInnerText.Split(new[] { '\r', '\n' });
+                                string tmpStr = "";
+                                foreach (string str in result)
+                                {
+                                    if (str.Trim() != "Note::" && str.Trim() != "")
+                                        tmpStr += str.Trim() + "\n";
+                                }
+                                HPI = tmpStr;
                             }
                             if (strCurrentHeading == "Current Medications")
                             {
@@ -598,6 +618,8 @@ namespace AI_Note_Review
                                         continue;
                                     if (str.StartsWith("Medication List reviewed"))
                                         continue;
+                                    if (str.StartsWith("None"))
+                                        continue;
                                     if (str.Trim() == "")
                                         continue;
                                     if (str == "Not-Taking:")
@@ -605,6 +627,8 @@ namespace AI_Note_Review
                                         prn = true;
                                         continue;
                                     }
+                                    if (str.StartsWith("/PRN"))
+                                        continue;
                                     if (str == "Discontinued:")
                                         break;
 
@@ -620,11 +644,23 @@ namespace AI_Note_Review
                                     strOut += strMed + "\n";
                                 }
 
-                                document.CurrentMeds = strOut;
+                                CurrentMeds = strOut;
                             }
                             if (strCurrentHeading == "Active Problem List")
                             {
                                 string strTextToParse = strInnerText;
+
+                                /*
+                                string strDx;
+                                foreach (HtmlElement el in TempEl.Children)
+                                {
+                                    if (el.TagName == "TD")
+                                    {
+                                        strDx = el.InnerText;
+                                    }
+                                } 
+                                */
+
                                 if (strInnerText == null)
                                     continue;
                                 var result = strTextToParse.Split(new[] { '\r', '\n' });
@@ -642,7 +678,7 @@ namespace AI_Note_Review
                                 {
                                     strOut += strProblem + "\n";
                                 }
-                                document.ProblemList = strOut;
+                                ProblemList = strOut;
                             }
                             if (strCurrentHeading == "Past Medical History")
                             {
@@ -660,42 +696,42 @@ namespace AI_Note_Review
                                 {
                                     strOut += strMHx + "\n";
                                 }
-                                document.PMHx = strOut;
+                                PMHx = strOut;
                             }
                             if (strCurrentHeading == "Social History")
                             {
-                                document.SocHx = strInnerText;
+                                SocHx = strInnerText;
                             }
                             if (strCurrentHeading == "Allergies")
                             {
-                                document.Allergies = strInnerText;
+                                Allergies = strInnerText;
                             }
                             if (strCurrentHeading == "Review of Systems")
                             {
-                                document.ROS = strInnerText;
+                                ROS = strInnerText;
                             }
 
                             if (strCurrentHeading == "Vital Signs")
                             {
                                 var result = strInnerText.Split(new[] { '\r', '\n' });
-                                document.Vitals = result[0];
+                                Vitals = result[0];
                             }
                             if (strCurrentHeading == "Examination")
                             {
-                                document.Exam = strInnerText;
+                                Exam = strInnerText;
                             }
                             if (strCurrentHeading == "Visit Code")
                             {
-                                document.VisitCodes = strInnerText;
+                                VisitCodes = strInnerText;
                             }
                             if (strCurrentHeading == "Preventive Medicine")
                             {
-                                document.PreventiveMed = strInnerText;
+                                PreventiveMed = strInnerText;
                             }
 
                             if (strCurrentHeading == "Follow Up")
                             {
-                                document.FollowUp = strInnerText;
+                                FollowUp = strInnerText;
                             }
                             if (strCurrentHeading == "Assessments")
                             {
@@ -714,22 +750,17 @@ namespace AI_Note_Review
                                 {
                                     strOut += strProblem + Environment.NewLine;
                                 }
-                                document.Assessments = strOut;
+                                Assessments = strOut;
                             }
 
                             if (strCurrentHeading.Trim() == "Procedures")
                             {
-                                document.ProcedureNote += strInnerText;
+                                ProcedureNote += strInnerText;
                             }
 
                             if (strCurrentHeading == "Treatment")
                             {
                                 var result = strInnerText.Split(new[] { '\r', '\n' });
-                                List<string> medsStarted = new List<string>();
-                                List<string> lLabsOrdered = new List<string>();
-                                string strMedsSarted = "";
-                                string strLabsOrdered = "";
-                                string strImagesOrdered = "";
                                 foreach (string str in result)
                                 {
                                     if (str.Trim().StartsWith("LAB:"))
@@ -737,7 +768,7 @@ namespace AI_Note_Review
                                         lLabsOrdered.Add(str);
                                         strLabsOrdered += str + "\n";
                                     }
-                                    if (str.StartsWith("Start "))
+                                    if (str.Trim().StartsWith("Start "))
                                     {
                                         medsStarted.Add(str);
                                         strMedsSarted += str + "\n";
@@ -747,17 +778,16 @@ namespace AI_Note_Review
                                         strImagesOrdered += str.Trim() + "\n";
                                     }
                                 }
-                                document.ImagesOrdered = strImagesOrdered;
-                                document.Treatment = strInnerText;
-                                document.MedsStarted = strMedsSarted;
-                                document.LabsOrdered = strLabsOrdered;
+                                ImagesOrdered = strImagesOrdered;
+                                Treatment += strInnerText;
+                                MedsStarted = strMedsSarted;
+                                LabsOrdered = strLabsOrdered;
                             }
 
                             if (strCurrentHeading.StartsWith("Diagnostic Imaging") && strInnerText != null)
                             {
                                 var result = strInnerText.Split(new[] { '\r', '\n' });
                                 List<string> ImagessOrdered = new List<string>();
-                                string strImagesOrdered = "";
                                 foreach (string str in result)
                                 {
                                     if (str.Trim().StartsWith("Imaging:"))
@@ -766,11 +796,11 @@ namespace AI_Note_Review
                                         strImagesOrdered += str.Trim() + "\n";
                                     }
                                 }
-                                document.ImagesOrdered = strImagesOrdered;
+                                ImagesOrdered = strImagesOrdered;
                             }
                             if (strCurrentHeading.Trim() == "Labs")
                             {
-                                document.LabsOrdered += strInnerText;
+                                LabsOrdered += strInnerText;
                             }
 
                         }
@@ -1289,6 +1319,7 @@ namespace AI_Note_Review
                 }
                 else
                 {
+                    processLocked(document.NoteHTML);
                     masterReviewVM.AddLog("Processing locked chart");
                     Console.WriteLine($"Processed locked chart for {patientVM.PtName}.");
                 }
