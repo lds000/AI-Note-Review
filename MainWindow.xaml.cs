@@ -359,5 +359,10 @@ namespace AI_Note_Review
         {
 
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

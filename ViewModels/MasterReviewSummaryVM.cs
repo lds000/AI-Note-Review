@@ -486,6 +486,22 @@ namespace AI_Note_Review
             }
         }
 
+        /// <summary>
+        /// Get a list of providers for the west side pod
+        /// </summary>
+        public List<SqlProvider> MyPeeps
+        {
+            get
+            {
+                string sql = "";
+                sql += $"Select * from Providers where IsWestSidePod == '1' order by FullName;"; //this part is to get the ID of the newly created phrase
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    return cnn.Query<SqlProvider>(sql).ToList();
+                }
+            }
+        }
+
         public void ResetMissingDx()
         {
             topMissingDxs = null;
@@ -558,6 +574,51 @@ namespace AI_Note_Review
             {
                 mCheckPointEditor = value;
             }
+        }
+
+        private ICommand mProviderEditor;
+        public ICommand ProviderEditorCommand
+        {
+            get
+            {
+                if (mProviderEditor == null)
+                    mProviderEditor = new ProviderEditor();
+                return mProviderEditor;
+            }
+            set
+            {
+                mProviderEditor = value;
+            }
+        }
+
+    }
+    class ProviderEditor : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
+            ProviderEditorV  w = new ProviderEditorV();
+            w.DataContext = mrs;
+            w.Show();
         }
     }
 

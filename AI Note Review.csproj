@@ -197,6 +197,9 @@
     <Compile Include="Views\MasterReviewsV.xaml.cs">
       <DependentUpon>MasterReviewsV.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProviderEditorV.xaml.cs">
+      <DependentUpon>ProviderEditorV.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\VisitReportV.xaml.cs">
       <DependentUpon>VisitReportV.xaml</DependentUpon>
     </Compile>
@@ -275,6 +278,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MasterReviewsV.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProviderEditorV.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
