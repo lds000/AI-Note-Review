@@ -110,6 +110,7 @@
     <Compile Include="Models\NoteSectionM.cs" />
     <Compile Include="Models\ReportToHtmlM.cs" />
     <Compile Include="Models\NoteHunterM.cs" />
+    <Compile Include="SampleDoc.cs" />
     <Compile Include="UserControls\UCSegmentCheckpoints.xaml.cs">
       <DependentUpon>UCSegmentCheckpoints.xaml</DependentUpon>
     </Compile>
