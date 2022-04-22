@@ -15,6 +15,10 @@ using System.Windows.Input;
 
 namespace AI_Note_Review
 {
+    /// <summary>
+    /// The working component, matches text to notesections to pass, miss, or drop checkpoint
+    /// Has a parent Tag and belongs to a checkpoint.
+    /// </summary>
     public class SqlTagRegExVM : INotifyPropertyChanged
     {
         // Declare the event
@@ -41,23 +45,7 @@ namespace AI_Note_Review
         public SqlTagRegExVM()
         {
             this.SqlTagRegEx = new SqlTagRegExM();
-            RegisterEvents();
         }
-
-        #region EventManagement (empty)
-        private void RegisterEvents()
-        {
-            Messenger.Default.Register<NotificationMessage>(this, NotifyMe);
-        }
-
-        private void NotifyMe(NotificationMessage obj)
-        {
-            if (obj.Notification == "NewDocument") //used to reset the document: todo:
-            {
-                TargetSectionText = null;
-            }
-        }
-        #endregion
 
         private SqlTagRegExM SqlTagRegEx { get; set; }
         public DocumentVM ParentDocumentVM { get; set; }
@@ -66,7 +54,7 @@ namespace AI_Note_Review
         /// <summary>
         /// Create a TagRegEx model and save to database and retrieve its new ID
         /// </summary>
-        /// <param name="intTargetTag"></param>
+        /// <param name="intTargetTag">Each TagRegEx is associated with one Sql Tag.</param>
         /// <param name="strRegExText"></param>
         /// <param name="intTargetSection"></param>
         /// <param name="iTagRegExType"></param>
@@ -212,7 +200,8 @@ namespace AI_Note_Review
 
         private string targetSecionText;
         /// <summary>
-        /// The text from the parentdocument associated with th TargetSection, ie the currentMed section text of the note if the targetSection is CurrentMed
+        /// The text from the parentdocument associated with the TargetSection, ie the currentMed section text of the note if the targetSection is CurrentMed,
+        /// Used in regular expression matching
         /// </summary>
         public string TargetSectionText
         {
@@ -233,7 +222,6 @@ namespace AI_Note_Review
                 {
                     targetSecionText = value;
                     OnPropertyChanged();
-                    //todo:instead of reseting document, should I call "ResetCPStatus"
                 }
             }
         }
@@ -275,7 +263,7 @@ namespace AI_Note_Review
             }
         }
 
-        private bool? ask;
+        private bool? ask; //holds the answer so you don't ask more than once.
         public bool Ask
         {
             get
@@ -336,6 +324,9 @@ namespace AI_Note_Review
         }
 
         private SqlTagRegExM.EnumResult? matchStatus;
+        /// <summary>
+        /// Holds the pass, miss, drop status
+        /// </summary>
         public SqlTagRegExM.EnumResult? MatchStatus
         {
             get
@@ -362,8 +353,8 @@ namespace AI_Note_Review
         /// <returns></returns>
         private SqlTagRegExM.EnumResult getMatchStatus()
         {
-            // check demographic limits and return result if met.
-            //If any TagRegEx fails due to demographics, the entire series fails
+            // check demographic limits (ie female only, age>2, etc...) and return result if met.
+            //If any TagRegEx fails due to demographics, the entire series fails, if pass then continues to next TagRegEx
             if (IsHidden)
             {
                 return SqlTagRegExM.EnumResult.Hide;
@@ -428,7 +419,7 @@ namespace AI_Note_Review
             get
             {
                 return Enum.GetValues(typeof(SqlTagRegExM.EnumMatch))
-                    .Cast<SqlTagRegExM.EnumMatch>();
+                    .Cast<SqlTagRegExM.EnumMatch>(); //pretty nifty conversion I think
             }
         }
 
@@ -446,6 +437,9 @@ namespace AI_Note_Review
             }
         }
 
+        /// <summary>
+        /// Used to give a common language description of regex
+        /// </summary>
         public string TagRegExMatchTypeDescription
         {
             get
