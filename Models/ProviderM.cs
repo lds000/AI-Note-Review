@@ -15,26 +15,70 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
-    public class ProviderM : INotifyPropertyChanged
+    public class ProviderM
     {
 
-        #region inotify
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // This method is called by the Set accessor of each property.  
-        // The CallerMemberName attribute that is applied to the optional propertyName  
-        // parameter causes the property name of the caller to be substituted as an argument.  
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        public int ProviderID
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            //Console.WriteLine($"iNotify property {propertyName}");
+            get; set;
+        }
+        public string FirstName
+        {
+            get;
+            set;
+        }
+        public string
+LastName
+        {
+            get; set;
         }
 
-        #endregion
-        public ProviderM()
+        public string Cert
         {
-
+            get; set;
         }
+        public string
+HomeClinic
+        {
+            get; set;
+        }
+        public int
+ReviewInterval
+        {
+            get;
+            set;
+        }
+        public string
+EMail
+        {
+            get;
+            set;
+        }
+        public string
+FullName
+        {
+            get;
+            set;
+        }
+        public bool
+IsWestSidePod
+        {
+            get;
+            set;
+        }
+        public string
+
+PersonalNotes
+        {
+            get;
+            set;
+        }
+
+        public string Bio
+        {
+            get;
+            set;
+        }
+
     }
 }

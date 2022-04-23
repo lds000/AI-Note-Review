@@ -31,7 +31,7 @@ namespace AI_Note_Review
         //ViewModels declared locally for convenience
         private MasterReviewSummaryVM masterReviewVM;
         private PatientVM patientVM; //may be from mastereviewsummary, or created from scratch for notehunter
-        private SqlProvider sqlProviderVM; //todo make ProviderVM
+        private ProviderVM providerVM; //todo make ProviderVM
 
         //Models
         private DocumentM document;
@@ -43,7 +43,7 @@ namespace AI_Note_Review
         public DocumentVM(MasterReviewSummaryVM mrs)
         {
             masterReviewVM = mrs;
-            sqlProviderVM = mrs.Provider;
+            providerVM = mrs.Provider;
             patientVM = mrs.Patient;
             document = SampleDocument; //New DocumentM() called under this.
         }
@@ -105,16 +105,6 @@ namespace AI_Note_Review
             }
         }
 
-        /// <summary>
-        /// The provider that is extracted from the document
-        /// </summary>
-        public SqlProvider SqlProvider
-        {
-            get
-            {
-                return sqlProviderVM;
-            }
-        }
 
         /// <summary>
         /// Not used, perhaps at some point?
@@ -867,7 +857,7 @@ namespace AI_Note_Review
                 OnPropertyChanged();
             }
         }
-        public SqlProvider ProviderSql
+        public ProviderVM ProviderSql
         {
             get
             {

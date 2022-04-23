@@ -47,15 +47,15 @@ namespace AI_Note_Review
             }
             set
             {
-                SqlProvider p = SqlProvider.SqlGetProviderByFullName(value);
+                ProviderVM p = ProviderVM.SqlGetProviderByFullName(value);
                     provider = p.FullName;
                     ProviderID = p.ProviderID;
                     ProviderSql = p;
             }
         }
 
-        private SqlProvider providerSql;
-        public SqlProvider ProviderSql
+        private ProviderVM providerSql;
+        public ProviderVM ProviderSql
         {
             get
             {

@@ -42,12 +42,10 @@
                               Command="{Binding Path=CheckPointEditorCommand}"
                               CommandParameter="{Binding}">
                     </MenuItem>
-                    <MenuItem Header="Edit Providers" Click="MenuItem_Click">
-                        <MenuItem Header="Add Provider" ToolTip="Add new provider."></MenuItem>
-                        <MenuItem Header="Remove Provider" ToolTip="Remove existing provider."></MenuItem>
-                        <MenuItem Header="Edit Provider Details" ToolTip="Edit provider data."
-                                  Command="{Binding Path=ProviderEditorCommand}"
-                              CommandParameter="{Binding}"></MenuItem>
+                    <MenuItem Header="Edit Providers" 
+                              Click="MenuItem_Click"
+                              Command="{Binding Path=ProviderEditorCommand}"
+                              CommandParameter="{Binding}">
                     </MenuItem>
                     <MenuItem Header="Settings" Click="OpenSettings">
                     </MenuItem>

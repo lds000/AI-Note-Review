@@ -48,9 +48,9 @@ namespace AI_Note_Review
                 OnPropertyChanged("CheckPointsSummaryHTML");
             } 
         }
-        public SqlProvider ParentProvider { get; set; }
+        public ProviderVM ParentProvider { get; set; }
 
-        public SqlDocumentReviewSummaryVM(SqlProvider sp)
+        public SqlDocumentReviewSummaryVM(ProviderVM sp)
         {
             documentReviewSummary = new SqlDocumentReviewSummaryM();
             ParentProvider = sp;

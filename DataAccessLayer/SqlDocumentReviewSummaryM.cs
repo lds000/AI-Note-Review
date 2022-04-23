@@ -18,7 +18,7 @@ namespace AI_Note_Review
         public DateTime VisitDate { get; set; }
         public int PtID { get; set; }
         VisitReportM visitReport = new VisitReportM();
-        public SqlProvider ParentProvider { get; set; }
+        public ProviderVM ParentProvider { get; set; }
         //for dapper
         public SqlDocumentReviewSummaryM()
         {

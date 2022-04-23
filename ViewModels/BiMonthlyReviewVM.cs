@@ -94,8 +94,8 @@ namespace AI_Note_Review
 
 
 
-        private SqlProvider selectedProviderForBiMonthlyReview;
-        public SqlProvider SelectedProviderForBiMonthlyReview
+        private ProviderVM selectedProviderForBiMonthlyReview;
+        public ProviderVM SelectedProviderForBiMonthlyReview
         {
             get
             {
@@ -236,8 +236,8 @@ namespace AI_Note_Review
 
 
 
-        public ObservableCollection<SqlProvider> myPeeps;
-        public ObservableCollection<SqlProvider> MyPeeps
+        public ObservableCollection<ProviderVM> myPeeps;
+        public ObservableCollection<ProviderVM> MyPeeps
         {
             get
             {
@@ -248,12 +248,17 @@ namespace AI_Note_Review
                     sql += $"Select * from Providers where IsWestSidePod == '1' order by FullName;"; //this part is to get the ID of the newly created phrase
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
-                        var tmpPeeps = cnn.Query<SqlProvider>(sql).ToList();
-                        foreach (var tmpPeep in tmpPeeps)
+                        List<ProviderM> tmpList = cnn.Query<ProviderM>(sql).ToList();
+                        List<ProviderVM> tmpListVM = new List<ProviderVM>();
+                        foreach (var tmp in tmpList)
+                        {
+                            tmpListVM.Add(new ProviderVM(tmp));
+                        }
+                        foreach (var tmpPeep in tmpListVM)
                         {
                             tmpPeep.ParentMasterReviewSummary = selectedMasterReviewSummary;
                         }
-                        myPeeps = tmpPeeps.ToObservableCollection();
+                        myPeeps = tmpListVM.ToObservableCollection();
                     }
                 }
                 return myPeeps;

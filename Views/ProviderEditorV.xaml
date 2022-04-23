@@ -12,19 +12,41 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Border BorderBrush="White" BorderThickness="1" Margin="5">
-        <ListBox Style="{StaticResource MyListBox}"
-                 ItemsSource="{Binding MyPeeps}"
-                 DisplayMemberPath="FullName"
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="Auto"/>
+            <RowDefinition  Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition  Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.ColumnSpan="3" HorizontalAlignment="Center">
+            <Label Style="{StaticResource MyLblStyle}" FontSize="20">Provider Editor</Label>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label Style="{StaticResource MyLblStyle}">Count:</Label>
+                <Label Style="{StaticResource MyLblStyle}" Content="{Binding AllPeeps.Count}"></Label>
+            </StackPanel>
+        </StackPanel>
+        <Border Grid.Row="1" MinWidth="100" BorderBrush="White" BorderThickness="1" Margin="5" Grid.RowSpan="2">
+        <ListBox Grid.Row="1" Style="{StaticResource MyListBox}"
+                 ItemsSource="{Binding AllPeeps}"
                  Name="lbMyPeeps"
-                 
-                 ></ListBox>
+                 >
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                            <TextBlock 
+                                Style="{StaticResource MyTbStyle}" 
+                                Text="{Binding FullName}"
+                                Foreground="{Binding ProviderColor}"></TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ListBox>
         </Border>
-        <Border Grid.Column="1" BorderBrush="White" Margin="5" BorderThickness="1">
+        <Border Grid.Row="1" BorderBrush="White" BorderThickness="1" Grid.Column="1" Margin="5" Padding="5">
+            <CheckBox Style="{StaticResource MyCBStyle}" IsChecked="{Binding ShowAllPeeps}">Show All Providers</CheckBox>
+        </Border>
+        <Border Grid.Column="1" BorderBrush="White" Margin="5" BorderThickness="1" Padding="5" Grid.Row="2">
             <Grid DataContext="{Binding ElementName=lbMyPeeps, Path=SelectedItem}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" MinWidth="90"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -35,15 +57,58 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 
-                <Label Style="{StaticResource MyLblStyle}" Grid.Row="0" Grid.Column="0">First Name</Label>
-                <TextBox Style="{StaticResource MyTextBox}" Grid.Row="0" Grid.Column="1" 
+                <Label 
+                    VerticalAlignment="Bottom" 
+                    Style="{StaticResource MyLblStyle}" 
+                    Grid.Row="0" Grid.Column="0">
+                    First Name</Label>
+                
+                <TextBox 
+                    VerticalAlignment="Center" 
+                    Style="{StaticResource MyTextBox}" 
+                    Grid.Row="0" Grid.Column="1" 
                          Text="{Binding FirstName}"></TextBox>
-                <Label Style="{StaticResource MyLblStyle}" Grid.Row="1" Grid.Column="0">Last Name</Label>
-                <TextBox Style="{StaticResource MyTextBox}" Grid.Row="1" Grid.Column="1" 
+
+                <Label 
+                    VerticalAlignment="Bottom" 
+                    Style="{StaticResource MyLblStyle}" 
+                    Grid.Row="1" Grid.Column="0">
+                    Last Name</Label>
+
+                <TextBox 
+                    VerticalAlignment="Center" 
+                    Style="{StaticResource MyTextBox}" 
+                    Grid.Row="1" Grid.Column="1" 
                          Text="{Binding LastName}"></TextBox>
+
+                <Label 
+                    VerticalAlignment="Bottom" 
+                    Style="{StaticResource MyLblStyle}" 
+                    Grid.Row="2" Grid.Column="0">
+                    EMail</Label>
+
+                <TextBox 
+                    VerticalAlignment="Center" 
+                    Style="{StaticResource MyTextBox}" 
+                    Grid.Row="2" Grid.Column="1" 
+                         Text="{Binding EMail}"></TextBox>
+
+                <Label 
+                    VerticalAlignment="Bottom" 
+                    Style="{StaticResource MyLblStyle}" 
+                    Grid.Row="3" Grid.Column="0">
+                    West Side</Label>
+
+                <CheckBox
+                    Style="{StaticResource MyCBStyle}"
+                    Grid.Column="1"
+                    Grid.Row="3"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding IsWestSidePod}"></CheckBox>
 
 
             </Grid>
         </Border>
+        <Button Grid.Row="3" Click="Button_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" Grid.ColumnSpan="3" FontSize="16">Close</Button>
     </Grid>
 </Window>

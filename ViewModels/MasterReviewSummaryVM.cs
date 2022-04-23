@@ -9,6 +9,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace AI_Note_Review
 {
@@ -125,15 +126,15 @@ namespace AI_Note_Review
             }
         }
 
-        private SqlProvider provider;
+        private ProviderVM provider;
         /// <summary>
-        /// The provider associated with the MRS - SqlProvider model
+        /// The provider associated with the MRS - ProviderVM model
         /// </summary>
-        public SqlProvider Provider
+        public ProviderVM Provider
         {
             get
             {
-                if (provider == null) provider = new SqlProvider(this);
+                if (provider == null) provider = new ProviderVM(this);
                 return provider;
             }
         }
@@ -486,18 +487,47 @@ namespace AI_Note_Review
             }
         }
 
+        public bool? showAllPeeps;
+        public bool? ShowAllPeeps
+        {
+            get 
+            {
+                if (showAllPeeps == null)
+                    showAllPeeps = true;
+                return showAllPeeps;
+            }
+            set
+            {
+            showAllPeeps = value;
+                OnPropertyChanged();
+                OnPropertyChanged("AllPeeps");
+            }
+
+        }
+
+
         /// <summary>
         /// Get a list of providers for the west side pod
         /// </summary>
-        public List<SqlProvider> MyPeeps
+        public List<ProviderVM> AllPeeps
         {
             get
             {
                 string sql = "";
-                sql += $"Select * from Providers where IsWestSidePod == '1' order by FullName;"; //this part is to get the ID of the newly created phrase
+                if (ShowAllPeeps == true)
+                sql += $"Select * from Providers where FullName != '' order by FullName;"; //this part is to get the ID of the newly created phrase
+                else
+                sql += $"Select * from Providers where FullName != '' and IsWestSidePod == 1 order by FullName;"; //this part is to get the ID of the newly created phrase
+
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    return cnn.Query<SqlProvider>(sql).ToList();
+                    List<ProviderM> tmpList = cnn.Query<ProviderM>(sql).ToList();
+                    List<ProviderVM> tmpListVM = new List<ProviderVM>();
+                    foreach (var tmp in tmpList)
+                    {
+                        tmpListVM.Add(new ProviderVM(tmp));
+                    }
+                    return tmpListVM;
                 }
             }
         }

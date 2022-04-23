@@ -37,14 +37,14 @@ namespace AI_Note_Review
         {
 
         }
-        public ObservableCollection<SqlProvider> AllProviders
+        public ObservableCollection<ProviderVM> AllProviders
         {
             get
             {
                 string sql = $"Select * from Providers where FullName != '' order by FullName;";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    return new ObservableCollection<SqlProvider>(cnn.Query<SqlProvider>(sql).ToList());
+                    return new ObservableCollection<ProviderVM>(cnn.Query<ProviderVM>(sql).ToList());
                 }
             }
         }

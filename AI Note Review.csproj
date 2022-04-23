@@ -138,7 +138,7 @@
     <Compile Include="DataAccessLayer\SqlLightDataAccess.cs" />
     <Compile Include="DataAccessLayer\SqlMonthReviewSummary.cs" />
     <Compile Include="DataAccessLayer\SqlNoteSection.cs" />
-    <Compile Include="DataAccessLayer\SqlProvider.cs" />
+    <Compile Include="ViewModels\ProviderVM.cs" />
     <Compile Include="DataAccessLayer\SqlRelCPProvider.cs" />
     <Compile Include="DataAccessLayer\SqlrelICD10SegmentsCheckPoints.cs" />
     <Compile Include="DataAccessLayer\SqlTagM.cs" />
@@ -162,7 +162,6 @@
     <Compile Include="ViewModels\BiMonthlyReviewVM.cs" />
     <Compile Include="ViewModels\DocumentVM.cs" />
     <Compile Include="ViewModels\PatientVM.cs" />
-    <Compile Include="ViewModels\ProviderVM.cs" />
     <Compile Include="ViewModels\SqlCheckpointVM.cs" />
     <Compile Include="ViewModels\SqlTagRegExVM.cs" />
     <Compile Include="ViewModels\VisitReportVM.cs" />

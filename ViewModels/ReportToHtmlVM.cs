@@ -24,7 +24,7 @@ namespace AI_Note_Review
         }
 
         private ReportToHtmlVM reportToHtmlVM;
-        private SqlProvider sqlProvider;
+        private ProviderVM providerVM;
         private int ptID;
         private DateTime visitDate;
         private List<ReportToHtmlM> lReportToHtmlM;
@@ -93,9 +93,9 @@ namespace AI_Note_Review
             return r; 
         }
 
-        public ReportToHtmlVM(SqlProvider sProvider, DateTime dt, int ptID)
+        public ReportToHtmlVM(ProviderVM sProvider, DateTime dt, int ptID)
         {
-            this.sqlProvider = sProvider;
+            this.providerVM = sProvider;
             this.ptID = ptID;
             this.visitDate = dt;
             string sqlCheck = $"Select * from(Select distinct CheckPointID rel,Comment RelComment,CheckPointStatus from RelCPPRovider where PtID={ptID} " +

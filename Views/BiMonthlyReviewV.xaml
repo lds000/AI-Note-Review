@@ -46,7 +46,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel x:Name="spTemplate" Orientation="Horizontal">
-                                <!--SqlProvider-->
+                                <!--ProviderVM-->
                                 <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding MasterReviewSummaryToString}"></TextBlock>
                             </StackPanel>
                         </DataTemplate>
@@ -63,12 +63,14 @@
             </Border>
             <Border BorderBrush="White" Grid.Column="1" BorderThickness="1" Margin="5">
                 <!--List source:MyPeeps, SelectedValue=SelectedProviderForBiMonthlyReview-->
-                <ListBox Style="{StaticResource MyListBox}" x:Name="lbProviders" 
-                         SelectedValue="{Binding SelectedProviderForBiMonthlyReview}"  ItemsSource="{Binding MyPeeps}">
+                <ListBox Style="{StaticResource MyListBox}" 
+                         x:Name="lbProviders" 
+                         SelectedValue="{Binding SelectedProviderForBiMonthlyReview}"
+                         ItemsSource="{Binding MyPeeps}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel x:Name="spTemplate" Orientation="Horizontal">
-                                <!--SqlProvider-->
+                                <!--ProviderVM-->
                                 <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding FullName}"></TextBlock>
                                 <TextBlock Style="{StaticResource MyTbStyle}" Margin="5,0,0,0">(</TextBlock>
                                 <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding CurrentReviewCount}" Foreground="{Binding CurrentReviewCount, Converter={StaticResource ChartCountToBrushConverter}}"></TextBlock>
@@ -105,7 +107,7 @@
                         </TextBox>
 
                         <TextBlock Style="{StaticResource MyTbStyle}" Grid.Row="4">Reviews</TextBlock>
-                        <!-- Contains a list of SqlDocumentReviewSummaryVM from SqlProvider.SqlDocumentReviewsSummaryProperty -->
+                        <!-- Contains a list of SqlDocumentReviewSummaryVM from ProviderVM.SqlDocumentReviewsSummaryProperty -->
                         <ListBox Grid.Row="5" x:Name="lbMonthReview" Style="{StaticResource MyListBox}"
                          ItemsSource="{Binding ListOfDocumentReviews}"
                          SelectedItem="{Binding SelectedDocumentReview}">

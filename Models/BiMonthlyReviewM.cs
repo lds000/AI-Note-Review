@@ -56,7 +56,7 @@ namespace AI_Note_Review
         /// <summary>
         /// Get a list of providers for the west side pod
         /// </summary>
-        public List<SqlProvider> MyPeeps
+        public List<ProviderVM> MyPeeps
         {
             get
             {
@@ -64,7 +64,7 @@ namespace AI_Note_Review
                 sql += $"Select * from Providers where IsWestSidePod == '1' order by FullName;"; //this part is to get the ID of the newly created phrase
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    return cnn.Query<SqlProvider>(sql).ToList();
+                    return cnn.Query<ProviderVM>(sql).ToList();
                 }
             }
         }
