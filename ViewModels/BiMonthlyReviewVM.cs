@@ -279,9 +279,15 @@ namespace AI_Note_Review
             if (strName == "Donald") strName = "Sanford";
             if (strName == "Joshua") strName = "Josh";
             if (strName == "Nickolas") strName = "Nick";
+            if (strName == "Lenard") strName = "Leo";
+            if (strName == "Lia")    strName = "Lia P";
+            if (strName == "Jessica")
+                strName = "Jessica K";
             if (selectedProviderForBiMonthlyReview.FullName.Contains("Denning")) strName = "Denning";
             if (selectedProviderForBiMonthlyReview.FullName.Contains("Shinkle")) strName = "Shinkle";
             if (selectedProviderForBiMonthlyReview.FullName.Contains("Barnum")) strName = "Barnum";
+            if (selectedProviderForBiMonthlyReview.FullName.Contains("Rios"))
+                strName = "Rios";
             AutoIt.AutoItX.WinActivate("Monthly Clinic Review");
             Thread.Sleep(sleeptime);
             AutoIt.AutoItX.Send(strName);

@@ -38,20 +38,12 @@ namespace AI_Note_Review
     {
         //string strApikey = "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"; //for AI
 
-        //VisitReportVM reportVM;
-        //BiMonthlyReviewVM biMonthlyReviewVM;
         private MasterReviewSummaryVM mrs;
 
         public MainWindow()
         {
             ProgramInit();
             InitializeComponent();
-
-            //reportVM = new VisitReportVM();
-            //biMonthlyReviewVM = new BiMonthlyReviewVM();
-            //this.DataContext = reportVM;
-            //biMonthReviewMI.DataContext = biMonthlyReviewVM;
-
             mrs = new MasterReviewSummaryVM();
             DataContext = mrs;
 
@@ -224,6 +216,7 @@ namespace AI_Note_Review
         }
 
         string strLastDoc = "";
+
         #region window functions
         /// <summary>
         /// Monitors windows as the focus is changed.
@@ -281,8 +274,8 @@ namespace AI_Note_Review
                                     {
                                         try
                                         {
-                                            //do not reset the document if it has already been loaded and analyzed
-                                            if (h.EcwHTMLDocument.Body.InnerText == strLastDoc)
+                                            //do not reset the document if it has already been loaded and analyzed, check length for performance
+                                            if (h.EcwHTMLDocument.Body.InnerText.Length == strLastDoc.Length)
                                             {
                                                 return;
                                             }

@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 namespace AI_Note_Review
 {
+    #region inotify
     public class ProviderVM : INotifyPropertyChanged
     {
         private ProviderM provider;
@@ -26,6 +27,8 @@ namespace AI_Note_Review
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        #endregion
 
         private MasterReviewSummaryVM parentMasterReviewSummary;
         public MasterReviewSummaryVM ParentMasterReviewSummary 
@@ -64,6 +67,8 @@ namespace AI_Note_Review
             if (strFirstName == "")
                 return; //I'm getting too many blank providers
             string sql = "";
+            if (strFullName == "")
+                MessageBox.Show("Creating blank provider!");
             sql = $"INSERT INTO Providers (FirstName,LastName,Cert,HomeClinic,ReviewInterval,FullName, IsWestSidePod) VALUES ('{strFirstName}','{strLastName}','{strCert}','{strHomeClinic}',{intReviewInterval},'{strFullName}', {IsWestSidePod});";
             sql += $"Select * from Providers where FirstName = '{FirstName}' AND LastName = '{LastName}';"; //this part is to get the ID of the newly created phrase
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
@@ -297,8 +302,7 @@ namespace AI_Note_Review
 
         public static ProviderVM SqlGetProviderByFullName(string strFullName)
         {
-            if (strFullName == "")
-                return new ProviderVM("", "", "", "", 3, "");
+            //if (strFullName == "")                return new ProviderVM("", "", "", "", 3, "");
 
             string sql = "";
             sql += $"Select * from Providers where FullName = '{strFullName}';"; //this part is to get the ID of the newly created phrase
@@ -310,6 +314,8 @@ namespace AI_Note_Review
                     return new ProviderVM(p);
                 }
             }
+            if (strFullName == "")
+                MessageBox.Show("Creating blank name provider!");
             sql = $"INSERT INTO Providers (FullName) VALUES ('{strFullName}');";
             sql += $"Select * from Providers where FullName = '{strFullName}';"; //this part is to get the ID of the newly created phrase
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
