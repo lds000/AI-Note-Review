@@ -36,7 +36,6 @@ namespace AI_Note_Review
         private VisitReportM report;
         private DocumentVM document;
         private PatientVM patient;
-        private ProviderVM providerVM;
 
         private MasterReviewSummaryVM masterReviewSummary;
         public MasterReviewSummaryVM MasterReviewSummary
@@ -56,7 +55,6 @@ namespace AI_Note_Review
         {
             masterReviewSummary = mrs;
             report = new VisitReportM(); //1st executed command in program
-            providerVM = mrs.Provider; //Change provider for report
             patient = mrs.Patient;
             document = mrs.Document;
             passedCPs = new ObservableCollection<ICheckPoint>(); //use interface for compatability with the merge observablecollection
@@ -114,8 +112,8 @@ namespace AI_Note_Review
         }
 
         public string Facility { get { return document.Facility; } set { document.Facility = value; } }
-        public string Provider { get { return document.Provider; } set { document.Provider = value; } }
-        public ProviderVM ProviderSql { get { return document.ProviderSql; } set { document.ProviderSql = value; } }
+        public ProviderVM Provider
+        { get { return document.Provider; } set { document.Provider = value; } }
         public DateTime VisitDate { get { return document.VisitDate; } set { document.VisitDate = value; } }
         public string HashTags { get { return document.HashTags; } set { document.HashTags = value; } }
         public ObservableCollection<string> ICD10s { get { return document.ICD10s; } set { document.ICD10s = value; } }
@@ -368,8 +366,8 @@ namespace AI_Note_Review
             {
                 cnn.Execute(sql);
             }
-            document.ProviderSql.SetCurrentMasterReview(document.VisitDate);
-            MessageBox.Show($"{document.ProviderSql.CurrentReviewCount}/10 reports committed.");
+            document.Provider.SetCurrentMasterReview(document.VisitDate);
+            MessageBox.Show($"{document.Provider.CurrentReviewCount}/10 reports committed.");
         }
 
         private ICommand mCommitReport;

@@ -67,10 +67,10 @@
                                     <RowDefinition/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <Label Grid.Row="0" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Document.Provider, FallbackValue=Provider Name}" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
+                                <Label Grid.Row="0" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Document.Provider.FullName, FallbackValue=Provider Name}" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="16"></Label>
                                 <Label Grid.Row="1" Grid.ColumnSpan="2" Margin="0" Padding="0" Content="{Binding Document.Facility, FallbackValue=Clinic Name}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>
                                 <Image Grid.Row="2" Grid.ColumnSpan="2" 
-                                       Visibility="{Binding Provider.IsWestSidePod, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                       Visibility="{Binding Document.Provider.IsWestSidePod, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                        VerticalAlignment="Center" Source="Icons\westside.jpg" HorizontalAlignment="Center"></Image>
                                 <Label Grid.Row="3" Grid.Column="0" Margin="0" Padding="0" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Left" FontSize="12">Visit Date:</Label>
                                 <Label Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Padding="0" Content="{Binding Document.VisitDate, FallbackValue=6/23/2021}" DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" FontSize="14"></Label>

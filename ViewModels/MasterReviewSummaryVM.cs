@@ -126,19 +126,6 @@ namespace AI_Note_Review
             }
         }
 
-        private ProviderVM provider;
-        /// <summary>
-        /// The provider associated with the MRS - ProviderVM model
-        /// </summary>
-        public ProviderVM Provider
-        {
-            get
-            {
-                if (provider == null) provider = new ProviderVM(this);
-                return provider;
-            }
-        }
-
         private VisitReportVM visitReport;
         /// <summary>
         /// The VisitReportVM associated with the MRS.

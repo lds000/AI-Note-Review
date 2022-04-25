@@ -92,7 +92,14 @@ namespace AI_Note_Review
         public int VitalsSystolic { get { return patient.VitalsSystolic; } set { patient.VitalsSystolic = value;  OnPropertyChanged(); OnPropertyChanged("IsBPAbnormal"); OnPropertyChanged("IsBpHigh"); OnPropertyChanged("IsHTNUrgency"); OnPropertyChanged("BPColor"); }  }
         public int VitalsDiastolic { get { return patient.VitalsDiastolic; } set { patient.VitalsDiastolic = value; OnPropertyChanged(); OnPropertyChanged("IsBPAbnormal"); OnPropertyChanged("IsBpHigh"); OnPropertyChanged("IsHTNUrgency"); OnPropertyChanged("BPColor"); } }
         public bool IsBPAbnormal { get { return patient.IsBPAbnormal; } }
-        public bool IsBpHigh { get { return patient.isMale; } }
+        public bool IsBpHigh { get { return patient.IsBpHigh; } }
+        public bool IsBPLow
+        {
+            get
+            {
+                return patient.IsBPLow;
+            }
+        }
         public bool IsHTNUrgency { get { return patient.IsHTNUrgency; } }
         public Brush BPColor { get { return patient.BPColor; } }
 
@@ -118,6 +125,13 @@ namespace AI_Note_Review
         public bool isTempMildlyElevated { get { return patient.isTempMildlyElevated; } }
         public bool isTempAbnormal { get { return patient.isTempAbnormal; } }
         public bool isTempHigh { get { return patient.isTempHigh; } }
+        public bool isFebrile
+        {
+            get
+            {
+                return patient.isFebrile;
+            }
+        }
         public Brush TempColor { get { return patient.TempColor; } }
 
 

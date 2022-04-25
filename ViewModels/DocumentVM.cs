@@ -31,7 +31,6 @@ namespace AI_Note_Review
         //ViewModels declared locally for convenience
         private MasterReviewSummaryVM masterReviewVM;
         private PatientVM patientVM; //may be from mastereviewsummary, or created from scratch for notehunter
-        private ProviderVM providerVM; //todo make ProviderVM
 
         //Models
         private DocumentM document;
@@ -43,7 +42,6 @@ namespace AI_Note_Review
         public DocumentVM(MasterReviewSummaryVM mrs)
         {
             masterReviewVM = mrs;
-            providerVM = mrs.Provider;
             patientVM = mrs.Patient;
             document = SampleDocument; //New DocumentM() called under this.
         }
@@ -127,7 +125,7 @@ namespace AI_Note_Review
             get
             {
                 document = new DocumentM();
-                Provider = "Devin Hansen"; //Provider ID comes from this.
+                SetProvider("Devin Hansen"); //Provider ID comes from this.
                 VisitDate = new DateTime(2022, 3, 14);
                 CC = "Abdominal pain for 10 days";
                 Facility = "Meridian UC";
@@ -308,7 +306,7 @@ namespace AI_Note_Review
                     string strPtInfo = myString.Replace("Encounter Date:", "");
                     strPtInfo = strPtInfo.Replace("Provider:", "|");
                     document.VisitDate = DateTime.Parse(strPtInfo.Split('|')[0].Trim());
-                    document.Provider = strPtInfo.Split('|')[1].Trim();
+                    SetProvider(strPtInfo.Split('|')[1].Trim());
                 }
 
                 //Facility HTML, get location.
@@ -516,7 +514,7 @@ namespace AI_Note_Review
                             {
                                 string strDocname = strInnerText.Split(':')[1].Trim();
                                 strDocname = strDocname.Replace("    ", "|");
-                                Provider = strDocname.Split('|')[0];
+                                SetProvider(strDocname.Split('|')[0]);
                             }
                             continue;
 
@@ -528,7 +526,7 @@ namespace AI_Note_Review
                             {
                                 string strDocname = strInnerText.Split(':')[1].Trim();
                                 strDocname = strDocname.Replace("    ", "|");
-                                Provider = strDocname.Split('|')[0];
+                                SetProvider(strDocname.Split('|')[0]);
 
                             }
                             continue;
@@ -845,30 +843,31 @@ namespace AI_Note_Review
                 OnPropertyChanged();
             }
         }
-        public string Provider
+
+        public void SetProvider(string strFullName)
+        {
+            if (strFullName == "")
+            {
+                Provider = new ProviderVM();
+            }
+            else
+            Provider = ProviderVM.SqlGetProviderByFullName(strFullName);
+        }
+
+        private ProviderVM provider;
+        public ProviderVM Provider
         {
             get
             {
-                return document.Provider;
+                return provider;
             }
             set
             {
-                document.Provider = value;
+                provider = value;
                 OnPropertyChanged();
             }
         }
-        public ProviderVM ProviderSql
-        {
-            get
-            {
-                return document.ProviderSql;
-            }
-            set
-            {
-                document.ProviderSql = value;
-                OnPropertyChanged();
-            }
-        }
+
         public int ProviderID
         {
             get
@@ -1232,11 +1231,15 @@ namespace AI_Note_Review
                         AddHashTag("@Age<2");
                     if (patientVM.PtAgeYrs < 4)
                         AddHashTag("@Age<4");
+                    if (patientVM.IsBPLow)
+                        AddHashTag("!hypotensive");
                     if (patientVM.GetAgeInDays < 183)
                         AddHashTag("@Age<6mo");
                     //if (patientVM.isRRHigh) AddHashTag("!RRHigh");             //72	X	2	2	Rapid Respiratory Rate
                     if (patientVM.isTempHigh)
                         AddHashTag("!HighFever");             //73	X	3	3	High Fever
+                    if (patientVM.isFebrile)
+                        AddHashTag("!fever");
                     //if (patientVM.isHRHigh) AddHashTag("!Tachycardia");             //74	X	4	4	Tachycardia
                     if (patientVM.GetAgeInDays <= 90 && patientVM.VitalsTemp > 100.4)
                     {
@@ -1362,7 +1365,7 @@ namespace AI_Note_Review
             //I'm trying to decide if using the parent or childe Property here.
             document.Facility = "";
             document.VisitDate = new DateTime(2020, 1, 1);
-            document.Provider = "";
+            SetProvider("");
             document.ProviderID = 0;
             document.ReasonForAppt = "";
             document.Allergies = "";

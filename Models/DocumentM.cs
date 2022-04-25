@@ -39,35 +39,6 @@ namespace AI_Note_Review
         }
 
 
-        public string Provider
-        {
-            get
-            {
-                return provider;
-            }
-            set
-            {
-                ProviderVM p = ProviderVM.SqlGetProviderByFullName(value);
-                    provider = p.FullName;
-                    ProviderID = p.ProviderID;
-                    ProviderSql = p;
-            }
-        }
-
-        private ProviderVM providerSql;
-        public ProviderVM ProviderSql
-        {
-            get
-            {
-                return providerSql;
-            }
-            set
-            {
-                providerSql = value;
-                
-            }
-        }
-
         public int ProviderID
         {
             get { return providerID; }
@@ -461,7 +432,7 @@ namespace AI_Note_Review
         private string ptID;
         private string facility;
         private DateTime visitDate;
-        private string provider;
+        private string providerName;
         private string reasonForAppt;
         private string allergies;
         private HtmlDocument noteHTML;

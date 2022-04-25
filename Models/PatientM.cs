@@ -327,6 +327,50 @@ namespace AI_Note_Review
             }
 
         }
+
+        public bool IsBPLow
+        {
+            get
+            {
+                int AgeYr = GetAgeInYears();
+                if (AgeYr <= 1)
+                {
+                    if (VitalsSystolic <= 80)
+                        return true;
+                    if (VitalsDiastolic <= 50)
+                        return true;
+                }
+                else if (AgeYr <= 3)
+                {
+                    if (VitalsSystolic <= 90)
+                        return true;
+                    if (VitalsDiastolic <= 55)
+                        return true;
+                }
+                else if (AgeYr <= 6)
+                {
+                    if (VitalsSystolic <= 95)
+                        return true;
+                    if (VitalsDiastolic <= 60)
+                        return true;
+                }
+                else if (AgeYr <= 12)
+                {
+                    if (VitalsSystolic <= 100)
+                        return true;
+                    if (VitalsDiastolic <= 60)
+                        return true;
+                }
+                else
+                {
+                    if (VitalsSystolic <= 110)
+                        return true;
+                    if (VitalsDiastolic <= 65)
+                        return true;
+                }
+                return false;
+            }
+        }
         public Brush BPColor
         {
             get
@@ -644,6 +688,16 @@ namespace AI_Note_Review
             get
             {
                 if (VitalsTemp >= 102) return true;
+                return false;
+            }
+        }
+
+        public bool isFebrile
+        {
+            get
+            {
+                if (VitalsTemp >= 100.4)
+                    return true;
                 return false;
             }
         }
