@@ -336,6 +336,19 @@ namespace AI_Note_Review
             }
         }
 
+        public Brush CheckPointBackGroundColor
+        {
+            get
+            {
+                if (this.Tags.Count == 0)
+                    return Brushes.Red;
+                return Brushes.Black;
+
+            }
+        }
+
+        
+
         public Visibility OveriddenVisibility
         {
             get
@@ -497,6 +510,7 @@ namespace AI_Note_Review
             }
             tags = null; //reset tags.
             OnPropertyChanged("Tags");
+            OnPropertyChanged("CheckPointBackGroundColor");
         }
 
         public void RemoveTag(SqlTagVM st)
