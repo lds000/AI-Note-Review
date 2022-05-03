@@ -213,6 +213,15 @@ namespace AI_Note_Review
             {
                 SqlLiteDataAccess.SQLiteDBLocation = @"C:\Users\llostod\source\repos\AI Note Review\NoteReviewDB.db";
             }
+
+            if (File.Exists(@"C:/Users/lds00/source/repos/data/NoteData.db"))
+            {
+                SqlLiteDataAccess.SQLiteNotesLocation = @"C:/Users/lds00/source/repos/data/NoteData.db";
+            }
+            else
+            {
+                SqlLiteDataAccess.SQLiteNotesLocation = @"C:\Users\llostod\source\repos\data\NoteData.db";
+            }
         }
 
         string strLastDoc = "";
