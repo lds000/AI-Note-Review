@@ -5,9 +5,9 @@ using System.Text;
 
 namespace AI_Note_Review
 {
-    class Encryption
+    public class Encryption
     {
-        static string Encrypt(string textToEncrypt)
+        public static string Encrypt(string textToEncrypt)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace AI_Note_Review
         }
         */
 
-        static string Decrypt(string textToDecrypt)
+        public static string Decrypt(string textToDecrypt)
         {
             try
             {

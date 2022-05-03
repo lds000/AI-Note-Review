@@ -92,6 +92,20 @@ namespace AI_Note_Review
             }
         }
 
+        public void SaveNote()
+        {
+            if (NoteHTML == null)
+                return;
+            if (NoteHTML.Body == null)
+                return;
+            //save encrypted note
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteNotesLocation))
+            {
+                NoteDataVM nvm = new NoteDataVM(this,Patient);
+            }
+
+        }
+
         /// <summary>
         /// The patient that is extracted from the document
         /// </summary>
@@ -140,10 +154,23 @@ namespace AI_Note_Review
 
                 CurrentMeds = "ibuprofen, Tylenol, prednisone";
                 Exam = "AO, NAD PERRL\nNormal OP\nCTA bilat\nRRR no murmurs\nS NTND NABS, no guarding, no rebound\nNo edema";
+                NoteHTML = GetHtmlDocument("This is a test");
+                VisitDate = new DateTime(2022, 10, 20);
+                ProviderID = 8;
                 return document;
             }
         }
 
+        private System.Windows.Forms.HtmlDocument GetHtmlDocument(string html)
+        {
+            WebBrowser browser = new WebBrowser();
+            browser.ScriptErrorsSuppressed = true;
+            browser.DocumentText = html;
+            browser.Document.OpenNew(true);
+            browser.Document.Write(html);
+            browser.Refresh();
+            return browser.Document;
+        }
 
 
         /// <summary>

@@ -99,6 +99,10 @@
                     </DockPanel>
                 </Border>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                    <Button  
+                        Margin="20,0,20,0" 
+                        Command="{Binding SaveNoteCommand}" 
+                        CommandParameter="{Binding}"                        Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Save</Button>
                     <Button  Margin="20,0,20,0" Click="Lookup_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Look Up</Button>
                     <Button  Click="Close_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Close</Button>
                     <Button Margin="20,0,0,0"  Click="Test_Click" Style="{StaticResource LinkButton}" HorizontalAlignment="Center" FontSize="20">Test</Button>

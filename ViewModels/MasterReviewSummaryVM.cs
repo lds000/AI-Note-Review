@@ -525,6 +525,24 @@ namespace AI_Note_Review
             OnPropertyChanged("TopMissingDxs");
         }
 
+        //LinkToICD10Command
+        private ICommand mSaveNoteCommand;
+        public ICommand SaveNoteCommand
+        {
+            #region Command Def
+            get
+            {
+                if (mSaveNoteCommand == null)
+                    mSaveNoteCommand = new SaveNote();
+                return mSaveNoteCommand;
+            }
+            set
+            {
+                mSaveNoteCommand = value;
+            }
+            #endregion
+        }
+
         private ICommand mShowMasterReview;
         public ICommand ShowMasterReviewCommand
         {
@@ -609,6 +627,37 @@ namespace AI_Note_Review
         }
 
     }
+
+    //
+    class SaveNote : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            MasterReviewSummaryVM MRS = parameter as MasterReviewSummaryVM;
+            MRS.Document.SaveNote();
+        }
+    }
+
+
     class ProviderEditor : ICommand
     {
         #region ICommand Members  

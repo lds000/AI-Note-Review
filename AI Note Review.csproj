@@ -107,6 +107,7 @@
     <Compile Include="ExtensionMethods\ObservableCollection.cs" />
     <Compile Include="Helper Classes\Encrypt.cs" />
     <Compile Include="Models\MasterReviewReportM.cs" />
+    <Compile Include="Models\NoteDataM.cs" />
     <Compile Include="Models\NoteSectionM.cs" />
     <Compile Include="Models\ReportToHtmlM.cs" />
     <Compile Include="Models\NoteHunterM.cs" />
@@ -116,6 +117,7 @@
     </Compile>
     <Compile Include="ViewModels\AlternativeICD10VM.cs" />
     <Compile Include="ViewModels\CheckPointEditorVM.cs" />
+    <Compile Include="ViewModels\NoteDataVM.cs" />
     <Compile Include="ViewModels\ReportToHtmlVM.cs" />
     <Compile Include="ViewModels\ReportToTextVM.cs" />
     <Compile Include="ViewModels\MasterReviewSummaryVM.cs" />
