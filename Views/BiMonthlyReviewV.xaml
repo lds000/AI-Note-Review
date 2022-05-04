@@ -62,23 +62,34 @@
                 </Grid>
             </Border>
             <Border BorderBrush="White" Grid.Column="1" BorderThickness="1" Margin="5">
-                <!--List source:MyPeeps, SelectedValue=SelectedProviderForBiMonthlyReview-->
-                <ListBox Style="{StaticResource MyListBox}" 
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <!--List source:MyPeeps, SelectedValue=SelectedProviderForBiMonthlyReview-->
+                    <ListBox Style="{StaticResource MyListBox}" 
                          x:Name="lbProviders" 
                          SelectedValue="{Binding SelectedProviderForBiMonthlyReview}"
                          ItemsSource="{Binding MyPeeps}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel x:Name="spTemplate" Orientation="Horizontal">
-                                <!--ProviderVM-->
-                                <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding FullName}"></TextBlock>
-                                <TextBlock Style="{StaticResource MyTbStyle}" Margin="5,0,0,0">(</TextBlock>
-                                <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding CurrentReviewCount}" Foreground="{Binding CurrentReviewCount, Converter={StaticResource ChartCountToBrushConverter}}"></TextBlock>
-                                <TextBlock Style="{StaticResource MyTbStyle}">)</TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ListBox>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel x:Name="spTemplate" Orientation="Horizontal">
+                                    <!--ProviderVM-->
+                                    <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding FullName}"></TextBlock>
+                                    <TextBlock Style="{StaticResource MyTbStyle}" Margin="5,0,0,0">(</TextBlock>
+                                    <TextBlock Style="{StaticResource MyTbStyle}" Text="{Binding CurrentReviewCount}" Foreground="{Binding CurrentReviewCount, Converter={StaticResource ChartCountToBrushConverter}}"></TextBlock>
+                                    <TextBlock Style="{StaticResource MyTbStyle}">)</TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ListBox>
+                    <Label Style="{StaticResource MyLblStyle}" Grid.Row="1">Available Notes:</Label>
+                    <ListBox Grid.Row="2" MinHeight="50" Style="{StaticResource MyListBox}">
+                        
+                    </ListBox>
+                </Grid>
             </Border>
             <Grid  Grid.Column="2">
                 <Grid.RowDefinitions>

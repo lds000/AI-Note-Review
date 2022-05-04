@@ -525,7 +525,6 @@ namespace AI_Note_Review
             OnPropertyChanged("TopMissingDxs");
         }
 
-        //LinkToICD10Command
         private ICommand mSaveNoteCommand;
         public ICommand SaveNoteCommand
         {
@@ -542,6 +541,24 @@ namespace AI_Note_Review
             }
             #endregion
         }
+
+        private ICommand mLoadNoteCommand;
+        public ICommand LoadNoteCommand
+        {
+            #region Command Def
+            get
+            {
+                if (mLoadNoteCommand == null)
+                    mLoadNoteCommand = new LoadNote();
+                return mLoadNoteCommand;
+            }
+            set
+            {
+                mLoadNoteCommand = value;
+            }
+            #endregion
+        }
+
 
         private ICommand mShowMasterReview;
         public ICommand ShowMasterReviewCommand
@@ -627,6 +644,37 @@ namespace AI_Note_Review
         }
 
     }
+
+    class LoadNote : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            MasterReviewSummaryVM MRS = parameter as MasterReviewSummaryVM;
+            WinSelectNote wsn = new WinSelectNote();
+            wsn.DataContext = MRS;
+            wsn.ShowDialog();
+        }
+    }
+
 
     //
     class SaveNote : ICommand

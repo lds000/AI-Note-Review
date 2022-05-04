@@ -2,18 +2,39 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows;
 
 namespace AI_Note_Review
 {
     public class Encryption
     {
+        private static string encryptionKey;
+        public static string EncryptionKey
+        {
+            get
+            {
+                if (encryptionKey == null)
+                {
+                    WinEnterText we = new WinEnterText("Enter Encryption Key");
+                    we.ShowDialog();
+                    we.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    if (we.ReturnValue != null)
+                    {
+                        encryptionKey = we.ReturnValue;
+                    }
+                    return encryptionKey;
+                }
+                return EncryptionKey;
+            }
+        }
+
         public static string Encrypt(string textToEncrypt)
         {
             try
             {
                 string ToReturn = "";
                 string publickey = "12345678";
-                string secretkey = "87654321";
+                string secretkey = EncryptionKey;
                 byte[] secretkeyByte = { };
                 secretkeyByte = System.Text.Encoding.UTF8.GetBytes(secretkey);
                 byte[] publickeybyte = { };
@@ -58,7 +79,7 @@ namespace AI_Note_Review
             {
                 string ToReturn = "";
                 string publickey = "12345678";
-                string secretkey = "87654321";
+                string secretkey = EncryptionKey;
                 byte[] privatekeyByte = { };
                 privatekeyByte = System.Text.Encoding.UTF8.GetBytes(secretkey);
                 byte[] publickeybyte = { };

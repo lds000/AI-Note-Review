@@ -104,6 +104,9 @@
     <Compile Include="Dialog Windows\WinChooseSegment.xaml.cs">
       <DependentUpon>WinChooseSegment.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialog Windows\WinSelectNote.xaml.cs">
+      <DependentUpon>WinSelectNote.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExtensionMethods\ObservableCollection.cs" />
     <Compile Include="Helper Classes\Encrypt.cs" />
     <Compile Include="Models\MasterReviewReportM.cs" />
@@ -214,6 +217,10 @@
       <DependentUpon>WinShowRegExYesNo.xaml</DependentUpon>
     </Compile>
     <Page Include="Dialog Windows\WinChooseSegment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialog Windows\WinSelectNote.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
