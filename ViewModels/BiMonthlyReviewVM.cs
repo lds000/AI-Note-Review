@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -114,8 +115,54 @@ namespace AI_Note_Review
                 OnPropertyChanged("SelectedDocumentReview");
                 OnPropertyChanged("StrBimonthlyReviewComment");
                 OnPropertyChanged("StrBimonthlyReviewSummary");
+                OnPropertyChanged("ListOfNoteData");
             }
         }
+
+        private ObservableCollection<NoteDataVM> listOfNoteData;
+        public ObservableCollection<NoteDataVM> ListOfNoteData
+        {
+            get
+            {
+                string sql = $"Select * from Data where ProviderID = {SelectedProviderForBiMonthlyReview.ProviderID}";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteNotesLocation))
+                {
+                    listOfNoteData = new ObservableCollection<NoteDataVM>(cnn.Query<NoteDataVM>(sql).ToList());
+                    foreach (var l in listOfNoteData)
+                    {
+                        l.ParentMasterReviewSummary = MasterReview;
+                    }
+                }
+                return listOfNoteData;
+            }
+            set
+            {
+                if (value != null) listOfNoteData = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private NoteDataVM selectedNoteData;
+        public NoteDataVM SelectedNoteData
+        {
+            get
+            {
+                return selectedNoteData;
+            }
+            set
+            {
+                selectedDocumentReview = null;
+                selectedNoteData = value;
+                OnPropertyChanged("ReviewHTML");
+                OnPropertyChanged("SelectedDocumentReview");
+            }
+        }
+
+        public void LoadNoteData(string strHTML)
+        {
+        }
+
+
 
         /// <summary>
         /// Populates a class containing PtID and Dates for a time period (usually two months)
@@ -140,11 +187,14 @@ namespace AI_Note_Review
                             ReportToTextVM r = new ReportToTextVM(selectedProviderForBiMonthlyReview, l.VisitDate, l.PtID);
                         }
                         listOfDocumentReviews = tmpL;
+
                     }
                 }
                 return listOfDocumentReviews;
             }
         }
+
+
 
         private string strBimonthlyReviewComment;
         public string StrBimonthlyReviewComment
@@ -190,9 +240,11 @@ namespace AI_Note_Review
             }
             set
             {
+                selectedNoteData = null;
                 selectedDocumentReview = value;
                 OnPropertyChanged("ReviewHTML");
                 OnPropertyChanged("SelectedDocumentReview");
+                OnPropertyChanged("SelectedNoteData");
             }
         }
 
@@ -200,7 +252,12 @@ namespace AI_Note_Review
         {
             get
             {
-                if (selectedDocumentReview == null) return "Select a review";
+                if (selectedDocumentReview == null)
+                {
+                    if (selectedNoteData == null) return "Select a review";
+                    return "<head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'></head><body>" + selectedNoteData.HTML + "</body>";
+
+                }
                 return "<head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'></head><body>" + selectedDocumentReview.ReviewHTML + "</body>";
             }
         }
@@ -270,7 +327,7 @@ namespace AI_Note_Review
             var l = ListOfDocumentReviews;
             if (l.Count < 10)
             {
-                MessageBox.Show("Not going to send until you get 10 reports...");
+                System.Windows.MessageBox.Show("Not going to send until you get 10 reports...");
                 return;
             }
             int sleeptime = 50;
@@ -340,7 +397,7 @@ namespace AI_Note_Review
             var l = ListOfDocumentReviews;
             if (l.Count < 10)
             {
-                MessageBox.Show("Not going to send until you get 10 reports...");
+                System.Windows.MessageBox.Show("Not going to send until you get 10 reports...");
                 return;
             }
 
@@ -388,6 +445,8 @@ namespace AI_Note_Review
             System.Diagnostics.Process.Start(mailto);
 
         }
+
+
 
         #region commands
 
@@ -443,6 +502,42 @@ namespace AI_Note_Review
             #endregion
         }
 
+        //LoadNoteData
+        private ICommand mRemoveNoteData;
+        public ICommand RemoveNoteDataCommand
+        {
+            #region Command Def
+            get
+            {
+                if (mRemoveNoteData == null)
+                    mRemoveNoteData = new RemoveNoteData();
+                return mRemoveNoteData;
+            }
+            set
+            {
+                mRemoveNoteData = value;
+            }
+            #endregion
+        }
+
+        //LoadNoteData
+        private ICommand mLoadNoteData;
+        public ICommand LoadNoteDataCommand
+        {
+            #region Command Def
+            get
+            {
+                if (mLoadNoteData == null)
+                    mLoadNoteData = new LoadNoteData();
+                return mLoadNoteData;
+            }
+            set
+            {
+                mLoadNoteData = value;
+            }
+            #endregion
+        }
+
         private ICommand mSendExecutiveSummary;
         public ICommand SendExecutiveSummaryCommand
         {
@@ -464,6 +559,72 @@ namespace AI_Note_Review
 
     #region command classes
 
+
+    class RemoveNoteData : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            NoteDataVM d = parameter as NoteDataVM;
+            d.DeleteNote();
+            d.ParentMasterReviewSummary.BiMonthlyReviewVM.ListOfNoteData = null;
+        }
+    }
+
+    class LoadNoteData : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            NoteDataVM d = parameter as NoteDataVM;
+            string strHTML = Encryption.Decrypt(d.NoteString);
+
+            WebBrowser browser = new WebBrowser();
+                browser.ScriptErrorsSuppressed = true;
+            browser.DocumentText = strHTML;
+                browser.Document.OpenNew(true);
+                browser.Document.Write(strHTML);
+                browser.Refresh();
+              
+            d.ParentMasterReviewSummary.Document.NoteHTML = browser.Document;
+        }
+    }
 
     class ShowBiMonthlyReport : ICommand
     {

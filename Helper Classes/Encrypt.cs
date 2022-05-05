@@ -24,7 +24,7 @@ namespace AI_Note_Review
                     }
                     return encryptionKey;
                 }
-                return EncryptionKey;
+                return encryptionKey;
             }
         }
 

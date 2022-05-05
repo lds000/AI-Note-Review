@@ -69,16 +69,31 @@ namespace AI_Note_Review
     public string PtName {
             get { return patient.PtName; }
             set { patient.PtName = value; 
-                OnPropertyChanged(); 
+                OnPropertyChanged();
+                OnPropertyChanged("PtFirstName");
+                OnPropertyChanged("PtLastName");
             }
         }
         public string PtID { get { return patient.PtID; } set { patient.PtID = value;  OnPropertyChanged();}  }
+
 
 
         public string PtSex { get { return patient.PtSex; } set { patient.PtSex = value; OnPropertyChanged(); OnPropertyChanged("isMale"); OnPropertyChanged("isFemale"); } }
         public bool isMale { get { return patient.isMale; } }
         public bool isFemale { get { return patient.isFemale; } }
         public bool IsPregCapable { get { return patient.IsPregCapable; } }
+
+        public string PtAddress
+        {
+            get;
+            set;
+        }
+
+        public string PtPhone
+        {
+            get;
+            set;
+        }
 
 
         public DateTime DOB { get { return patient.DOB; } set { patient.DOB = value; OnPropertyChanged(); OnPropertyChanged("PtAgeYrs"); OnPropertyChanged("AgeStr"); OnPropertyChanged("GetAgeInYears"); OnPropertyChanged("GetAgeInYearsDouble"); OnPropertyChanged("GetAgeInDays"); } }
@@ -140,6 +155,40 @@ namespace AI_Note_Review
         public double WtKg { get { return patient.WtKg; } }
         public Brush WtColor { get { return patient.WtColor; } }
 
+        public string PtFirstName
+        {
+            get
+            {
+                string tmpName = PtName.Trim();
+                if (PtName.Contains(','))
+                {
+                    tmpName = tmpName.Split(',')[1].Trim();
+                }
+                if (tmpName.Contains(' '))
+                {
+                    tmpName = tmpName.Split(' ')[0].Trim();
+                }
+                return tmpName;
+            }
+        }
+
+        public string PtLastName
+        {
+            get
+            {
+                string tmpName = PtName.Trim();
+                if (PtName.Contains(','))
+                {
+                    return tmpName.Split(',')[0].Trim(); //Wilson, Mark; Johnson, Sam B.
+                }
+                if (tmpName.Contains(' '))
+                {
+                    int count = tmpName.Split(' ').Length;
+                    tmpName = tmpName.Split(' ')[count - 1].Trim(); //John Allen Smith, Mark Sampson, Billy G. King
+                }
+                return tmpName;
+            }
+        }
 
         public void Clear()
         {

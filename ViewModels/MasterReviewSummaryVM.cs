@@ -188,7 +188,7 @@ namespace AI_Note_Review
         {
             get
             {
-                return $"{StartDate.ToString("yyyy/MM/dd")}-{ StartDate.ToString("yyyy/MM/dd")} {MasterReviewSummaryTitle}";
+                return $"{StartDate.ToString("yyyy/MM/dd")}-{ EndDate.ToString("yyyy/MM/dd")} {MasterReviewSummaryTitle}";
             }
         }
 

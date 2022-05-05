@@ -78,7 +78,7 @@ namespace AI_Note_Review
                     }
 
                 }
-                    return noteSections;
+                return noteSections;
             }
             set
             {
@@ -101,7 +101,18 @@ namespace AI_Note_Review
             //save encrypted note
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteNotesLocation))
             {
-                NoteDataVM nvm = new NoteDataVM(this,Patient);
+                NoteDataVM nvm = new NoteDataVM(this);
+            }
+
+            int numsaved = Provider.CurrentNoteDataCount;
+
+            if (numsaved == 10)
+            {
+                System.Windows.MessageBox.Show($"Congrats! You have saved 10 documents.");
+            }
+            else
+            {
+                System.Windows.MessageBox.Show($"You have saved {numsaved} documents.");
             }
 
         }
@@ -116,6 +127,7 @@ namespace AI_Note_Review
                 return patientVM;
             }
         }
+
 
 
         /// <summary>
@@ -156,7 +168,7 @@ namespace AI_Note_Review
                 Exam = "AO, NAD PERRL\nNormal OP\nCTA bilat\nRRR no murmurs\nS NTND NABS, no guarding, no rebound\nNo edema";
                 NoteHTML = GetHtmlDocument("This is a test");
                 VisitDate = new DateTime(2022, 10, 20);
-                ProviderID = 8;
+                SetProvider("Andrea Stevens, NP");
                 return document;
             }
         }
@@ -523,7 +535,7 @@ namespace AI_Note_Review
                 }
             }
             List<string> AssessmentList = new List<string>();
-
+            int tmpIDX = 0;
             foreach (HtmlElement TempEl in AllTRItems) //99 items, 1.9 seconds!
             {
                 string strClass = TempEl.GetAttribute("className");
@@ -564,7 +576,16 @@ namespace AI_Note_Review
                         }
                         if (strClass == "PtData") //field has note informaition
                         {
+                            tmpIDX++;
                             string strInnerText = TempEl.InnerText;
+                            if (tmpIDX == 3)
+                            {
+                                patientVM.PtAddress = strInnerText;
+                            }
+                            if (tmpIDX == 4)
+                            {
+                                patientVM.PtPhone = strInnerText;
+                            }
                             if (strInnerText == null)
                             {
                                 continue;
@@ -895,18 +916,7 @@ namespace AI_Note_Review
             }
         }
 
-        public int ProviderID
-        {
-            get
-            {
-                return document.ProviderID;
-            }
-            set
-            {
-                document.ProviderID = value;
-                OnPropertyChanged();
-            }
-        }
+
         public DateTime VisitDate
         {
             get
@@ -1332,7 +1342,7 @@ namespace AI_Note_Review
                 resetNoteData();
 
                 document.NoteHTML = value;
-                if (document.NoteHTML.Body.InnerHtml.Contains("bootstrap.min.css")) //unique text to identify unlocked chart
+                if (document.NoteHTML.Body.InnerHtml.Contains("pnDetails")) //unique text to identify unlocked chart
                 {
                     processUnlocked(document.NoteHTML);
                     Console.WriteLine($"Processed unlocked chart for {patientVM.PtName}.");
@@ -1479,8 +1489,13 @@ namespace AI_Note_Review
                         if (icd10numeric >= ns.SqlICD10Segment.icd10CategoryStart && icd10numeric <= ns.SqlICD10Segment.icd10CategoryEnd)
                         {
                             ns.IncludeSegment = true;
-                            if (!tmpICD10Segments.Contains(ns))
-                            tmpICD10Segments.Add(ns);  //avoid duplicats and add to segment list
+                            bool duplicate = false;
+                            foreach (var tmpSeg in tmpICD10Segments)
+                            {
+                                if (tmpSeg.ICD10SegmentID == ns.ICD10SegmentID)
+                                    duplicate = true;
+                            }
+                            if (!duplicate) tmpICD10Segments.Add(ns);  //avoid duplicats and add to segment list, I know there is a much better way to do it. :) I'm tired.
                         }
                     }
                 }

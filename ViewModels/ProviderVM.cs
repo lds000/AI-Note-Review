@@ -280,6 +280,19 @@ namespace AI_Note_Review
             }
         }
 
+        public int CurrentNoteDataCount
+        {
+            get
+            {
+                string sql = $"Select Count() from Data where ProviderID={ProviderID};";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteNotesLocation))
+                {
+                    return cnn.ExecuteScalar<int>(sql);
+                }
+            }
+
+        }
+
         private MasterReviewSummaryVM currentMasterReview { get; set; }
         public void SetCurrentMasterReview(DateTime dt)
         {
