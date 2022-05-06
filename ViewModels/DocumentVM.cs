@@ -584,7 +584,7 @@ namespace AI_Note_Review
                             }
                             if (tmpIDX == 4)
                             {
-                                patientVM.PtPhone = strInnerText;
+                                patientVM.PtPhone = strInnerText.Trim();
                             }
                             if (strInnerText == null)
                             {
