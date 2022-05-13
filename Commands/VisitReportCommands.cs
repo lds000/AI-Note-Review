@@ -31,10 +31,12 @@ namespace AI_Note_Review
         public void Execute(object parameter)
         {
             MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
-            mrs.VisitReport.NewEcWDocument(); //reset document
+            //mrs.VisitReport.NewEcWDocument(); //reset document
+            mrs.VisitReport.NewEcWDocument();
+            mrs.VisitReport.ICD10Segments = null;
             mrs.VisitReport.PopulateCPStatuses();
-            VisitReportV wp = new VisitReportV();
-            wp.DataContext = mrs.VisitReport;
+            VisitReportV wp = new VisitReportV(mrs.VisitReport);
+            //wp.DataContext = mrs.VisitReport;
             wp.ShowDialog();
         }
     }

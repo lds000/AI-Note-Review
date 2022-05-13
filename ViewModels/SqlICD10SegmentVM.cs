@@ -212,6 +212,9 @@ namespace AI_Note_Review
                 includeSegment = value;
                 OnPropertyChanged("IncludeSegment");
                 OnPropertyChanged("CBIncludeSegment");
+                OnPropertyChanged("MissedCPs");
+                OnPropertyChanged("PassedCPs");
+                OnPropertyChanged("DroppedCPs");
                 ParentReport.UpdateCPs(); //now recalculate all checkpoints.
             }
         }
@@ -302,6 +305,8 @@ namespace AI_Note_Review
         {
             get
             {
+                if (includeSegment == false)
+                    return null;
                 if (passedCPs == null)
                 {
                     passedCPs = new List<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Pass orderby c.ErrorSeverity descending orderby c.CheckPointTypeOrder  select c);
@@ -319,6 +324,9 @@ namespace AI_Note_Review
         {
             get
             {
+                if (includeSegment == false)
+                    return null;
+
                 if (missedCPs == null)
                 {
                     missedCPs = new List<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Miss select c);
@@ -336,6 +344,9 @@ namespace AI_Note_Review
         {
             get
             {
+                if (includeSegment == false)
+                    return null;
+
                 if (droppedCPs == null)
                 {
                     droppedCPs = new List<SqlCheckpointVM>(from c in Checkpoints where c.CPStatus == SqlTagRegExM.EnumResult.Hide select c);

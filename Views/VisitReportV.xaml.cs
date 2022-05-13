@@ -29,6 +29,7 @@ namespace AI_Note_Review
         {
             CF.SetWindowPosition(this);
             CF.IsReviewWindowOpen = true;
+            this.DataContext = visitReportVM;
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -37,9 +38,16 @@ namespace AI_Note_Review
         }
         #endregion
 
+        private VisitReportVM visitReportVM;
         public VisitReportV()
         {
             InitializeComponent();
+        }
+
+        public VisitReportV(VisitReportVM parentVM)
+        {
+            InitializeComponent();
+            visitReportVM = parentVM;
         }
 
 

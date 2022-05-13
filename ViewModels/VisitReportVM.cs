@@ -57,20 +57,20 @@ namespace AI_Note_Review
             report = new VisitReportM(); //1st executed command in program
             patient = mrs.Patient;
             document = mrs.Document;
-            passedCPs = new ObservableCollection<ICheckPoint>(); //use interface for compatability with the merge observablecollection
-            missedCPs = new ObservableCollection<SqlCheckpointVM>();
-            droppedCPs = new ObservableCollection<SqlCheckpointVM>();
-            NewEcWDocument();
+            document.ICD10Segments = null; //reset segments
+            //passedCPs = new ObservableCollection<ICheckPoint>(); //use interface for compatability with the merge observablecollection
+            //missedCPs = new ObservableCollection<SqlCheckpointVM>();
+            //droppedCPs = new ObservableCollection<SqlCheckpointVM>();
+            iCD10Segments = null; //reset segments
         }
 
         //not sure I need this.
         public void NewEcWDocument()
         {
             document.ICD10Segments = null; //reset segments
-            iCD10Segments = null; //reset segments
-            passedCPs = null;
-            missedCPs = null;
-            droppedCPs = null;
+            //passedCPs = null;
+            //missedCPs = null;
+            //droppedCPs = null;
         }
 
         private SqlCheckpointVM selectedCheckPoint;
@@ -139,6 +139,7 @@ namespace AI_Note_Review
             set
             {
                 iCD10Segments = value;
+                OnPropertyChanged();
             }
         }
 
@@ -227,27 +228,6 @@ namespace AI_Note_Review
             }
         }
 
-        private ObservableCollection<ICheckPoint> passedCPs;
-        public ObservableCollection<ICheckPoint> PassedCPs
-        {
-            get
-            {
-                    passedCPs = new ObservableCollection<ICheckPoint>();
-                    foreach (var tmpCollection in ICD10Segments)
-                    {
-                        if (tmpCollection.IncludeSegment)
-                        {
-                            passedCPs = passedCPs.Union(tmpCollection.PassedCPs).ToObservableCollection();
-                        }
-                    }
-                return passedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
-            }
-            set
-            {
-                passedCPs = value;
-            }
-        }
-
         /// <summary>
         /// Evaluate each relavent checkpoint and get the status, this is used to sequentially evaluate each checkpoint avoiding the stacked Yes/No Question issue.
         /// </summary>
@@ -257,8 +237,30 @@ namespace AI_Note_Review
             {
                 if (tmpCollection.IncludeSegment)
                 {
-                    var tmpP = PassedCPs; //only run the passedCPs, as this evaluates all CPs to determine which are passed status.
+                    var tmpP = tmpCollection.PassedCPs; //only run the passedCPs, as this evaluates all CPs to determine which are passed status.
                 }
+            }
+        }
+
+        /*
+        private ObservableCollection<ICheckPoint> passedCPs;
+        public ObservableCollection<ICheckPoint> PassedCPs
+        {
+            get
+            {
+                passedCPs = new ObservableCollection<ICheckPoint>();
+                foreach (var tmpCollection in ICD10Segments)
+                {
+                    if (tmpCollection.IncludeSegment)
+                    {
+                        passedCPs = passedCPs.Union(tmpCollection.PassedCPs).ToObservableCollection();
+                    }
+                }
+                return passedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
+            }
+            set
+            {
+                passedCPs = value;
             }
         }
 
@@ -304,6 +306,7 @@ namespace AI_Note_Review
                 droppedCPs = value;
             }
         }
+        */
 
         public void UpdateCPs()
         {
@@ -346,22 +349,33 @@ namespace AI_Note_Review
             report.ReviewDate = DateTime.Now;
 
             string sql = "";
-            foreach (SqlCheckpointVM cp in (from c in PassedCPs orderby c.ErrorSeverity descending select c))
+
+            foreach (var tmpCollection in ICD10Segments) //only run once per report
             {
-                if (cp.IncludeCheckpoint)
+                if (tmpCollection.IncludeSegment)
                 {
-                    if (cp.CustomComment == null) cp.CustomComment = "";
-                    sql += $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({document.Provider.ProviderID}, {cp.CheckPointID}, {patient.PtID}, '{report.ReviewDate.ToString("yyyy-MM-dd")}', '{document.VisitDate.ToString("yyyy-MM-dd")}', {(int)SqlRelCPProvider.MyCheckPointStates.Pass}, '{cp.CustomComment}');\n";
+                    foreach (SqlCheckpointVM cp in (from c in tmpCollection.PassedCPs orderby c.ErrorSeverity descending select c))
+                    {
+                        if (cp.IncludeCheckpoint)
+                        {
+                            if (cp.CustomComment == null)
+                                cp.CustomComment = "";
+                            sql += $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({document.Provider.ProviderID}, {cp.CheckPointID}, {patient.PtID}, '{report.ReviewDate.ToString("yyyy-MM-dd")}', '{document.VisitDate.ToString("yyyy-MM-dd")}', {(int)SqlRelCPProvider.MyCheckPointStates.Pass}, '{cp.CustomComment}');\n";
+                        }
+                    }
+                    foreach (SqlCheckpointVM cp in (from c in tmpCollection.MissedCPs orderby c.ErrorSeverity descending select c))
+                    {
+                        if (cp.IncludeCheckpoint)
+                        {
+                            if (cp.CustomComment == null)
+                                cp.CustomComment = "";
+                            sql += $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({document.Provider.ProviderID}, {cp.CheckPointID}, {patient.PtID}, '{report.ReviewDate.ToString("yyyy-MM-dd")}', '{document.VisitDate.ToString("yyyy-MM-dd")}', {(int)SqlRelCPProvider.MyCheckPointStates.Fail}, '{cp.CustomComment}');\n";
+                        }
+                    }
                 }
             }
-            foreach (SqlCheckpointVM cp in (from c in MissedCPs orderby c.ErrorSeverity descending select c))
-            {
-                if (cp.IncludeCheckpoint)
-                {
-                    if (cp.CustomComment == null) cp.CustomComment = "";
-                    sql += $"Replace INTO RelCPPRovider (ProviderID, CheckPointID, PtID, ReviewDate, VisitDate, CheckPointStatus, Comment) VALUES ({document.Provider.ProviderID}, {cp.CheckPointID}, {patient.PtID}, '{report.ReviewDate.ToString("yyyy-MM-dd")}', '{document.VisitDate.ToString("yyyy-MM-dd")}', {(int)SqlRelCPProvider.MyCheckPointStates.Fail}, '{cp.CustomComment}');\n";
-                }
-            }
+
+
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
                 cnn.Execute(sql);
