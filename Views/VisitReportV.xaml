@@ -8,8 +8,10 @@
         
                 Loaded="Window_Loaded"        
         Closing="Window_Closing"
+        WindowState="Maximized"
 
         WindowStartupLocation="CenterOwner"
+        
         Title="WinReport" Height="800" Width="1400">
     <Border BorderBrush="White" BorderThickness="1" Background="Black">
         <Border.Resources>
@@ -242,11 +244,11 @@
                                     <Label Style="{StaticResource MyLblStyle}" Content="{Binding MasterReviewSummary.Document.Provider.FullName}"></Label>
                                 </StackPanel>
                                 <Label Style="{StaticResource MyLblStyle}">Provider comment:</Label>
-                                <TextBox TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummary.ProviderBiMonthlyReviewMComment}"></TextBox>
+                                <TextBox TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummary.StrBimonthlyReviewComment}"></TextBox>
                                 <Label Style="{StaticResource MyLblStyle}">General (to all) Review comment:</Label>
                                 <TextBox TextWrapping="WrapWithOverflow" 
                                          Style="{StaticResource MyTextBox}"
-                                         Text="{Binding MasterReviewSummary.MasterReviewSummaryImpression}"></TextBox>
+                                         Text="{Binding MasterReviewSummary.Document.DocumentMRS.MasterReviewSummaryImpression}"></TextBox>
                             </StackPanel>
 
                         </Border>

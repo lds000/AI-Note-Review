@@ -216,11 +216,40 @@ namespace AI_Note_Review
             } 
         }
 
+        private string strBimonthlyReviewComment;
+        public string StrBimonthlyReviewComment
+        {
+            get
+            {
+                if (Document.Provider == null)
+                    return null;
+                string sql = "";
+                //todo: change from 5 to document date MRS.
+                sql += $"Select RelComment from RelProviderMasterReviewSummary where RelProviderID={Document.Provider.ProviderID} and RelMasterReviewSummaryID=5;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    strBimonthlyReviewComment = cnn.ExecuteScalar<string>(sql);
+                }
+                return strBimonthlyReviewComment;
+            }
+            set
+            {
+                if (Document.Provider == null)
+                    return;
+                string sql = "";
+                sql = $"Delete from RelProviderMasterReviewSummary Where RelProviderID={Document.Provider.ProviderID} and RelMasterReviewSummaryID=5;";
+                sql += $"Insert INTO RelProviderMasterReviewSummary (RelComment,RelProviderID,RelMasterReviewSummaryID) VALUES ('{value.Replace("'", "''")}',{Document.Provider.ProviderID},5);";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    cnn.Execute(sql);
+                }
+                strBimonthlyReviewComment = value;
+            }
+        }
 
-
-/// <summary>
-/// Record containing the review start, end date and topic information
-/// </summary>
+        /// <summary>
+        /// Record containing the review start, end date and topic information
+        /// </summary>
         private SqlMasterReviewSummaryM masterReviewSummary { get; set; }
         public int MasterReviewSummaryID { get { return masterReviewSummary.MasterReviewSummaryID; } set { masterReviewSummary.MasterReviewSummaryID = value; OnPropertyChanged(); } }
         public DateTime StartDate { get { return masterReviewSummary.StartDate; } set { masterReviewSummary.StartDate = value; OnPropertyChangedSave(); } }
@@ -231,7 +260,14 @@ namespace AI_Note_Review
             get { return masterReviewSummary.MasterReviewSummaryComment; } 
             set { masterReviewSummary.MasterReviewSummaryComment = value; OnPropertyChangedSave(); } 
         }
-        public string MasterReviewSummaryImpression { get { return masterReviewSummary.MasterReviewSummaryImpression; } set { masterReviewSummary.MasterReviewSummaryImpression = value; OnPropertyChangedSave(); } }
+        public string MasterReviewSummaryImpression {
+            get {
+                return masterReviewSummary.MasterReviewSummaryImpression; } set 
+            {
+                masterReviewSummary.MasterReviewSummaryImpression = value; 
+                OnPropertyChangedSave(); 
+            } 
+        }
 
         public void SaveToDB()
         {

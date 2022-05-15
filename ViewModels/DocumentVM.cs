@@ -344,7 +344,7 @@ namespace AI_Note_Review
                 {
                     string strPtInfo = myString.Replace("Encounter Date:", "");
                     strPtInfo = strPtInfo.Replace("Provider:", "|");
-                    document.VisitDate = DateTime.Parse(strPtInfo.Split('|')[0].Trim());
+                    VisitDate = DateTime.Parse(strPtInfo.Split('|')[0].Trim());
                     SetProvider(strPtInfo.Split('|')[1].Trim());
                 }
 
@@ -529,7 +529,7 @@ namespace AI_Note_Review
                     if (strInnerText.Contains("DOS:"))
                     {
                         strInnerText = strInnerText.Replace("DOS:", "|");
-                        document.VisitDate = DateTime.Parse(strInnerText.Split('|')[1]);
+                        VisitDate = DateTime.Parse(strInnerText.Split('|')[1]);
                         continue;
                     }
                 }
@@ -927,6 +927,28 @@ namespace AI_Note_Review
             {
                 document.VisitDate = value;
                 OnPropertyChanged();
+                OnPropertyChanged("DocumentMRS");
+            }
+        }
+
+        public MasterReviewSummaryVM DocumentMRS
+        {
+            get
+            {
+                string sql = $"Select * from MasterReviewSummary";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    var tmpCol = cnn.Query<MasterReviewSummaryVM>(sql).ToList();
+                    foreach (MasterReviewSummaryVM mrs in tmpCol)
+                    {
+
+                        if (VisitDate >= mrs.StartDate && VisitDate <= mrs.EndDate)
+                        {
+                            return mrs;
+                        }
+                    }
+                }
+                return null;
             }
         }
 

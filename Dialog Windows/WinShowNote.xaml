@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Note_Review"
         mc:Ignorable="d"
+        WindowState="Maximized"
         Title="WinShowNote" Height="450" Width="800">
     <DockPanel Background="Black">
         <Button Click="Button_Click" DockPanel.Dock="Bottom" HorizontalAlignment="Center" FontSize="20" Style="{StaticResource LinkButton}">Close</Button>
