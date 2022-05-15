@@ -8,6 +8,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -112,6 +113,58 @@ namespace AI_Note_Review
                     return document;
             }
         }
+
+        private NoteDataVM parentNoteDataVM;
+        public NoteDataVM ParentNoteData
+        {
+            set
+            {
+                parentNoteDataVM = value;
+            }
+            get
+            {
+                return parentNoteDataVM;
+            }
+        }
+
+        public void DeleteParentNoteData()
+        {
+            if (parentNoteDataVM == null) return;
+            string sql = $"Delete from data where NoteID = {parentNoteDataVM.NoteID}";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteNotesLocation))
+            {
+                var d = cnn.Query(sql);
+            }
+            parentNoteDataVM = null;
+            OnPropertyChanged("ParentNoteData");
+        }
+
+        public void GetNextParentNote()
+        {
+            string sql = $"Select * from Data Limit 1";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteNotesLocation))
+            {
+                var d = cnn.Query<NoteDataVM>(sql).FirstOrDefault();
+                parentNoteDataVM = d;
+
+                string strHTML = Encryption.Decrypt(d.NoteString);
+
+                WebBrowser browser = new WebBrowser();
+                browser.ScriptErrorsSuppressed = true;
+                browser.DocumentText = strHTML;
+                browser.Document.OpenNew(true);
+                browser.Document.Write(strHTML);
+                browser.Refresh();
+
+                Document.NoteHTML = browser.Document;
+
+                //mrs.VisitReport.NewEcWDocument(); //reset document
+                VisitReport.NewEcWDocument();
+                VisitReport.ICD10Segments = null;
+                VisitReport.PopulateCPStatuses();
+            }
+        }
+
 
         private PatientVM patient;
         /// <summary>

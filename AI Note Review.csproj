@@ -107,6 +107,9 @@
     <Compile Include="Dialog Windows\WinSelectNote.xaml.cs">
       <DependentUpon>WinSelectNote.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialog Windows\WinShowNote.xaml.cs">
+      <DependentUpon>WinShowNote.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExtensionMethods\ObservableCollection.cs" />
     <Compile Include="Helper Classes\Encrypt.cs" />
     <Compile Include="Models\MasterReviewReportM.cs" />
@@ -221,6 +224,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialog Windows\WinSelectNote.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialog Windows\WinShowNote.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

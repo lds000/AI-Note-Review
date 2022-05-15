@@ -294,6 +294,7 @@ namespace AI_Note_Review
         }
 
         private MasterReviewSummaryVM currentMasterReview { get; set; }
+
         public void SetCurrentMasterReview(DateTime dt)
         {
             string sql = $"Select * from MasterReviewSummary;";

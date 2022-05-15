@@ -1,0 +1,18 @@
+﻿<Window x:Class="AI_Note_Review.WinShowNote"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AI_Note_Review"
+        mc:Ignorable="d"
+        Title="WinShowNote" Height="450" Width="800">
+    <DockPanel Background="Black">
+        <Button Click="Button_Click" DockPanel.Dock="Bottom" HorizontalAlignment="Center" FontSize="20" Style="{StaticResource LinkButton}">Close</Button>
+        <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="3">
+            <!-- Binds to lbMonthReview.selecteditem, which is a SqlDocumentReviewSummaryVM -->
+            <WebBrowser local:WebBrowserHelper.Body="{Binding NoteHTMLBody}">
+
+            </WebBrowser>
+        </Border>
+    </DockPanel>
+</Window>

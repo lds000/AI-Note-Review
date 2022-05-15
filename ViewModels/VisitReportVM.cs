@@ -399,7 +399,37 @@ namespace AI_Note_Review
             }
         }
 
+        private ICommand mShowNote;
+        public ICommand ShowNoteCommand
+        {
+            get
+            {
+                if (mShowNote == null)
+                    mShowNote = new ShowNoteEx();
+                return mShowNote;
+            }
+            set
+            {
+                mCommitReport = value;
+            }
+        }
 
+
+        private ICommand mGrabNextNote;
+        public ICommand GrabNextNoteCommand
+        {
+            get
+            {
+                if (mGrabNextNote == null)
+                    mGrabNextNote = new GrabNextNote();
+                return mGrabNextNote;
+            }
+            set
+            {
+                mGrabNextNote = value;
+            }
+
+        }
 
     }
 

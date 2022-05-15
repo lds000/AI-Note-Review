@@ -60,7 +60,17 @@
                 <!-- -->
                 <Button FontSize="20" Margin="20,0,0,0"
                         Command="{Binding CommitMyReportCommand}" CommandParameter="{Binding}"
-                        Style="{StaticResource LinkButton}" HorizontalAlignment="Center">Commit Review</Button>
+                        Style="{StaticResource LinkButton}" 
+                        HorizontalAlignment="Center">Commit Review</Button>
+                <Button FontSize="20" Margin="20,0,0,0"
+                        Command="{Binding ShowNoteCommand}" CommandParameter="{Binding}"
+                        Style="{StaticResource LinkButton}" 
+                        HorizontalAlignment="Center">Show Note</Button>
+                <Button FontSize="20" Margin="20,0,0,0"
+                        Command="{Binding GrabNextNoteCommand}" CommandParameter="{Binding}"
+                        Style="{StaticResource LinkButton}" 
+                        HorizontalAlignment="Center">Grab Note</Button>
+                
             </StackPanel>
             <ScrollViewer>
                 <Grid>
@@ -218,24 +228,27 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </DockPanel>
-                    <DockPanel  DataContext="{Binding SelectedCheckPoint}"
+                    <DockPanel 
                                 Grid.Column="2"
                                 Grid.Row="1"
                                 Margin="3">
-                        <Label Style="{StaticResource MyLblStyle}" DockPanel.Dock="Top" HorizontalAlignment="Center">Tags</Label>
+                        <Label Style="{StaticResource MyLblStyle}" DockPanel.Dock="Top" HorizontalAlignment="Center">General</Label>
                         <Border 
                             BorderBrush="White" 
                             BorderThickness="1" >
-                            <Border.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Add Tag" Command="{Binding AddTagCommand}" CommandParameter="{Binding}"/>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Style="{StaticResource MyLblStyle}">Provider:</Label>
+                                    <Label Style="{StaticResource MyLblStyle}" Content="{Binding MasterReviewSummary.Document.Provider.FullName}"></Label>
+                                </StackPanel>
+                                <Label Style="{StaticResource MyLblStyle}">Provider comment:</Label>
+                                <TextBox TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummary.ProviderBiMonthlyReviewMComment}"></TextBox>
+                                <Label Style="{StaticResource MyLblStyle}">General (to all) Review comment:</Label>
+                                <TextBox TextWrapping="WrapWithOverflow" 
+                                         Style="{StaticResource MyTextBox}"
+                                         Text="{Binding MasterReviewSummary.MasterReviewSummaryImpression}"></TextBox>
+                            </StackPanel>
 
-                                </ContextMenu>
-                            </Border.ContextMenu>
-
-                            <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="3">
-                                <local:UCTag1 DataContext="{Binding}"></local:UCTag1>
-                            </ScrollViewer>
                         </Border>
                     </DockPanel>
                 </Grid>

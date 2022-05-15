@@ -38,7 +38,13 @@ namespace AI_Note_Review
         }
         #endregion
 
+        public void SetVisitReport(VisitReportVM parentVM)
+        {
+            visitReportVM = parentVM;
+        }
+
         private VisitReportVM visitReportVM;
+
         public VisitReportV()
         {
             InitializeComponent();

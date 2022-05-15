@@ -1358,6 +1358,14 @@ namespace AI_Note_Review
             }
         }
 
+        public string NoteHTMLBody
+        {
+            get
+            {
+                return document.NoteHTML.Body.OuterHtml;
+            }
+        }
+
         private void updateNoteData()
         {
             OnPropertyChanged("Facility");
