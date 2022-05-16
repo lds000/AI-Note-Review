@@ -145,7 +145,7 @@ From Database NoteSections:
                         noteSectionContent = $"{Patient.PtAgeYrs} Sex{Patient.PtSex}";
                         break; //Demographics 
                     case 1:
-                        noteSectionContent = Document.HPI + Document.ROS + Document.PMHx + Document.SocHx;
+                        noteSectionContent = Document.CC + "\n" + Document.HPI + "\n" + Document.ROS + "\n" + Document.PMHx + "\n" + Document.SocHx;
                         break; //All obtained information
                     case 2:
                         noteSectionContent = Document.CurrentMeds + Document.CurrentPrnMeds;

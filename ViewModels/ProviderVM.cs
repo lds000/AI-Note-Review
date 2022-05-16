@@ -310,7 +310,6 @@ namespace AI_Note_Review
                 }
                 currentMasterReview = null;
             }
-
         }
 
 

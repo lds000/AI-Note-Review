@@ -215,7 +215,6 @@ namespace AI_Note_Review
                 OnPropertyChanged("MissedCPs");
                 OnPropertyChanged("PassedCPs");
                 OnPropertyChanged("DroppedCPs");
-                ParentReport.UpdateCPs(); //now recalculate all checkpoints.
             }
         }
 
@@ -382,7 +381,6 @@ namespace AI_Note_Review
                 missedCPs = null;
                 droppedCPs = null;
                 Console.WriteLine($"Setting passed, missed, and droppedCPs to null for segment {SegmentTitle}.");
-                ParentReport.UpdateCPs();
             }
         }
 

@@ -36,8 +36,6 @@ namespace AI_Note_Review
         {
             MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
             //mrs.VisitReport.NewEcWDocument(); //reset document
-            mrs.VisitReport.NewEcWDocument();
-            mrs.VisitReport.ICD10Segments = null;
             mrs.VisitReport.PopulateCPStatuses();
             VisitReportV wp = new VisitReportV(mrs.VisitReport);
             //wp.DataContext = mrs.VisitReport;
@@ -69,7 +67,6 @@ namespace AI_Note_Review
         public void Execute(object parameter)
         {
             VisitReportVM rvm = parameter as VisitReportVM;
-            rvm.NewEcWDocument(); //reset document
             VisitReportV wp = new VisitReportV();
             wp.DataContext = rvm;
             wp.ShowDialog();
@@ -134,7 +131,7 @@ namespace AI_Note_Review
             VisitReportVM rvm = parameter as VisitReportVM;
             WinShowNote wsn = new WinShowNote();
             wsn.DataContext = rvm.Document;
-            wsn.ShowDialog();
+            wsn.Show();
             ;
         }
     }
@@ -170,4 +167,35 @@ namespace AI_Note_Review
         }
     }
 
+
+    class SkipNote : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
+
+
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            VisitReportVM rvm = parameter as VisitReportVM;
+            rvm.MasterReviewSummary.DeleteParentNoteData();
+            rvm.MasterReviewSummary.GetNextParentNote();
+        }
+    }
 }

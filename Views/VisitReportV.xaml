@@ -72,7 +72,11 @@
                         Command="{Binding GrabNextNoteCommand}" CommandParameter="{Binding}"
                         Style="{StaticResource LinkButton}" 
                         HorizontalAlignment="Center">Grab Note</Button>
-                
+                <Button FontSize="20" Margin="20,0,0,0"
+                        Command="{Binding SkipNoteCommand}" CommandParameter="{Binding}"
+                        Style="{StaticResource LinkButton}" 
+                        HorizontalAlignment="Center">Slip/Delete Note</Button>
+
             </StackPanel>
             <ScrollViewer>
                 <Grid>
@@ -89,7 +93,7 @@
                     <StackPanel DockPanel.Dock="Left" HorizontalAlignment="Center">
 
                         <Label Margin="0,10,0,10" Style="{StaticResource MyLblStyle}" HorizontalAlignment="Center" Padding="0" FontSize="18">Included Groups</Label>
-                        <ItemsControl MinHeight="100" x:Name="lbSegmentsCheck" ItemsSource="{Binding ICD10Segments}">
+                        <ItemsControl MinHeight="100" x:Name="lbSegmentsCheck" ItemsSource="{Binding Document.ICD10Segments}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel x:Name="spTemplate" Orientation="Horizontal">
@@ -142,7 +146,7 @@
                                  ItemsSource="{Binding MissedCPs}" Style="{StaticResource MyListBox}" MouseDoubleClick="lbFail_MouseDoubleClick">
                         </ListBox>
                         -->
-                        <ItemsControl ItemsSource="{Binding ICD10Segments}">
+                        <ItemsControl ItemsSource="{Binding Document.ICD10Segments}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="0">
@@ -172,7 +176,7 @@
                     </DockPanel>
                     <DockPanel Grid.Row="1" Grid.Column="1">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Dropped Checkpoints</Label>
-                        <ItemsControl ItemsSource="{Binding ICD10Segments}">
+                        <ItemsControl ItemsSource="{Binding Document.ICD10Segments}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="0">
@@ -202,7 +206,7 @@
                     </DockPanel>
                     <DockPanel Grid.Row="0" Grid.Column="2">
                         <Label DockPanel.Dock="Top" Style="{StaticResource MyLblStyle}" FontSize="14" HorizontalAlignment="Center">Passed Checkpoints</Label>
-                        <ItemsControl ItemsSource="{Binding ICD10Segments}">
+                        <ItemsControl ItemsSource="{Binding Document.ICD10Segments}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="0">
@@ -240,15 +244,24 @@
                             BorderThickness="1" >
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal">
+                                    <Label Style="{StaticResource MyLblStyle}">Review:</Label>
+                                    <Label Style="{StaticResource MyLblStyle}" Content="{Binding MasterReviewSummary.Document.DocumentMRS.MasterReviewSummaryTitle}"></Label>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
                                     <Label Style="{StaticResource MyLblStyle}">Provider:</Label>
                                     <Label Style="{StaticResource MyLblStyle}" Content="{Binding MasterReviewSummary.Document.Provider.FullName}"></Label>
                                 </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Style="{StaticResource MyLblStyle}">Review Count:</Label>
+                                    <Label Style="{StaticResource MyLblStyle}" Content="{Binding MasterReviewSummary.Document.Provider.CurrentReviewCount}"></Label>
+                                </StackPanel>
+                                
                                 <Label Style="{StaticResource MyLblStyle}">Provider comment:</Label>
                                 <TextBox TextWrapping="WrapWithOverflow" Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummary.StrBimonthlyReviewComment}"></TextBox>
                                 <Label Style="{StaticResource MyLblStyle}">General (to all) Review comment:</Label>
                                 <TextBox TextWrapping="WrapWithOverflow" 
                                          Style="{StaticResource MyTextBox}"
-                                         Text="{Binding MasterReviewSummary.Document.DocumentMRS.MasterReviewSummaryImpression}"></TextBox>
+                                         Text="{Binding MasterReviewSummary.Document.DocumentMRS.MasterReviewSummaryImpression, UpdateSourceTrigger=LostFocus}"></TextBox>
                             </StackPanel>
 
                         </Border>

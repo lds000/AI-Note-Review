@@ -854,7 +854,6 @@ namespace AI_Note_Review
             WinCheckPointEditor wce = new WinCheckPointEditor(cp);
             wce.DataContext = cp.ParentSegment.ParentReport;
             wce.Show();
-            cp.ParentSegment.ParentReport.UpdateCPs();
         }
         #endregion
     }

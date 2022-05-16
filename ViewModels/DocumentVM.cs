@@ -931,24 +931,17 @@ namespace AI_Note_Review
             }
         }
 
+        private MasterReviewSummaryVM documentMRS;
         public MasterReviewSummaryVM DocumentMRS
         {
             get
             {
-                string sql = $"Select * from MasterReviewSummary";
+                string sql = $"Select * from MasterReviewSummary where '{VisitDate.ToString("yyyy-MM-dd")}' Between StartDate and EndDate";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    var tmpCol = cnn.Query<MasterReviewSummaryVM>(sql).ToList();
-                    foreach (MasterReviewSummaryVM mrs in tmpCol)
-                    {
-
-                        if (VisitDate >= mrs.StartDate && VisitDate <= mrs.EndDate)
-                        {
-                            return mrs;
-                        }
-                    }
+                    documentMRS = cnn.Query<MasterReviewSummaryVM>(sql).FirstOrDefault();
                 }
-                return null;
+                return documentMRS;
             }
         }
 
@@ -1251,7 +1244,7 @@ namespace AI_Note_Review
         /// <param name="strHashTag"></param>
         public void AddHashTag(string strHashTag)
         {
-            HashTags += strHashTag + ", ";
+            document.HashTags += strHashTag + ", ";
         }
 
         /// <summary>
@@ -1384,7 +1377,15 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.NoteHTML.Body.OuterHtml;
+                try
+                {
+                    return document.NoteHTML.Body.OuterHtml;
+                }
+                catch (Exception)
+                {
+
+                    return null;
+                }
             }
         }
 
@@ -1474,6 +1475,11 @@ namespace AI_Note_Review
             {
                 if (document.ICD10Segments == null)
                     UpdateICD10Segments();
+                foreach (var tmpSeg in document.ICD10Segments)
+                {
+                    tmpSeg.ParentDocument = this;
+                    tmpSeg.ParentReport = this.pare //intentional error
+                }
                 return document.ICD10Segments; ////see code below...
             }
             set
@@ -1626,7 +1632,6 @@ namespace AI_Note_Review
             }
             #endregion
             document.ICD10Segments = tmpICD10Segments;
-            //OnPropertyChanged("ICD10Segments");
         }
 
 

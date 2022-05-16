@@ -157,10 +157,6 @@ namespace AI_Note_Review
                 browser.Refresh();
 
                 Document.NoteHTML = browser.Document;
-
-                //mrs.VisitReport.NewEcWDocument(); //reset document
-                VisitReport.NewEcWDocument();
-                VisitReport.ICD10Segments = null;
                 VisitReport.PopulateCPStatuses();
             }
         }
@@ -262,7 +258,8 @@ namespace AI_Note_Review
         }
         public string MasterReviewSummaryImpression {
             get {
-                return masterReviewSummary.MasterReviewSummaryImpression; } set 
+                return masterReviewSummary.MasterReviewSummaryImpression; } 
+            set 
             {
                 masterReviewSummary.MasterReviewSummaryImpression = value; 
                 OnPropertyChangedSave(); 

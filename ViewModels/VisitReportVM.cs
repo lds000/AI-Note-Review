@@ -58,19 +58,6 @@ namespace AI_Note_Review
             patient = mrs.Patient;
             document = mrs.Document;
             document.ICD10Segments = null; //reset segments
-            //passedCPs = new ObservableCollection<ICheckPoint>(); //use interface for compatability with the merge observablecollection
-            //missedCPs = new ObservableCollection<SqlCheckpointVM>();
-            //droppedCPs = new ObservableCollection<SqlCheckpointVM>();
-            iCD10Segments = null; //reset segments
-        }
-
-        //not sure I need this.
-        public void NewEcWDocument()
-        {
-            document.ICD10Segments = null; //reset segments
-            //passedCPs = null;
-            //missedCPs = null;
-            //droppedCPs = null;
         }
 
         private SqlCheckpointVM selectedCheckPoint;
@@ -117,52 +104,6 @@ namespace AI_Note_Review
         public DateTime VisitDate { get { return document.VisitDate; } set { document.VisitDate = value; } }
         public string HashTags { get { return document.HashTags; } set { document.HashTags = value; } }
         public ObservableCollection<string> ICD10s { get { return document.ICD10s; } set { document.ICD10s = value; } }
-
-        private ObservableCollection<SqlICD10SegmentVM> iCD10Segments;
-        public ObservableCollection<SqlICD10SegmentVM> ICD10Segments
-        {
-            get
-            {
-                if (iCD10Segments == null)
-                {
-                    iCD10Segments = document.ICD10Segments;
-                        //new ObservableCollection<SqlICD10SegmentVM>(document.ICD10Segments.OrderByDescending(c => c.Checkpoints.Count));
-                    foreach (var tmpSeg in iCD10Segments)
-                    {
-                        tmpSeg.ParentDocument = document;
-                        tmpSeg.ParentReport = this;
-                        tmpSeg.PropertyChanged += ICD10Segment_PropertyChanged;
-                    }
-                }
-                return iCD10Segments;
-            }
-            set
-            {
-                iCD10Segments = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void ICD10Segment_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "RecalculateCPStatus")
-            {
-                //leave comement for now, this re-selects the point after an CPStatus has changed.
-                /*
-                SqlICD10SegmentVM tmpSeg = sender as SqlICD10SegmentVM;
-                if (tmpSeg != null)
-                {
-                    int tmpCPID = SelectedCheckPoint.CheckPointID; //get selected CP ID
-                    //tmpSeg.Checkpoints = null; //reset checkpoints
-                    foreach (var tmpCP in tmpSeg.Checkpoints)//todo: I may not need to set all to null
-                    {
-                        tmpCP.CPStatus = null;
-                    }
-                    SelectedCheckPoint = (from c in tmpSeg.Checkpoints where c.CheckPointID == tmpCPID select c).FirstOrDefault();
-                }
-                */
-            }
-        }
 
         #endregion
         #region Patient yadda tadd
@@ -220,9 +161,7 @@ namespace AI_Note_Review
                 {
                     currentlySelectedSearchICD10.ParentReport = this;
                     currentlySelectedSearchICD10.ParentDocument = document;
-
-                    ICD10Segments.Add(currentlySelectedSearchICD10);
-                    OnPropertyChanged("ICD10Segments");
+                    Document.ICD10Segments.Add(currentlySelectedSearchICD10);
                     currentlySelectedSearchICD10.CBIncludeSegment = true;
                 }
             }
@@ -233,88 +172,18 @@ namespace AI_Note_Review
         /// </summary>
         public void PopulateCPStatuses()
         {
-            foreach (var tmpCollection in ICD10Segments)
+            foreach (var tmpCollection in document.ICD10Segments)
             {
                 if (tmpCollection.IncludeSegment)
                 {
-                    var tmpP = tmpCollection.PassedCPs; //only run the passedCPs, as this evaluates all CPs to determine which are passed status.
+                    foreach (var cp in tmpCollection.Checkpoints)
+                    {
+                        var result = cp.CPStatus;
+                    }
+                    //var tmpP = tmpCollection.PassedCPs; //only run the passedCPs, as this evaluates all CPs to determine which are passed status.
                 }
             }
         }
-
-        /*
-        private ObservableCollection<ICheckPoint> passedCPs;
-        public ObservableCollection<ICheckPoint> PassedCPs
-        {
-            get
-            {
-                passedCPs = new ObservableCollection<ICheckPoint>();
-                foreach (var tmpCollection in ICD10Segments)
-                {
-                    if (tmpCollection.IncludeSegment)
-                    {
-                        passedCPs = passedCPs.Union(tmpCollection.PassedCPs).ToObservableCollection();
-                    }
-                }
-                return passedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
-            }
-            set
-            {
-                passedCPs = value;
-            }
-        }
-
-        private ObservableCollection<SqlCheckpointVM> missedCPs;
-        public ObservableCollection<SqlCheckpointVM> MissedCPs
-        {
-            get
-            {
-                    missedCPs = new ObservableCollection<SqlCheckpointVM>();
-                    foreach (var tmpCollection in ICD10Segments) //only run once per report
-                    {
-                        if (tmpCollection.IncludeSegment)
-                        {
-                            missedCPs = missedCPs.Union(tmpCollection.MissedCPs).ToObservableCollection(); //run 19 times
-                            //var unitedPoints = observableCollection1.Union(observableCollection2).ToObservableCollection();
-                        }
-                    }
-                return missedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
-            }
-            set
-            {
-                missedCPs = value;
-            }
-        }
-
-        private ObservableCollection<SqlCheckpointVM> droppedCPs;
-        public ObservableCollection<SqlCheckpointVM> DroppedCPs
-        {
-            get
-            {
-                    droppedCPs = new ObservableCollection<SqlCheckpointVM>();
-                    foreach (var tmpCollection in ICD10Segments)
-                    {
-                        if (tmpCollection.IncludeSegment)
-                        {
-                            droppedCPs = droppedCPs.Union(tmpCollection.DroppedCPs).ToObservableCollection();
-                        }
-                    }
-                return droppedCPs.OrderByDescending(c => c.ErrorSeverity).ToObservableCollection();
-            }
-            set
-            {
-                droppedCPs = value;
-            }
-        }
-        */
-
-        public void UpdateCPs()
-        {
-            OnPropertyChanged("MissedCPs");
-            OnPropertyChanged("DroppedCPs");
-            OnPropertyChanged("PassedCPs");
-        }
-
 
         /// <summary>
         /// Holds the current review's Yes/No SqlRegex's
@@ -350,7 +219,7 @@ namespace AI_Note_Review
 
             string sql = "";
 
-            foreach (var tmpCollection in ICD10Segments) //only run once per report
+            foreach (var tmpCollection in Document.ICD10Segments) //only run once per report
             {
                 if (tmpCollection.IncludeSegment)
                 {
@@ -427,6 +296,22 @@ namespace AI_Note_Review
             set
             {
                 mGrabNextNote = value;
+            }
+
+        }
+
+        private ICommand mSkipNote;
+        public ICommand SkipNoteCommand
+        {
+            get
+            {
+                if (mSkipNote == null)
+                    mSkipNote = new SkipNote();
+                return mSkipNote;
+            }
+            set
+            {
+                mSkipNote = value;
             }
 
         }

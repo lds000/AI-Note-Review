@@ -280,9 +280,10 @@ namespace AI_Note_Review
                     {
                         ws.tbQuestion.Text = RegExText;
                     }
+                    Console.WriteLine($"loading {this.RegExText}");
                     ws.DataContext = this;
-                    ws.ShowDialog();
-                    ParentTag.ParentCheckPoint.YesNoSqlRegExIndex.Add(TagRegExID, ws.YesNoResult);
+                    ws.Show(); //todo: this is producing an error when !htnurgency sometimes.
+                    //ParentTag.ParentCheckPoint.YesNoSqlRegExIndex.Add(TagRegExID, ws.YesNoResult);
                     ask = ws.YesNoResult;
                 }
                 return (bool)ask;
