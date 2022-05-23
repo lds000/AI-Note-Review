@@ -50,6 +50,8 @@ class PersonViewModel {
         private string link;
         private int targetICD10Segment;
         private int errorSeverity;
+        private bool? doubleCheck;
+
 
 
 
@@ -123,6 +125,26 @@ class PersonViewModel {
                 }
                 checkPointType = value;
                 OnPropertyChanged("CheckPointType");
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? DoubleCheck
+        {
+            get => doubleCheck;
+            set
+            {
+                doubleCheck = value; //set this now for the update to work.
+                /*
+                string sql = "UPDATE CheckPoints SET DoubleCheck=@DoubleCheck WHERE CheckPointID=@CheckPointID;";
+                using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                {
+                    cnn.Execute(sql, this);
+                }
+                OnPropertyChanged("DoubleCheck");
+                */
             }
         }
 
@@ -249,6 +271,7 @@ class PersonViewModel {
                     "Action=@Action, " +
                     "ErrorSeverity=@ErrorSeverity, " +
                     "Link=@Link, " +
+                    "DoubleCheck=@DoubleCheck, " +
                     "Expiration=@Expiration " +
                     "WHERE CheckPointID=@CheckPointID;";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))

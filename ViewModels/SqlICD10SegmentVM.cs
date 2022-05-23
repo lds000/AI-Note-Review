@@ -238,7 +238,7 @@ namespace AI_Note_Review
             {
                 if (checkpoints == null)
                 {
-                    string sql = $"Select cp.CheckPointID,cp.CheckPointTitle,cp.ErrorSeverity,cp.CheckPointType,cp.TargetSection,cp.TargetICD10Segment,cp.Comment,cp.Action,cp.Link,cp.Expiration from CheckPoints cp inner join CheckPointTypes ns on cp.CheckPointType == ns.CheckPointTypeID where TargetICD10Segment == {sqlICD10Segment.ICD10SegmentID} order by ns.ItemOrder;";
+                    string sql = $"Select cp.CheckPointID,cp.CheckPointTitle,cp.ErrorSeverity,cp.CheckPointType,cp.TargetSection,cp.TargetICD10Segment,cp.Comment,cp.Action,cp.Link,cp.Expiration,cp.DoubleCheck from CheckPoints cp inner join CheckPointTypes ns on cp.CheckPointType == ns.CheckPointTypeID where TargetICD10Segment == {sqlICD10Segment.ICD10SegmentID} order by ns.ItemOrder;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
                         var tmpList = cnn.Query<SqlCheckpointM>(sql).ToList();

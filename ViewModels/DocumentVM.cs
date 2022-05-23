@@ -1478,7 +1478,7 @@ namespace AI_Note_Review
                 foreach (var tmpSeg in document.ICD10Segments)
                 {
                     tmpSeg.ParentDocument = this;
-                    tmpSeg.ParentReport = this.pare //intentional error
+                    tmpSeg.ParentReport = this.masterReviewVM.VisitReport; //intentional error
                 }
                 return document.ICD10Segments; ////see code below...
             }

@@ -210,6 +210,19 @@ namespace AI_Note_Review
             }
         }
 
+        public bool? DoubleCheck
+        {
+            get
+            {
+                return this.SqlCheckpoint.DoubleCheck;
+            }
+            set
+            {
+                this.SqlCheckpoint.DoubleCheck = value;
+                OnPropertyChangedSave();
+            }
+        }
+
         public string Comment
         {
             get
