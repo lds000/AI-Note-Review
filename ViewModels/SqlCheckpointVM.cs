@@ -79,6 +79,8 @@ namespace AI_Note_Review
     }
     #endregion
 
+
+
     public class SqlCheckpointVM : INotifyPropertyChanged, ICheckPoint
     {
         #region property changed
@@ -346,6 +348,17 @@ namespace AI_Note_Review
                     return Brushes.Green;
                 return Brushes.White;
 
+            }
+        }
+
+        public Brush CPTitleForeground
+        {
+            get
+            {
+                if (DoubleCheck == null)
+                    return Brushes.White;
+                if ((bool)DoubleCheck) return Brushes.Red;
+                return Brushes.White;
             }
         }
 
