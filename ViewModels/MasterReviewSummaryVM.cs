@@ -158,6 +158,7 @@ namespace AI_Note_Review
 
                 Document.NoteHTML = browser.Document;
                 VisitReport.PopulateCPStatuses();
+                OnPropertyChanged("StrBimonthlyReviewComment");
             }
         }
 
