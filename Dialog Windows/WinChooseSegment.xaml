@@ -27,6 +27,7 @@
                                     <Border.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Command="{Binding CreateMasterIndexCommand}" CommandParameter="{Binding}" Header="Create Index to ClipBoard"/>
+                                            <MenuItem Command="{Binding CreateKeyPointIndexCommand}" CommandParameter="{Binding}" Header="Create KeyPoint Index to ClipBoard"/>
                                         </ContextMenu>
                                     </Border.ContextMenu>
                                     <TextBlock Text="{Binding MasterReviewSummaryTitle}"></TextBlock>

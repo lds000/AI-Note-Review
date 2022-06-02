@@ -62,7 +62,8 @@
                                         <Border.ContextMenu>
                                             <ContextMenu>
                                             <MenuItem Command="{Binding CreateMasterIndexCommand}" CommandParameter="{Binding}" Header="Create Index to ClipBoard"/>
-                                        </ContextMenu>
+                                            <MenuItem Command="{Binding CreateKeyPointIndexCommand}" CommandParameter="{Binding}" Header="Create KeyPoint Index to ClipBoard"/>
+                                            </ContextMenu>
                                         </Border.ContextMenu>
                                         <TextBlock Text="{Binding MasterReviewSummaryTitle}"></TextBlock>
                                     </Border>
@@ -171,6 +172,7 @@
                                                         </ContextMenu>
                                                     </Border.ContextMenu>
                                                     <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
+                                                            <CheckBox Margin="3,0,3,0" IsChecked="{Binding KeyPoint}"></CheckBox>
                                                             <BulletDecorator>
                                                                 <BulletDecorator.Bullet>
                                                                     <Ellipse Height="6" Width="6" Fill="{Binding SeverityColor}"/>

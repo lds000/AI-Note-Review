@@ -1357,17 +1357,27 @@ namespace AI_Note_Review
                 resetNoteData();
 
                 document.NoteHTML = value;
-                if (document.NoteHTML.Body.InnerHtml.Contains("pnDetails")) //unique text to identify unlocked chart
+
+                try
                 {
-                    processUnlocked(document.NoteHTML);
-                    Console.WriteLine($"Processed unlocked chart for {patientVM.PtName}.");
+                    if (document.NoteHTML.Body.InnerHtml.Contains("pnDetails")) //unique text to identify unlocked chart
+                    {
+                        processUnlocked(document.NoteHTML);
+                        Console.WriteLine($"Processed unlocked chart for {patientVM.PtName}.");
+                    }
+                    else
+                    {
+                        processLocked(document.NoteHTML);
+                        masterReviewVM.AddLog("Processing locked chart");
+                        Console.WriteLine($"Processed locked chart for {patientVM.PtName}.");
+                    }
+
                 }
-                else
+                catch (Exception)
                 {
-                    processLocked(document.NoteHTML);
-                    masterReviewVM.AddLog("Processing locked chart");
-                    Console.WriteLine($"Processed locked chart for {patientVM.PtName}.");
+                    System.Windows.MessageBox.Show("Note contains no data");
                 }
+
                 updateNoteData();
                 OnPropertyChanged();
             }

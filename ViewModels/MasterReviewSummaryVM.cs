@@ -146,8 +146,11 @@ namespace AI_Note_Review
             {
                 var d = cnn.Query<NoteDataVM>(sql).FirstOrDefault();
                 parentNoteDataVM = d;
-
-                string strHTML = Encryption.Decrypt(d.NoteString);
+                string strHTML = "";
+                    if (d != null)
+                {
+                    strHTML = Encryption.Decrypt(d.NoteString);
+                }
 
                 WebBrowser browser = new WebBrowser();
                 browser.ScriptErrorsSuppressed = true;
@@ -513,6 +516,55 @@ namespace AI_Note_Review
             }
         }
 
+        private string keyPointHtml;
+        public string KeyPointHtml
+        {
+            get
+            {
+                if (keyPointHtml == null)
+                {
+                    string strSummary = $"<font size='+4'><b>Index for review: {MasterReviewSummaryTitle}</b></font><br>";
+                    strSummary += $"<font size='+1'>{MasterReviewSummarySubject}</font><br>";
+                    strSummary += $"<font size='+1'>Dates: {StartDate.ToString("MM/dd/yyyy")}-{EndDate.ToString("MM/dd/yyyy")}</font><br>";
+                    strSummary += $"<font size='+0'>{MasterReviewSummaryComment}</font><br><br>";
+                    strSummary += $"<font size='+1'>ICD-10 Breakdown:</font><br>";
+                    iCD10Segments = null;
+                    foreach (var seg in ICD10Segments)
+                    {
+                        if (seg.LeftOffset == 10)
+                        {
+                            strSummary += $"<span style='padding-left: 15px;'>";
+                        }
+                        else
+                        {
+                            strSummary += $"<span style='padding-left: 5px;'>";
+                        }
+                        strSummary += $"{seg.SegmentTitle} {seg.icd10Chapter}{seg.icd10CategoryStart}-{seg.icd10CategoryEnd}";
+                        if (seg.AlternativeICD10s.Count > 0)
+                        {
+                            strSummary += " also includes (";
+                            foreach (var tmpAlt in seg.AlternativeICD10s)
+                            {
+                                strSummary += $"{tmpAlt.AlternativeICD10} {tmpAlt.AlternativeICD10Title}, ";
+                            }
+                            strSummary = strSummary.Trim().TrimEnd(',');
+                            strSummary += ")";
+                        }
+                        if (seg.LeftOffset == 10)
+                            strSummary += $"</span>";
+                        strSummary += "<br>";
+                    }
+
+                    foreach (var seg in ICD10Segments)
+                    {
+                        strSummary += seg.KeyPointHtml;
+                    }
+                    keyPointHtml = strSummary;
+                }
+                return keyPointHtml;
+            }
+        }
+
         private string mainLog;
         public string MainLog 
         {
@@ -695,6 +747,24 @@ namespace AI_Note_Review
             set
             {
                 mCreateMasterIndex = value;
+            }
+            #endregion
+        }
+
+        //CreateMasterIndexCommand
+        private ICommand mCreateKeyPointIndex;
+        public ICommand CreateKeyPointIndexCommand
+        {
+            #region Command Def
+            get
+            {
+                if (mCreateKeyPointIndex == null)
+                    mCreateKeyPointIndex = new CreateKeyPointIndex();
+                return mCreateKeyPointIndex;
+            }
+            set
+            {
+                mCreateKeyPointIndex = value;
             }
             #endregion
         }
@@ -922,6 +992,38 @@ namespace AI_Note_Review
             ClipboardHelper.CopyToClipboard(mrs.IndexHtml, "");
             WinPreviewHTML wp = new WinPreviewHTML();
             wp.MyWB.NavigateToString(HtmlLittlerHelper.FixHtml(mrs.IndexHtml));
+            wp.ShowDialog();
+        }
+    }
+
+    //CreateMasterIndexCommand
+    class CreateKeyPointIndex : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
+        #endregion
+
+        public void Execute(object parameter)
+        {
+            MasterReviewSummaryVM mrs = parameter as MasterReviewSummaryVM;
+            ClipboardHelper.CopyToClipboard(mrs.KeyPointHtml, "");
+            WinPreviewHTML wp = new WinPreviewHTML();
+            wp.MyWB.NavigateToString(HtmlLittlerHelper.FixHtml(mrs.KeyPointHtml));
             wp.ShowDialog();
         }
     }

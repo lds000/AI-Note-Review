@@ -238,7 +238,7 @@ namespace AI_Note_Review
             {
                 if (checkpoints == null)
                 {
-                    string sql = $"Select cp.CheckPointID,cp.CheckPointTitle,cp.ErrorSeverity,cp.CheckPointType,cp.TargetSection,cp.TargetICD10Segment,cp.Comment,cp.Action,cp.Link,cp.Expiration,cp.DoubleCheck from CheckPoints cp inner join CheckPointTypes ns on cp.CheckPointType == ns.CheckPointTypeID where TargetICD10Segment == {sqlICD10Segment.ICD10SegmentID} order by ns.ItemOrder;";
+                    string sql = $"Select cp.CheckPointID,cp.CheckPointTitle,cp.ErrorSeverity,cp.CheckPointType,cp.TargetSection,cp.TargetICD10Segment,cp.Comment,cp.Action,cp.Link,cp.Expiration,cp.DoubleCheck,cp.KeyPoint from CheckPoints cp inner join CheckPointTypes ns on cp.CheckPointType == ns.CheckPointTypeID where TargetICD10Segment == {sqlICD10Segment.ICD10SegmentID} order by ns.ItemOrder;";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
                         var tmpList = cnn.Query<SqlCheckpointM>(sql).ToList();
@@ -560,6 +560,63 @@ namespace AI_Note_Review
             }
         }
 
+        private string keyPointHtml;
+        public string KeyPointHtml
+        {
+            get
+            {
+                if (keyPointHtml == null)
+                {
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        SqlCheckpointVM cpvm = new SqlCheckpointVM();
+                        ObservableCollection<SqlCheckpointVM> lcp = Checkpoints;
+                        List<SqlCheckPointType> lcpt = CheckPointTypes;
+                        string strSummary = "";// @"<style type=""text / css"">< !--.tab { margin - left: 40px; }--></ style >";
+                        strSummary += $"<h1>{SegmentTitle}</h1><br>";
+                        foreach (SqlCheckPointType cpt in lcpt)
+                        {
+                            string strTempOut = "<ol>";
+                            foreach (SqlCheckpointVM cp in lcp)
+                            {
+                                if (cp.CheckPointType == cpt.CheckPointTypeID  && (bool)cp.KeyPoint)
+                                {
+                                    strTempOut += $"<dl><li><dt><font size='+1'>{cp.CheckPointTitle}</font>" + Environment.NewLine;
+                                    if (cp.Comment != null)
+                                    {
+                                        string strEncoded = cp.Comment.Replace(Environment.NewLine, "<br style='display: block; margin: 0px; line-height:0px'>");
+                                        strTempOut += $"<dd><i>{strEncoded}</i>" + Environment.NewLine;
+                                        if (cp.Images.Count > 0)
+                                        {
+                                            foreach (var imgCPimage in cp.Images)
+                                            {
+                                                var b64String = Convert.ToBase64String(imgCPimage.ImageData);
+                                                var dataUrl = "data:image/bmp;base64," + b64String;
+                                                strTempOut += $"<br><img src=\"{dataUrl}" + "\" />";
+                                            }
+                                        }
+                                        strTempOut += "";
+                                    }
+                                    strTempOut += "</dl></li>";
+                                }
+                            }
+                            if (strTempOut != "<ol>")
+                            {
+                                strSummary += $"<font size='+2'><B  style='margin-left: 10px'>{cpt.Title} </B></font>" + Environment.NewLine;
+                                strSummary += strTempOut + "</ol>";
+                                strSummary += Environment.NewLine;
+                            }
+                            else
+                            {
+                                strTempOut = "";
+                            }
+                        }
+                        keyPointHtml = strSummary;
+                    }
+                }
+                return keyPointHtml;
+            }
+        }
 
         /// <summary>
         /// Calculate the indent amount for each ICD10 segment and save it to the database.

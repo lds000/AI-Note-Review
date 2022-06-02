@@ -220,7 +220,20 @@ namespace AI_Note_Review
             }
             set
             {
-                this.SqlCheckpoint.DoubleCheck = value;
+                this.SqlCheckpoint.DoubleCheck = (bool)value;
+                OnPropertyChangedSave();
+            }
+        }
+
+        public bool? KeyPoint
+        {
+            get
+            {
+                return this.SqlCheckpoint.KeyPoint;
+            }
+            set
+            {
+                this.SqlCheckpoint.KeyPoint = (bool)value;
                 OnPropertyChangedSave();
             }
         }

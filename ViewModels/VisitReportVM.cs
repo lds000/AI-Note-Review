@@ -198,7 +198,7 @@ namespace AI_Note_Review
             //todo: move this up sooner to avoid extra work
             string sqlCheck = $"Select Count() from RelCPPRovider where PtID={patient.PtID} AND VisitDate='{document.VisitDate.ToString("yyyy-MM-dd")}';";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
-            {
+            {   
                 int iCount = cnn.ExecuteScalar<int>(sqlCheck);
                 if (iCount > 0)
                 {
