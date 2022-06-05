@@ -40,7 +40,7 @@
             </Grid.ColumnDefinitions>
             <DockPanel>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                    <Button Command="{Binding AddSegmentCommand}" CommandParameter="{Binding}" Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
+                    <Button Command="{Binding AddSegmentCommand}" CommandParameter="{Binding SelectedMasterReview}" Style="{StaticResource LinkButton}" Margin="3">Add Group</Button>
                 </StackPanel>
                 <Grid>
                     <Grid.RowDefinitions>

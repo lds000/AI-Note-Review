@@ -292,6 +292,29 @@ namespace AI_Note_Review
         }
 
 
+        private List<SqlICD10SegmentVM> allICD10Segments;
+        public List<SqlICD10SegmentVM> AllICD10Segments
+        {
+            get
+            {
+                if (allICD10Segments == null)
+                {
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        string sql = $"Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
+                        var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
+                        List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
+                        foreach (SqlICD10SegmentM s in l)
+                        {
+                            SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s, MasterReview);
+                            lvm.Add(scvm);
+                        }
+                        allICD10Segments = lvm;
+                    }
+                }
+                return allICD10Segments;
+            }
+        }
 
         public ObservableCollection<ProviderVM> myPeeps;
         public ObservableCollection<ProviderVM> MyPeeps

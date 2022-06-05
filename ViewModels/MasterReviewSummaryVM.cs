@@ -303,6 +303,7 @@ namespace AI_Note_Review
             }
         }
 
+
         //not sure this is used.
         private List<SqlICD10SegmentVM> iCD10List;
         public List<SqlICD10SegmentVM> ICD10List
@@ -313,7 +314,7 @@ namespace AI_Note_Review
                 {
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
-                        string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {MasterReviewSummaryID} order by icd10Chapter, icd10CategoryStart;";
+                        string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {MasterReviewSummaryID} order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
                         var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
                         List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
                         foreach (SqlICD10SegmentM s in l)
@@ -381,69 +382,30 @@ namespace AI_Note_Review
                     //return all for masterreview All ID=3
                     if (MasterReviewSummaryID == 3)
                     {
-                        string sql3 = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID order by icd10Chapter, icd10CategoryStart;";
+                        string sql3 = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
                         l = cnn.Query<SqlICD10SegmentM>(sql3).ToList();
                     }
                     //if MasterReviewSummaryID=1 then return general review withicd10Chapter  X, this is for a general review
                     else
                     if (MasterReviewSummaryID == 1)
                     {
-                        string sql1 = "Select * from ICD10Segments where icd10Chapter == 'X' order by icd10Chapter, icd10CategoryStart;";
+                        string sql1 = "Select * from ICD10Segments where icd10Chapter == 'X' order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
                         l = cnn.Query<SqlICD10SegmentM>(sql1).ToList();
                     }
                     else
                     {
-                        string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {MasterReviewSummaryID} order by icd10Chapter, icd10CategoryStart;";
+                        string sql = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID where rel.MasterReviewSummaryID == {MasterReviewSummaryID} order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
                         l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
                     }
                     //For all others
                 }
-                 
-                var level0 = (from c in l where c.ParentSegment == 0 select c);
-
-                    List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
-                foreach (SqlICD10SegmentM seg in level0)
+                List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
+                foreach (SqlICD10SegmentM seg in l)
                 {
                     SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(seg, this);
-                    scvm.Indent = new System.Windows.Thickness(0);
                     lvm.Add(scvm);
-
-                    var level1 = from c in l where c.ParentSegment == seg.ICD10SegmentID select c;
-                    foreach (SqlICD10SegmentM seg1 in level1)
-                    {
-                        SqlICD10SegmentVM scvm1 = new SqlICD10SegmentVM(seg1, this);
-                        scvm1.Indent = new System.Windows.Thickness(10, 0, 0, 0);
-                        lvm.Add(scvm1);
-
-                        var level2 = from c in l where c.ParentSegment == seg1.ICD10SegmentID select c;
-                        foreach (SqlICD10SegmentM seg2 in level2)
-                        {
-                            SqlICD10SegmentVM scvm2 = new SqlICD10SegmentVM(seg2, this);
-                            scvm2.Indent = new System.Windows.Thickness(20, 0, 0, 0);
-                            lvm.Add(scvm2);
-
-                            var level3 = from c in l where c.ParentSegment == seg2.ICD10SegmentID select c;
-                            foreach (SqlICD10SegmentM seg3 in level3)
-                            {
-                                SqlICD10SegmentVM scvm3 = new SqlICD10SegmentVM(seg3, this);
-                                scvm3.Indent = new System.Windows.Thickness(30, 0, 0, 0);
-                                lvm.Add(scvm3);
-                            }
-                        }
-
-                    }
-
-
-
-
-                    /*
-                        foreach (SqlICD10SegmentM s in l)
-                        {
-                            SqlICD10SegmentVM scvm = new SqlICD10SegmentVM(s);
-                            lvm.Add(scvm);
-                        }
-                        */
                 }
+
                 foreach (var seg in lvm)
                 {
                     seg.PropertyChanged += SqlICD10SegmentVM_PropertyChanged;

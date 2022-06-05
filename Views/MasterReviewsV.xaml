@@ -16,6 +16,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
             <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Label Style="{StaticResource MyLblStyle}" FontSize="24" HorizontalAlignment="Center" Grid.ColumnSpan="3">Master Reviews</Label>
         <Border Grid.Row="1" Margin="5,10,5,10">
@@ -38,11 +39,13 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="83*"/>
+                    <RowDefinition Height="213*"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource MyLblStyle}">Title</Label>
-                <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummaryTitle}"></TextBox>
-                <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource MyLblStyle}">Comment</Label>
-                <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap"  Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummaryComment}"></TextBox>
+                <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource MyLblStyle}" Margin="0,0,0,25" Grid.RowSpan="2">Title</Label>
+                <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummaryTitle}" Margin="0,0,0,25" Grid.RowSpan="2"></TextBox>
+                <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource MyLblStyle}" Margin="0,1,0,81" Grid.RowSpan="5">Comment</Label>
+                <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap"  Style="{StaticResource MyTextBox}" Text="{Binding MasterReviewSummaryComment}" Margin="0,1,0,81" Grid.RowSpan="5"></TextBox>
             </Grid>
         </Border>
         <Border Grid.Column="2" Grid.Row="1" BorderBrush="Blue" BorderThickness="1" DataContext="{Binding SelectedMasterReviewSummary}">
@@ -66,12 +69,47 @@
                                 </ContextMenu>
                             </Border.ContextMenu>
                             <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                <TextBlock Grid.Column="1" Margin="{Binding Icd10Margin}" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10Chapter}" />
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <TextBlock Grid.Column="1" Margin="{Binding Icd10Margin}" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10Chapter}" />
+                                    <TextBlock Margin="0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryStart}"/>
+                                    <TextBlock Margin="0" Padding="0" Text="-"/>
+                                    <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryEnd}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <TextBlock Grid.Column="1" DockPanel.Dock="Top" Text="{Binding Path=SqlICD10Segment.SegmentTitle}" ToolTip="{Binding Path=SqlICD10Segment.SegmentComment}"/>
+                                    <TextBlock Margin="10,0,0,0" Padding="0,0,0,0">(</TextBlock>
+                                    <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding CheckPointCount}"></TextBlock>
+                                    <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+        <Border Grid.Column="3" Grid.Row="1">
+            <ListBox x:Name="lbICD10"
+                             ItemsSource="{Binding Path=AllICD10Segments}" 
+                             Style="{StaticResource MyListBox}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="{Binding Indent}" Orientation="Horizontal" >
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Edit" Command="{Binding EditSegmentCommand}" CommandParameter="{Binding}"/>
+                                    <MenuItem Header="Create Index"
+                                                  Command="{Binding CreateIndexCommand}" CommandParameter="{Binding}"
+                                                  ToolTip="Create an index and copy it to the clipboard"/>
+                                    <MenuItem Header="Delete Segment" Command="{Binding DeleteSegmentCommand}" CommandParameter="{Binding}"></MenuItem>
+                                    <MenuItem Header="Add Alternative" Command="{Binding AddAlternativeCommand}" CommandParameter="{Binding}"/>
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
+                            <StackPanel Margin="{Binding Indent}" Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Grid.Column="1" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10Chapter}" />
                                 <TextBlock Margin="0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryStart}"/>
                                 <TextBlock Margin="0" Padding="0" Text="-"/>
                                 <TextBlock Margin="0,0,10,0" Padding="0" Text="{Binding Path=SqlICD10Segment.icd10CategoryEnd}"/>
@@ -82,13 +120,12 @@
                                 <TextBlock Margin="0,0,0,0"  Padding="0,0,0,0" Text="{Binding CheckPointCount}"></TextBlock>
                                 <TextBlock Margin="0,0,0,0" Padding="0,0,0,0">)</TextBlock>
                             </StackPanel>
-                        </Grid>
-                        </Border>
+                        </StackPanel>
+
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-        </Border>
-
+        </Border>            
         <Button Style="{StaticResource LinkButton}" FontSize="20" HorizontalAlignment="Center" Grid.ColumnSpan="3" Grid.Row="2" Click="Button_Click">Close</Button>
     </Grid>
 </Window>

@@ -59,13 +59,12 @@ namespace AI_Note_Review
         {
             strSegmentTitle = strSegmentTitle.Replace("'", "''"); //used to avoid errors in titles with ' character
             string sql = "";
-            sql = $"INSERT INTO ICD10Segments (SegmentTitle) VALUES ('{strSegmentTitle}');";
-            sql += $"Select * from ICD10Segments where SegmentTitle = '{strSegmentTitle}';"; //this part is to get the ID of the newly created phrase
+            sql = $"INSERT INTO ICD10Segments (SegmentTitle) VALUES ('{strSegmentTitle}');SELECT last_insert_rowid()";
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                SqlICD10SegmentM p = cnn.QueryFirstOrDefault<SqlICD10SegmentM>(sql);
-                ICD10SegmentID = p.ICD10SegmentID;
-                SegmentTitle = p.SegmentTitle;
+                int lastID = cnn.ExecuteScalar<int>(sql, this);
+                ICD10SegmentID = lastID;
+                SegmentTitle = strSegmentTitle;
             }
         }
 

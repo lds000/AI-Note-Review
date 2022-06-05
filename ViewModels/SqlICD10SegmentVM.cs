@@ -162,18 +162,50 @@ namespace AI_Note_Review
             }
         }
 
+        static private List<SqlICD10SegmentM> allICD10SegmentMs;
+        static public List<SqlICD10SegmentM> AllICD10SegmentMs
+        {
+            get
+            {
+                if (allICD10SegmentMs == null)
+                {
+                    using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+                    {
+                        string sql = $"Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
+                        allICD10SegmentMs = cnn.Query<SqlICD10SegmentM>(sql).ToList();
+                    }
+                }
+                return allICD10SegmentMs;
+            }
+        }
+
+        bool newVal = true;
         private Thickness indent;
         public Thickness Indent
         {
             get
             {
+                if (newVal)
+                {
+                    int i = 0;
+                    foreach (var seg in AllICD10SegmentMs)
+                    {
+                        if (icd10Chapter == seg.icd10Chapter)
+                        {
+                            if (icd10CategoryStart >= seg.icd10CategoryStart && icd10CategoryEnd < seg.icd10CategoryEnd)
+                                i += 5;
+                        }
+                    }
+                    indent = new Thickness(i, 0, 0, 0);
+                    newVal = false;
+                }
                 return indent;
             }
-            set
-            {
-                indent = value;
-                OnPropertyChanged();
-            }
+        }
+        public void ResetIndent()
+        {
+            newVal = true;
+            OnPropertyChanged("Indent");
         }
         
 
@@ -369,7 +401,16 @@ namespace AI_Note_Review
         }
 
 
-
+        public void AssignToMasterReviewSummary(MasterReviewSummaryVM mrs)
+        {
+            string sql = $"Delete from RelICD10SegmentMasterReviewSummary Where ICD10SegmentID={ICD10SegmentID} and MasterReviewSummaryID={mrs.MasterReviewSummaryID};";
+            sql += $"Insert INTO RelICD10SegmentMasterReviewSummary (ICD10SegmentID,MasterReviewSummaryID) VALUES ({ICD10SegmentID},{mrs.MasterReviewSummaryID});";
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
+            {
+                cnn.Execute(sql);
+            }
+            mrs.ICD10Segments = null; //reset ICD10Segments;
+        }
 
 
         //recheck CPs;
@@ -435,7 +476,7 @@ namespace AI_Note_Review
                 { 
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
-                        string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart;";
+                        string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
                         var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
                         List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
                         foreach (SqlICD10SegmentM s in l)
