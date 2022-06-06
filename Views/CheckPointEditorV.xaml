@@ -130,11 +130,14 @@
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="542*"></RowDefinition>
-                        <RowDefinition Height="153*"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="{Binding AddCPCommand}" CommandParameter="{Binding}">Add CheckPoint</MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
                     <!--SqlICD10SegmentVM.Checkpoints-->
                     <ItemsControl ItemsSource="{Binding CheckPointTypes}" Grid.RowSpan="2">
                         <ItemsControl.ItemTemplate>
@@ -172,7 +175,7 @@
                                                         </ContextMenu>
                                                     </Border.ContextMenu>
                                                     <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
-                                                            <CheckBox Margin="3,0,3,0" IsChecked="{Binding KeyPoint}"></CheckBox>
+                                                            <CheckBox Margin="3,0,3,0" IsChecked="{Binding KeyPoint}" ToolTip="If checked this is a keypoint and will be included in keypoint reports."></CheckBox>
                                                             <BulletDecorator>
                                                                 <BulletDecorator.Bullet>
                                                                     <Ellipse Height="6" Width="6" Fill="{Binding SeverityColor}"/>
@@ -189,6 +192,9 @@
                         </ItemsControl.ItemTemplate>
                         
                     </ItemsControl>
+                        <StackPanel Grid.Row="1">
+                            <Button Command="{Binding SelectedICD10Segment.AddCPCommand}" CommandParameter="{Binding SelectedICD10Segment}" Style="{StaticResource LinkButton}" Margin="3">Add CheckPoint</Button>
+                        </StackPanel>
                 </Grid>
                 </ScrollViewer>
             </DockPanel>

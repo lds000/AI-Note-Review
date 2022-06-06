@@ -360,7 +360,6 @@ namespace AI_Note_Review
                 if (this.ErrorSeverity >= 1)
                     return Brushes.Green;
                 return Brushes.White;
-
             }
         }
 
@@ -382,7 +381,6 @@ namespace AI_Note_Review
                 if (this.Tags.Count == 0)
                     return Brushes.Red;
                 return Brushes.Black;
-
             }
         }
 

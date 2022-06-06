@@ -68,6 +68,8 @@ namespace AI_Note_Review
 
         public AlternativeICD10VM AlternativeICD10 { get; set; }
 
+        //todo: map alternative ICD10s to other ICD10 codes and not sections, that way nested sections will also be included.
+
         private List<AlternativeICD10VM> alternativeICD10s;
         public List<AlternativeICD10VM> AlternativeICD10s
         {
