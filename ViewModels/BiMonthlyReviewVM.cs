@@ -442,9 +442,9 @@ namespace AI_Note_Review
                 rxtot += (double)l[i].HtmlReport.rxScore;
                 totaltot += (double)l[i].HtmlReport.totalScore;
             }
-            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I have your review completed for the months of Jan and Feb 2022!";
-            strReport += $"<br>This review covered conditions of the lower respiratory tract. As you know we saw a lot of respiratory during the peak of the pandemic, so it was difficult finding relevant (non-Covid) charts to review.  ";
-            strReport += $"The following is my note review. As before, to assist in my review process I use a text search algorithm for seeking for specific words or phrases in your notes.  I understand we all don't use the same terms to express our observations, so there may be some omissions on my part. Please don't hesitated giving feedback by clicking on the feedback link. Same as the last review, I won't post the scores to SmartSheets for at least a week to give everyone a chance to review the notes personally.";
+            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I have your review completed for the months of Mar and Apr 2022!";
+            strReport += $"<br>This review covered abdominal pain focusing on appropriate documentation based on which quadrant/half of abdomen was involved. ";
+            strReport += $"I would like to note that many providers document a more focused note with the decision of transferring a patient to the ED.  I think this is reasonable as long as risk for safe and timely transport (either self, other, or ambulance) are addressed.  For purposes of the review I still included these notes and missed checkpoints.";
             strReport += $"<br><br>Best Regards,<br>Lloyd Stolworthy, M.D.<hr>";
             strReport += $"<font size='+2'>Combined Total Review Score: HPI: {hpitot.ToString("0.##")}, Dx: {dxtot.ToString("0.##")}, Exam:  {examtot.ToString("0.##")}, Rx: {rxtot.ToString("0.##")}, Total Score: {totaltot.ToString("0.##")}</font><hr>";
             strReport += strTmp;

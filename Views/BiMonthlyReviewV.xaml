@@ -55,7 +55,7 @@
                     <Border BorderBrush="White" BorderThickness="1" Margin="2" Grid.Row="1">
                         <StackPanel>
                             <Label Style="{StaticResource MyLblStyle}">General Review Comment (To all):</Label>
-                            <TextBox Style="{StaticResource MyTextBox}" Text="{Binding SelectedMasterReviewSummary.MasterReviewSummaryImpression}"></TextBox>
+                            <TextBox Style="{StaticResource MyTextBox}" Text="{Binding SelectedMasterReviewSummary.MasterReviewSummaryImpression}" TextWrapping="Wrap"></TextBox>
                         </StackPanel>
 
                     </Border>

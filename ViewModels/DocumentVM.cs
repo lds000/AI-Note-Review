@@ -92,6 +92,9 @@ namespace AI_Note_Review
             }
         }
 
+        /// <summary>
+        /// Used to save note content as a hippa compliant document (anonymized)
+        /// </summary>
         public void SaveNote()
         {
             if (NoteHTML == null)
@@ -173,6 +176,11 @@ namespace AI_Note_Review
             }
         }
 
+        /// <summary>
+        /// Returns an HTML document from a string.
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
         private System.Windows.Forms.HtmlDocument GetHtmlDocument(string html)
         {
             WebBrowser browser = new WebBrowser();
@@ -192,7 +200,7 @@ namespace AI_Note_Review
             "Family History:", "Social History:", "ROS:", "Vitals:", "Examination:", "Assessment:","Treatment:","Procedures:","Immunizations:","Therapeutic Injections:","Diagnostic Imaging:",
             "Lab Reports:","Next Appointment:","Visit Code:","Procedure Codes:","Images:", "Objective:","Procedure Orders:","Preventive Medicine:","Billing Information:","Plan:"};
 
-        #region Process EcwContent
+        #region Process EcwContent, the magic
 
         /// <summary>
         /// Parse the vitals string to vitals, this is for both locked and unlocked html charts
@@ -1644,6 +1652,22 @@ namespace AI_Note_Review
             document.ICD10Segments = tmpICD10Segments;
         }
 
+        /// <summary>
+        /// More complex note analysis features
+        /// </summary>
+        #region Note Analysis
+
+        public bool SentToED()
+        {
+            return false;
+        }
+
+        public bool ProcedurePerformed()
+        {
+            return false;
+        }
+
+        #endregion
 
         /// <summary>
         /// Commands

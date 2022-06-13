@@ -194,7 +194,10 @@ namespace AI_Note_Review
                     {
                         if (icd10Chapter == seg.icd10Chapter)
                         {
-                            if (icd10CategoryStart >= seg.icd10CategoryStart && icd10CategoryEnd < seg.icd10CategoryEnd)
+                            if (icd10CategoryStart == 62.66)
+                            {
+                            }
+                            if (icd10CategoryStart >= seg.icd10CategoryStart && icd10CategoryEnd <= seg.icd10CategoryEnd)
                                 i += 5;
                         }
                     }
