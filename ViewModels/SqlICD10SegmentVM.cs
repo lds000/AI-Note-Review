@@ -198,7 +198,7 @@ namespace AI_Note_Review
                             {
                             }
                             if (icd10CategoryStart >= seg.icd10CategoryStart && icd10CategoryEnd <= seg.icd10CategoryEnd)
-                                i += 5;
+                                i += 10;
                         }
                     }
                     indent = new Thickness(i, 0, 0, 0);
