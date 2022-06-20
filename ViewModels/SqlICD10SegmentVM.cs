@@ -506,7 +506,8 @@ namespace AI_Note_Review
             checkpoints.Add(cp);
             OnPropertyChanged("Checkpoints");
             OnPropertyChanged("CheckPointCount");
-            SelectedCP = checkpoints.Last();
+            SelectedCheckPoint = checkpoints.Last();
+            //cp; //checkpoints.Last();
         }
 
         private SqlCheckpointVM selectedCP;
