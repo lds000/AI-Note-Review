@@ -133,8 +133,18 @@ namespace AI_Note_Review
 
 
 
-
-        public SqlCheckpointVM SelectedCheckPoint { get; set; }
+        private SqlCheckpointVM selectedCheckPoint;
+        public SqlCheckpointVM SelectedCheckPoint {
+            get
+            {
+                return selectedCheckPoint;
+            }
+            set
+            {
+                selectedCheckPoint = value;
+                OnPropertyChanged();
+            }
+        }
 
         #region mirror ICD10Segment Table
         public int ICD10SegmentID { get { return sqlICD10Segment.ICD10SegmentID; } set { sqlICD10Segment.ICD10SegmentID = value; } }
@@ -506,7 +516,7 @@ namespace AI_Note_Review
             checkpoints.Add(cp);
             OnPropertyChanged("Checkpoints");
             OnPropertyChanged("CheckPointCount");
-            SelectedCheckPoint = checkpoints.Last();
+            SelectedCheckPoint = Checkpoints.Last();
             //cp; //checkpoints.Last();
         }
 
