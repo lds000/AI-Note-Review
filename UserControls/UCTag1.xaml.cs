@@ -55,6 +55,8 @@ namespace AI_Note_Review
         {
             TextBlock tb = sender as TextBlock;
             SqlTagM st = tb.DataContext as SqlTagM;
+            if (st == null)
+                return;
             WinEnterText wet = new WinEnterText("Edit Title", st.TagText);
             wet.ShowDialog();
             if (wet.ReturnValue != null)

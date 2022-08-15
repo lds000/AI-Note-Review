@@ -489,33 +489,6 @@ namespace AI_Note_Review
                     strSummary += $"<font size='+1'>{MasterReviewSummarySubject}</font><br>";
                     strSummary += $"<font size='+1'>Dates: {StartDate.ToString("MM/dd/yyyy")}-{EndDate.ToString("MM/dd/yyyy")}</font><br>";
                     strSummary += $"<font size='+0'>{MasterReviewSummaryComment}</font><br><br>";
-                    strSummary += $"<font size='+1'>ICD-10 Breakdown:</font><br>";
-                    iCD10Segments = null;
-                    foreach (var seg in ICD10Segments)
-                    {
-                        if (seg.LeftOffset == 10)
-                        {
-                            strSummary += $"<span style='padding-left: 15px;'>";
-                        }
-                        else
-                        {
-                            strSummary += $"<span style='padding-left: 5px;'>";
-                        }
-                        strSummary += $"{seg.SegmentTitle} {seg.icd10Chapter}{seg.icd10CategoryStart}-{seg.icd10CategoryEnd}";
-                        if (seg.AlternativeICD10s.Count > 0)
-                        {
-                            strSummary += " also includes (";
-                            foreach (var tmpAlt in seg.AlternativeICD10s)
-                            {
-                                strSummary += $"{tmpAlt.AlternativeICD10} {tmpAlt.AlternativeICD10Title}, ";
-                            }
-                            strSummary = strSummary.Trim().TrimEnd(',');
-                            strSummary += ")";
-                        }
-                        if (seg.LeftOffset == 10)
-                            strSummary += $"</span>";
-                        strSummary += "<br>";
-                    }
 
                     foreach (var seg in ICD10Segments)
                     {

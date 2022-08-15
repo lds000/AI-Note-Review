@@ -630,7 +630,6 @@ namespace AI_Note_Review
                         ObservableCollection<SqlCheckpointVM> lcp = Checkpoints;
                         List<SqlCheckPointType> lcpt = CheckPointTypes;
                         string strSummary = "";// @"<style type=""text / css"">< !--.tab { margin - left: 40px; }--></ style >";
-                        strSummary += $"<h1>{SegmentTitle}</h1><br>";
                         foreach (SqlCheckPointType cpt in lcpt)
                         {
                             string strTempOut = "<ol>";
@@ -668,6 +667,8 @@ namespace AI_Note_Review
                                 strTempOut = "";
                             }
                         }
+                        if (strSummary != "")
+                        strSummary = $"<h1>{SegmentTitle}</h1><br>" + strSummary;
                         keyPointHtml = strSummary;
                     }
                 }
