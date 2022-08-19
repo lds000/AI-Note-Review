@@ -483,6 +483,7 @@ namespace AI_Note_Review
                             break;
                         case "Procedures:":
                             document.ProcedureNote += myString + Environment.NewLine;
+                            document.Exam += myString + Environment.NewLine;
                             break;
                         case "Diagnostic Imaging:":
                             document.ImagesOrdered += myString + Environment.NewLine;
@@ -763,6 +764,7 @@ namespace AI_Note_Review
                             if (strCurrentHeading == "Examination")
                             {
                                 Exam = strInnerText;
+
                             }
                             if (strCurrentHeading == "Visit Code")
                             {
@@ -800,6 +802,7 @@ namespace AI_Note_Review
                             if (strCurrentHeading.Trim() == "Procedures")
                             {
                                 ProcedureNote += strInnerText;
+                                Exam += Environment.NewLine + strInnerText;
                             }
 
                             if (strCurrentHeading == "Treatment")
