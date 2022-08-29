@@ -282,7 +282,15 @@ namespace AI_Note_Review
                     }
                     Console.WriteLine($"loading {this.RegExText}");
                     ws.DataContext = this;
-                    ws.Show(); //todo: this is producing an error when !htnurgency sometimes.
+                    try
+                    {
+                        ws.ShowDialog(); //todo: this is producing an error when !htnurgency sometimes.
+                    }
+                    catch (Exception)
+                    {
+                        ws.Show();
+                    }
+                    //MessageBox.Show("test");
                     //ParentTag.ParentCheckPoint.YesNoSqlRegExIndex.Add(TagRegExID, ws.YesNoResult);
                     ask = ws.YesNoResult;
                 }

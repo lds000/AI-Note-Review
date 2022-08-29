@@ -1268,6 +1268,10 @@ namespace AI_Note_Review
                 if (document.HashTags == null)
                 {
                     HashTags = "";
+                    if (document.ProcedureNote.ToLower().Contains("laceration"))
+                    {
+                        AddHashTag("!Laceration");
+                    }
                     if (patientVM.PtAgeYrs > 65)
                         AddHashTag("@Elderly");             //75	X	5	5	Elderly
                     if (patientVM.PtSex.StartsWith("F"))
@@ -1583,6 +1587,7 @@ namespace AI_Note_Review
                         if (!HashTags.Contains("!RRHigh"))
                             ns.IncludeSegment = false; //do not include children in 72
                     }
+                    
                     if (!HashTags.Contains("@Elderly") && ns.SqlICD10Segment.ICD10SegmentID == 75) //if htnurgency is not present
                     {
                         ns.IncludeSegment = false;
@@ -1651,7 +1656,18 @@ namespace AI_Note_Review
                     }
                 }
             }
+
+            foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
+            {
+                if (HashTags.Contains("!Laceration") && ns.SqlICD10Segment.ICD10SegmentID == 188) //if laceration is not present
+                {
+                    ns.IncludeSegment = true;
+                    if (!tmpICD10Segments.Contains(ns))
+                        tmpICD10Segments.Add(ns);
+                }
+            }
             #endregion
+
             document.ICD10Segments = tmpICD10Segments;
         }
 

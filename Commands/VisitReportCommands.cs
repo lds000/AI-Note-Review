@@ -38,6 +38,7 @@ namespace AI_Note_Review
             //mrs.VisitReport.NewEcWDocument(); //reset document
             mrs.VisitReport.PopulateCPStatuses();
             VisitReportV wp = new VisitReportV(mrs.VisitReport);
+            mrs.VisitReport.CurrentVisitReportV = wp;
             //wp.DataContext = mrs.VisitReport;
             wp.ShowDialog();
         }
@@ -98,8 +99,13 @@ namespace AI_Note_Review
         {
             VisitReportVM rvm = parameter as VisitReportVM;
             rvm.CommitReport();
+            rvm.CurrentVisitReportV.Close();
             rvm.MasterReviewSummary.DeleteParentNoteData();
             rvm.MasterReviewSummary.GetNextParentNote();
+            VisitReportV wp = new VisitReportV(rvm);
+            rvm.CurrentVisitReportV = wp;
+            wp.DataContext = rvm;
+            wp.ShowDialog();
         }
     }
 

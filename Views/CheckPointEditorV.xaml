@@ -85,7 +85,7 @@
                                             <MenuItem Header="Edit" Command="{Binding EditSegmentCommand}" CommandParameter="{Binding}"/>
                                             <MenuItem Header="Create Index"
                                                   Command="{Binding CreateIndexCommand}" CommandParameter="{Binding}"
-                                                  ToolTip="Create an index and copy it to the clipboard"/>
+                                                  ToolTip="Create an i#ndex and copy it to the clipboard"/>
                                             <MenuItem Header="Delete Segment" Command="{Binding DeleteSegmentCommand}" CommandParameter="{Binding}"></MenuItem>
                                             <MenuItem Header="Add Alternative" Command="{Binding AddAlternativeCommand}" CommandParameter="{Binding}"/>
                                         </ContextMenu>

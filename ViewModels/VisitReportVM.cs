@@ -37,6 +37,19 @@ namespace AI_Note_Review
         private DocumentVM document;
         private PatientVM patient;
 
+        private VisitReportV currentVisitReportV;
+        public VisitReportV CurrentVisitReportV
+        {
+            get
+            {
+                return currentVisitReportV;
+            }
+            set
+            {
+                currentVisitReportV = value;
+            }
+        }
+
         private MasterReviewSummaryVM masterReviewSummary;
         public MasterReviewSummaryVM MasterReviewSummary
         {
