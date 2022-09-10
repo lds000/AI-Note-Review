@@ -30,10 +30,11 @@ namespace AI_Note_Review
 
         //ViewModels declared locally for convenience
         private MasterReviewSummaryVM masterReviewVM;
+
         private PatientVM patientVM; //may be from mastereviewsummary, or created from scratch for notehunter
 
         //Models
-        private DocumentM document;
+        private DocumentM documentM;
 
         /// <summary>
         /// Constructor used in MasterReviewSummary, get masterreview, provider, patient, and create a document based on SampleDocument
@@ -43,7 +44,7 @@ namespace AI_Note_Review
         {
             masterReviewVM = mrs;
             patientVM = mrs.Patient;
-            document = SampleDocument; //New DocumentM() called under this.
+            documentM = SampleDocument; //New DocumentM() called under this.
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace AI_Note_Review
         /// <param name="doc"></param>
         public DocumentVM(HtmlDocument doc) //used by document hunter
         {
-            document = new DocumentM();
+            documentM = new DocumentM();
             patientVM = new PatientVM();
             NoteHTML = doc;
         }
@@ -74,7 +75,7 @@ namespace AI_Note_Review
                     }
                     foreach (var tmps in noteSections)
                     {
-                        tmps.InitiateSection(document, patientVM);
+                        tmps.InitiateSection(documentM, patientVM);
                     }
 
                 }
@@ -101,11 +102,12 @@ namespace AI_Note_Review
                 return;
             if (NoteHTML.Body == null)
                 return;
+            Provider.AddNote(this);
             //save encrypted note
-            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteNotesLocation))
-            {
-                NoteDataVM nvm = new NoteDataVM(this);
-            }
+            //using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteNotesLocation))
+            //{
+            //    NoteDataVM nvm = new NoteDataVM(this);
+            //}
 
             int numsaved = Provider.CurrentNoteDataCount;
 
@@ -117,7 +119,6 @@ namespace AI_Note_Review
             {
                 System.Windows.MessageBox.Show($"You have saved {numsaved} documents.");
             }
-
         }
 
         /// <summary>
@@ -153,7 +154,7 @@ namespace AI_Note_Review
         {
             get
             {
-                document = new DocumentM();
+                documentM = new DocumentM();
                 SetProvider("Devin Hansen"); //Provider ID comes from this.
                 VisitDate = new DateTime(2022, 3, 14);
                 CC = "Abdominal pain for 10 days";
@@ -172,7 +173,7 @@ namespace AI_Note_Review
                 NoteHTML = GetHtmlDocument("This is a test");
                 VisitDate = new DateTime(2022, 10, 20);
                 SetProvider("Andrea Stevens, NP");
-                return document;
+                return documentM;
             }
         }
 
@@ -359,7 +360,7 @@ namespace AI_Note_Review
                 //Facility HTML, get location.
                 if (myString.StartsWith("Appointment Facility:"))
                 {
-                    document.Facility = myString.Split(':')[1];
+                    documentM.Facility = myString.Split(':')[1];
                 }
 
                 //Account number line, get patientID
@@ -378,18 +379,18 @@ namespace AI_Note_Review
                     switch (strCommand)
                     {
                         case "Chief Complaint(s):":
-                            document.CC += myString;
+                            documentM.CC += myString;
                             break;
                         case "HPI:":
                             if (myString.Trim() == "Respiratory Clinic") break;
                             if (myString.Trim() == "Note:") break;
-                            document.HPI += myString + Environment.NewLine;
+                            documentM.HPI += myString + Environment.NewLine;
                             break;
                         case "Allergies/Intolerance:":
-                            document.Allergies += myString + Environment.NewLine;
+                            documentM.Allergies += myString + Environment.NewLine;
                             break;
                         case "Medical History:":
-                            document.PMHx += myString + Environment.NewLine;
+                            documentM.PMHx += myString + Environment.NewLine;
                             break;
                         case "Current Medication:":
                             if (myString.Trim() == "None") break;
@@ -418,19 +419,19 @@ namespace AI_Note_Review
 
                             if (strMedType == "prn")
                             {
-                                document.CurrentPrnMeds += myString + " (prn)" + Environment.NewLine;
+                                documentM.CurrentPrnMeds += myString + " (prn)" + Environment.NewLine;
                                 break;
                             }
 
                             if (strMedType == "unknown")
                             {
-                                document.CurrentMeds += myString + " (unknown)" + Environment.NewLine;
+                                documentM.CurrentMeds += myString + " (unknown)" + Environment.NewLine;
                                 break;
                             }
 
                             if (strMedType == "active")
                             {
-                                document.CurrentMeds += myString + " (active)" + Environment.NewLine;
+                                documentM.CurrentMeds += myString + " (active)" + Environment.NewLine;
                                 break;
                             }
 
@@ -439,63 +440,63 @@ namespace AI_Note_Review
                                 //CurrentPrnMeds += myString + " (Discontinued)" + Environment.NewLine;
                                 break;
                             }
-                            document.CurrentMeds += myString + " (??????)" + Environment.NewLine;
+                            documentM.CurrentMeds += myString + " (??????)" + Environment.NewLine;
                             break;
                         case "Surgical History:":
-                            document.SurgHx += myString + Environment.NewLine;
+                            documentM.SurgHx += myString + Environment.NewLine;
                             break;
                         case "Family History:":
-                            document.FamHx += myString + Environment.NewLine;
+                            documentM.FamHx += myString + Environment.NewLine;
                             break;
                         case "Social History:":
-                            document.SocHx += myString + Environment.NewLine;
+                            documentM.SocHx += myString + Environment.NewLine;
                             break;
                         case "ROS:":
-                            document.ROS += myString + Environment.NewLine;
+                            documentM.ROS += myString + Environment.NewLine;
                             break;
                         case "Vitals:":
-                            document.Vitals += myString.Trim().TrimEnd('.') + Environment.NewLine;
+                            documentM.Vitals += myString.Trim().TrimEnd('.') + Environment.NewLine;
                             break;
                         case "Examination:":
-                            document.Exam += myString + Environment.NewLine;
+                            documentM.Exam += myString + Environment.NewLine;
                             break;
                         case "Assessment:":
-                            document.Assessments += myString + Environment.NewLine;
+                            documentM.Assessments += myString + Environment.NewLine;
                             break;
                         case "Preventive Medicine:":
-                            document.PreventiveMed += myString + Environment.NewLine;
+                            documentM.PreventiveMed += myString + Environment.NewLine;
                             break;
                         case "Treatment:":
                             if (myString.Trim().StartsWith("Start")) //may not always work, keep an eye on this.
                             {
-                                document.MedsStarted += myString.Trim() + Environment.NewLine;
+                                documentM.MedsStarted += myString.Trim() + Environment.NewLine;
                             }
                             else
                             {
-                                document.Treatment += myString + Environment.NewLine;
+                                documentM.Treatment += myString + Environment.NewLine;
                             }
                             break;
                         case "Immunizations:":
-                            document.Treatment += myString + Environment.NewLine;
+                            documentM.Treatment += myString + Environment.NewLine;
                             break;
                         case "Therapeutic Injections:":
-                            document.Treatment += myString + Environment.NewLine;
+                            documentM.Treatment += myString + Environment.NewLine;
                             break;
                         case "Procedures:":
-                            document.ProcedureNote += myString + Environment.NewLine;
-                            document.Exam += myString + Environment.NewLine;
+                            documentM.ProcedureNote += myString + Environment.NewLine;
+                            documentM.Exam += myString + Environment.NewLine;
                             break;
                         case "Diagnostic Imaging:":
-                            document.ImagesOrdered += myString + Environment.NewLine;
+                            documentM.ImagesOrdered += myString + Environment.NewLine;
                             break;
                         case "Lab Reports:":
-                            document.LabsOrdered += myString + Environment.NewLine;
+                            documentM.LabsOrdered += myString + Environment.NewLine;
                             break;
                         case "Next Appointment:":
-                            document.FollowUp += myString + Environment.NewLine;
+                            documentM.FollowUp += myString + Environment.NewLine;
                             break;
                         case "Visit Code:":
-                            document.VisitCodes += myString + Environment.NewLine;
+                            documentM.VisitCodes += myString + Environment.NewLine;
                             break;
                         default:
                             break;
@@ -602,7 +603,7 @@ namespace AI_Note_Review
                             if (strInnerText.Contains("Account Number:"))
                                 patientVM.PtID = strInnerText.Split(':')[1].Trim();
                             if (strInnerText.Contains("Appointment Facility:"))
-                                document.Facility = strInnerText.Split(':')[1].Trim();
+                                documentM.Facility = strInnerText.Split(':')[1].Trim();
                             if (strInnerText.Contains("DOB:"))
                             {
                                 //   PtAge = strInnerText.Split(':')[0].TrimEnd("DOB");
@@ -894,11 +895,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.Facility;
+                return documentM.Facility;
             }
             set
             {
-                document.Facility = value;
+                documentM.Facility = value;
                 OnPropertyChanged();
             }
         }
@@ -932,11 +933,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.VisitDate;
+                return documentM.VisitDate;
             }
             set
             {
-                document.VisitDate = value;
+                documentM.VisitDate = value;
                 OnPropertyChanged();
                 OnPropertyChanged("DocumentMRS");
             }
@@ -960,11 +961,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.ReasonForAppt;
+                return documentM.ReasonForAppt;
             }
             set
             {
-                document.ReasonForAppt = value;
+                documentM.ReasonForAppt = value;
                 OnPropertyChanged();
             }
         }
@@ -972,11 +973,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.CC;
+                return documentM.CC;
             }
             set
             {
-                document.CC = value;
+                documentM.CC = value;
                 OnPropertyChanged();
             }
         }
@@ -984,11 +985,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.HPI;
+                return documentM.HPI;
             }
             set
             {
-                document.HPI = value;
+                documentM.HPI = value;
                 OnPropertyChanged();
             }
         }
@@ -996,11 +997,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.Allergies;
+                return documentM.Allergies;
             }
             set
             {
-                document.Allergies = value;
+                documentM.Allergies = value;
                 OnPropertyChanged();
             }
         }
@@ -1008,11 +1009,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.SurgHx;
+                return documentM.SurgHx;
             }
             set
             {
-                document.SurgHx = value;
+                documentM.SurgHx = value;
                 OnPropertyChanged();
             }
         }
@@ -1020,11 +1021,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.FamHx;
+                return documentM.FamHx;
             }
             set
             {
-                document.FamHx = value;
+                documentM.FamHx = value;
                 OnPropertyChanged();
             }
         }
@@ -1032,11 +1033,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.CurrentMeds;
+                return documentM.CurrentMeds;
             }
             set
             {
-                document.CurrentMeds = value;
+                documentM.CurrentMeds = value;
                 OnPropertyChanged();
             }
         }
@@ -1044,11 +1045,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.CurrentPrnMeds;
+                return documentM.CurrentPrnMeds;
             }
             set
             {
-                document.CurrentPrnMeds = value;
+                documentM.CurrentPrnMeds = value;
                 OnPropertyChanged();
             }
         }
@@ -1056,11 +1057,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.ProblemList;
+                return documentM.ProblemList;
             }
             set
             {
-                document.ProblemList = value;
+                documentM.ProblemList = value;
                 OnPropertyChanged();
             }
         }
@@ -1068,11 +1069,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.ROS;
+                return documentM.ROS;
             }
             set
             {
-                document.ROS = value;
+                documentM.ROS = value;
                 OnPropertyChanged();
             }
         }
@@ -1080,11 +1081,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.PMHx;
+                return documentM.PMHx;
             }
             set
             {
-                document.PMHx = value;
+                documentM.PMHx = value;
                 OnPropertyChanged();
             }
         }
@@ -1092,11 +1093,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.SocHx;
+                return documentM.SocHx;
             }
             set
             {
-                document.SocHx = value;
+                documentM.SocHx = value;
                 OnPropertyChanged();
             }
         }
@@ -1104,11 +1105,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.GeneralHx;
+                return documentM.GeneralHx;
             }
             set
             {
-                document.GeneralHx = value;
+                documentM.GeneralHx = value;
                 OnPropertyChanged();
             }
         }
@@ -1116,11 +1117,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.Vitals;
+                return documentM.Vitals;
             }
             set
             {
-                document.Vitals = value;
+                documentM.Vitals = value;
                 OnPropertyChanged();
                 parseVitalsString(value); //Convert the Vitals to valeus
 
@@ -1130,11 +1131,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.Exam;
+                return documentM.Exam;
             }
             set
             {
-                document.Exam = value;
+                documentM.Exam = value;
                 OnPropertyChanged();
             }
         }
@@ -1142,11 +1143,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.Treatment;
+                return documentM.Treatment;
             }
             set
             {
-                document.Treatment = value;
+                documentM.Treatment = value;
                 OnPropertyChanged();
             }
         }
@@ -1154,11 +1155,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.PreventiveMed;
+                return documentM.PreventiveMed;
             }
             set
             {
-                document.PreventiveMed = value;
+                documentM.PreventiveMed = value;
                 OnPropertyChanged();
             }
         }
@@ -1166,11 +1167,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.MedsStarted;
+                return documentM.MedsStarted;
             }
             set
             {
-                document.MedsStarted = value;
+                documentM.MedsStarted = value;
                 OnPropertyChanged();
             }
         }
@@ -1178,11 +1179,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.ImagesOrdered;
+                return documentM.ImagesOrdered;
             }
             set
             {
-                document.ImagesOrdered = value;
+                documentM.ImagesOrdered = value;
                 OnPropertyChanged();
             }
         }
@@ -1190,11 +1191,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.VisitCodes;
+                return documentM.VisitCodes;
             }
             set
             {
-                document.VisitCodes = value;
+                documentM.VisitCodes = value;
                 OnPropertyChanged();
             }
         }
@@ -1202,11 +1203,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.LabsOrdered;
+                return documentM.LabsOrdered;
             }
             set
             {
-                document.LabsOrdered = value;
+                documentM.LabsOrdered = value;
                 OnPropertyChanged();
             }
         }
@@ -1214,11 +1215,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.Assessments;
+                return documentM.Assessments;
             }
             set
             {
-                document.Assessments = value;
+                documentM.Assessments = value;
                 OnPropertyChanged();
             }
         }
@@ -1226,11 +1227,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.FollowUp;
+                return documentM.FollowUp;
             }
             set
             {
-                document.FollowUp = value;
+                documentM.FollowUp = value;
                 OnPropertyChanged();
             }
         }
@@ -1238,11 +1239,11 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.ProcedureNote;
+                return documentM.ProcedureNote;
             }
             set
             {
-                document.ProcedureNote = value;
+                documentM.ProcedureNote = value;
                 OnPropertyChanged();
             }
         }
@@ -1255,7 +1256,7 @@ namespace AI_Note_Review
         /// <param name="strHashTag"></param>
         public void AddHashTag(string strHashTag)
         {
-            document.HashTags += strHashTag + ", ";
+            documentM.HashTags += strHashTag + ", ";
         }
 
         /// <summary>
@@ -1265,10 +1266,10 @@ namespace AI_Note_Review
         {
             get
             {
-                if (document.HashTags == null)
+                if (documentM.HashTags == null)
                 {
                     HashTags = "";
-                    if (document.ProcedureNote.ToLower().Contains("laceration"))
+                    if (documentM.ProcedureNote.ToLower().Contains("laceration"))
                     {
                         AddHashTag("!Laceration");
                     }
@@ -1316,11 +1317,11 @@ namespace AI_Note_Review
                     HashTags = HashTags.TrimEnd().TrimEnd(',');
 
                 }
-                return document.HashTags;
+                return documentM.HashTags;
             }
             set
             {
-                document.HashTags = value;
+                documentM.HashTags = value;
                 OnPropertyChanged();
             }
         }
@@ -1332,9 +1333,9 @@ namespace AI_Note_Review
         {
             get
             {
-                if (document.ICD10s == null)
+                if (documentM.ICD10s == null)
                 {
-                    document.ICD10s = new ObservableCollection<string>();
+                    documentM.ICD10s = new ObservableCollection<string>();
                     foreach (var tmpAssessment in Assessments.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                     {
                         if (tmpAssessment.Contains(" - "))
@@ -1342,15 +1343,15 @@ namespace AI_Note_Review
                             string strClean = tmpAssessment.TrimEnd(" (Primary) ").Trim();
                             strClean = strClean.Replace(" - ", "|");
                             string strCode = strClean.Split('|')[1].Trim();
-                            document.ICD10s.Add(strCode);
+                            documentM.ICD10s.Add(strCode);
                         }
                     }
                 }
-                return document.ICD10s;
+                return documentM.ICD10s;
             }
             set
             {
-                document.ICD10s = value;
+                documentM.ICD10s = value;
                 OnPropertyChanged();
             }
         }
@@ -1362,27 +1363,27 @@ namespace AI_Note_Review
         {
             get
             {
-                return document.NoteHTML;
+                return documentM.NoteHTML;
             }
             set
             {
-                if (document.NoteHTML == value)
+                if (documentM.NoteHTML == value)
                     return; //do nothing if nothing has changed.
 
                 resetNoteData();
 
-                document.NoteHTML = value;
+                documentM.NoteHTML = value;
 
                 try
                 {
-                    if (document.NoteHTML.Body.InnerHtml.Contains("pnDetails")) //unique text to identify unlocked chart
+                    if (documentM.NoteHTML.Body.InnerHtml.Contains("pnDetails")) //unique text to identify unlocked chart
                     {
-                        processUnlocked(document.NoteHTML);
+                        processUnlocked(documentM.NoteHTML);
                         Console.WriteLine($"Processed unlocked chart for {patientVM.PtName}.");
                     }
                     else
                     {
-                        processLocked(document.NoteHTML);
+                        processLocked(documentM.NoteHTML);
                         masterReviewVM.AddLog("Processing locked chart");
                         Console.WriteLine($"Processed locked chart for {patientVM.PtName}.");
                     }
@@ -1404,7 +1405,7 @@ namespace AI_Note_Review
             {
                 try
                 {
-                    return document.NoteHTML.Body.OuterHtml;
+                    return documentM.NoteHTML.Body.OuterHtml;
                 }
                 catch (Exception)
                 {
@@ -1456,38 +1457,38 @@ namespace AI_Note_Review
             //When NoteHTML is set, reset everything.
             //demographics
             //I'm trying to decide if using the parent or childe Property here.
-            document.Facility = "";
-            document.VisitDate = new DateTime(2020, 1, 1);
+            documentM.Facility = "";
+            documentM.VisitDate = new DateTime(2020, 1, 1);
             SetProvider("");
-            document.ProviderID = 0;
-            document.ReasonForAppt = "";
-            document.Allergies = "";
-            document.Vitals = "";
-            document.CC = "";
-            document.HPI = "";
-            document.CurrentMeds = "";
-            document.ProcedureNote = "";
-            document.PreventiveMed = "";
-            document.CurrentPrnMeds = "";
-            document.ProblemList = "";
-            document.ROS = "";
-            document.PMHx = "";
-            document.SocHx = "";
-            document.GeneralHx = "";
-            document.Exam = "";
-            document.Treatment = "";
-            document.MedsStarted = "";
-            document.ImagesOrdered = "";
-            document.LabsOrdered = "";
-            document.Assessments = "";
-            document.FollowUp = "";
-            document.SurgHx = "";
-            document.FamHx = "";
-            document.VisitCodes = "";
-            document.Vitals = "";
-            document.ICD10s = null;
-            document.HashTags = null;
-            document.ICD10Segments = null;
+            documentM.ProviderID = 0;
+            documentM.ReasonForAppt = "";
+            documentM.Allergies = "";
+            documentM.Vitals = "";
+            documentM.CC = "";
+            documentM.HPI = "";
+            documentM.CurrentMeds = "";
+            documentM.ProcedureNote = "";
+            documentM.PreventiveMed = "";
+            documentM.CurrentPrnMeds = "";
+            documentM.ProblemList = "";
+            documentM.ROS = "";
+            documentM.PMHx = "";
+            documentM.SocHx = "";
+            documentM.GeneralHx = "";
+            documentM.Exam = "";
+            documentM.Treatment = "";
+            documentM.MedsStarted = "";
+            documentM.ImagesOrdered = "";
+            documentM.LabsOrdered = "";
+            documentM.Assessments = "";
+            documentM.FollowUp = "";
+            documentM.SurgHx = "";
+            documentM.FamHx = "";
+            documentM.VisitCodes = "";
+            documentM.Vitals = "";
+            documentM.ICD10s = null;
+            documentM.HashTags = null;
+            documentM.ICD10Segments = null;
             noteSections = null;
         }
 
@@ -1498,18 +1499,18 @@ namespace AI_Note_Review
         {
             get
             {
-                if (document.ICD10Segments == null)
+                if (documentM.ICD10Segments == null)
                     UpdateICD10Segments();
-                foreach (var tmpSeg in document.ICD10Segments)
+                foreach (var tmpSeg in documentM.ICD10Segments)
                 {
                     tmpSeg.ParentDocument = this;
                     tmpSeg.ParentReport = this.masterReviewVM.VisitReport; //intentional error
                 }
-                return document.ICD10Segments; ////see code below...
+                return documentM.ICD10Segments; ////see code below...
             }
             set
             {
-                document.ICD10Segments = value;
+                documentM.ICD10Segments = value;
                 OnPropertyChanged();
             }
         }
@@ -1668,7 +1669,7 @@ namespace AI_Note_Review
             }
             #endregion
 
-            document.ICD10Segments = tmpICD10Segments;
+            documentM.ICD10Segments = tmpICD10Segments;
         }
 
         /// <summary>

@@ -58,6 +58,7 @@ namespace AI_Note_Review
                 NotifyPropertyChanged();
             }
         }
+
         public DateTime DOB
         {
             get
@@ -74,6 +75,7 @@ namespace AI_Note_Review
                 NotifyPropertyChanged("AgeStr");
             }
         }
+
         public int PtAgeYrs
         {
             get
@@ -204,6 +206,7 @@ namespace AI_Note_Review
                 return false;
             }
         }
+
         public string PtID
         {
             get
@@ -218,6 +221,7 @@ namespace AI_Note_Review
         }
 
         #endregion
+
         #region vitals
         //BP
         public int VitalsSystolic

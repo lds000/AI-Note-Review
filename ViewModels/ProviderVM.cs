@@ -293,6 +293,15 @@ namespace AI_Note_Review
 
         }
 
+        public void AddNote(DocumentVM doc)
+        {
+            using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteNotesLocation))
+            {
+                NoteDataVM nvm = new NoteDataVM(doc);
+            }
+            OnPropertyChanged("CurrentNoteDataCount");
+        }
+
         private MasterReviewSummaryVM currentMasterReview { get; set; }
 
         public void SetCurrentMasterReview(DateTime dt)
