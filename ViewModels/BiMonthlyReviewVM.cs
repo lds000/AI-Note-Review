@@ -369,7 +369,8 @@ namespace AI_Note_Review
             if (selectedProviderForBiMonthlyReview.FullName.Contains("Rios"))
                 strName = "Rios";
             AutoIt.AutoItX.WinActivate("Monthly Clinic Review");
-            Thread.Sleep(sleeptime);
+            Thread.Sleep(2000);
+            AutoIt.AutoItX.Send("{Tab}");
             AutoIt.AutoItX.Send(strName);
             AutoIt.AutoItX.Send("{Tab 2}");
             Thread.Sleep(sleeptime);
@@ -442,9 +443,8 @@ namespace AI_Note_Review
                 rxtot += (double)l[i].HtmlReport.rxScore;
                 totaltot += (double)l[i].HtmlReport.totalScore;
             }
-            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I have your review completed for the months of Mar and Apr 2022!";
-            strReport += $"<br>This review covered abdominal pain focusing on appropriate documentation based on which quadrant/half of abdomen was involved. ";
-            strReport += $"I would like to note that many providers document a more focused note with the decision of transferring a patient to the ED.  I think this is reasonable as long as risk for safe and timely transport (either self, other, or ambulance) are addressed.  For purposes of the review I still included these notes and missed checkpoints.";
+            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I have your review completed for the months of May and Jun 2022!";
+            strReport += $"<br>Sorry this is so delayed, I've had a great summer and I hope yours was amazing as well! This review covered extremity injuries focusing on appropriate management of sprains, strains, fractures, bites, and lacerations. ";
             strReport += $"<br><br>Best Regards,<br>Lloyd Stolworthy, M.D.<hr>";
             strReport += $"<font size='+2'>Combined Total Review Score: HPI: {hpitot.ToString("0.##")}, Dx: {dxtot.ToString("0.##")}, Exam:  {examtot.ToString("0.##")}, Rx: {rxtot.ToString("0.##")}, Total Score: {totaltot.ToString("0.##")}</font><hr>";
             strReport += strTmp;
@@ -454,7 +454,7 @@ namespace AI_Note_Review
 
 
             ClipboardHelper.CopyToClipboard(strReport, "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Jan-Feb 2022", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For May-Jun 2022", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
         }
@@ -463,7 +463,7 @@ namespace AI_Note_Review
         {
             ReportToHtmlVM r = new ReportToHtmlVM();
             ClipboardHelper.CopyToClipboard(r.ExecutiveSummary(SelectedMasterReviewSummary), "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", "lds00@yahoo.com", "Clinic Note Review For Sep-Oct 2021", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", "lds00@yahoo.com", "Clinic Note Review For May-Jun 2022", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
 
