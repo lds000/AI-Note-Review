@@ -207,7 +207,34 @@ From Database NoteSections:
                     case 21:
                         noteSectionContent = Document.PreventiveMed;
                         break;
-                        ;
+                    case 22:
+                        noteSectionContent = Document.CC + "\n" +
+                                             Document.HPI + "\n" +
+                                             Document.ROS + "\n" +
+                                             Document.PMHx + "\n" +
+                                             Document.SocHx + "\n" +
+                                             Document.Allergies + "\n" +
+                                             Document.Assessments + "\n" +
+                                             Document.CurrentMeds + "\n" +
+                                             Document.CurrentPrnMeds + "\n" +
+                                             Document.Exam + "\n" +
+                                             Document.Facility + "\n" +
+                                             Document.FamHx + "\n" +
+                                             Document.FollowUp + "\n" +
+                                             Document.GeneralHx + "\n" +
+                                             Document.ICD10s + "\n" +
+                                             Document.ImagesOrdered + "\n" +
+                                             Document.LabsOrdered + "\n" +
+                                             Document.MedsStarted + "\n" +
+                                             Document.PreventiveMed + "\n" +
+                                             Document.ProblemList + "\n" +
+                                             Document.ProblemList + "\n" +
+                                             Document.ProcedureNote + "\n" +
+                                             Document.ReasonForAppt + "\n" +
+                                             Document.SurgHx + "\n" +
+                                             Document.Treatment + "\n" +
+                                             Document.Vitals;
+                        break;
                     default:
                         noteSectionContent = null;
                         break;

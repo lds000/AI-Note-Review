@@ -76,7 +76,9 @@ namespace AI_Note_Review
             }
         }
 
-
+        /// <summary>
+        /// A string collection of provider assigned ICD10s for the note
+        /// </summary>
         public ObservableCollection<string> ICD10s
         {
             get
@@ -90,6 +92,9 @@ namespace AI_Note_Review
             }
         }
 
+        /// <summary>
+        /// Collection of ICD10Segment View Models that apply to the current note, this comes from keywords (ie laceration,) ICD10s etc. 
+        /// </summary>
         public ObservableCollection<SqlICD10SegmentVM> ICD10Segments
         {
             get
@@ -254,6 +259,7 @@ namespace AI_Note_Review
                 
             }
         }
+
         public string SocHx
         {
             get
@@ -266,6 +272,7 @@ namespace AI_Note_Review
                 
             }
         }
+
         public string GeneralHx
         {
             get
