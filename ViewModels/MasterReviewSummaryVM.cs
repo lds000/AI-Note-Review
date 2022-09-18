@@ -382,7 +382,8 @@ namespace AI_Note_Review
                     //return all for masterreview All ID=3
                     if (MasterReviewSummaryID == 3)
                     {
-                        string sql3 = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
+                        //string sql3 = $"Select * from ICD10Segments icd inner join RelICD10SegmentMasterReviewSummary rel on icd.ICD10SegmentID == rel.ICD10SegmentID order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
+                        string sql3 = $"Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
                         l = cnn.Query<SqlICD10SegmentM>(sql3).ToList();
                     }
                     //if MasterReviewSummaryID=1 then return general review withicd10Chapter  X, this is for a general review

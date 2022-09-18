@@ -21,33 +21,7 @@ namespace AI_Note_Review
     public class BiMonthlyReviewVM : INotifyPropertyChanged
     {
         /// <summary>
-        /// *
-        /// 
-        /// 
-        G43-G44.99 General Headache / cephalgia
-            G43.0-99 Migraine without status migrainosus, not intractable, unspecified migraine typ
-            G44 Other HA syndromes
-                G44.0 - G44.0299 Cluster headaches and other trigeminal autonomic cephalgias(TAC)
-
-        G44.03 - G44.0399 Episodic paroxysmal hemicrania
-        G44.2 - G44.2299 Tension-type headache
-
-        G44.3 - G44.3299 Post-traumatic headache
-
-    R51.9 Headache
-
-S06.0-S06.99 General Head Trauma
-    S06.0- Concussion
-        S06.0X0 Concussion without loss of consciousness
-
-        S06.0X1 Concussion with loss of consciousness of 30 minutes or less
-        S06.0X9 Concussion with loss of consciousness of unspecified duration
-    S06.9- Unspecified intracranial injury
-        S06.9X0 Unspecified intracranial injury without loss of consciousness
-
-        S06.9X1 Unspecified intracranial injury with loss of consciousness of 30 minutes or less
-        S06.9X2 Unspecified intracranial injury with loss of consciousness of 31 minutes to 59 minutes
-        /// </summary>
+        /// /// </summary>
         /// 
 
         // Declare the event
