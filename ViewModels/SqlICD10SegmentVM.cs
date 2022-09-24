@@ -46,6 +46,7 @@ namespace AI_Note_Review
         public SqlICD10SegmentVM()
         {
             sqlICD10Segment = new SqlICD10SegmentM();
+            //why do I need this? There may already be and instance of MRS
             masterReviewSummary = new MasterReviewSummaryVM();
         }
 

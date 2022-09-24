@@ -18,6 +18,9 @@ using System.Windows.Media;
 
 namespace AI_Note_Review
 {
+    /// <summary>
+    /// Container for data regarding the two month reviews.
+    /// </summary>
     public class BiMonthlyReviewVM : INotifyPropertyChanged
     {
         /// <summary>
@@ -30,6 +33,7 @@ namespace AI_Note_Review
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
         private BiMonthlyReviewM biMonthlyReviewM;
         private MasterReviewSummaryVM MasterReview;
 
@@ -297,6 +301,9 @@ namespace AI_Note_Review
 
 
         private List<SqlICD10SegmentVM> allICD10Segments;
+        /// <summary>
+        /// Not sure I need this, I may be able to push it the master review summary, i suspect it is in HTML somewhere.
+        /// </summary>
         public List<SqlICD10SegmentVM> AllICD10Segments
         {
             get

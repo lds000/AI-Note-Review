@@ -46,7 +46,7 @@ namespace AI_Note_Review
             masterReviewSummary = new SqlMasterReviewSummaryM();
             providerBiMonthlyReview = new SqlRelProviderMasterReviewSummaryM();
             AddLog("MasterReviewSummaryVM() executed.");
-            RegisterEvents();
+            RegisterEvents(); //not used, here in case I need it
         }
 
         #region EventManagement (empty)
@@ -120,6 +120,22 @@ namespace AI_Note_Review
             set
             {
                 parentNoteDataVM = value;
+                if (parentNoteDataVM != null)
+                {
+                    string strHTML = "";
+                    strHTML = Encryption.Decrypt(parentNoteDataVM.NoteString);
+                    //Convert string html to html document object
+                    WebBrowser browser = new WebBrowser();
+                    browser.ScriptErrorsSuppressed = true;
+                    browser.DocumentText = strHTML;
+                    browser.Document.OpenNew(true);
+                    browser.Document.Write(strHTML);
+                    browser.Refresh();
+
+                    Document.NoteHTML = browser.Document;
+                    VisitReport.PopulateCPStatuses();
+                    OnPropertyChanged("StrBimonthlyReviewComment");
+                }
             }
             get
             {
@@ -146,22 +162,7 @@ namespace AI_Note_Review
             {
                 var d = cnn.Query<NoteDataVM>(sql).FirstOrDefault();
                 parentNoteDataVM = d;
-                string strHTML = "";
-                    if (d != null)
-                {
-                    strHTML = Encryption.Decrypt(d.NoteString);
-                }
-
-                WebBrowser browser = new WebBrowser();
-                browser.ScriptErrorsSuppressed = true;
-                browser.DocumentText = strHTML;
-                browser.Document.OpenNew(true);
-                browser.Document.Write(strHTML);
-                browser.Refresh();
-
-                Document.NoteHTML = browser.Document;
-                VisitReport.PopulateCPStatuses();
-                OnPropertyChanged("StrBimonthlyReviewComment");
+                OnPropertyChanged("ParentNoteData");
             }
         }
 
@@ -274,6 +275,7 @@ namespace AI_Note_Review
         {
             masterReviewSummary.SaveToDB();
         }
+
         public string MasterReviewSummaryToString
         {
             get
