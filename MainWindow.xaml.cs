@@ -345,9 +345,13 @@ namespace AI_Note_Review
                 AutoIt.AutoItX.WinWaitActive("Patient Lookup");
                 AutoIt.AutoItX.MouseClick("LEFT", 500, 65);
                 AutoIt.AutoItX.Send("^V{ENTER}");
-                Thread.Sleep(3000);
+                Console.WriteLine("1");
+                Console.WriteLine("2");
                 AutoIt.AutoItX.WinWaitActive("Patient Hub");
+                Thread.Sleep(3000);
+                Console.WriteLine("3");
                 AutoIt.AutoItX.Send("!p");
+                Console.WriteLine("4");
 
             }
             catch
