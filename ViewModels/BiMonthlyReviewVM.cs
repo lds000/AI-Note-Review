@@ -185,7 +185,9 @@ namespace AI_Note_Review
                     if (selectedProviderForBiMonthlyReview == null) return null;
                     if (SelectedMasterReviewSummary == null) return null;
                     string sql = "";
-                    sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={selectedProviderForBiMonthlyReview.ProviderID} and VisitDate Between '{SelectedMasterReviewSummary.StartDate.ToString("yyyy-MM-dd")}' and '{SelectedMasterReviewSummary.EndDate.ToString("yyyy-MM-dd")}';";
+                    //sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={selectedProviderForBiMonthlyReview.ProviderID} and VisitDate Between '{SelectedMasterReviewSummary.StartDate.ToString("yyyy-MM-dd")}' and '{SelectedMasterReviewSummary.EndDate.ToString("yyyy-MM-dd")}';";
+                    //someone messed up, fix later.
+                    sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={selectedProviderForBiMonthlyReview.ProviderID} and ReviewDate Between '2022-10-05' and '2022-10-15';";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
                         ObservableCollection<SqlDocumentReviewSummaryVM> tmpL = new ObservableCollection<SqlDocumentReviewSummaryVM>(cnn.Query<SqlDocumentReviewSummaryVM>(sql).ToList().OrderBy(c => c.VisitDate));
@@ -647,6 +649,10 @@ namespace AI_Note_Review
         public void Execute(object parameter)
         {
             NoteDataVM d = parameter as NoteDataVM;
+            d.ParentMasterReviewSummary.ParentNoteData = d;
+
+            /*
+
             string strHTML = Encryption.Decrypt(d.NoteString);
 
             WebBrowser browser = new WebBrowser();
@@ -657,6 +663,7 @@ namespace AI_Note_Review
                 browser.Refresh();
               
             d.ParentMasterReviewSummary.Document.NoteHTML = browser.Document;
+            */
         }
     }
 

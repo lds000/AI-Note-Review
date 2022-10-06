@@ -161,8 +161,7 @@ namespace AI_Note_Review
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteNotesLocation))
             {
                 var d = cnn.Query<NoteDataVM>(sql).FirstOrDefault();
-                parentNoteDataVM = d;
-                OnPropertyChanged("ParentNoteData");
+                ParentNoteData = d;
             }
         }
 
