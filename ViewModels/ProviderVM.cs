@@ -274,7 +274,7 @@ namespace AI_Note_Review
 
                 //sql += $"Select Count(distinct VisitDate || PtID) from RelCPPRovider where ProviderID={ProviderID} and VisitDate Between '{currentMasterReview.StartDate.ToString("yyyy-MM-dd")}' and '{currentMasterReview.EndDate.ToString("yyyy-MM-dd")}';";
                 //messed up
-                sql += $"Select Count(distinct VisitDate || PtID) from RelCPPRovider where ProviderID={ProviderID} and ReviewDate Between '2022-10-05' and '2022-10-15';";
+                sql += $"Select Count(distinct VisitDate || PtID) from RelCPPRovider where ProviderID={ProviderID} and ReviewDate Between '2022-10-05' and '2022-10-30';";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     return cnn.ExecuteScalar<int>(sql);
