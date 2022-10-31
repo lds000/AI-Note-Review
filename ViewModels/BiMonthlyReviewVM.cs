@@ -456,8 +456,10 @@ namespace AI_Note_Review
                 rxtot += (double)l[i].HtmlReport.rxScore;
                 totaltot += (double)l[i].HtmlReport.totalScore;
             }
-            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I have your review completed for the months of May and Jun 2022!";
-            strReport += $"<br>Sorry this is so delayed, I've had a great summer and I hope yours was amazing as well! This review covered extremity injuries focusing on appropriate management of sprains, strains, fractures, bites, and lacerations. ";
+            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I have your review completed for the months of Jul and Aug 2022!";
+            strReport += $"<br>This review covered cephalgia and head trauma focusing on the appropriate history, exam, and treatment considerations for these conditions. ";
+            strReport += $"Generally speaking, I feel that cephalgia and head trauma are challenging and higher risk presentations.  It is important to approach these cases in a methodical and thorough way and apply clinical decision rules appropriately.  ";
+            strReport += $"Please feel free to contact me if you have any questions regarding your review.";
             strReport += $"<br><br>Best Regards,<br>Lloyd Stolworthy, M.D.<hr>";
             strReport += $"<font size='+2'>Combined Total Review Score: HPI: {hpitot.ToString("0.##")}, Dx: {dxtot.ToString("0.##")}, Exam:  {examtot.ToString("0.##")}, Rx: {rxtot.ToString("0.##")}, Total Score: {totaltot.ToString("0.##")}</font><hr>";
             strReport += strTmp;
@@ -467,7 +469,7 @@ namespace AI_Note_Review
 
 
             ClipboardHelper.CopyToClipboard(strReport, "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For May-Jun 2022", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Jul-Aug 2022", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
         }
