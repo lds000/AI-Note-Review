@@ -353,9 +353,9 @@ namespace AI_Note_Review
                         }
                         myPeeps = tmpListVM.ToObservableCollection();
                     }
-             
-               return myPeeps;
                 }
+               return myPeeps;
+                
             }
         }
 
@@ -398,7 +398,6 @@ namespace AI_Note_Review
             {
                 ReportToTextVM r = new ReportToTextVM(l[i].ParentProvider, l[i].VisitDate, l[i].PtID);
                 AutoIt.AutoItX.Send(r.AccountNumber);
-                +-
                 AutoIt.AutoItX.Send("{Tab}");
                 Thread.Sleep(sleeptime);
                 AutoIt.AutoItX.Send(r.DOS);
