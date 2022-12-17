@@ -45,6 +45,14 @@ class PersonVM {
         public int MasterReviewSummaryID { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public DateTime MyReviewStartDate
+        {
+            get; set;
+        }
+        public DateTime MyReviewEndDate
+        {
+            get; set;
+        }
         public string MasterReviewSummaryTitle { get; set; }
         public string MasterReviewSummarySubject { get; set; }
         public string MasterReviewSummaryComment { get; set; }
@@ -56,6 +64,8 @@ class PersonVM {
                     "MasterReviewSummaryID=@MasterReviewSummaryID, " +
                     "StartDate=@StartDate, " +
                     "EndDate=@EndDate, " +
+                    "MyReviewStartDate=@MyReviewStartDate, " +
+                    "MyReviewEndDate=@MyReviewEndDate, " +
                     "MasterReviewSummaryTitle=@MasterReviewSummaryTitle, " +
                     "MasterReviewSummarySubject=@MasterReviewSummarySubject, " +
                     "MasterReviewSummaryComment=@MasterReviewSummaryComment, " +

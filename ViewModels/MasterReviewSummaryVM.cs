@@ -254,6 +254,32 @@ namespace AI_Note_Review
         public int MasterReviewSummaryID { get { return masterReviewSummary.MasterReviewSummaryID; } set { masterReviewSummary.MasterReviewSummaryID = value; OnPropertyChanged(); } }
         public DateTime StartDate { get { return masterReviewSummary.StartDate; } set { masterReviewSummary.StartDate = value; OnPropertyChangedSave(); } }
         public DateTime EndDate { get { return masterReviewSummary.EndDate; } set { masterReviewSummary.EndDate = value; OnPropertyChangedSave(); } }
+        public DateTime MyReviewStartDate
+        {
+            get
+            {
+                return masterReviewSummary.MyReviewStartDate;
+            }
+            set
+            {
+                masterReviewSummary.MyReviewStartDate = value;
+                OnPropertyChangedSave();
+                //BiMonthlyReviewVM.ListOfDocumentReviews = null;
+            }
+        }
+        public DateTime MyReviewEndDate
+        {
+            get
+            {
+                return masterReviewSummary.MyReviewEndDate;
+            }
+            set
+            {
+                masterReviewSummary.MyReviewEndDate = value;
+                OnPropertyChangedSave();
+                //BiMonthlyReviewVM.ListOfDocumentReviews = null;
+            }
+        }
         public string MasterReviewSummaryTitle { get { return masterReviewSummary.MasterReviewSummaryTitle; } set { masterReviewSummary.MasterReviewSummaryTitle = value; OnPropertyChangedSave(); } }
         public string MasterReviewSummarySubject { get { return masterReviewSummary.MasterReviewSummarySubject; } set { masterReviewSummary.MasterReviewSummarySubject = value; OnPropertyChangedSave(); } }
         public string MasterReviewSummaryComment {

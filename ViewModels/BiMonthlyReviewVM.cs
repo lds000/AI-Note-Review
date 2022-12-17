@@ -98,10 +98,20 @@ namespace AI_Note_Review
                 OnPropertyChanged("StrBimonthlyReviewComment");
                 OnPropertyChanged("StrBimonthlyReviewSummary");
                 OnPropertyChanged();
+                //monitor property changes for if start and end dates of chart reviews are changed to reload ListOfDocumentReviews
+                selectedMasterReviewSummary.PropertyChanged += SelectedMasterReviewSummary_PropertyChanged;
             }
         }
 
-
+        private void SelectedMasterReviewSummary_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            //if start or end date changed, update list
+            if (e.PropertyName== "MyReviewStartDate" || e.PropertyName == "MyReviewEndDate")
+            {
+                listOfDocumentReviews = null;
+                OnPropertyChanged("ListOfDocumentReviews");
+            }
+        }
 
         private ProviderVM selectedProviderForBiMonthlyReview;
         public ProviderVM SelectedProviderForBiMonthlyReview
@@ -187,7 +197,7 @@ namespace AI_Note_Review
                     string sql = "";
                     //sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={selectedProviderForBiMonthlyReview.ProviderID} and VisitDate Between '{SelectedMasterReviewSummary.StartDate.ToString("yyyy-MM-dd")}' and '{SelectedMasterReviewSummary.EndDate.ToString("yyyy-MM-dd")}';";
                     //someone messed up, fix later.
-                    sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={selectedProviderForBiMonthlyReview.ProviderID} and ReviewDate Between '2022-10-05' and '2022-10-30';";
+                    sql += $"Select distinct VisitDate, PtID from RelCPPRovider where ProviderID={selectedProviderForBiMonthlyReview.ProviderID} and ReviewDate Between '{SelectedMasterReviewSummary.MyReviewStartDate.ToString("yyyy-MM-dd")}' and '{SelectedMasterReviewSummary.MyReviewEndDate.ToString("yyyy-MM-dd")}';";
                     using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
                         ObservableCollection<SqlDocumentReviewSummaryVM> tmpL = new ObservableCollection<SqlDocumentReviewSummaryVM>(cnn.Query<SqlDocumentReviewSummaryVM>(sql).ToList().OrderBy(c => c.VisitDate));
@@ -202,8 +212,12 @@ namespace AI_Note_Review
                 }
                 return listOfDocumentReviews;
             }
+            set
+            {
+                listOfDocumentReviews = value;
+                OnPropertyChanged();
+            }
         }
-
 
 
         private string strBimonthlyReviewComment;
