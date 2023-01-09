@@ -313,7 +313,7 @@ namespace AI_Note_Review
             {
                 foreach (var tmpMR in cnn.Query<MasterReviewSummaryVM>(sql).ToList())
                 {
-                    if (dt >= tmpMR.StartDate && dt <= tmpMR.EndDate)
+                    if (dt >= tmpMR.MyReviewStartDate && dt <= tmpMR.MyReviewEndDate)
                     {
                         currentMasterReview = tmpMR;
                         return;

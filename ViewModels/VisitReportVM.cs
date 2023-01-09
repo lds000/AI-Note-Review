@@ -262,8 +262,20 @@ namespace AI_Note_Review
             {
                 cnn.Execute(sql);
             }
-            document.Provider.SetCurrentMasterReview(document.VisitDate);
-            MessageBox.Show($"{document.Provider.CurrentReviewCount}/10 reports committed.");
+            //document.Provider.SetCurrentMasterReview(document.VisitDate);
+            document.Provider.SetCurrentMasterReview(DateTime.Now);
+            int tmpc = document.Provider.CurrentNoteDataCount-1;
+            string strResult = "";
+            if (tmpc > 0)
+            {
+                strResult = $"{tmpc} notes left.";
+            }
+            else
+            {
+                strResult = "No notes left.";
+            }
+            if (tmpc == 1) strResult = "1 note left.";
+        MessageBox.Show($"{document.Provider.CurrentReviewCount}/10 reports committed for {document.Provider.FullName}. {strResult}.");
         }
 
         private ICommand mCommitReport;
