@@ -471,9 +471,11 @@ namespace AI_Note_Review
                 rxtot += (double)l[i].HtmlReport.rxScore;
                 totaltot += (double)l[i].HtmlReport.totalScore;
             }
-            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I have your review completed for the months of Jul and Aug 2022!";
-            strReport += $"<br>This review covered cephalgia and head trauma focusing on the appropriate history, exam, and treatment considerations for these conditions. ";
-            strReport += $"Generally speaking, I feel that cephalgia and head trauma are challenging and higher risk presentations.  It is important to approach these cases in a methodical and thorough way and apply clinical decision rules appropriately.  ";
+            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I apologize that this review is just getting to you, I thought I sent this last month. I have your review completed for the months of Sep and Oct 2022.";
+            strReport += $"<br>This review covered eye surface and eyelid conditions focusing on the appropriate history, exam, and treatment considerations. ";
+            strReport += $"Generally speaking, I feel that everyone did quite well with these complaints.  There are a few things I would like to mention, however, that I saw a challenge for some providers.  ";
+            strReport += $"Be certain to document contact lens wearer status, this affects antibiotic choice (quinolone) and potential stat referrals for corneal ulcers.  ";
+            strReport += "Also, don't forget to perform a fluorescein exam in most eye surface injuries or conditions noting absence of dendritic lesions, Seidel sign, foreign body, etc.  ";
             strReport += $"Please feel free to contact me if you have any questions regarding your review.";
             strReport += $"<br><br>Best Regards,<br>Lloyd Stolworthy, M.D.<hr>";
             strReport += $"<font size='+2'>Combined Total Review Score: HPI: {hpitot.ToString("0.##")}, Dx: {dxtot.ToString("0.##")}, Exam:  {examtot.ToString("0.##")}, Rx: {rxtot.ToString("0.##")}, Total Score: {totaltot.ToString("0.##")}</font><hr>";
@@ -484,7 +486,7 @@ namespace AI_Note_Review
 
 
             ClipboardHelper.CopyToClipboard(strReport, "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Jul-Aug 2022", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Sep-Oct 2022", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
         }
