@@ -373,6 +373,9 @@ Billing Information:
         {
             try
             {
+                bool currentsetting = Properties.Settings.Default.MonitorActive;  //used because this is freezing ecw
+                if (currentsetting == true)
+                    Properties.Settings.Default.MonitorActive = false;
                 string strNum = AutoIt.AutoItX.ClipGet().Split(' ')[0];
                 AutoIt.AutoItX.ClipPut(strNum);
                 AutoIt.AutoItX.MouseClick("LEFT", 300, 75);
@@ -386,7 +389,7 @@ Billing Information:
                 Console.WriteLine("3");
                 AutoIt.AutoItX.Send("!p");
                 Console.WriteLine("4");
-
+                Properties.Settings.Default.MonitorActive = currentsetting;
             }
             catch
             {
