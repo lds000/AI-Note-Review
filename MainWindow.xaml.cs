@@ -65,40 +65,6 @@ namespace AI_Note_Review
             return;
             */
 
-            /*
-Subjective:
-   Chief Complaint(s):  
-   HPI:  
-    Note:
-         [1].
-   Examination:  
-    Brief Exam
-        GENERAL APPEARANCE:   []. 
-        **HEENT: [] . 
-        HEART: []  . 
-        *CHEST: []  . 
-        LUNGS: []  . 
-        ABDOMEN: []  . 
-        SKIN: []  . 
-        EXTREMITIES: []  . 
-        **NEUROLOGIC EXAM: []  . 
-        OBSTETRICS: []  . 
-Assessment: 
-   Assessment:
-  •COVID-19 - U07.1 (Primary)
-Plan:
-   Treatment:
-     COVID-19
-         Notes: [].
-   Procedures:  
-   Next Appointment:  
-  prn 
-Billing Information:
-   Visit Code:  
-  •99213 OV ESTABLISHED PATIENT. 
-   Procedure Codes:  
-  •87811 COVID SARS Rapid Antigen Test (In-house). 
-             */
 
 
             Properties.Settings.Default.PropertyChanged += Default_PropertyChanged;
@@ -373,9 +339,6 @@ Billing Information:
         {
             try
             {
-                bool currentsetting = Properties.Settings.Default.MonitorActive;  //used because this is freezing ecw
-                if (currentsetting == true)
-                    Properties.Settings.Default.MonitorActive = false;
                 string strNum = AutoIt.AutoItX.ClipGet().Split(' ')[0];
                 AutoIt.AutoItX.ClipPut(strNum);
                 AutoIt.AutoItX.MouseClick("LEFT", 300, 75);
@@ -389,7 +352,7 @@ Billing Information:
                 Console.WriteLine("3");
                 AutoIt.AutoItX.Send("!p");
                 Console.WriteLine("4");
-                Properties.Settings.Default.MonitorActive = currentsetting;
+
             }
             catch
             {

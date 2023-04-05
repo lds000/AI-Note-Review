@@ -396,14 +396,11 @@ namespace AI_Note_Review
             if (selectedProviderForBiMonthlyReview.FullName.Contains("Barnum")) strName = "Barnum";
             if (selectedProviderForBiMonthlyReview.FullName.Contains("Rios"))
                 strName = "Rios";
-            //AutoIt.AutoItX.WinActivate("Monthly Clinic Review");
-            Thread.Sleep(3000);
-            AutoIt.AutoItX.Send(strName);
-            Thread.Sleep(1000);
-            AutoIt.AutoItX.Send("{Enter}");
-            Thread.Sleep(500);
+            AutoIt.AutoItX.WinActivate("Monthly Clinic Review");
+            Thread.Sleep(2000);
             AutoIt.AutoItX.Send("{Tab}");
-            Thread.Sleep(1000);
+            AutoIt.AutoItX.Send(strName);
+            AutoIt.AutoItX.Send("{Tab 2}");
             Thread.Sleep(sleeptime);
             AutoIt.AutoItX.Send("stolw");
             AutoIt.AutoItX.Send("{Tab 2}");
@@ -442,18 +439,8 @@ namespace AI_Note_Review
                 Thread.Sleep(sleeptime);
             }
             AutoIt.AutoItX.Send("{Tab 6}");
-            AutoIt.AutoItX.Send("{Down 5}");
-            AutoIt.AutoItX.Send("{Enter}");
-            Thread.Sleep(1000);
-            AutoIt.AutoItX.Send("{Tab}");
-            Thread.Sleep(sleeptime);
-            AutoIt.AutoItX.Send("Lloyd Stolworthy, MD");
-            Thread.Sleep(sleeptime);
-            AutoIt.AutoItX.Send("{Tab}");
-            Thread.Sleep(sleeptime);
             AutoIt.AutoItX.Send("{Down 3}");
             AutoIt.AutoItX.Send("{Enter}");
-            Thread.Sleep(sleeptime);
             AutoIt.AutoItX.Send("{Tab 2}");
         }
 
@@ -484,19 +471,14 @@ namespace AI_Note_Review
                 rxtot += (double)l[i].HtmlReport.rxScore;
                 totaltot += (double)l[i].HtmlReport.totalScore;
             }
-            strReport += $"Greetings {selectedProviderForBiMonthlyReview.FirstName},<br> I have completed the review for block 8, which covered male and female genitourinary conditions including STDs, vaginitis, complicated and uncomplicated UTIs, urethritis, prostatitis, epididymitis, and hematuria. Overall, everyone performed well, particularly in the appropriate use of antibiotics and identifying complicated vs. uncomplicated UTIs. A few recommendations include considering pregnancy when prescribing doxycycline and fluconazole and diagnosing UTIs in females capable of becoming pregnant. A pelvic examination (or documentation of a declined exam) is indicated in the workup of vaginitis. In the workup of hematuria, it is recommended that the patient return to their PCP in 2-3 weeks for follow-up to confirm resolution of hematuria. ";
-            //strReport += $"<br>This review covered eye surface and eyelid conditions focusing on the appropriate history, exam, and treatment considerations. ";
-            //strReport += $"Generally speaking, I feel that everyone did quite well with these complaints.  There are a few things I would like to mention, however, that I saw a challenge for some providers.  ";
-            //strReport += $"Be certain to document contact lens wearer status, this affects antibiotic choice (quinolone) and potential stat referrals for corneal ulcers.  ";
-            //strReport += "Also, don't forget to perform a fluorescein exam in most eye surface injuries or conditions noting absence of dendritic lesions, Seidel sign, foreign body, etc.  ";
+            strReport += $"Hi {selectedProviderForBiMonthlyReview.FirstName},<br> I apologize that this review is just getting to you, I thought I sent this last month. I have your review completed for the months of Sep and Oct 2022.";
+            strReport += $"<br>This review covered eye surface and eyelid conditions focusing on the appropriate history, exam, and treatment considerations. ";
+            strReport += $"Generally speaking, I feel that everyone did quite well with these complaints.  There are a few things I would like to mention, however, that I saw a challenge for some providers.  ";
+            strReport += $"Be certain to document contact lens wearer status, this affects antibiotic choice (quinolone) and potential stat referrals for corneal ulcers.  ";
+            strReport += "Also, don't forget to perform a fluorescein exam in most eye surface injuries or conditions noting absence of dendritic lesions, Seidel sign, foreign body, etc.  ";
             strReport += $"Please feel free to contact me if you have any questions regarding your review.";
             strReport += $"<br><br>Best Regards,<br>Lloyd Stolworthy, M.D.<hr>";
             strReport += $"<font size='+2'>Combined Total Review Score: HPI: {hpitot.ToString("0.##")}, Dx: {dxtot.ToString("0.##")}, Exam:  {examtot.ToString("0.##")}, Rx: {rxtot.ToString("0.##")}, Total Score: {totaltot.ToString("0.##")}</font><hr>";
-            if (StrBimonthlyReviewComment != "" && StrBimonthlyReviewComment != null)
-                    {
-                    strReport += $"<br>Additional provider specific comments: {StrBimonthlyReviewComment}<br>";
-                    }
-                
             strReport += strTmp;
             strReport += "Footnotes:" + Environment.NewLine;
             strReport += "Total Score = (Total of Score Weights missed) / ((Total of Score Weights missed)+(Total of Score Weights passed)) * 2 + 8<br>" + Environment.NewLine;
@@ -504,7 +486,7 @@ namespace AI_Note_Review
 
 
             ClipboardHelper.CopyToClipboard(strReport, "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Nov-Dec 2022", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Sep-Oct 2022", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
         }
