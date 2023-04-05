@@ -225,7 +225,7 @@ namespace AI_Note_Review
                     return null;
                 string sql = "";
                 //todo: change from 5 to document date MRS.
-                sql += $"Select RelComment from RelProviderMasterReviewSummary where RelProviderID={Document.Provider.ProviderID} and RelMasterReviewSummaryID=5;";
+                sql += $"Select RelComment from RelProviderMasterReviewSummary where RelProviderID={Document.Provider.ProviderID} and RelMasterReviewSummaryID=9;";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     strBimonthlyReviewComment = cnn.ExecuteScalar<string>(sql);
@@ -237,8 +237,8 @@ namespace AI_Note_Review
                 if (Document.Provider == null)
                     return;
                 string sql = "";
-                sql = $"Delete from RelProviderMasterReviewSummary Where RelProviderID={Document.Provider.ProviderID} and RelMasterReviewSummaryID=5;";
-                sql += $"Insert INTO RelProviderMasterReviewSummary (RelComment,RelProviderID,RelMasterReviewSummaryID) VALUES ('{value.Replace("'", "''")}',{Document.Provider.ProviderID},5);";
+                sql = $"Delete from RelProviderMasterReviewSummary Where RelProviderID={Document.Provider.ProviderID} and RelMasterReviewSummaryID=9;";
+                sql += $"Insert INTO RelProviderMasterReviewSummary (RelComment,RelProviderID,RelMasterReviewSummaryID) VALUES ('{value.Replace("'", "''")}',{Document.Provider.ProviderID},9);";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
                     cnn.Execute(sql);
