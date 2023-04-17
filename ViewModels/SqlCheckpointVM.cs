@@ -780,6 +780,23 @@ namespace AI_Note_Review
                 mRemoveCheckPoint = value;
             }
         }
+
+        //RemoveCheckPoint
+        private ICommand mCopyCheckPoint;
+        public ICommand CopyCheckPointCommand
+        {
+            get
+            {
+                if (mCopyCheckPoint == null)
+                    mCopyCheckPoint = new CopyCheckPoint();
+                return mCopyCheckPoint;
+            }
+            set
+            {
+                mCopyCheckPoint = value;
+            }
+        }
+
     }
 
     class TagAdder : ICommand
@@ -1131,6 +1148,38 @@ namespace AI_Note_Review
         {
             SqlCheckpointVM cp = parameter as SqlCheckpointVM;
             cp.DeleteFromDB();
+            cp.ParentSegment.UpdateCheckPoints();
+        }
+    }
+
+
+    /// <summary>
+    /// CreateIndex
+    /// </summary>
+    class CopyCheckPoint : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
+        #endregion
+        public void Execute(object parameter)
+        {
+            SqlCheckpointVM cp = parameter as SqlCheckpointVM;
+            cp.ParentSegment.MasterReviewSummary.CheckPointToCopy = cp;
             cp.ParentSegment.UpdateCheckPoints();
         }
     }

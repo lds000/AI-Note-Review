@@ -737,6 +737,21 @@ namespace AI_Note_Review
             }
         }
 
+        private ICommand mPasteCP;
+        public ICommand PasteCPCommand
+        {
+            get
+            {
+                if (mPasteCP == null)
+                    mPasteCP = new CPPaster();
+                return mPasteCP;
+            }
+            set
+            {
+                mPasteCP = value;
+            }
+        }
+
         private ICommand mEditSegment;
         public ICommand EditSegmentCommand
         {
@@ -866,6 +881,53 @@ namespace AI_Note_Review
             {
                 sivm.AddCheckPoint(new SqlCheckpointVM(wet.ReturnValue, sivm.ICD10SegmentID));
             }
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// Add checkpoint
+    /// </summary>
+    class CPPaster : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            SqlICD10SegmentVM sivm = parameter as SqlICD10SegmentVM;
+            if  (sivm == null) return false;
+            if (sivm.MasterReviewSummary.CheckPointToCopy == null) return false;
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
+
+        public void Execute(object parameter)
+        {
+            SqlICD10SegmentVM sivm = parameter as SqlICD10SegmentVM;
+                SqlCheckpointVM tmpvm = new SqlCheckpointVM(sivm.MasterReviewSummary.CheckPointToCopy.CheckPointTitle, sivm.ICD10SegmentID);
+                tmpvm.Comment = sivm.MasterReviewSummary.CheckPointToCopy.Comment;
+                tmpvm.Link = sivm.MasterReviewSummary.CheckPointToCopy.Link;
+            tmpvm.DoubleCheck = sivm.MasterReviewSummary.CheckPointToCopy.DoubleCheck;
+            tmpvm.ErrorSeverity = sivm.MasterReviewSummary.CheckPointToCopy.ErrorSeverity;
+            tmpvm.TargetICD10Segment = sivm.MasterReviewSummary.CheckPointToCopy.TargetICD10Segment;
+            tmpvm.TargetSection = sivm.MasterReviewSummary.CheckPointToCopy.TargetSection;
+            tmpvm.CheckPointType = sivm.MasterReviewSummary.CheckPointToCopy.CheckPointType;
+            foreach (SqlTagVM tmpTag in tmpvm.Tags)
+            {
+                tmpvm.AddTag(tmpTag);
+            }
+                sivm.AddCheckPoint(tmpvm);
+            sivm.MasterReviewSummary.CheckPointToCopy = null;
         }
         #endregion
     }

@@ -78,6 +78,20 @@ namespace AI_Note_Review
             }
         }
 
+        private SqlCheckpointVM checkPointToCopy;
+        public SqlCheckpointVM CheckPointToCopy
+        {
+        get
+            {
+            return checkPointToCopy; 
+            } 
+        set
+            {
+            checkPointToCopy = value;
+                OnPropertyChanged();
+            }
+        }
+
         //I don't think I need this.
         //public SqlICD10SegmentVM SqlICD10SegmentVM { get; set; }
 

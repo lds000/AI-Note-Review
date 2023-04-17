@@ -171,7 +171,9 @@
                                                     <Border.ContextMenu>
                                                         <ContextMenu>
                                                             <MenuItem Header="Remove checkpoint." Command="{Binding RemoveCheckPointCommand}" CommandParameter="{Binding}">
-                                                            </MenuItem>
+                                                                </MenuItem>
+                                                                <MenuItem Header="Copy checkpoint." Command="{Binding CopyCheckPointCommand}" CommandParameter="{Binding}">
+                                                                    </MenuItem>
                                                         </ContextMenu>
                                                     </Border.ContextMenu>
                                                     <StackPanel Orientation="Horizontal" Tag="{Binding Path=CheckPointID}">
@@ -194,6 +196,7 @@
                     </ItemsControl>
                         <StackPanel Grid.Row="1">
                             <Button Command="{Binding SelectedICD10Segment.AddCPCommand}" CommandParameter="{Binding SelectedICD10Segment}" Style="{StaticResource LinkButton}" Margin="3">Add CheckPoint</Button>
+                            <Button Command="{Binding SelectedICD10Segment.PasteCPCommand}" CommandParameter="{Binding SelectedICD10Segment}" Style="{StaticResource LinkButton}" Margin="3">PasteCheckPoint</Button>
                         </StackPanel>
                 </Grid>
                 </ScrollViewer>
