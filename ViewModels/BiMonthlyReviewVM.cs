@@ -484,7 +484,7 @@ namespace AI_Note_Review
                 rxtot += (double)l[i].HtmlReport.rxScore;
                 totaltot += (double)l[i].HtmlReport.totalScore;
             }
-            strReport += $"Greetings {selectedProviderForBiMonthlyReview.FirstName},<br> I have completed the review for block 8, which covered male and female genitourinary conditions including STDs, vaginitis, complicated and uncomplicated UTIs, urethritis, prostatitis, epididymitis, and hematuria. Overall, everyone performed well, particularly in the appropriate use of antibiotics and identifying complicated vs. uncomplicated UTIs. A few recommendations include considering pregnancy when prescribing doxycycline and fluconazole and diagnosing UTIs in females capable of becoming pregnant. A pelvic examination (or documentation of a declined exam) is indicated in the workup of vaginitis. In the workup of hematuria, it is recommended that the patient return to their PCP in 2-3 weeks for follow-up to confirm resolution of hematuria. ";
+            strReport += $"Greetings {selectedProviderForBiMonthlyReview.FirstName},<br> I have completed the review for block 9, which covered cervical and low back pain including MVCs and spinal trauma. Generally, I noted that providers often do not document or utilize Nexus/Canadian CT rules in decision making for cervical spine injury.  Consider documenting Waddell's sign in complaints of spinal pain, especially where secondary gain issues may exist.  In MVCs it is helpful to document relative vehicle size (ie SUV vs small car) and combined speed of impact and document seat belt markings on exam of MVCs. That's all!  I've sent this same review content to Smartsheet as well so that admin can see that these reviews are getting done, but I think that this format is easier to read.  Have a great day! ";
             //strReport += $"<br>This review covered eye surface and eyelid conditions focusing on the appropriate history, exam, and treatment considerations. ";
             //strReport += $"Generally speaking, I feel that everyone did quite well with these complaints.  There are a few things I would like to mention, however, that I saw a challenge for some providers.  ";
             //strReport += $"Be certain to document contact lens wearer status, this affects antibiotic choice (quinolone) and potential stat referrals for corneal ulcers.  ";
@@ -504,7 +504,7 @@ namespace AI_Note_Review
 
 
             ClipboardHelper.CopyToClipboard(strReport, "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Nov-Dec 2022", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Block 9", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
         }
@@ -513,7 +513,7 @@ namespace AI_Note_Review
         {
             ReportToHtmlVM r = new ReportToHtmlVM();
             ClipboardHelper.CopyToClipboard(r.ExecutiveSummary(SelectedMasterReviewSummary), "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", "lds00@yahoo.com", "Clinic Note Review For May-Jun 2022", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", "lds00@yahoo.com", "Clinic Note Review For Block 9", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
 
