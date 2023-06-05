@@ -306,36 +306,45 @@ Billing Information:
             {
                 int i = 0;
                 if (!CF.IsReviewWindowOpen) //do not load new patient if in a current review.
-                    while (i < 20)
+                    try
                     {
-                        HookIE h = new HookIE(hwnd, 0);
-                        if (h.EcwHTMLDocument != null)
+                        while (i < 20)
                         {
-                            if (h.IHTMLDocument != null)
-                                if (h.EcwHTMLDocument.Body != null)
-                                    if (h.EcwHTMLDocument.Body.InnerHtml != null)
-                                    {
-                                        try
+                            HookIE h = new HookIE(hwnd, 0);
+                            if (h.EcwHTMLDocument != null)
+                            {
+                                if (h.IHTMLDocument != null)
+                                    if (h.EcwHTMLDocument.Body != null)
+                                        if (h.EcwHTMLDocument.Body.InnerHtml != null)
                                         {
-                                            //do not reset the document if it has already been loaded and analyzed, check length for performance
-                                            if (h.EcwHTMLDocument.Body.InnerText.Length == strLastDoc.Length)
+                                            try
                                             {
-                                                return;
+                                                //do not reset the document if it has already been loaded and analyzed, check length for performance
+                                                if (h.EcwHTMLDocument.Body.InnerText.Length == strLastDoc.Length)
+                                                {
+                                                    return;
+                                                }
+                                                strLastDoc = h.EcwHTMLDocument.Body.InnerText;
+                                                mrs.AddLog("Document Found....");
+                                                mrs.VisitReport.Document.NoteHTML = h.EcwHTMLDocument;
                                             }
-                                            strLastDoc = h.EcwHTMLDocument.Body.InnerText;
-                                            mrs.AddLog("Document Found....");
-                                            mrs.VisitReport.Document.NoteHTML = h.EcwHTMLDocument;
+                                            catch (Exception e)
+                                            {
+                                                Console.WriteLine(e.Message);
+                                                break;
+                                            }
+                                            if (mrs.VisitReport.Patient.PtName != "")
+                                                break;
                                         }
-                                        catch (Exception e)
-                                        {
-                                            Console.WriteLine(e.Message);
-                                            break;
-                                        }
-                                        if (mrs.VisitReport.Patient.PtName != "") break;
-                                    }
+                            }
+                            Thread.Sleep(200);
+                            i++;
                         }
-                        Thread.Sleep(200);
-                        i++;
+                    }
+                    catch (Exception)
+                    {
+
+                       System.Windows.Forms.MessageBox.Show("error");
                     }
             }
         }
