@@ -484,7 +484,7 @@ namespace AI_Note_Review
                 rxtot += (double)l[i].HtmlReport.rxScore;
                 totaltot += (double)l[i].HtmlReport.totalScore;
             }
-            strReport += $"Greetings {selectedProviderForBiMonthlyReview.FirstName},<br> I have completed the review for block 9, which covered cervical and low back pain including MVCs and spinal trauma. Generally, I noted that providers often do not document or utilize Nexus/Canadian CT rules in decision making for cervical spine injury.  Consider documenting Waddell's sign in complaints of spinal pain, especially where secondary gain issues may exist.  In MVCs it is helpful to document relative vehicle size (ie SUV vs small car) and combined speed of impact and document seat belt markings on exam of MVCs. That's all!  I've sent this same review content to Smartsheet as well so that admin can see that these reviews are getting done, but I think that this format is easier to read.  Have a great day! ";
+            strReport += $"Greetings {selectedProviderForBiMonthlyReview.FirstName},<br> I have completed the review for block 10, which covered traumatic and non-traumatic chest pain, shortness of breath, dyspnea, anxiety, and tachycardia. Generally, I noted that providers often do not document or utilize Well's, PERC, or Marburg  rules.  These rules are of great clinical utility in the urgent care where we have to risk stratify our patients without access to timely testing and imaging.  For patients with anxiety, don’t forget to ask about medication changes and use of illicit substances.  Many of you routinely ask about suicidal ideation, but some are not asking about homicidal ideations.  In diagnosis of tachycardia, obtaining orthostatics can be useful in detecting POTS or orthostasis.  That's all!  I've sent this same review content to Smartsheet as well so that admin can see that these reviews are getting done, but I think that this format is easier to read.  Have a great 4th of July holiday! ";
             //strReport += $"<br>This review covered eye surface and eyelid conditions focusing on the appropriate history, exam, and treatment considerations. ";
             //strReport += $"Generally speaking, I feel that everyone did quite well with these complaints.  There are a few things I would like to mention, however, that I saw a challenge for some providers.  ";
             //strReport += $"Be certain to document contact lens wearer status, this affects antibiotic choice (quinolone) and potential stat referrals for corneal ulcers.  ";
@@ -504,7 +504,7 @@ namespace AI_Note_Review
 
 
             ClipboardHelper.CopyToClipboard(strReport, "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Block 9", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Block 10", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
         }

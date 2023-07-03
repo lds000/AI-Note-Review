@@ -492,7 +492,8 @@ namespace AI_Note_Review
                 { 
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                     {
-                        string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
+                        //string sql = "Select * from ICD10Segments order by icd10Chapter, icd10CategoryStart, icd10CategoryEnd DESC;";
+                        string sql = "Select * from ICD10Segments order by SegmentTitle;";
                         var l = cnn.Query<SqlICD10SegmentM>(sql).ToList();
                         List<SqlICD10SegmentVM> lvm = new List<SqlICD10SegmentVM>();
                         foreach (SqlICD10SegmentM s in l)
