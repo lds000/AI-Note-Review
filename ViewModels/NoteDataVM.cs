@@ -56,7 +56,7 @@ namespace AI_Note_Review
             {
                 strAnonymousNote = strAnonymousNote.Substring(tmpIndex - 8);
             }
-            //make name anonymous
+            //make name anonymousf
             string tmpFirst = "John";
             if (d.Patient.isFemale)
                 tmpFirst = "Jane";
