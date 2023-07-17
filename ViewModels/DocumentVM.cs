@@ -948,10 +948,12 @@ namespace AI_Note_Review
         {
             get
             {
-                string sql = $"Select * from MasterReviewSummary where '{VisitDate.ToString("yyyy-MM-dd")}' Between StartDate and EndDate";
+                //string sql = $"Select * from MasterReviewSummary where '{VisitDate.ToString("yyyy-MM-dd")}' Between StartDate and EndDate";
+                //not sure this is correct, but it doesn't seem to be pulling up the latest.
+                string sql = $"Select * from MasterReviewSummary";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
-                    documentMRS = cnn.Query<MasterReviewSummaryVM>(sql).FirstOrDefault();
+                    documentMRS = cnn.Query<MasterReviewSummaryVM>(sql).LastOrDefault();
                 }
                 return documentMRS;
             }
