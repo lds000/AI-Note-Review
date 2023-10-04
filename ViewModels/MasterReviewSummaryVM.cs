@@ -136,17 +136,8 @@ namespace AI_Note_Review
                 parentNoteDataVM = value;
                 if (parentNoteDataVM != null)
                 {
-                    string strHTML = "";
-                    strHTML = Encryption.Decrypt(parentNoteDataVM.NoteString);
-                    //Convert string html to html document object
-                    WebBrowser browser = new WebBrowser();
-                    browser.ScriptErrorsSuppressed = true;
-                    browser.DocumentText = strHTML;
-                    browser.Document.OpenNew(true);
-                    browser.Document.Write(strHTML);
-                    browser.Refresh();
-
-                    Document.NoteHTML = browser.Document;
+                    //important: this is notestring from DB, decrypted, when assigned will process sections
+                    Document.Notedata = parentNoteDataVM;
                     VisitReport.PopulateCPStatuses();
                     OnPropertyChanged("StrBimonthlyReviewComment");
                 }

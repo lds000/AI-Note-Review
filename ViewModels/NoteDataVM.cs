@@ -94,7 +94,7 @@ namespace AI_Note_Review
         {
             get
             {
-                return Encryption.Decrypt(NoteString);
+                return NoteString;
             }
         }
 
@@ -128,6 +128,7 @@ namespace AI_Note_Review
             set { noteData.NoteString = value; }
         }
 
+
         public bool Reviewed
         {
             get { return noteData.Reviewed; }
@@ -140,6 +141,54 @@ namespace AI_Note_Review
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteNotesLocation))
             {
                 cnn.Execute(sql, this);
+            }
+        }
+
+        string[] NoteSegmentTitles = { "Reason for Appointment", "History of Present Illness", "Current Medications", "Taking", "Not-Taking/PRN", "Discontinued",
+            "Unknown", "Active Problem List", "Past Medical History", "Surgical History","Surgical History","Family History","Social History",
+            "Hospitalization/Major Diagnostic Procedure","Review of Systems","Vital Signs","Examination","Assessments","Treatment","Follow Up",
+            "Allergies","Medication Summary","Electronically signed*"
+        };
+
+        public string GetSegment(string strSegment)
+        {
+            if (NoteString == null)
+                return "";
+            string strResult = "";
+
+            bool SegmentActive = false;
+
+            foreach (string strLine in NoteStrings)
+            {
+                foreach (string s in NoteSegmentTitles)
+                {
+                    if (strLine.Trim() == s)
+                        SegmentActive = false;
+                }
+                if (SegmentActive && !string.IsNullOrEmpty(strLine.Trim()))
+                    strResult += strLine + Environment.NewLine;
+                if (strLine == strSegment)
+                    SegmentActive = true;
+            }
+            return strResult;
+        }
+
+        private List<string> noteStrings;
+        public List<string> NoteStrings
+        {
+            get
+            {
+                if (NoteString == null)
+                    return null;
+                if (noteStrings == null)
+                {
+                    foreach (string str in NoteSegmentTitles)
+                    {
+                       noteData.NoteString.Replace(str, Environment.NewLine + str + Environment.NewLine);
+                    }
+                    noteStrings = Regex.Split(noteData.NoteString, "\r\n|\r|\n").Select(x => x.Trim()).ToList();
+                }
+                return noteStrings;
             }
         }
 

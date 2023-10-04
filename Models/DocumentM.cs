@@ -125,6 +125,19 @@ namespace AI_Note_Review
             }
         }
 
+        private string noteText;
+        public string NoteText
+        {
+            get
+            {
+                return noteText;
+            }
+            set
+            {
+                noteText = value;
+            }
+        }
+
         public string ReasonForAppt
         {
             get

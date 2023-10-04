@@ -349,6 +349,7 @@ namespace AI_Note_Review
             }
         }
 
+
         public Brush ProviderColor
         {
             get
