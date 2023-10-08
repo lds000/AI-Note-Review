@@ -172,21 +172,18 @@ namespace AI_Note_Review
             }
         }
 
+        private string tmpName;
         public string PtLastName
         {
             get
             {
-                string tmpName = PtName.Trim();
-                if (PtName.Contains(','))
-                {
-                    return tmpName.Split(',')[0].Trim(); //Wilson, Mark; Johnson, Sam B.
-                }
-                if (tmpName.Contains(' '))
-                {
-                    int count = tmpName.Split(' ').Length;
-                    tmpName = tmpName.Split(' ')[count - 1].Trim(); //John Allen Smith, Mark Sampson, Billy G. King
-                }
                 return tmpName;
+            }
+
+            set
+            {
+                tmpName = value;
+                OnPropertyChanged();
             }
         }
 

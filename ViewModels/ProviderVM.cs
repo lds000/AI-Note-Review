@@ -83,11 +83,15 @@ namespace AI_Note_Review
         public static ProviderVM SqlGetProviderByID(int iProviderID)
         {
             string sql = "";
-            sql += $"Select * from Providers where ProviderID = '{iProviderID}';"; //this part is to get the ID of the newly created phrase
+            sql += $"Select * from Providers where ProviderID = {iProviderID};"; //this part is to get the ID of the newly created phrase
             using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
             {
-                ProviderVM p = cnn.QueryFirstOrDefault<ProviderVM>(sql);
-                return p;
+                ProviderM p = cnn.QueryFirstOrDefault<ProviderM>(sql);
+                if (p != null)
+                {
+                    return new ProviderVM(p);
+                }
+                return null;
             }
         }
 

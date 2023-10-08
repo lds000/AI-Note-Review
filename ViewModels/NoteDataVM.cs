@@ -94,8 +94,64 @@ namespace AI_Note_Review
         {
             get
             {
-                return NoteString;
+                DocumentVM d = new DocumentVM(this);
+                string strNote = "";
+                strNote += "<b>Sex:</b>" + Environment.NewLine;
+                strNote += ParentMasterReviewSummary.Patient.PtSex + Environment.NewLine;
+                strNote += "<br><b>DOB:</b>" + Environment.NewLine;
+                strNote += ParentMasterReviewSummary.Patient.DOB.ToShortDateString() + Environment.NewLine;
+                strNote += "<br><b>PtID:</b>" + Environment.NewLine;
+                strNote += ParentMasterReviewSummary.Patient.PtID + Environment.NewLine;
+                strNote += "<br><b>Reason for Appointment:</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.CC) + Environment.NewLine;
+                strNote += "<br><b>History of Present Illness:</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.HPI) + Environment.NewLine;
+                strNote += "<br>Review of Systems</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.ROS) + Environment.NewLine;
+                strNote += "<br><b>Current Medications:</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.CurrentMeds) + Environment.NewLine;
+                strNote += "<br><b>PRN Medications</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.CurrentPrnMeds) + Environment.NewLine;
+                strNote += "<br><b>Active Problem List</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.ProblemList) + Environment.NewLine;
+                strNote += "<br><b>Past Medical History</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.PMHx) + Environment.NewLine;
+                strNote += "<br><b>Allergies</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.Allergies) + Environment.NewLine;
+                strNote += "<br><b>Surgical History</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.SurgHx) + Environment.NewLine;
+                strNote += "<br><b>Family History</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.FamHx) + Environment.NewLine;
+                strNote += "<br><b>Social History</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.SocHx) + Environment.NewLine;
+                strNote += "<br><b>Hospitalizations</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.Hospitalizations) + Environment.NewLine;
+                strNote += "<br>Vital Signs<b>Review of Systems</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.Vitals) + Environment.NewLine;
+                strNote += "<br><b>Examination</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.Exam) + Environment.NewLine;
+                strNote += "<br><b>Procedure Note</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.ProcedureNote) + Environment.NewLine;
+                strNote += "<br><b>Assessments</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.Assessments) + Environment.NewLine;
+                strNote += "<br><b>Started Medications</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.MedsStarted) + Environment.NewLine;
+                strNote += "<br><b>Labs Ordered</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.LabsOrdered) + Environment.NewLine;
+                strNote += "<br><b>Treatment</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.Treatment) + Environment.NewLine;
+                strNote += "<br><b>Follow Up</b><br>" + Environment.NewLine;
+                strNote += StringToHTML(d.FollowUp) + Environment.NewLine;
+
+
+
+                return strNote;
             }
+        }
+
+        string StringToHTML(string str)
+        {
+            return str.Replace(Environment.NewLine, "<br>");
         }
 
         public int NoteID
@@ -144,10 +200,10 @@ namespace AI_Note_Review
             }
         }
 
-        string[] NoteSegmentTitles = { "Reason for Appointment", "History of Present Illness", "Current Medications", "Taking", "Not-Taking/PRN", "Discontinued",
+        string[] NoteSegmentTitles = { "Sex","PtID","DOB","Reason for Appointment", "History of Present Illness", "Current Medications", "Taking", "Started Medications", "Not-Taking/PRN", "Discontinued",
             "Unknown", "Active Problem List", "Past Medical History", "Surgical History","Surgical History","Family History","Social History",
-            "Hospitalization/Major Diagnostic Procedure","Review of Systems","Vital Signs","Examination","Assessments","Treatment","Follow Up",
-            "Allergies","Medication Summary","Electronically signed*"
+            "Hospitalizations","Review of Systems","Vital Signs","Examination","Assessments","Treatment","Follow Up",
+            "Allergies","Medication Summary","Electronically signed*","Procedure","Procedure Codes","PRN Medications","Ordered Labs"
         };
 
         public string GetSegment(string strSegment)

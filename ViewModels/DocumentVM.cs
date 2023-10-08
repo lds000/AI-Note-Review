@@ -59,6 +59,13 @@ namespace AI_Note_Review
             NoteHTML = doc;
         }
 
+        public DocumentVM(NoteDataVM note)
+        {
+            documentM = new DocumentM();
+            patientVM = new PatientVM();
+            Notedata = note;
+        }
+
         private List<NoteSectionM> noteSections;
         /// <summary>
         /// A list of notesections for use in combobox to select notesection, also contains NoteSectionContent (from the note) for tagregex searches
@@ -520,6 +527,20 @@ namespace AI_Note_Review
                 OnPropertyChanged();
             }
         }
+
+        public string Hospitalizations
+        {
+            get
+            {
+                return documentM.Hospitalizations;
+            }
+            set
+            {
+                documentM.Hospitalizations = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string SocHx
         {
             get
@@ -814,20 +835,50 @@ namespace AI_Note_Review
         public void processTextNote(string strNote)
         {
             #region Process locked document magic
-            CC = Notedata.GetSegment("Reason for Appointment");
             //VisitDate = Notedata.VisitDate;
             SetProvider(Notedata.ProviderID);
-            List<string> AssessmentList = Notedata.GetSegment("Assessments").Split('|').ToList();
-            patientVM.PtName = "John";  //set first name
+            patientVM.PtSex = Notedata.GetSegment("Sex").Trim();
+
+            if (patientVM.isFemale)
+            {
+                patientVM.PtName = "Jane";  //set first name
+            }
+            else
+            {
+                patientVM.PtName = "John";  //set first name
+            }
+            patientVM.PtLastName = "Doe";
+            
+            patientVM.PtID = Notedata.GetSegment("PtID").Trim();
+            string tmpDate = Notedata.GetSegment("DOB").Trim();
+            patientVM.DOB = DateTime.Parse(tmpDate);
+            CC = Notedata.GetSegment("Reason for Appointment");
+            HPI = Notedata.GetSegment("History of Present Illness");
+            CurrentMeds = Notedata.GetSegment("Current Medications");
+            CurrentPrnMeds = Notedata.GetSegment("PRN Medications");
+            MedsStarted = noteData.GetSegment("Started Medications");
+            Allergies = Notedata.GetSegment("Allergies"); //Allergies
+            ProblemList = Notedata.GetSegment("Active Problem List");
+            PMHx = Notedata.GetSegment("Past Medical History");
+            SurgHx = Notedata.GetSegment("Surgical History");
+            FamHx = Notedata.GetSegment("Family History");
+            SocHx = Notedata.GetSegment("Social History");
+            Hospitalizations = Notedata.GetSegment("Hospitalizations");
+            ROS = Notedata.GetSegment("Review of Systems");
+            Vitals = Notedata.GetSegment("Vital Signs");
+            Exam = Notedata.GetSegment("Examination");
+            ProcedureNote = Notedata.GetSegment("Procedure"); //
+            Assessments = Notedata.GetSegment("Assessments").Replace("|",Environment.NewLine);
+            LabsOrdered = Notedata.GetSegment("Ordered Labs").Replace("|",Environment.NewLine);
+            Treatment = Notedata.GetSegment("Treatment");
+            FollowUp = Notedata.GetSegment("Follow Up");
+
             /*
-             * "Reason for Appointment", "History of Present Illness", "Current Medications", "Taking", "Not-Taking/PRN", "Discontinued",
+             * "", "", "Current Medications", "Taking", "Not-Taking/PRN", "Discontinued",
             "Unknown", "Active Problem List", "Past Medical History", "Surgical History","Surgical History","Family History","Social History",
-            "Hospitalization/Major Diagnostic Procedure","Review of Systems","Vital Signs","Examination","Assessments","Treatment","Follow Up",
+            "Hospitalization/Major Diagnostic Procedure","Review of Systems","Vital Signs","Examination","","Treatment","Follow Up",
             "Allergies","Medication Summary","Electronically signed*"
-        patientVM.PtName = TempEl.InnerText.Replace("\n", "").Replace("\r", "");  //set first name
-        patientVM.PtID = strInnerText.Split(':')[1].Trim();
-        patientVM.DOB = DateTime.Parse(strInnerText.Split(':')[1].Trim());
-        patientVM.PtSex = "F";
+
         CC = tmpStr;
         HPI = tmpStr;
         List<string> medsTaking = new List<string>();

@@ -273,6 +273,20 @@ namespace AI_Note_Review
             }
         }
 
+        private string hospitalizations;
+        public string Hospitalizations
+        {
+            get
+            {
+                return hospitalizations;
+            }
+            set
+            {
+                hospitalizations = value;
+
+            }
+        }
+
         public string SocHx
         {
             get
