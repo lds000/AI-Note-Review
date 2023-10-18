@@ -11,7 +11,7 @@
         <Button Click="Button_Click" DockPanel.Dock="Bottom" HorizontalAlignment="Center" FontSize="20" Style="{StaticResource LinkButton}">Close</Button>
         <Border BorderBrush="White" BorderThickness="1" Margin="5" Grid.Column="3">
             <!-- Binds to lbMonthReview.selecteditem, which is a SqlDocumentReviewSummaryVM -->
-            <WebBrowser local:WebBrowserHelper.Body="{Binding NoteHTMLBody}">
+            <WebBrowser local:WebBrowserHelper.Body="{Binding}">
 
             </WebBrowser>
         </Border>

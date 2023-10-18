@@ -136,7 +136,8 @@ namespace AI_Note_Review
         {
             VisitReportVM rvm = parameter as VisitReportVM;
             WinShowNote wsn = new WinShowNote();
-            wsn.DataContext = rvm.Document;
+            //want noteData ReviewHTML
+            wsn.DataContext = rvm.Document.Notedata.HTML;
             wsn.Show();
             ;
         }
