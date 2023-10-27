@@ -484,11 +484,7 @@ namespace AI_Note_Review
                 rxtot += (double)l[i].HtmlReport.rxScore;
                 totaltot += (double)l[i].HtmlReport.totalScore;
             }
-            strReport += $"Greetings {selectedProviderForBiMonthlyReview.FirstName},<br> I have completed the review for block 10, which covered traumatic and non-traumatic chest pain, shortness of breath, dyspnea, anxiety, and tachycardia. Generally, I noted that providers often do not document or utilize Well's, PERC, or Marburg  rules.  These rules are of great clinical utility in the urgent care where we have to risk stratify our patients without access to timely testing and imaging.  For patients with anxiety, don’t forget to ask about medication changes and use of illicit substances.  Many of you routinely ask about suicidal ideation, but some are not asking about homicidal ideations.  In diagnosis of tachycardia, obtaining orthostatics can be useful in detecting POTS or orthostasis.  That's all!  I've sent this same review content to Smartsheet as well so that admin can see that these reviews are getting done, but I think that this format is easier to read.  Have a great 4th of July holiday! ";
-            //strReport += $"<br>This review covered eye surface and eyelid conditions focusing on the appropriate history, exam, and treatment considerations. ";
-            //strReport += $"Generally speaking, I feel that everyone did quite well with these complaints.  There are a few things I would like to mention, however, that I saw a challenge for some providers.  ";
-            //strReport += $"Be certain to document contact lens wearer status, this affects antibiotic choice (quinolone) and potential stat referrals for corneal ulcers.  ";
-            //strReport += "Also, don't forget to perform a fluorescein exam in most eye surface injuries or conditions noting absence of dendritic lesions, Seidel sign, foreign body, etc.  ";
+            strReport += $"Greetings {selectedProviderForBiMonthlyReview.FirstName},<br> I have completed the reviews for block 12, which covered common ENT diagnosis.  Please see Ann Weiss’ recent email regarding this block review.  Generally, I noted that all the providers reviewed do quite well with ENT diagnosis, as it is one of the most common diagnoses that we see in urgent care.  With pharyngitis, I see that some providers continue to prescribe antibiotics for Strep negative exudative pharyngitis.  In this situation consider carefully documenting lack of peritonsillar abscess, retropharyngeal abscess, or peritonsillar cellulitis, consider mono testing, gonococcal or chlamydial exposure, and then perhaps obtain aerobic throat cultures.  If strep is positive, amoxicillin should be prescribed for a full 10 days.  I see some providers prescribing steroids for Mono, which is recommended against by UpToDate.  Some providers seem to be confusing suppurative otitis media with non-suppurative (otitis media with effusion) the latter not requiring antibiotics.  Also, recall the duration of Amoxicillin is 10 days for under the age of 2 and 5-7 days for older children (with some exceptions.)  Remember that bacterial sinusitis usually requires 7-10 days of symptoms for diagnosis and treatment with antibiotics.  Also, the recommended duration for Augmentin in acute bacterial sinusitis is 5 days, continuing to 7 days if symptoms persist. That's all!  I've sent this same review content to Smartsheet as well so that admin can see that these reviews are getting done, but I think that this format is easier to read. <br><br>";
             strReport += $"Please feel free to contact me if you have any questions regarding your review.";
             strReport += $"<br><br>Best Regards,<br>Lloyd Stolworthy, M.D.<hr>";
             strReport += $"<font size='+2'>Combined Total Review Score: HPI: {hpitot.ToString("0.##")}, Dx: {dxtot.ToString("0.##")}, Exam:  {examtot.ToString("0.##")}, Rx: {rxtot.ToString("0.##")}, Total Score: {totaltot.ToString("0.##")}</font><hr>";
@@ -504,7 +500,7 @@ namespace AI_Note_Review
 
 
             ClipboardHelper.CopyToClipboard(strReport, "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Block 10", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Block 12", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
         }
@@ -513,7 +509,7 @@ namespace AI_Note_Review
         {
             ReportToHtmlVM r = new ReportToHtmlVM();
             ClipboardHelper.CopyToClipboard(r.ExecutiveSummary(SelectedMasterReviewSummary), "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", "lds00@yahoo.com", "Clinic Note Review For Block 9", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", "lds00@yahoo.com", "Clinic Note Review For Block 12", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
 
