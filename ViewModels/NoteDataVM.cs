@@ -97,11 +97,11 @@ namespace AI_Note_Review
                 DocumentVM d = new DocumentVM(this);
                 string strNote = "";
                 strNote += "<b>Sex:</b>" + Environment.NewLine;
-                strNote += ParentMasterReviewSummary.Patient.PtSex + Environment.NewLine;
+                strNote += d.Patient.PtSex + Environment.NewLine;
                 strNote += "<br><b>DOB:</b>" + Environment.NewLine;
-                strNote += ParentMasterReviewSummary.Patient.DOB.ToShortDateString() + Environment.NewLine;
+                strNote += d.Patient.DOB.ToShortDateString() + Environment.NewLine;
                 strNote += "<br><b>PtID:</b>" + Environment.NewLine;
-                strNote += ParentMasterReviewSummary.Patient.PtID + Environment.NewLine;
+                strNote += d.Patient.PtID + Environment.NewLine;
                 strNote += "<br><b>Reason for Appointment:</b><br>" + Environment.NewLine;
                 strNote += StringToHTML(d.CC) + Environment.NewLine;
                 strNote += "<br><b>History of Present Illness:</b><br>" + Environment.NewLine;
