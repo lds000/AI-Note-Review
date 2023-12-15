@@ -223,7 +223,7 @@ namespace AI_Note_Review
         }
 
         private string strBimonthlyReviewComment;
-        public string StrBimonthlyReviewComment
+        public string StrBimonthlyReviewComment //used in WinReport
         {
             get
             {
@@ -231,6 +231,8 @@ namespace AI_Note_Review
                     return null;
                 string sql = "";
                 //todo: change from 5 to document date MRS.
+                int RID = providerBiMonthlyReview.RelMasterReviewSummaryID;
+
                 sql += $"Select RelComment from RelProviderMasterReviewSummary where RelProviderID={Document.Provider.ProviderID} and RelMasterReviewSummaryID=14;";
                 using (IDbConnection cnn = new SQLiteConnection("Data Source=" + SqlLiteDataAccess.SQLiteDBLocation))
                 {
