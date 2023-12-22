@@ -221,7 +221,7 @@ namespace AI_Note_Review
 
 
         private string strBimonthlyReviewComment;
-        public string StrBimonthlyReviewComment
+        public string StrBimonthlyReviewComment //used in BiMonthlyReviewV
         {
             get
             {
