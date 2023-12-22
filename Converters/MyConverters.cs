@@ -378,6 +378,8 @@ namespace AI_Note_Review
                 strTest = strTest.Split('(')[0].Trim();
             }
             List<string> _ICD10Segments = new List<string>();
+            if (strTest.StartsWith("Z"))
+                return _ICD10Segments;
             char strAlphaCode = char.Parse(strTest.Substring(0, 1));
             string str = "";
             foreach (char ch in strTest)

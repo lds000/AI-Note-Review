@@ -1087,6 +1087,8 @@ namespace AI_Note_Review
             //iterate though each assigned ICD10
             foreach (string strICD10 in ICD10s)
             {
+                if (strICD10.StartsWith("Z"))
+                    continue;
                 char strAlphaCode = char.Parse(strICD10.Substring(0, 1));  //First Char is alpha code
                     if (Char.IsDigit(strAlphaCode))
                     {
@@ -1102,6 +1104,7 @@ namespace AI_Note_Review
                     if (Char.ToLower(ch) == 'x')
                         break; //if placeholder character, then stop.
                 }
+
                 double icd10numeric = double.Parse(str); //convert to number so I can compare with my database ICD10segmnents
                 foreach (SqlICD10SegmentVM ns in SqlICD10SegmentVM.NoteICD10Segments)
                 {
