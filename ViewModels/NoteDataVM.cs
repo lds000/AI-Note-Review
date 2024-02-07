@@ -102,6 +102,8 @@ namespace AI_Note_Review
                 strNote += d.Patient.DOB.ToShortDateString() + Environment.NewLine;
                 strNote += "<br><b>PtID:</b>" + Environment.NewLine;
                 strNote += d.Patient.PtID + Environment.NewLine;
+                strNote += "<br><b>Date of Service:</b>" + Environment.NewLine;
+                strNote += d.VisitDate.ToShortDateString() + Environment.NewLine;
                 strNote += "<br><b>Reason for Appointment:</b><br>" + Environment.NewLine;
                 strNote += StringToHTML(d.CC) + Environment.NewLine;
                 strNote += "<br><b>History of Present Illness:</b><br>" + Environment.NewLine;

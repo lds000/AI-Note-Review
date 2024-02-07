@@ -302,7 +302,7 @@ namespace AI_Note_Review
                     try
                     {
                         string tmpStr = strPartVital.Replace(".", String.Empty);
-                        patientVM.VitalsO2 = int.Parse(tmpStr.Trim().Split('%')[1].Trim());
+                        patientVM.VitalsO2 = int.Parse(tmpStr.Trim().Split(':')[1].Trim());
                     }
                     catch
                     {
@@ -835,7 +835,8 @@ namespace AI_Note_Review
         public void processTextNote(string strNote)
         {
             #region Process locked document magic
-            //VisitDate = Notedata.VisitDate;
+            //not sure why this is commented out...
+            VisitDate = Notedata.VisitDate;
             SetProvider(Notedata.ProviderID);
             patientVM.PtSex = Notedata.GetSegment("Sex").Trim();
 
