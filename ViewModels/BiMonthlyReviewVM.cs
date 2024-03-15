@@ -484,7 +484,9 @@ namespace AI_Note_Review
                 rxtot += (double)l[i].HtmlReport.rxScore;
                 totaltot += (double)l[i].HtmlReport.totalScore;
             }
-            strReport += $"Greetings {selectedProviderForBiMonthlyReview.FirstName},<br> I have completed the reviews for block 12, which covered common ENT diagnosis.  Please see Ann Weiss’ recent email regarding this block review.  Generally, I noted that all the providers reviewed do quite well with ENT diagnosis, as it is one of the most common diagnoses that we see in urgent care.  With pharyngitis, I see that some providers continue to prescribe antibiotics for Strep negative exudative pharyngitis.  In this situation consider carefully documenting lack of peritonsillar abscess, retropharyngeal abscess, or peritonsillar cellulitis, consider mono testing, gonococcal or chlamydial exposure, and then perhaps obtain aerobic throat cultures.  If strep is positive, amoxicillin should be prescribed for a full 10 days.  I see some providers prescribing steroids for Mono, which is recommended against by UpToDate.  Some providers seem to be confusing suppurative otitis media with non-suppurative (otitis media with effusion) the latter not requiring antibiotics.  Also, recall the duration of Amoxicillin is 10 days for under the age of 2 and 5-7 days for older children (with some exceptions.)  Remember that bacterial sinusitis usually requires 7-10 days of symptoms for diagnosis and treatment with antibiotics.  Also, the recommended duration for Augmentin in acute bacterial sinusitis is 5 days, continuing to 7 days if symptoms persist. That's all!  I've sent this same review content to Smartsheet as well so that admin can see that these reviews are getting done, but I think that this format is easier to read. <br><br>";
+            strReport += $"Greetings {selectedProviderForBiMonthlyReview.FirstName},<br> I have completed the reviews for block 13, which covered common abdominal complaints.  Please see Ann Weiss’ recent email regarding this block review.  Generally, I noted that all the providers reviewed do quite well with abdominal complaints.  Abdominal complaints can be quite challenging to work up with limited resources." +
+                $"  As before, my review process involves searching for keywords and phrases associated with certain checkpoints of important history/exam/treatment aspects for a given diagnosis.  " +
+                $"With abdominal pain we can usually triage patients to the ED without a complete history and workup, so many notes may be missing several key points.  I still included the checkpoints for educational purposes.<br><br>";
             strReport += $"Please feel free to contact me if you have any questions regarding your review.";
             strReport += $"<br><br>Best Regards,<br>Lloyd Stolworthy, M.D.<hr>";
             strReport += $"<font size='+2'>Combined Total Review Score: HPI: {hpitot.ToString("0.##")}, Dx: {dxtot.ToString("0.##")}, Exam:  {examtot.ToString("0.##")}, Rx: {rxtot.ToString("0.##")}, Total Score: {totaltot.ToString("0.##")}</font><hr>";
@@ -500,7 +502,7 @@ namespace AI_Note_Review
 
 
             ClipboardHelper.CopyToClipboard(strReport, "");
-            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Block 12", "");
+            string mailto = string.Format("mailto:{0}?Subject={1}&Body={2}", selectedProviderForBiMonthlyReview.EMail, "Clinic Note Review For Block 13", "");
             mailto = Uri.EscapeUriString(mailto);
             System.Diagnostics.Process.Start(mailto);
         }
